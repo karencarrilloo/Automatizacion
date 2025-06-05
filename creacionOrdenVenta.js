@@ -1,3 +1,4 @@
+
 // Importa la función de login desde el archivo login.js
 const loginTest = require('./login');
 
@@ -161,7 +162,12 @@ const fs = require('fs'); // Para guardar capturas de pantalla
     const botonTipoOrden = await driver.wait(
       until.elementLocated(By.xpath('//*[@id="widget-picklist-workSpecificationIdCreateOrder"]/div[1]/span[2]/button')),
       10000
-    );   
+    );
+
+    // Hace scroll para asegurar visibilidad
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", botonTipoOrden);
+    await driver.sleep(1000);
+
 
     // Verifica visibilidad y habilitación del botón
     const visibleTipoOrden = await botonTipoOrden.isDisplayed();
@@ -175,62 +181,174 @@ const fs = require('fs'); // Para guardar capturas de pantalla
     await driver.executeScript("arguments[0].click();", botonTipoOrden);
     await driver.sleep(3000); // Espera para carga de opciones
 
-    console.log("✅ Se hizo clic en el botón 'TIPO DE ORDEN'");
 
 
-   // Paso 15: Seleccionar "ORDEN - VENTA E INSTALACION" haciendo scroll dentro del tbody
+    // Paso 15: Seleccionar "ORDEN - VENTA E INSTALACION" haciendo scroll dentro del tbody
 
-// Obtener el cuerpo de la tabla del modal
-const tablaSelector = await driver.findElement(By.css('#grid-table-crud-grid-workSpecificationIdCreateOrder tbody'));
+    // Obtener el cuerpo de la tabla del modal
+    const tablaSelector = await driver.findElement(By.css('#grid-table-crud-grid-workSpecificationIdCreateOrder tbody'));
 
-// Obtener todas las filas visibles
-const rowsOrder = await tablaSelector.findElements(By.css('tr'));
+    // Obtener todas las filas visibles
+    const rowsOrder = await tablaSelector.findElements(By.css('tr'));
 
-let foundOrder = false;
+    let foundOrder = false;
 
-// Recorrer cada fila y sus celdas para buscar coincidencia parcial
-for (const row of rowsOrder) {
-  const cells = await row.findElements(By.css('td'));
+    // Recorrer cada fila y sus celdas para buscar coincidencia parcial
+    for (const row of rowsOrder) {
+      const cells = await row.findElements(By.css('td'));
 
-  for (const cell of cells) {
-    const text = await cell.getText();
+      for (const cell of cells) {
+        const text = await cell.getText();
 
-    // Comparación parcial y en mayúsculas: buscamos "VENTA E INSTALACION"
-    if (text.toUpperCase().includes('VENTA E INSTALACION')) {
-      // Asegurar visibilidad de la celda con scroll
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", cell);
-      await driver.sleep(500); // Espera breve por scroll
+        // Comparación parcial y en mayúsculas: buscamos "VENTA E INSTALACION"
+        if (text.toUpperCase().includes('VENTA E INSTALACION')) {
+          // Asegurar visibilidad de la celda con scroll
+          await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", cell);
+          await driver.sleep(500); // Espera breve por scroll
 
-      // Clic directamente en la celda para seleccionar la fila
-      await driver.executeScript("arguments[0].click();", cell);
-      foundOrder = true;
-      break;
+          // Clic directamente en la celda para seleccionar la fila
+          await driver.executeScript("arguments[0].click();", cell);
+          foundOrder = true;
+          break;
+        }
+      }
+
+      if (foundOrder) break;
     }
-  }
 
-  if (foundOrder) break;
-}
+    // Validación por si no encuentra el tipo de orden
+    if (!foundOrder) {
+      throw new Error('❌ No se encontró ninguna opción que contenga "VENTA E INSTALACION".');
+    }
 
-// Validación por si no encuentra el tipo de orden
-if (!foundOrder) {
-  throw new Error('❌ No se encontró ninguna opción que contenga "VENTA E INSTALACION".');
-}
+    // Esperar y dar clic en el botón SELECCIONAR del modal
+    const botonSeleccionarOrder = await driver.wait(
+      until.elementLocated(By.css('#widget-button-btSelect-workSpecificationIdCreateOrder .btn.btn-primary')),
+      10000
+    );
 
-// Paso 4: Esperar y dar clic en el botón SELECCIONAR del modal
-const botonSeleccionarOrder = await driver.wait(
-  until.elementLocated(By.css('#widget-button-btSelect-workSpecificationIdCreateOrder .btn.btn-primary')),
-  10000
-);
+    // Esperar que esté habilitado antes de hacer clic
+    await driver.wait(async () => {
+      const disabled = await botonSeleccionarOrder.getAttribute('disabled');
+      return disabled === null;
+    }, 10000);
 
-// Esperar que esté habilitado antes de hacer clic
-await driver.wait(async () => {
-  const disabled = await botonSeleccionarOrder.getAttribute('disabled');
-  return disabled === null;
-}, 10000);
+    // Clic final en el botón "SELECCIONAR"
+    await driver.executeScript("arguments[0].click();", botonSeleccionarOrder);
+    await driver.sleep(2000); // Espera para asegurar la acción
 
-// Clic final en el botón "SELECCIONAR"
-await driver.executeScript("arguments[0].click();", botonSeleccionarOrder);
-await driver.sleep(2000); // Espera para asegurar la acción
+
+
+    // === Paso 16: Clic en botón del campo "Municipio" ===
+
+    // Espera hasta que se localice el botón desplegable del campo "Municipio"
+    const botonMunicipio = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-picklist-leMunicipality"]/div[1]/span[1]/button')),
+      10000
+    );
+
+    // Hace scroll para asegurar que el botón esté visible en pantalla
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", botonMunicipio);
+    await driver.sleep(1000); // Pequeña espera para permitir que el scroll se complete
+
+    // Verifica visibilidad y habilitación del botón
+    const visibleMunicipio = await botonMunicipio.isDisplayed();
+    const habilitadoMunicipio = await botonMunicipio.isEnabled();
+
+    // Si no está visible o habilitado, lanza error
+    if (!visibleMunicipio || !habilitadoMunicipio) {
+      throw new Error("❌ El botón 'Municipio' no está visible o habilitado");
+    }
+
+    // Hace clic en el botón de "Municipio"
+    await driver.executeScript("arguments[0].click();", botonMunicipio);
+    await driver.sleep(3000); // Espera para que carguen las opciones
+
+
+
+    // === Paso 17: Buscar y seleccionar "PALMIRA" ===
+
+    // Espera el contenedor scrollable del listado de municipios
+    const contenedorMunicipios = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-leMunicipality"]/div/div/div[2]/div')),
+      10000
+    );
+
+    // Encuentra todas las filas de la tabla de municipios
+    const filasMunicipio = await driver.findElements(By.css('#grid-table-crud-grid-leMunicipality tbody tr'));
+
+    let municipioEncontrado = false;
+
+    for (const fila of filasMunicipio) {
+      const celdas = await fila.findElements(By.css('td'));
+
+      for (const celda of celdas) {
+        const texto = await celda.getText();
+
+        if (texto.trim().toUpperCase() === "PALMIRA") {
+          // Hace scroll dentro del contenedor específico
+          await driver.executeScript("arguments[0].scrollTop = arguments[1].offsetTop;", contenedorMunicipios, fila);
+          await driver.sleep(500); // espera para que el scroll se vea
+          await fila.click(); // hace clic en la fila
+          municipioEncontrado = true;
+          break;
+        }
+      }
+
+      if (municipioEncontrado) break;
+    }
+
+    // Si no se encontró, lanza error
+    if (!municipioEncontrado) {
+      throw new Error('❌ No se encontró la fila con "PALMIRA" en la lista de municipios');
+    }
+
+    await driver.sleep(3000); // Espera a que se habilite el botón "Seleccionar"
+
+    // Clic en el botón "Seleccionar"
+    const botonSeleccionarMunicipio = await driver.wait(
+      until.elementLocated(By.css('#widget-button-btSelect-leMunicipality .btn.btn-primary')),
+      10000
+    );
+
+    // Espera que el botón esté habilitado
+    await driver.wait(async () => {
+      const disabled = await botonSeleccionarMunicipio.getAttribute('disabled');
+      return disabled === null;
+    }, 10000);
+
+    // Hace clic en el botón "Seleccionar"
+    await botonSeleccionarMunicipio.click();
+    await driver.sleep(3000);
+
+    console.log("✅ Se hizo clic en la opcion 'PALIMIRA'");
+
+    // === Paso 18: Digitar en el campo DIRECCIÓN ===
+
+    // Función para generar una cadena aleatoria de letras y números
+    function generarDireccionAleatoria(longitud = 30) {
+      const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ';
+      let resultado = '';
+      for (let i = 0; i < longitud; i++) {
+        resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+      }
+      return resultado.trim(); // elimina espacio sobrante al final si lo hay
+    }
+
+    // Espera el input del campo DIRECCIÓN (puedes usar un selector más específico si conoces el ID)
+    const campoDireccion = await driver.wait(
+      until.elementLocated(By.css('input[placeholder="Dirección"]')),
+      10000
+    );
+
+    // Limpia el campo (por si acaso)
+    await campoDireccion.clear();
+
+    // Digita el texto aleatorio
+    const direccionAleatoria = generarDireccionAleatoria(30);
+    await campoDireccion.sendKeys(direccionAleatoria);
+
+    await driver.sleep(2000); // pausa visual
 
   } catch (error) {
     // Muestra error en consola si algo falla
@@ -245,3 +363,4 @@ await driver.sleep(2000); // Espera para asegurar la acción
     await driver.quit();
   }
 })();
+
