@@ -394,6 +394,47 @@ await driver.sleep(1000);
     // Pausa para visualización (opcional)
     await driver.sleep(2000);
 
+    // === Paso 21: Digitar Primer Nombre (obligatorio) ===
+
+const campoPrimerNombre = await driver.wait(
+  until.elementLocated(By.id('textfield-nameClient')),
+  10000
+);
+await campoPrimerNombre.clear();
+
+// Listas separadas por género
+const nombresFemeninos = ['Laura', 'Ana', 'Camila', 'Valentina', 'Daniela', 'Gabriela', 'María', 'Sara', 'Juliana'];
+const nombresMasculinos = ['Carlos', 'Juan', 'Andrés', 'Felipe', 'Esteban', 'Nicolás', 'Alejandro', 'Mateo', 'Santiago'];
+
+// Escoger género al azar
+const esGeneroFemenino = Math.random() < 0.5;
+const listaNombres = esGeneroFemenino ? nombresFemeninos : nombresMasculinos;
+
+// Generar primer nombre (obligatorio, nunca vacío)
+const primerNombre = listaNombres[Math.floor(Math.random() * listaNombres.length)];
+await campoPrimerNombre.sendKeys(primerNombre);
+
+// === Paso 22: Digitar Segundo Nombre (opcional del mismo género) ===
+
+const campoSegundoNombre = await driver.wait(
+  until.elementLocated(By.id('textfield-nameClientSecond')),
+  10000
+);
+await campoSegundoNombre.clear();
+
+// 50% de probabilidad de escribir segundo nombre (puede quedar vacío)
+const incluirSegundoNombre = Math.random() < 0.5;
+
+if (incluirSegundoNombre) {
+  let segundoNombre;
+  do {
+    segundoNombre = listaNombres[Math.floor(Math.random() * listaNombres.length)];
+  } while (segundoNombre === primerNombre); // Evitar duplicado
+  await campoSegundoNombre.sendKeys(segundoNombre);
+}
+await driver.sleep(2000);
+
+
 // === Paso 27: Seleccionar estado de la suscripcion de whatsapp ===
 const selectEstadoSuscripcion = await driver.findElement(By.id("input-select-suscriptionStatus"));
 await selectEstadoSuscripcion.sendKeys("SUSCRITO");
