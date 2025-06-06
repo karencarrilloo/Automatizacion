@@ -358,6 +358,12 @@ const fs = require('fs'); // Para guardar capturas de pantalla
     // Pausa opcional para visualización
     await driver.sleep(2000);
 
+
+// === Paso 19: Seleccionar tipo de documento ===
+const selectElement = await driver.findElement(By.id("input-select-typeDocument"));
+await selectElement.sendKeys("C.C"); 
+await driver.sleep(1000);
+
     // === Paso 20: Digitar en el campo "Número de documento" ===
 
     // Esperar el campo por su ID y localizarlo
@@ -387,6 +393,17 @@ const fs = require('fs'); // Para guardar capturas de pantalla
 
     // Pausa para visualización (opcional)
     await driver.sleep(2000);
+
+// === Paso 27: Seleccionar estado de la suscripcion de whatsapp ===
+const selectEstadoSuscripcion = await driver.findElement(By.id("input-select-suscriptionStatus"));
+await selectEstadoSuscripcion.sendKeys("SUSCRITO");
+await driver.sleep(1000); // Espera para asegurar que la selección se aplique
+
+// === Paso 28: Seleccionar aceptación de tratamiento de datos personales === 
+const checkboxTratamientoDatos = await driver.findElement(By.id("input-checkbox-acceptDataTreatment"));
+await checkboxTratamientoDatos.click(); // Marca el checkbox
+await driver.sleep(1000); // Espera para asegurar que la acción se aplique
+
 
   } catch (error) {
     // Muestra error en consola si algo falla
