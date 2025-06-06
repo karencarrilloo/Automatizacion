@@ -321,34 +321,41 @@ const fs = require('fs'); // Para guardar capturas de pantalla
     await botonSeleccionarMunicipio.click();
     await driver.sleep(3000);
 
-    console.log("✅ Se hizo clic en la opcion 'PALIMIRA'");
 
-    // === Paso 18: Digitar en el campo DIRECCIÓN ===
+    // === Paso 18: Digitar sobre el campo DIRECCIÓN con texto aleatorio ===
+    function generarDireccionAleatoria() {
+      const prefijos = ['Calle', 'Carrera', 'Avenida', 'Transversal', 'Diagonal'];
+      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    // Función para generar una cadena aleatoria de letras y números
-    function generarDireccionAleatoria(longitud = 30) {
-      const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ';
-      let resultado = '';
-      for (let i = 0; i < longitud; i++) {
-        resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-      }
-      return resultado.trim(); // elimina espacio sobrante al final si lo hay
+      const prefijo = prefijos[Math.floor(Math.random() * prefijos.length)];
+      const numeroPrincipal = aleatorio(1, 99);
+      const letra = letras.charAt(Math.floor(Math.random() * letras.length));
+      const numeroSecundario = aleatorio(1, 99);
+      const complemento = `#${aleatorio(1, 99)}-${aleatorio(1, 99)}`;
+
+      const direccion = `${prefijo} ${numeroPrincipal}${letra} ${numeroSecundario} ${complemento}`;
+
+      return direccion.substring(0, 30); // Asegura máximo 30 caracteres
     }
 
-    // Espera el input del campo DIRECCIÓN (puedes usar un selector más específico si conoces el ID)
+    // Esperar y localizar el campo de dirección (puedes ajustar el selector si cambia)
     const campoDireccion = await driver.wait(
       until.elementLocated(By.css('input[placeholder="Dirección"]')),
       10000
     );
 
-    // Limpia el campo (por si acaso)
+    // Limpiar el campo en caso de que tenga texto
     await campoDireccion.clear();
 
-    // Digita el texto aleatorio
-    const direccionAleatoria = generarDireccionAleatoria(30);
+    // Generar una dirección aleatoria
+    const direccionAleatoria = generarDireccionAleatoria();
+
+    // Escribir la dirección
     await campoDireccion.sendKeys(direccionAleatoria);
 
-    await driver.sleep(2000); // pausa visual
+    // Pausa opcional para visualización
+    await driver.sleep(2000);
 
   } catch (error) {
     // Muestra error en consola si algo falla
