@@ -435,15 +435,45 @@ if (incluirSegundoNombre) {
 await driver.sleep(2000);
 
 
-// === Paso 27: Seleccionar estado de la suscripcion de whatsapp ===
-const selectEstadoSuscripcion = await driver.findElement(By.id("input-select-suscriptionStatus"));
-await selectEstadoSuscripcion.sendKeys("SUSCRITO");
-await driver.sleep(1000); // Espera para asegurar que la selección se aplique
+// === Paso 25: Digitar en el campo "Telefono" ===
+ // Esperar el campo por su telefono y localizarlo
+  const campoNumeroTelefono = await driver.wait(
+ until.elementLocated(By.id('textfield-phoneClient')),
+ 10000
+);
 
-// === Paso 28: Seleccionar aceptación de tratamiento de datos personales === 
-const checkboxTratamientoDatos = await driver.findElement(By.id("input-checkbox-acceptDataTreatment"));
-await checkboxTratamientoDatos.click(); // Marca el checkbox
-await driver.sleep(1000); // Espera para asegurar que la acción se aplique
+  // Limpiar el campo si tiene algún valor previo
+ await campoNumeroTelefono.clear();
+
+  // Función auxiliar para generar un número aleatorio con longitud entre 7 y 12
+ function generarNumeroDocumentoAleatorio() {
+  const longitud = Math.floor(Math.random() * (12 - 7 + 1)) + 7; // entre 7 y 12
+  let numeroTelefono = '';
+  for (let i=0; i < longitud; i++) {
+ numeroTelefono += Math.floor(Math.random() *
+ 10); // Dígito entre 0 y 9
+ }
+  return numeroTelefono;
+ }
+
+  // Generar número aleatorio
+  const campoTelefono = generarNumeroDocumentoAleatorio();
+
+  // Ingresar el número en el campo
+ await campoNumeroTelefono.sendKeys(campoTelefono);
+
+  // Pausa para visualización (opcional)
+ await driver.sleep(2000);
+
+// === Paso 27: Seleccionar estado de la suscripcion de whatsapp ===
+const selectEstadoSuscripcion = await driver.findElement(By.id("input-select-subscriptionWhatsapp"));
+await selectEstadoSuscripcion.sendKeys("SUSCRITO");
+await driver.sleep(1000); // Espera para asegurar que la selección se aplique
+
+// === Paso 28: Seleccionar aceptación de tratamiento de datos personales === 
+const selectAcceptanceProcessingData = await driver.findElement(By.id("input-select-acceptanceProcessingData"));
+await selectAcceptanceProcessingData.sendKeys("NO");
+await driver.sleep(1000); // Espera para asegurar que la selección se aplique
 
 
   } catch (error) {
