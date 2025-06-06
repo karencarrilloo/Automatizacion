@@ -345,6 +345,7 @@ const fs = require('fs'); // Para guardar capturas de pantalla
       10000
     );
 
+
     // Limpiar el campo en caso de que tenga texto
     await campoDireccion.clear();
 
@@ -355,6 +356,36 @@ const fs = require('fs'); // Para guardar capturas de pantalla
     await campoDireccion.sendKeys(direccionAleatoria);
 
     // Pausa opcional para visualización
+    await driver.sleep(2000);
+
+    // === Paso 20: Digitar en el campo "Número de documento" ===
+
+    // Esperar el campo por su ID y localizarlo
+    const campoNumeroDocumento = await driver.wait(
+      until.elementLocated(By.id('textfield-idClient')),
+      10000
+    );
+
+    // Limpiar el campo si tiene algún valor previo
+    await campoNumeroDocumento.clear();
+
+    // Función auxiliar para generar un número aleatorio con longitud entre 7 y 12
+    function generarNumeroDocumentoAleatorio() {
+      const longitud = Math.floor(Math.random() * (12 - 7 + 1)) + 7; // entre 7 y 12
+      let numero = '';
+      for (let i = 0; i < longitud; i++) {
+        numero += Math.floor(Math.random() * 10); // Dígito entre 0 y 9
+      }
+      return numero;
+    }
+
+    // Generar número aleatorio
+    const numeroDocumento = generarNumeroDocumentoAleatorio();
+
+    // Ingresar el número en el campo
+    await campoNumeroDocumento.sendKeys(numeroDocumento);
+
+    // Pausa para visualización (opcional)
     await driver.sleep(2000);
 
   } catch (error) {
