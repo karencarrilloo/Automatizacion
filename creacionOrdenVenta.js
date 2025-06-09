@@ -8,57 +8,45 @@ const { By, until } = require('selenium-webdriver');
 // Importa fs para guardar capturas de pantalla en caso de error
 const fs = require('fs'); // Para guardar capturas de pantalla
 
-// Función autoejecutable asincrónica
-(async () => {
+// Exporta esta función como un módulo para ser usada desde gestionOrdenVenta.js
+module.exports = async function ejecutarCreacionOrden() {
   // Ejecuta el login y obtiene el driver del navegador
   const driver = await loginTest();
 
   try {
     // === Paso 7: Clic en módulo eWorkForce ===
-    // Espera hasta que se localice el botón del módulo eWorkForce
     const eWorkForceBtn = await driver.wait(
       until.elementLocated(By.xpath("//div[@id='23' and contains(@class, 'item-module')]")),
       10000
     );
-    // Hace clic en el módulo usando JavaScript
     await driver.executeScript("arguments[0].click();", eWorkForceBtn);
-    // Espera 1 segundo por la transición
     await driver.sleep(1000);
 
     // === Paso 8: Esperar el contenedor scrollable ===
-    // Espera hasta que el contenedor de aplicaciones esté presente
     const scrollContainer = await driver.wait(
       until.elementLocated(By.css('.container-applications')),
       10000
     );
-    // Realiza scroll hasta el final del contenedor
     await driver.executeScript(
       "arguments[0].scrollTop = arguments[0].scrollHeight;",
       scrollContainer
     );
-    await driver.sleep(1000); // Pausa corta para asegurar el scroll
+    await driver.sleep(1000);
 
     // === Paso 9: Clic en "Creación de citas" ===
-    // Espera hasta que aparezca el ítem con título "Creación de citas"
     const creacionCitasBtn = await driver.wait(
       until.elementLocated(By.css('div.application-item[title="Creación de citas"]')),
       10000
     );
-
-    // Se asegura de que el botón esté visible en el viewport
     await driver.executeScript(
       "arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });",
       creacionCitasBtn
     );
-
-    // Espera a que sea visible y habilitado
     await driver.wait(until.elementIsVisible(creacionCitasBtn), 10000);
     await driver.wait(until.elementIsEnabled(creacionCitasBtn), 10000);
-    await driver.sleep(1000); // Por si hay animaciones
-
-    // Hace clic en "Creación de citas"
+    await driver.sleep(1000);
     await driver.executeScript("arguments[0].click();", creacionCitasBtn);
-    await driver.sleep(5000); // Espera carga de pantalla
+    await driver.sleep(5000);
 
     // === Paso 10: Clic en "Crear orden para agendamiento" ===
     // Espera hasta que aparezca el botón con el texto deseado
@@ -544,18 +532,13 @@ const selectAcceptanceProcessingData = await driver.findElement(By.id("input-sel
 await selectAcceptanceProcessingData.sendKeys("NO");
 await driver.sleep(1000); // Espera para asegurar que la selección se aplique
 
+return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js
 
   } catch (error) {
-    // Muestra error en consola si algo falla
     console.error("❌ No se pudo completar la prueba:", error.message);
-    // Toma y guarda una captura de pantalla del error
     const screenshot = await driver.takeScreenshot();
     fs.writeFileSync(`error_departamento_${Date.now()}.png`, screenshot, 'base64');
-    // Relanza el error para detener el flujo
     throw error;
-  } finally {
-    // Cierra el navegador al final de la prueba, exitoso o fallido
-    await driver.quit();
   }
-})();
+};
 
