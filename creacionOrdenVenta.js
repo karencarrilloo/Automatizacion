@@ -506,6 +506,34 @@ await driver.sleep(2000);
   // Pausa para visualización (opcional)
  await driver.sleep(2000);
 
+ // === Paso 26: Digitar Correo Electrónico ===
+
+const campoCorreo = await driver.wait(
+  until.elementLocated(By.id('textfield-emailClient')),
+  10000
+);
+await campoCorreo.clear();
+
+// Generador de correos válidos
+const dominios = ['gmail.com', 'hotmail.com', 'iptotal.com', 'yahoo.com'];
+const usuarioCorreo = generarNombreUsuarioCorreo();
+const dominioCorreo = dominios[Math.floor(Math.random() * dominios.length)];
+const correo = `${usuarioCorreo}@${dominioCorreo}`;
+
+// Función generadora del nombre del usuario del correo
+function generarNombreUsuarioCorreo() {
+  const letras = 'abcdefghijklmnopqrstuvwxyz';
+  let nombre = '';
+  for (let i = 0; i < 6; i++) {
+    nombre += letras.charAt(Math.floor(Math.random() * letras.length));
+  }
+  const numero = Math.floor(Math.random() * 999);
+  return nombre + numero;
+}
+
+// Digitar el correo generado
+await campoCorreo.sendKeys(correo);
+
 // === Paso 27: Seleccionar estado de la suscripcion de whatsapp ===
 const selectEstadoSuscripcion = await driver.findElement(By.id("input-select-subscriptionWhatsapp"));
 await selectEstadoSuscripcion.sendKeys("SUSCRITO");
