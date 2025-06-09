@@ -532,6 +532,30 @@ const selectAcceptanceProcessingData = await driver.findElement(By.id("input-sel
 await selectAcceptanceProcessingData.sendKeys("NO");
 await driver.sleep(1000); // Espera para asegurar que la selección se aplique
 
+// === Paso 29: Clic en el botón "Crear" ===
+const contenedorBoton = await driver.wait(
+  until.elementLocated(By.id("widget-button-btnCreateOrderToAppointment")),
+  10000
+);
+// Forzamos el clic con JavaScript sobre el botón hijo
+const botonCrear = await contenedorBoton.findElement(By.css("div.btn.btn-primary"));
+await driver.executeScript("arguments[0].click();", botonCrear);
+await driver.sleep(1000); // Espera tras el clic para ver el efecto
+
+
+// === Paso 30: Confirmar informacion ===
+// Espera hasta que el contenedor del botón "Sí" esté presente
+ const botonConfirmar = await driver.wait(
+      until.elementLocated(By.xpath("//div[contains(text(),'Sí') and contains(@class, 'btn-default')]")),
+      10000
+    );
+    // Hace clic en el botón "Sí" usando JavaScript
+    await driver.executeScript("arguments[0].click();", botonConfirmar);
+
+    // Espera 2 segundos por la transición posterior a la confirmación
+    await driver.sleep(2000); // Esperar transición
+
+
 return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js
 
   } catch (error) {
