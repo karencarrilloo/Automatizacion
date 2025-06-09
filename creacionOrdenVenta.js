@@ -434,6 +434,47 @@ if (incluirSegundoNombre) {
 }
 await driver.sleep(2000);
 
+ // === Paso 23: Digitar Primer Apellido (obligatorio) ===
+
+    const campoPrimerApellido = await driver.wait(
+      until.elementLocated(By.id('textfield-lastnameClient')),
+      10000
+    );
+    await campoPrimerApellido.clear();
+
+    // Lista de apellidos comunes
+    const apellidos = ['Gómez', 'Pérez', 'Rodríguez', 'Martínez', 'López', 'García', 'Torres', 'Ramírez', 'Hernández', 'Moreno'];
+
+    // Seleccionar un apellido aleatorio
+    const primerApellido = apellidos[Math.floor(Math.random() * apellidos.length)];
+
+    // Escribir el apellido en el campo
+    await campoPrimerApellido.sendKeys(primerApellido);
+
+    await driver.sleep(6000);
+
+    // === Paso 24: Digitar Segundo Apellido (opcional) ===
+
+    const campoSegundoApellido = await driver.wait(
+      until.elementLocated(By.id('textfield-lastnameClientSecond')),
+      10000
+    );
+    await campoSegundoApellido.clear();
+
+    // Lista distinta de apellidos comunes para segundo apellido
+    const apellidosOpcionales = ['Castro', 'Vargas', 'Ríos', 'Silva', 'Delgado', 'Campos', 'Mendoza', 'Cardona', 'Reyes', 'Navarro'];
+
+    // 50% de probabilidad de dejarlo vacío (opcional)
+    let segundoApellido = '';
+    if (Math.random() > 0.5) {
+      segundoApellido = apellidosOpcionales[Math.floor(Math.random() * apellidosOpcionales.length)];
+    }
+
+    // Digitar si aplica
+    if (segundoApellido !== '') {
+      await campoSegundoApellido.sendKeys(segundoApellido);
+    }
+
 
 // === Paso 25: Digitar en el campo "Telefono" ===
  // Esperar el campo por su telefono y localizarlo
