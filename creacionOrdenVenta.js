@@ -1,4 +1,3 @@
-
 // Importa la función de login desde el archivo login.js
 const loginTest = require('./login');
 
@@ -365,7 +364,7 @@ await driver.sleep(1000);
 
     // Función auxiliar para generar un número aleatorio con longitud entre 7 y 12
     function generarNumeroDocumentoAleatorio() {
-      const longitud = Math.floor(Math.random() * (12 - 7 + 1)) + 7; // entre 7 y 12
+      const longitud = Math.floor(Math.random() * (10 - 7 + 1)) + 7; // entre 7 y 12
       let numero = '';
       for (let i = 0; i < longitud; i++) {
         numero += Math.floor(Math.random() * 10); // Dígito entre 0 y 9
@@ -476,7 +475,7 @@ await driver.sleep(2000);
 
   // Función auxiliar para generar un número aleatorio con longitud entre 7 y 12
  function generarNumeroDocumentoAleatorio() {
-  const longitud = Math.floor(Math.random() * (12 - 7 + 1)) + 7; // entre 7 y 12
+  const longitud = Math.floor(Math.random() * (10 - 7 + 1)) + 7; // entre 7 y 12
   let numeroTelefono = '';
   for (let i=0; i < longitud; i++) {
  numeroTelefono += Math.floor(Math.random() *
@@ -553,7 +552,7 @@ await driver.sleep(1000); // Espera tras el clic para ver el efecto
     await driver.executeScript("arguments[0].click();", botonConfirmar);
 
     // Espera 2 segundos por la transición posterior a la confirmación
-    await driver.sleep(2000); // Esperar transición
+    await driver.sleep(5000); // Esperar transición
 
 
 return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js

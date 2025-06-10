@@ -13,41 +13,48 @@ const fs = require('fs');
   const driver = await ejecutarCreacionOrden();
 
   try {
-    // === Paso 1: Scroll y clic en la última orden creada ===
 
-    // Esperar contenedor lateral donde están las órdenes
-    const contenedorOrdenes = await driver.wait(
-      until.elementLocated(By.css('.container-side-list')),
-      10000
-    );
+    // === Paso 1: Scroll hasta el final del contenedor de órdenes ===
+const contenedorOrdenes = await driver.wait(
+  until.elementLocated(By.xpath('//*[@id="container-mainframe"]/div[4]/div[1]/div/div[1]/div[4]/div[2]/div[3]')),
+  10000
+);
 
-    // Scroll al final del contenedor lateral para ver la última orden
-    await driver.executeScript(
-      "arguments[0].scrollTop = arguments[0].scrollHeight;",
-      contenedorOrdenes
-    );
-    await driver.sleep(1000); // pequeña espera para que se renderice
+// Hacer scroll hasta el final del contenedor usando scrollHeight
+await driver.executeScript(`
+  arguments[0].scrollTop = arguments[0].scrollHeight;
+`, contenedorOrdenes);
 
-    // Esperar a que esté disponible al menos una orden
-    const ordenes = await driver.wait(
-      until.elementsLocated(By.css('.container-side-list .item-list')),
-      10000
-    );
+// Espera breve para asegurar que el scroll se aplica
+await driver.sleep(2000); // pequeña espera para que se renderice
 
-    // Obtener la última orden (asumimos que se añade al final)
-    const ultimaOrden = ordenes[ordenes.length - 1];
+    // === Paso 2: Hacer clic en la última orden creada (dinámico y robusto) ===
 
-    // Asegurar visibilidad con scroll (opcional si ya se hizo scroll al contenedor)
-    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", ultimaOrden);
-    await driver.sleep(500);
+// Obtener todos los elementos con clase 'item-list' dentro del contenedor
+const ordenes = await contenedorOrdenes.findElements(By.css('div.item-list'));
 
-    // Hacer clic en la orden para gestionarla
-    await ultimaOrden.click();
-    await driver.sleep(2000);
+// Validar que haya al menos una orden
+if (ordenes.length === 0) {
+  throw new Error("❌ No se encontraron órdenes en el contenedor lateral");
+}
 
-    console.log('✅ Paso 1 completado: Orden más reciente seleccionada para gestión');
+// Seleccionar la última orden
+const ultimaOrden = ordenes[ordenes.length - 1];
 
-    // Aquí puedes continuar con pasos siguientes (por ejemplo, editar, asignar, gestionar...)
+// Hacer scroll para asegurar visibilidad
+await driver.executeScript("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", ultimaOrden);
+await driver.sleep(1000); // Espera por animaciones o renderizado
+
+// Validar visibilidad antes del clic
+const visible = await ultimaOrden.isDisplayed();
+if (!visible) {
+  throw new Error("❌ La última orden no es visible para hacer clic");
+}
+
+// Hacer clic sobre la última orden
+await driver.executeScript("arguments[0].click();", ultimaOrden);
+await driver.sleep(5000); // Esperar que se cargue la vista de la orden
+
 
   } catch (error) {
     console.error('❌ Error en la gestión de orden:', error.message);
