@@ -55,6 +55,30 @@ if (!visible) {
 await driver.executeScript("arguments[0].click();", ultimaOrden);
 await driver.sleep(5000); // Esperar que se cargue la vista de la orden
 
+// === Paso 3: Clic en botón del campo "Centro Poblado" ===
+
+    // Espera hasta que se localice el botón desplegable del campo "Centro Poblado"
+    const botonCentroPoblado = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-picklist-populatedCenters"]/div[1]/span[2]/button')),
+      10000
+    );
+
+    // Hace scroll para asegurar visibilidad del botón
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", botonCentroPoblado);
+    await driver.sleep(1000); // Espera pequeña
+
+    // Verifica si el botón está visible y habilitado
+    const visibleCentroPoblado = await botonCentroPoblado.isDisplayed();
+    const habilitadoCentroPoblado = await botonCentroPoblado.isEnabled();
+
+    if (!visibleCentroPoblado || !habilitadoCentroPoblado) {
+      throw new Error("❌ El botón 'Centro Poblado' no está visible o habilitado");
+    }
+
+    // Hace clic en el botón del campo "Centro Poblado"
+    await driver.executeScript("arguments[0].click();", botonCentroPoblado);
+    await driver.sleep(3000); // Espera para que se cargue el modal
+
 
   } catch (error) {
      console.error('❌ Error en la gestión de orden:', error.message);
