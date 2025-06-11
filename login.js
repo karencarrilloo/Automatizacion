@@ -78,7 +78,7 @@ async function login() {
     return driver;
 
   } catch (error) {
-    console.error('❌ Error en login:', error.message);
+   console.error('❌ Error en login:', error.message);
 
     const screenshot = await driver.takeScreenshot();
 
@@ -105,8 +105,7 @@ async function login() {
 
     // Relanza el error para que el flujo lo capture
     throw error;
-    } finally {
-    await driver.quit(); // Cierra el navegador
+    
   }
   
 }
