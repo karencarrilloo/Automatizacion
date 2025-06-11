@@ -57,10 +57,28 @@ await driver.sleep(5000); // Esperar que se cargue la vista de la orden
 
 
   } catch (error) {
-    console.error('❌ Error en la gestión de orden:', error.message);
-    const screenshot = await driver.takeScreenshot();
-    fs.writeFileSync(`error_gestionOrden_${Date.now()}.png`, screenshot, 'base64');
-    throw error;
+     console.error('❌ Error en la gestión de orden:', error.message);
+
+  const screenshot = await driver.takeScreenshot();
+
+  // Ruta absoluta hacia la carpeta "errores" fuera de "Automatizacion"
+  const path = require('path');
+  const fs = require('fs');
+
+  const carpetaErrores = path.resolve(__dirname, '../errores');
+
+  // Si la carpeta no existe, la crea
+  if (!fs.existsSync(carpetaErrores)) {
+    fs.mkdirSync(carpetaErrores);
+  }
+
+  // Nombre del archivo con timestamp
+  const archivoSalida = path.join(carpetaErrores, `error_gestionOrden_${Date.now()}.png`);
+
+  // Guardar el screenshot
+  fs.writeFileSync(archivoSalida, screenshot, 'base64');
+
+  throw error;
   } finally {
     await driver.quit(); // Cierra el navegador
   }

@@ -78,13 +78,37 @@ async function login() {
     return driver;
 
   } catch (error) {
-    // Imprime el error si ocurre algo en el proceso
-    console.error('❌ Error en login:', error);
-    // Cierra el navegador en caso de fallo
+    console.error('❌ Error en login:', error.message);
+
+    const screenshot = await driver.takeScreenshot();
+
+    // Importar módulos
+    const path = require('path');
+    const fs = require('fs');
+
+    // Ruta hacia carpeta de errores (fuera de Automatizacion)
+    const carpetaErrores = path.resolve(__dirname, '../errores');
+
+    // Crear carpeta si no existe
+    if (!fs.existsSync(carpetaErrores)) {
+      fs.mkdirSync(carpetaErrores);
+    }
+
+    // Ruta completa para el archivo de imagen
+    const archivoSalida = path.join(carpetaErrores, `error_login_${Date.now()}.png`);
+
+    // Guardar la imagen
+    fs.writeFileSync(archivoSalida, screenshot, 'base64');
+
+    // Cierra el navegador
+    await driver.quit();
+
+    // Relanza el error para que el flujo lo capture
+    throw error;
+    } finally {
     await driver.quit(); // Cierra el navegador
-    // Relanza el error para que otros scripts lo detecten
-    throw error; 
   }
+  
 }
 
 // Exporta la función login para poder usarla en otros archivos

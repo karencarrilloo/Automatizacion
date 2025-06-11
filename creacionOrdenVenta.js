@@ -558,10 +558,30 @@ await driver.sleep(1000); // Espera tras el clic para ver el efecto
 return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js
 
   } catch (error) {
-    console.error("❌ No se pudo completar la prueba:", error.message);
-    const screenshot = await driver.takeScreenshot();
-    fs.writeFileSync(`error_departamento_${Date.now()}.png`, screenshot, 'base64');
-    throw error;
+   console.error("❌ No se pudo completar la prueba:", error.message);
+
+  const screenshot = await driver.takeScreenshot();
+
+  // Importar módulos
+  const path = require('path');
+  const fs = require('fs');
+
+  // Definir ruta hacia carpeta de errores (fuera de Automatizacion)
+  const carpetaErrores = path.resolve(__dirname, '../errores');
+
+  // Si la carpeta no existe, la crea
+  if (!fs.existsSync(carpetaErrores)) {
+    fs.mkdirSync(carpetaErrores);
+  }
+
+  // Ruta y nombre de archivo dinámico
+  const archivoSalida = path.join(carpetaErrores, `error_creacionOrden_${Date.now()}.png`);
+
+  // Guardar captura
+  fs.writeFileSync(archivoSalida, screenshot, 'base64');
+
+  // Relanzar el error
+  throw error;
   }
 };
 
