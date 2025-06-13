@@ -165,6 +165,195 @@ const fs = require('fs');
     await campoViaPrincipal.click();
     await driver.sleep(1000); // pequeña espera por visualización del desplegable
 
+    // === Paso 6: Seleccionar aleatoriamente una opción del campo "Vía Principal" ===
+    const viaPrincipalSelect = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="input-select-id-list-headboard"]')),
+      10000
+    );
+
+    // Esperar a que sea visible y habilitado
+    await driver.wait(until.elementIsVisible(viaPrincipalSelect), 5000);
+    await driver.wait(until.elementIsEnabled(viaPrincipalSelect), 5000);
+
+    // Obtener todas las opciones disponibles
+    const opciones = await viaPrincipalSelect.findElements(By.css('option'));
+
+    // Filtrar las opciones válidas (que no sean deshabilitadas o "Seleccionar")
+    const opcionesValidas = [];
+
+    for (const opcion of opciones) {
+      const valor = await opcion.getAttribute('value');
+      const texto = await opcion.getText();
+
+      // Ignora opciones sin valor o que son el placeholder
+      if (valor && valor !== 'placeholder' && texto.toUpperCase() !== 'SELECCIONAR') {
+        opcionesValidas.push(opcion);
+      }
+    }
+
+    // Validación: Si no hay opciones válidas, lanzar error
+    if (opcionesValidas.length === 0) {
+      throw new Error('❌ No hay opciones válidas disponibles en el select de Vía Principal');
+    }
+
+    // Seleccionar una opción aleatoria de las válidas
+    const opcionAleatoria = opcionesValidas[Math.floor(Math.random() * opcionesValidas.length)];
+    await opcionAleatoria.click();
+
+    await driver.sleep(2000); // Espera visual opcional
+
+    // === Paso 7: Seleccionar aleatoriamente una opción del campo "Número" ===
+    const numeroSelect = await driver.wait(
+      until.elementLocated(By.id('input-select-data-headboard')),
+      10000
+    );
+
+    // Esperar a que el <select> esté visible y habilitado
+    await driver.wait(until.elementIsVisible(numeroSelect), 5000);
+    await driver.wait(until.elementIsEnabled(numeroSelect), 5000);
+
+    // Obtener todas las opciones
+    const opcionesNumero = await numeroSelect.findElements(By.css('option'));
+
+    // Filtrar opciones válidas (que tengan un valor distinto de "placeholder")
+    const opcionesValidasNumero = [];
+    for (const opcion of opcionesNumero) {
+      const valor = await opcion.getAttribute('value');
+      const texto = await opcion.getText();
+
+      if (valor && valor !== 'placeholder' && texto.toUpperCase() !== 'SELECCIONAR') {
+        opcionesValidasNumero.push(opcion);
+      }
+    }
+
+    // Validar si hay opciones
+    if (opcionesValidasNumero.length === 0) {
+      throw new Error('❌ No hay opciones válidas disponibles en el select de Número');
+    }
+
+    // Elegir una opción al azar
+    const opcionNumeroAleatoria = opcionesValidasNumero[Math.floor(Math.random() * opcionesValidasNumero.length)];
+    await opcionNumeroAleatoria.click();
+
+    await driver.sleep(2000); // Espera visual opcional
+
+    // === Paso 8: Seleccionar aleatoriamente una opción del campo "Vía Generadora" ===
+    const viaGeneradoraSelect = await driver.wait(
+      until.elementLocated(By.id('input-select-id-list-secondary')),
+      10000
+    );
+
+    // Esperar a que el <select> esté visible y habilitado
+    await driver.wait(until.elementIsVisible(viaGeneradoraSelect), 5000);
+    await driver.wait(until.elementIsEnabled(viaGeneradoraSelect), 5000);
+
+    // Obtener todas las opciones
+    const opcionesViaGeneradora = await viaGeneradoraSelect.findElements(By.css('option'));
+
+    // Filtrar opciones válidas (que no sean placeholder ni "Seleccionar")
+    const opcionesValidasViaGeneradora = [];
+    for (const opcion of opcionesViaGeneradora) {
+      const valor = await opcion.getAttribute('value');
+      const texto = await opcion.getText();
+
+      if (valor && valor !== 'placeholder' && texto.toUpperCase() !== 'SELECCIONAR') {
+        opcionesValidasViaGeneradora.push(opcion);
+      }
+    }
+
+    // Validar si hay opciones disponibles
+    if (opcionesValidasViaGeneradora.length === 0) {
+      throw new Error('❌ No hay opciones válidas disponibles en el select de Vía Generadora');
+    }
+
+    // Elegir una opción aleatoria y seleccionarla
+    const opcionViaGeneradoraAleatoria = opcionesValidasViaGeneradora[Math.floor(Math.random() * opcionesValidasViaGeneradora.length)];
+    await opcionViaGeneradoraAleatoria.click();
+
+    await driver.sleep(2000); // Espera visual opcional
+
+    // === Paso 9: Seleccionar aleatoriamente una opción del campo "Número" de Vía Generadora ===
+    const numeroGeneradoraSelect = await driver.wait(
+      until.elementLocated(By.id('input-select-data-secondary')),
+      10000
+    );
+
+    // Esperar dinámicamente a que el select se habilite (no tenga el atributo disabled)
+    await driver.wait(async () => {
+      const disabledAttr = await numeroGeneradoraSelect.getAttribute('disabled');
+      return disabledAttr === null;
+    }, 10000, '❌ El campo Número de Vía Generadora no se habilitó a tiempo');
+
+    // Esperar que esté visible y habilitado
+    await driver.wait(until.elementIsVisible(numeroGeneradoraSelect), 5000);
+    await driver.wait(until.elementIsEnabled(numeroGeneradoraSelect), 5000);
+
+    // Obtener todas las opciones
+    const opcionesNumeroGeneradora = await numeroGeneradoraSelect.findElements(By.css('option'));
+
+    // Filtrar opciones válidas
+    const opcionesValidasNumeroGeneradora = [];
+    for (const opcion of opcionesNumeroGeneradora) {
+      const valor = await opcion.getAttribute('value');
+      const texto = await opcion.getText();
+
+      if (valor && valor !== 'placeholder' && texto.toUpperCase() !== 'SELECCIONAR') {
+        opcionesValidasNumeroGeneradora.push(opcion);
+      }
+    }
+
+    // Validar que hay opciones disponibles
+    if (opcionesValidasNumeroGeneradora.length === 0) {
+      throw new Error('❌ No hay opciones válidas en el select de Número de Vía Generadora');
+    }
+
+    // Seleccionar aleatoriamente una opción
+    const opcionNumeroGeneradoraAleatoria = opcionesValidasNumeroGeneradora[Math.floor(Math.random() * opcionesValidasNumeroGeneradora.length)];
+    await opcionNumeroGeneradoraAleatoria.click();
+
+    await driver.sleep(2000); // Pausa opcional para visualización
+
+    // === Paso 10: Seleccionar aleatoriamente una opción del campo "Placa" ===
+    const placaSelect = await driver.wait(
+      until.elementLocated(By.id('input-select-data-plate')),
+      10000
+    );
+
+    // Esperar dinámicamente a que el select se habilite
+    await driver.wait(async () => {
+      const disabledAttr = await placaSelect.getAttribute('disabled');
+      return disabledAttr === null;
+    }, 10000, '❌ El campo Placa no se habilitó a tiempo');
+
+    // Esperar que esté visible y habilitado
+    await driver.wait(until.elementIsVisible(placaSelect), 5000);
+    await driver.wait(until.elementIsEnabled(placaSelect), 5000);
+
+    // Obtener todas las opciones
+    const opcionesPlaca = await placaSelect.findElements(By.css('option'));
+
+    // Filtrar opciones válidas (excluye placeholder)
+    const opcionesValidasPlaca = [];
+    for (const opcion of opcionesPlaca) {
+      const valor = await opcion.getAttribute('value');
+      const texto = await opcion.getText();
+
+      if (valor && valor !== 'placeholder' && texto.toUpperCase() !== 'SELECCIONAR') {
+        opcionesValidasPlaca.push(opcion);
+      }
+    }
+
+    // Validar que hay opciones disponibles
+    if (opcionesValidasPlaca.length === 0) {
+      throw new Error('❌ No hay opciones válidas en el select de Placa');
+    }
+
+    // Seleccionar aleatoriamente una opción
+    const opcionPlacaAleatoria = opcionesValidasPlaca[Math.floor(Math.random() * opcionesValidasPlaca.length)];
+    await opcionPlacaAleatoria.click();
+
+    await driver.sleep(2000); // Pausa opcional para visualización
+
 
   } catch (error) {
     console.error('❌ Error en la gestión de orden:', error.message);
