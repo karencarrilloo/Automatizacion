@@ -1,5 +1,6 @@
 // Importa la función de login desde el archivo login.js
 const loginTest = require('./login');
+//ejemplo
 
 // Importa los módulos necesarios de selenium-webdriver
 const { By, until } = require('selenium-webdriver');
