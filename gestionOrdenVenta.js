@@ -540,6 +540,66 @@ const fs = require('fs');
     // Pausa opcional para visualización
     await driver.sleep(1000);
 
+    // === Paso 15: Digitar en el campo TELEFONO ALTERNATIVO (opcional) ===
+
+    // Localiza el campo
+    const campoTelefonoAlternativo = await driver.wait(
+      until.elementLocated(By.css('textarea[placeholder="TELEFONO ALTERNATIVO"]')),
+      10000
+    );
+
+    // Limpiar el campo si tiene texto previo
+    await campoTelefonoAlternativo.clear();
+
+    // Decide si llenar el campo (50% de probabilidad)
+    if (Math.random() < 0.5) {
+      // Generar número aleatorio de 7 a 10 dígitos
+      const longitud = Math.floor(Math.random() * (10 - 7 + 1)) + 7;
+      let telefono = '';
+      for (let i = 0; i < longitud; i++) {
+        telefono += Math.floor(Math.random() * 10);
+      }
+
+      // Escribir el teléfono generado
+      await campoTelefonoAlternativo.sendKeys(telefono);
+
+      console.log(`✅ Teléfono alternativo ingresado: ${telefono}`);
+    } else {
+      console.log('ℹ️ Campo TELEFONO ALTERNATIVO dejado vacío (opcional)');
+    }
+
+    // Pausa opcional para visualización
+    await driver.sleep(1000);
+
+    // === Paso 16: Seleccionar opción en campo ENVIO_DE_FACTURACION ===
+
+    // Esperar el <select>
+    const selectEnvioFacturacion = await driver.wait(
+      until.elementLocated(By.id("input-select-ENVIO_DE_FACTURACION")),
+      10000
+    );
+
+    // Obtener todas las opciones disponibles (excepto el placeholder)
+    const opcionesEnvioFacturacion = await selectEnvioFacturacion.findElements(By.css('option:not([value="placeholder"])'));
+
+    // Validar que existan opciones válidas
+    if (opcionesEnvioFacturacion.length === 0) {
+      throw new Error("❌ No hay opciones disponibles en ENVIO_DE_FACTURACION");
+    }
+
+    // Elegir una opción aleatoria (nombre único para esta opción)
+    const opcionEnvioFacturacion = opcionesEnvioFacturacion[Math.floor(Math.random() * opcionesEnvioFacturacion.length)];
+    const valorEnvioFacturacion = await opcionEnvioFacturacion.getAttribute('value');
+
+    // Seleccionar la opción aleatoria
+    await selectEnvioFacturacion.sendKeys(valorEnvioFacturacion);
+
+    console.log(`✅ ENVIO_DE_FACTURACION seleccionado: ${valorEnvioFacturacion}`);
+
+    // Pausa breve opcional para visualización
+    await driver.sleep(1000);
+
+
 
   } catch (error) {
     console.error('❌ Error en la gestión de orden:', error.message);
