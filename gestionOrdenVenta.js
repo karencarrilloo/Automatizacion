@@ -354,6 +354,102 @@ const fs = require('fs');
 
     await driver.sleep(2000); // Pausa opcional para visualización
 
+    // === Paso 11: Clic en el botón "REALIZAR RESERVA" ===
+
+    // Esperar hasta que el botón esté localizado
+    const btnReserva = await driver.wait(
+      until.elementLocated(By.xpath("//div[contains(text(),'Realizar reserva') and contains(@class, 'btn-primary')]")),
+      10000
+    );
+
+    // Esperar a que sea visible
+    await driver.wait(until.elementIsVisible(btnReserva), 10000);
+
+    // Scroll para que sea visible
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", btnReserva);
+    await driver.sleep(500);
+
+    // Verificar que no tenga una clase que indique deshabilitado
+    await driver.wait(async () => {
+      const classAttr = await btnReserva.getAttribute('class');
+      // Aquí ajusta según cómo marque el deshabilitado (puede ser "disabled" o similar en la clase)
+      return !/disabled/i.test(classAttr);
+    }, 10000, '❌ El botón "Realizar reserva" sigue deshabilitado');
+
+    // Clic en el botón
+    await driver.executeScript("arguments[0].click();", btnReserva);
+
+    // === Esperar dinámico: esperar a que desaparezca progress ===
+    try {
+      const progressEl = await driver.wait(until.elementLocated(progressSelector), 5000);
+      await driver.wait(until.stalenessOf(progressEl), 15000, '❌ El progress no desapareció después de realizar la reserva.');
+    } catch (e) {
+      // Si no apareció progress, continuar
+    }
+
+    // === Paso 12: Clic en el botón "Siguiente" ===
+
+    // 1️⃣ Esperar el mensaje de confirmación y que desaparezca
+    try {
+      const alertaReserva = await driver.wait(
+        until.elementLocated(By.xpath("//div[contains(@class,'body-text') and contains(text(),'La reserva se realizó correctamente')]")),
+        10000
+      );
+
+      await driver.wait(
+        until.stalenessOf(alertaReserva),
+        20000,
+        '❌ El mensaje de confirmación no desapareció'
+      );
+
+      console.log('✅ El mensaje desapareció');
+    } catch {
+      console.log('⚠️ No se detectó mensaje de confirmación. Continuando...');
+    }
+
+    // 2️⃣ Esperar el contenedor del botón Siguiente visible
+    const containerNext = await driver.wait(
+      until.elementLocated(By.id('widget-button-btnNext')),
+      10000
+    );
+
+    await driver.wait(async () => {
+      const display = await containerNext.getCssValue('display');
+      return display !== 'none';
+    }, 10000, '❌ Contenedor Siguiente no visible');
+
+    // 3️⃣ Encontrar el botón
+    const btnSiguiente = await driver.findElement(
+      By.xpath('//*[@id="widget-button-btnNext"]/div')
+    );
+
+    // 4️⃣ Asegurar que sea visible
+    await driver.wait(
+      until.elementIsVisible(btnSiguiente),
+      10000,
+      '❌ El botón Siguiente no es visible'
+    );
+
+    // 5️⃣ Scroll y clic inmediato (sin validaciones extra de clase o atributos)
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", btnSiguiente);
+    await driver.executeScript("arguments[0].click();", btnSiguiente);
+    console.log('✅ Clic en Siguiente ejecutado');
+
+    // 6️⃣ Esperar progress si aparece
+    try {
+      const progress = await driver.wait(
+        until.elementLocated(progressSelector),
+        5000
+      );
+      await driver.wait(
+        until.stalenessOf(progress),
+        20000,
+        '❌ El progress no desapareció tras clic en Siguiente'
+      );
+      console.log('✅ Progress gestionado tras Siguiente');
+    } catch {
+      console.log('⚠️ No apareció progress tras clic en Siguiente');
+    }
 
   } catch (error) {
     console.error('❌ Error en la gestión de orden:', error.message);
