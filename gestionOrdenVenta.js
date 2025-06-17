@@ -389,7 +389,7 @@ const fs = require('fs');
 
     // === Paso 12: Clic en el botón "Siguiente" ===
 
-    // 1️⃣ Esperar el mensaje de confirmación y que desaparezca
+    // Esperar el mensaje de confirmación y que desaparezca
     try {
       const alertaReserva = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(@class,'body-text') and contains(text(),'La reserva se realizó correctamente')]")),
@@ -407,7 +407,7 @@ const fs = require('fs');
       console.log('⚠️ No se detectó mensaje de confirmación. Continuando...');
     }
 
-    // 2️⃣ Esperar el contenedor del botón Siguiente visible
+    // Esperar el contenedor del botón Siguiente visible
     const containerNext = await driver.wait(
       until.elementLocated(By.id('widget-button-btnNext')),
       10000
@@ -418,24 +418,25 @@ const fs = require('fs');
       return display !== 'none';
     }, 10000, '❌ Contenedor Siguiente no visible');
 
-    // 3️⃣ Encontrar el botón
+    // Encontrar el botón
     const btnSiguiente = await driver.findElement(
       By.xpath('//*[@id="widget-button-btnNext"]/div')
     );
 
-    // 4️⃣ Asegurar que sea visible
+    // Asegurar que sea visible
     await driver.wait(
       until.elementIsVisible(btnSiguiente),
       10000,
       '❌ El botón Siguiente no es visible'
     );
 
-    // 5️⃣ Scroll y clic inmediato (sin validaciones extra de clase o atributos)
+    // Scroll y clic inmediato (sin validaciones extra de clase o atributos)
     await driver.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", btnSiguiente);
     await driver.executeScript("arguments[0].click();", btnSiguiente);
     console.log('✅ Clic en Siguiente ejecutado');
 
-    // 6️⃣ Esperar progress si aparece
+    // Esperar progress si aparece
+
     try {
       const progress = await driver.wait(
         until.elementLocated(progressSelector),
@@ -443,13 +444,102 @@ const fs = require('fs');
       );
       await driver.wait(
         until.stalenessOf(progress),
-        20000,
+        15000,
         '❌ El progress no desapareció tras clic en Siguiente'
       );
       console.log('✅ Progress gestionado tras Siguiente');
     } catch {
       console.log('⚠️ No apareció progress tras clic en Siguiente');
     }
+
+    // === Paso 13: Seleccionar aleatoriamente el campo "TIPO DE CLIENTE" ===
+
+    // Localiza el select
+    const selectTipoCliente = await driver.wait(
+      until.elementLocated(By.id('input-select-TIPODECLIENTE')),
+      10000
+    );
+
+    // Espera que sea visible
+    await driver.wait(
+      until.elementIsVisible(selectTipoCliente),
+      10000,
+      '❌ El campo TIPO DE CLIENTE no es visible'
+    );
+
+    // Obtén las opciones del select
+    const opcionesTipoCliente = await selectTipoCliente.findElements(By.css('option'));
+
+    // Filtra las opciones válidas (que no sean placeholder)
+    const opcionesClienteValidas = [];
+    for (const opcion of opcionesTipoCliente) {
+      const valor = await opcion.getAttribute('value');
+      if (valor !== 'placeholder') {
+        opcionesClienteValidas.push(opcion);
+      }
+    }
+
+    // Verifica que haya opciones válidas
+    if (opcionesClienteValidas.length === 0) {
+      throw new Error('❌ No hay opciones válidas en TIPO DE CLIENTE');
+    }
+
+    // Selecciona una opción aleatoria
+    const opcionClienteSeleccionada = opcionesClienteValidas[Math.floor(Math.random() * opcionesClienteValidas.length)];
+
+    // Hace scroll si es necesario y clic
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", selectTipoCliente);
+    await opcionClienteSeleccionada.click();
+
+    console.log(`✅ Opción seleccionada en TIPO DE CLIENTE: ${await opcionClienteSeleccionada.getText()}`);
+
+    // Pausa opcional para visualización
+    await driver.sleep(1000);
+
+    // === Paso 14: Seleccionar aleatoriamente el campo "TIPO DE USO ESTRATO" ===
+
+    // Localiza el select
+    const selectUsoEstrato = await driver.wait(
+      until.elementLocated(By.id('input-select-TIPODEUSOESTRATO')),
+      10000
+    );
+
+    // Espera que sea visible
+    await driver.wait(
+      until.elementIsVisible(selectUsoEstrato),
+      10000,
+      '❌ El campo TIPO DE USO ESTRATO no es visible'
+    );
+
+    // Obtén las opciones del select
+    const opcionesUsoEstrato = await selectUsoEstrato.findElements(By.css('option'));
+
+    // Filtra las opciones válidas (que no sean placeholder)
+    const opcionesEstratoValidas = [];
+    for (const opcion of opcionesUsoEstrato) {
+      const valor = await opcion.getAttribute('value');
+      if (valor !== 'placeholder') {
+        opcionesEstratoValidas.push(opcion);
+      }
+    }
+
+    // Verifica que haya opciones válidas
+    if (opcionesEstratoValidas.length === 0) {
+      throw new Error('❌ No hay opciones válidas en TIPO DE USO ESTRATO');
+    }
+
+    // Selecciona una opción aleatoria
+    const opcionEstratoSeleccionada = opcionesEstratoValidas[Math.floor(Math.random() * opcionesEstratoValidas.length)];
+
+    // Hace scroll si es necesario y clic
+    await driver.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", selectUsoEstrato);
+    await opcionEstratoSeleccionada.click();
+
+    console.log(`✅ Opción seleccionada en TIPO DE USO ESTRATO: ${await opcionEstratoSeleccionada.getText()}`);
+
+    // Pausa opcional para visualización
+    await driver.sleep(1000);
+
 
   } catch (error) {
     console.error('❌ Error en la gestión de orden:', error.message);
