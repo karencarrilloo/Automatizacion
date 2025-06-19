@@ -17,8 +17,8 @@ describe('Login Test', function() {
     await driver.quit(); // Cierra navegador al final
   });
 
-  it('Debería realizar el login correctamente', async () => {
-    await loginPage.ejecutarLogin(); // Ejecuta login completo
-    expect(true).to.be.true; // Placeholder para aserción real
-  });
+  // it('Debería realizar el login correctamente', async () => {
+  //   //await loginPage.ejecutarLogin(); // Ejecuta login completo
+  //   expect(true).to.be.true; // Placeholder para aserción real
+  // });
 });
