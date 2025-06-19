@@ -29,6 +29,7 @@ drivers/
 screenshots/
 videos/
 artifacts/
+errores/
 
 # Archivos de sistema
 .DS_Store
