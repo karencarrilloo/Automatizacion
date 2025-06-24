@@ -1,7 +1,7 @@
 import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
-import CreacionOrdenVentaPage from '../pages/creacionOrdenVenta.page.js';
+import CreacionCitasOrdenVentaPage from '../pages/creacionCitasOrdenVenta.page.js';
 
 describe('Creación Orden Venta Test', function() {
   this.timeout(180000);
@@ -13,7 +13,7 @@ describe('Creación Orden Venta Test', function() {
   before(async () => {
     driver = await new Builder().forBrowser('chrome').build();
     loginPage = new LoginPage(driver);
-    creacionPage = new CreacionOrdenVentaPage(driver);
+    creacionPage = new CreacionCitasOrdenVentaPage(driver);
   });
 
   after(async () => {
