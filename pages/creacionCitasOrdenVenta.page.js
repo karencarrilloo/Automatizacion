@@ -162,7 +162,7 @@ export default class CreacionCitasOrdenVentaPage {
 
       // Hace clic en el botón "TIPO DE ORDEN"
       await driver.executeScript("arguments[0].click();", botonTipoOrden);
-      await driver.sleep(3000); // Espera para carga de opciones
+      await driver.sleep(5000); // Espera para carga de opciones
 
 
       //****SE PAUSA EL DESARROLLO DEBIDO A QUE LA ORDEN DE VENTA NO SE VA HACER POR WEB****
@@ -552,7 +552,7 @@ export default class CreacionCitasOrdenVentaPage {
       // await driver.sleep(5000); // Esperar transición
 
 
-      // return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js
+      return driver; // Devuelve el driver para continuar desde gestionOrdenVenta.js
 
     } catch (error) {
       console.error("❌ No se pudo completar la creación de la orden:", error.message);

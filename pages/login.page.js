@@ -62,7 +62,7 @@ export default class LoginPage {
         10000
       ); // Espera botón Sí
       await driver.executeScript("arguments[0].click();", btnConfirmar); // Clic en Sí
-      await driver.sleep(2000); // Espera transición
+      await driver.sleep(5000); // Espera transición
 
     } catch (error) {
       console.error('❌ Error en login:', error.message); // Log del error

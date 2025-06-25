@@ -20,9 +20,9 @@ describe('Creación Orden Venta Test', function() {
     await driver.quit();
   });
 
-  // it('Debería realizar el login correctamente y crear orden de venta', async () => {
-  //   await loginPage.ejecutarLogin(); // Ejecuta login
-  //   await creacionPage.ejecutarCreacionOrden(); // Ejecuta creación de orden
-  //   expect(true).to.be.true; // Placeholder para aserción real
-  // });
+  it('Debería realizar el login correctamente y crear orden de venta', async () => {
+    await loginPage.ejecutarLogin(); // Ejecuta login
+    await creacionPage.ejecutarCreacionOrden(); // Ejecuta creación de orden
+    expect(true).to.be.true; // Placeholder para aserción real
+  });
 });

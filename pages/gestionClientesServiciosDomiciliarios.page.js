@@ -2,16 +2,17 @@ import { By, until } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import loginPage from './login.page.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default class MotorReglasPage {
+export default class GestionClientesServiciosPage {
   constructor(driver) {
     this.driver = driver;
   }
 
-  async ejecutarMotorReglas() {
+  async ejecutarGestionClientesServicios() {
     const driver = this.driver;
 
     try {
@@ -34,24 +35,26 @@ export default class MotorReglasPage {
       );
       await driver.sleep(1000);
 
-      // === Paso 3: Clic en "Motor de reglas" ===
-      const targetApp = await driver.wait(
-        until.elementLocated(By.xpath("//div[contains(@class,'legend-application') and text()='Motor de reglas']")),
+      // === Paso 3: Clic en "Gestión sobre clientes y servicios domiciliarios" ===
+      const gestionClientesBtn = await driver.wait(
+        until.elementLocated(By.xpath("//div[contains(@class,'legend-application') and contains(text(),'Gestión sobre clientes y servicios domiciliarios')]")),
         10000
       );
-      await driver.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", targetApp);
-      await driver.wait(until.elementIsVisible(targetApp), 10000);
-      await driver.wait(until.elementIsEnabled(targetApp), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", gestionClientesBtn);
+      await driver.wait(until.elementIsVisible(gestionClientesBtn), 10000);
+      await driver.wait(until.elementIsEnabled(gestionClientesBtn), 10000);
       await driver.sleep(1000);
-      await driver.executeScript("arguments[0].click();", targetApp);
+      await driver.executeScript("arguments[0].click();", gestionClientesBtn);
       await driver.sleep(5000);
 
+      // Aquí puedes continuar con otros pasos si aplica
+
     } catch (error) {
-      console.error("❌ Error en Motor de Reglas:", error.message);
+      console.error("❌ Error en gestión de clientes y servicios domiciliarios:", error.message);
       const screenshot = await driver.takeScreenshot();
       const carpetaErrores = path.resolve(__dirname, '../errores');
       if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
-      const filePath = path.join(carpetaErrores, `error_motorReglas_${Date.now()}.png`);
+      const filePath = path.join(carpetaErrores, `error_gestionClientes_${Date.now()}.png`);
       fs.writeFileSync(filePath, screenshot, 'base64');
       throw error;
     }
