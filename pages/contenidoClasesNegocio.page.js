@@ -224,7 +224,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.executeScript("arguments[0].click();", botonSeleccionarFabricante);
 
       await driver.sleep(3000); // Espera después del clic
-      console.log('✅ Clic exitoso en botón "Seleccionar" de fabricante.');
+      // console.log('✅ Clic exitoso en botón "Seleccionar" de fabricante.');
 
       // === Paso 11: Diligenciar el campo "Nombre" con "TEST" ===
 
@@ -245,7 +245,7 @@ export default class ContenidoClasesNegocioPage {
       await inputNombre.sendKeys('TEST');
       await driver.sleep(3000);
 
-      console.log('✅ Campo "Nombre" diligenciado con "TEST".');
+      // console.log('✅ Campo "Nombre" diligenciado con "TEST".');
 
       // === Paso 12: Diligenciar el campo "Cantidad de slots" con número aleatorio ===
 
@@ -269,7 +269,7 @@ export default class ContenidoClasesNegocioPage {
       await inputSlots.sendKeys(cantidadAleatoria.toString());
       await driver.sleep(3000);
 
-      console.log(`✅ Campo "Cantidad de slots" diligenciado con el valor: ${cantidadAleatoria}`);
+      // console.log(`✅ Campo "Cantidad de slots" diligenciado con el valor: ${cantidadAleatoria}`);
 
       // === Paso 13: Clic en el botón del campo "Tipo" ===
 
@@ -288,7 +288,117 @@ export default class ContenidoClasesNegocioPage {
       await driver.executeScript("arguments[0].click();", botonTipo);
       await driver.sleep(5000);
 
-      console.log('✅ Botón del campo "Tipo" clickeado correctamente.');
+      // console.log('✅ Botón del campo "Tipo" clickeado correctamente.');
+
+      // === Paso 14: Seleccionar tipo con ID 21 dentro del modal ===
+
+      const modalTipo = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-type"]/div/div')),
+        10000
+      );
+
+      // Esperar el tbody dentro del modal
+      const tablaTipoCuerpo = await modalTipo.findElement(By.css('table tbody'));
+
+      // Localizar la fila con ID 21
+      const filaTipo21 = await tablaTipoCuerpo.findElement(By.css('tr#row-21'));
+
+      // Buscar la celda con id="id"
+      const celdaTipo21 = await filaTipo21.findElement(By.css('td#id'));
+
+      // Hacer scroll y clic sobre la celda
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaTipo21);
+      await driver.sleep(500);
+      await driver.executeScript("arguments[0].click();", celdaTipo21);
+
+      // Validar que la clase sea "active"
+      const claseSeleccionadaTipo = await filaTipo21.getAttribute("class");
+      if (!claseSeleccionadaTipo.includes("active")) {
+        throw new Error("❌ No se marcó como activa la fila con ID 21 después del clic.");
+      }
+
+      // console.log("✅ Fila con ID 21 seleccionada correctamente.");
+      await driver.sleep(1000);
+
+      // === Paso 15: Clic en el botón "Seleccionar" del modal de tipo ===
+
+      const contenedorBtnSeleccionarTipo = await driver.wait(
+        until.elementLocated(By.id("widget-button-btSelect-type")),
+        10000
+      );
+
+      // Buscar el botón interno dentro del contenedor
+      const btnSeleccionarTipo = await contenedorBtnSeleccionarTipo.findElement(By.css("div.btn.btn-primary"));
+
+      // Esperar que el botón esté visible
+      await driver.wait(until.elementIsVisible(btnSeleccionarTipo), 10000);
+
+      // Verificar que no esté deshabilitado
+      await driver.wait(async () => {
+        const disabledAttr = await btnSeleccionarTipo.getAttribute('disabled');
+        const classAttr = await btnSeleccionarTipo.getAttribute('class');
+        return !disabledAttr && !classAttr.includes('disabled');
+      }, 10000, '❌ El botón "Seleccionar" no se habilitó a tiempo.');
+
+      // Scroll al botón y clic
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnSeleccionarTipo);
+      await driver.sleep(500);
+      await driver.executeScript("arguments[0].click();", btnSeleccionarTipo);
+
+      // console.log("✅ Clic realizado en el botón 'Seleccionar' del modal tipo.");
+      await driver.sleep(3000);
+
+
+      // === Paso 16: Diligenciar el campo "Descripción" ===
+
+      const inputDescripcion = await driver.wait(
+        until.elementLocated(By.id('textfield-description')),
+        10000
+      );
+
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputDescripcion);
+      await driver.sleep(500);
+
+      await inputDescripcion.clear(); // Por si ya tiene algo
+      await inputDescripcion.sendKeys("TEST");
+
+      // console.log("✅ Campo 'Descripción' diligenciado con 'TEST'");
+      await driver.sleep(1000);
+
+      // === Paso 17: Diligenciar campo "Ícono" ===
+
+      const inputIcono = await driver.wait(
+        until.elementLocated(By.id('textfield-icon')),
+        10000
+      );
+
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputIcono);
+      await driver.sleep(500);
+
+      await inputIcono.clear();
+      await inputIcono.sendKeys("img/icons_entity/ico-cat-infra-rfid-&-sensors.png");
+
+      // console.log("✅ Campo 'Ícono' diligenciado correctamente.");
+      await driver.sleep(3000);
+
+      // === Paso 18: Clic en el botón del campo "Localidad" ===
+
+      const btnLocalidad = await driver.wait(
+        until.elementLocated(By.css('button.picklocation-btn')),
+        10000
+      );
+
+      // Hacer scroll al botón si es necesario
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnLocalidad);
+      await driver.sleep(500);
+
+      // Ejecutar clic con JavaScript (por si tiene overlays)
+      await driver.executeScript("arguments[0].click();", btnLocalidad);
+
+      console.log("✅ Botón de 'Localidad' clicado correctamente.");
+      await driver.sleep(3000); // Tiempo para que cargue el modal o panel
+
+
 
 
     } catch (error) {
