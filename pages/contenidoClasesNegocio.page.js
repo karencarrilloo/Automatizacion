@@ -398,7 +398,130 @@ export default class ContenidoClasesNegocioPage {
       console.log("✅ Botón de 'Localidad' clicado correctamente.");
       await driver.sleep(3000); // Tiempo para que cargue el modal o panel
 
+      // === Paso 19: Clic en botón "Seleccionar" del modal de Localidad ===
 
+      const modalLocalidad = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklocation-location"]/div/div')),
+        10000
+      );
+
+      // Esperar hasta que esté visible
+      await driver.wait(until.elementIsVisible(modalLocalidad), 10000);
+
+      // Buscar el botón dentro del modal
+      const btnSeleccionarLocalidad = await modalLocalidad.findElement(
+        By.xpath(".//div[contains(@class, 'btn-primary') and contains(text(), 'Seleccionar')]")
+      );
+
+      // Esperar que esté visible
+      await driver.wait(until.elementIsVisible(btnSeleccionarLocalidad), 10000);
+
+      // Esperar que no esté deshabilitado
+      await driver.wait(async () => {
+        const disabledAttr = await btnSeleccionarLocalidad.getAttribute('disabled');
+        const classAttr = await btnSeleccionarLocalidad.getAttribute('class');
+        return !disabledAttr && !classAttr.includes('disabled');
+      }, 10000, '❌ El botón "Seleccionar" del modal de localidad no está habilitado.');
+
+      // Hacer scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnSeleccionarLocalidad);
+      await driver.sleep(500);
+      await driver.executeScript("arguments[0].click();", btnSeleccionarLocalidad);
+
+      console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal de localidad.");
+      await driver.sleep(3000);
+
+      // === Paso 20: Clic en el botón "Guardar" ===
+
+      const btnGuardar = await driver.wait(
+        until.elementLocated(By.xpath("//div[contains(text(),'Guardar') and contains(@class, 'btn-primary')]")),
+        10000,
+        '❌ El botón "Guardar" no fue localizado a tiempo.'
+      );
+
+      // Esperar que sea visible
+      await driver.wait(
+        until.elementIsVisible(btnGuardar),
+        10000,
+        '❌ El botón "Guardar" no es visible.'
+      );
+
+      // Esperar que esté habilitado (no tenga atributo 'disabled' ni clase 'disabled')
+      await driver.wait(async () => {
+        const isDisabled = await btnGuardar.getAttribute('disabled');
+        const classAttr = await btnGuardar.getAttribute('class');
+        return !isDisabled && !classAttr.includes('disabled');
+      }, 10000, '❌ El botón "Guardar" está deshabilitado.');
+
+      // Hacer scroll para que esté en el viewport
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGuardar);
+      await driver.sleep(500); // Pequeña pausa por transición
+
+      // Hacer clic con JavaScript para evitar interferencias
+      await driver.executeScript("arguments[0].click();", btnGuardar);
+
+      console.log('✅ Se hizo clic en el botón "Guardar" correctamente.');
+      await driver.sleep(5000); // Esperar posibles transiciones o validaciones
+
+      // === Paso 21: Seleccionar último registro creado y validar campo "Nombre" ===
+
+      try {
+        // Scroll al contenedor principal
+        const contenedorPrincipal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="view-content-class"]/div[2]')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", contenedorPrincipal);
+        await driver.sleep(1000);
+
+        // Scroll al contenedor tabla
+        const tablaContenedor = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-31"]/div/div[2]/table')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", tablaContenedor);
+        await driver.sleep(500);
+
+        // Obtener el tbody y sus filas
+        const cuerpoTabla = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-31"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        const filas = await cuerpoTabla.findElements(By.css('tr'));
+        if (filas.length === 0) throw new Error('❌ No se encontraron filas.');
+
+        // Tomar la última fila
+        const ultimaFila = filas[filas.length - 1];
+
+        // Buscar la celda con id="id" dentro de la última fila
+        const celdaId = await ultimaFila.findElement(By.css('td#id'));
+
+        // Scroll y clic en la celda
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaId);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", celdaId);
+        await driver.sleep(1000); // da tiempo para aplicar la clase active
+
+        // Verificar si se aplicó la clase "active"
+        const claseActiva = await ultimaFila.getAttribute("class");
+        if (!claseActiva.includes("active")) {
+          throw new Error("❌ La última fila no fue marcada como activa.");
+        }
+
+        // Validar campo 'Nombre'
+        const celdaNombre = await ultimaFila.findElement(By.css('td#name'));
+        const textoNombre = await celdaNombre.getText();
+        if (textoNombre.trim() !== "TEST") {
+          throw new Error(`❌ El valor 'Nombre' no es 'TEST', es '${textoNombre}'.`);
+        }
+
+        console.log("✅ Último registro seleccionado y validado con éxito.");
+
+      } catch (error) {
+        console.error(`❌ Error en paso 21: ${error.message}`);
+        throw error;
+      }
 
 
     } catch (error) {
