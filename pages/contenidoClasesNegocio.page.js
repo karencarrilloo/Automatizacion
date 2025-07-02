@@ -523,6 +523,37 @@ export default class ContenidoClasesNegocioPage {
         throw error;
       }
 
+      // === Paso 22: Clic en botón Editar ===
+
+      try {
+        // Esperar a que el contenedor del botón esté presente
+        const contenedorBotonEditar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-crud-31"]/div/div[1]')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", contenedorBotonEditar);
+        await driver.sleep(500); // Pausa para asegurar visibilidad
+
+        // Esperar el botón "Editar"
+        const botonEditar = await driver.wait(
+          until.elementLocated(By.id('crud-edit-btn')),
+          10000
+        );
+
+        // Verificar visibilidad y estado
+        await driver.wait(until.elementIsVisible(botonEditar), 10000);
+        await driver.wait(until.elementIsEnabled(botonEditar), 10000);
+
+        // Hacer clic en el botón
+        await driver.executeScript("arguments[0].click();", botonEditar);
+        console.log('✅ Se hizo clic en el botón "Editar".');
+        await driver.sleep(3000); // Esperar apertura de modal de edición
+
+      } catch (error) {
+        console.error(`❌ Error en paso 22 (clic en botón Editar): ${error.message}`);
+        throw error;
+      }
+
 
     } catch (error) {
       console.error("❌ Error en contenido clases de negocio:", error.message);
