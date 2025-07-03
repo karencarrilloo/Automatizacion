@@ -160,7 +160,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log('✅ Se hizo clic en el botón del campo "Fabricante".');
 
-      // === Paso 9: Seleccionar fila del fabricante con ID "1" usando el modal como contenedor ===
+      // === Paso 9: Seleccionar fila del fabricante con ID "1"(HUAWEI) ===
 
       // Esperar que el contenedor del modal esté presente
       const contenedorModalFabricante = await driver.wait(
@@ -395,7 +395,7 @@ export default class ContenidoClasesNegocioPage {
       // Ejecutar clic con JavaScript (por si tiene overlays)
       await driver.executeScript("arguments[0].click();", btnLocalidad);
 
-      console.log("✅ Botón de 'Localidad' clicado correctamente.");
+      // console.log("✅ Botón de 'Localidad' clicado correctamente.");
       await driver.sleep(3000); // Tiempo para que cargue el modal o panel
 
       // === Paso 19: Clic en botón "Seleccionar" del modal de Localidad ===
@@ -428,7 +428,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(500);
       await driver.executeScript("arguments[0].click();", btnSeleccionarLocalidad);
 
-      console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal de localidad.");
+      // console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal de localidad.");
       await driver.sleep(3000);
 
       // === Paso 20: Clic en el botón "Guardar" ===
@@ -460,7 +460,7 @@ export default class ContenidoClasesNegocioPage {
       // Hacer clic con JavaScript para evitar interferencias
       await driver.executeScript("arguments[0].click();", btnGuardar);
 
-      console.log('✅ Se hizo clic en el botón "Guardar" correctamente.');
+      // console.log('✅ Se hizo clic en el botón "Guardar" correctamente.');
       await driver.sleep(5000); // Esperar posibles transiciones o validaciones
 
       // === Paso 21: Seleccionar último registro creado y validar campo "Nombre" ===
@@ -516,7 +516,7 @@ export default class ContenidoClasesNegocioPage {
           throw new Error(`❌ El valor 'Nombre' no es 'TEST', es '${textoNombre}'.`);
         }
 
-        console.log("✅ Último registro seleccionado y validado con éxito.");
+        // console.log("✅ Último registro seleccionado y validado con éxito.");
 
       } catch (error) {
         console.error(`❌ Error en paso 21: ${error.message}`);
@@ -546,13 +546,185 @@ export default class ContenidoClasesNegocioPage {
 
         // Hacer clic en el botón
         await driver.executeScript("arguments[0].click();", botonEditar);
-        console.log('✅ Se hizo clic en el botón "Editar".');
-        await driver.sleep(3000); // Esperar apertura de modal de edición
+        // console.log('✅ Se hizo clic en el botón "Editar".');
+        await driver.sleep(8000);// Esperar apertura de modal de edición
 
       } catch (error) {
         console.error(`❌ Error en paso 22 (clic en botón Editar): ${error.message}`);
         throw error;
       }
+
+      // === Paso 23: Clic en el botón del campo "Fabricante" (modo edición) ===
+
+      try {
+        // Esperar el botón con clase específica en el contexto del formulario
+        const btnFabricanteEditar = await driver.wait(
+          until.elementLocated(
+            By.xpath("//div[contains(@id, 'widget-picklist-manufacturer')]//button[contains(@class, 'picklist-btn')]")
+          ),
+          10000
+        );
+
+        // Verificar que el botón esté visible y habilitado
+        await driver.wait(until.elementIsVisible(btnFabricanteEditar), 10000);
+        await driver.wait(until.elementIsEnabled(btnFabricanteEditar), 10000);
+
+        // Hacer scroll y clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnFabricanteEditar);
+        await driver.sleep(500); // Breve espera para estabilidad
+        await driver.executeScript("arguments[0].click();", btnFabricanteEditar);
+
+        // console.log("✅ Se hizo clic en el botón del campo Fabricante (modo edición).");
+        await driver.sleep(3000); // Esperar apertura del modal
+
+      } catch (error) {
+        console.error(`❌ Error en paso 23 (clic botón Fabricante edición): ${error.message}`);
+        throw error;
+      }
+
+
+      // === Paso 24: Seleccionar fila del fabricante con ID "2" (FIBERHOME) ===
+
+      const contenedorModalFabricanteEditar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-manufacturer"]/div/div')),
+        10000
+      );
+
+      const tablaBodyFabricanteEditar = await driver.wait(
+        until.elementLocated(By.css('#grid-table-crud-grid-manufacturer tbody')),
+        10000
+      );
+
+      // Localizar la fila con ID 2
+      const filaFIBERHOME = await tablaBodyFabricanteEditar.findElement(By.css('tr#row-2'));
+
+      // Buscar la primera celda (ID)
+      const celdaIdFIBERHOME = await filaFIBERHOME.findElement(By.css('td#id'));
+
+      // Scroll usando el contenedor modal
+      await driver.executeScript(
+        "arguments[0].scrollTop = arguments[1].offsetTop;",
+        contenedorModalFabricanteEditar,
+        filaFIBERHOME
+      );
+
+      await driver.sleep(2000); // Espera por animación
+
+      // Clic para seleccionar
+      await driver.executeScript("arguments[0].click();", celdaIdFIBERHOME);
+
+      // Validar que quedó seleccionada
+      const claseFilaFIBERHOME = await filaFIBERHOME.getAttribute("class");
+      if (!claseFilaFIBERHOME.includes("active")) {
+        throw new Error("❌ La fila con ID '2' no fue marcada como activa.");
+      }
+
+      // console.log("✅ Fila 'FIBERHOME' seleccionada correctamente.");
+
+      // === Paso 25: Clic en el botón "Seleccionar" del modal Fabricante ===
+
+      try {
+        // Esperar a que el botón esté presente en el DOM
+        const botonSeleccionarFabricante = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-manufacturer"]/div')),
+          10000
+        );
+
+        // Esperar a que el botón sea visible
+        await driver.wait(until.elementIsVisible(botonSeleccionarFabricante), 10000);
+
+        // Verificar que no esté deshabilitado por clase
+        await driver.wait(async () => {
+          const disabledAttr = await botonSeleccionarFabricante.getAttribute('disabled');
+          const classAttr = await botonSeleccionarFabricante.getAttribute('class');
+          return !disabledAttr && !classAttr.includes('disabled');
+        }, 10000, '❌ El botón "Seleccionar" del modal Fabricante no se habilitó a tiempo.');
+
+        // Scroll al botón si está fuera del viewport
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarFabricante);
+        await driver.sleep(500); // Espera por transición
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].click();", botonSeleccionarFabricante);
+        // console.log('✅ Se hizo clic en el botón "Seleccionar" del modal Fabricante.');
+
+        await driver.sleep(5000); // Espera por cierre del modal
+
+      } catch (error) {
+        throw new Error("❌ Error al hacer clic en el botón 'Seleccionar' del modal Fabricante: " + error.message);
+      }
+
+      // === Paso 26: Limpiar y diligenciar el campo "Nombre" con "TEST EDITAR" ===
+
+      try {
+        // Esperar el campo de nombre dentro del widget
+        const inputNombre = await driver.wait(
+          until.elementLocated(By.css('#widget-textfield-name input')),
+          10000
+        );
+
+        // Hacer scroll por si está fuera de vista
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputNombre);
+        await driver.sleep(500); // Pausa para scroll
+
+        // Limpiar el campo y escribir nuevo valor
+        await inputNombre.clear();
+        await inputNombre.sendKeys("TEST EDITAR");
+        await driver.sleep(5000);
+
+        // console.log('✅ Campo "Nombre" diligenciado con "TEST EDITAR".');
+      } catch (error) {
+        throw new Error("❌ Error en el paso 26 al diligenciar el campo 'Nombre': " + error.message);
+      }
+
+      // === Paso 27: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
+
+      try {
+        // Esperar el campo input dentro del widget del slot
+        const inputSlots = await driver.wait(
+          until.elementLocated(By.css('#widget-textfield-numberofslots input')),
+          10000
+        );
+
+        // Hacer scroll al campo
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputSlots);
+        await driver.sleep(500); // Breve pausa
+
+        // Generar número aleatorio entre 51 y 100
+        const cantidadAleatoria = Math.floor(Math.random() * 50) + 51;
+
+        // Limpiar campo y diligenciar valor
+        await inputSlots.clear();
+        await inputSlots.sendKeys(cantidadAleatoria.toString());
+        await driver.sleep(5000);
+
+        // console.log(`✅ Campo "Cantidad de slots" diligenciado con: ${cantidadAleatoria}`);
+      } catch (error) {
+        throw new Error("❌ Error en el paso 27 al diligenciar el campo 'Cantidad de slots': " + error.message);
+      }
+
+      // === Paso 28: Dar clic en el botón del campo "Tipo" ===
+
+      try {
+        // Esperar el botón del campo "Tipo"
+        const botonTipo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-type"]/div[1]/span[2]/button')),
+          10000
+        );
+
+        // Asegurar visibilidad en viewport
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonTipo);
+        await driver.sleep(500); // Pausa por posibles animaciones
+
+        // Hacer clic usando JS
+        await driver.executeScript("arguments[0].click();", botonTipo);
+        await driver.sleep(3000); // Esperar apertura del modal
+
+        console.log("✅ Clic realizado en el botón del campo 'Tipo'.");
+      } catch (error) {
+        throw new Error("❌ Error en el paso 28 al hacer clic en el botón del campo 'Tipo': " + error.message);
+      }
+
 
 
     } catch (error) {
