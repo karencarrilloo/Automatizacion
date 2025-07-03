@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By, until, Key } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -723,6 +723,188 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Clic realizado en el botón del campo 'Tipo'.");
       } catch (error) {
         throw new Error("❌ Error en el paso 28 al hacer clic en el botón del campo 'Tipo': " + error.message);
+      }
+
+      // === Paso 29: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
+
+      try {
+        // Esperar el modal contenedor del listado
+        const modalTipo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-type"]/div/div')),
+          10000
+        );
+
+        // Esperar a que el cuerpo de la tabla esté presente
+        const tablaTipo = await driver.wait(
+          until.elementLocated(By.css('#grid-table-crud-grid-type tbody')),
+          10000
+        );
+
+        // Buscar la fila con ID 1
+        const filaTipo = await tablaTipo.findElement(By.css('tr#row-1'));
+
+        // Buscar la celda ID dentro de la fila
+        const celdaTipo = await filaTipo.findElement(By.css('td#id'));
+
+        // Hacer scroll dentro del modal hasta la fila
+        await driver.executeScript(
+          "arguments[0].scrollTop = arguments[1].offsetTop;",
+          modalTipo,
+          filaTipo
+        );
+
+        await driver.sleep(500); // Breve pausa por scroll
+
+        // Clic sobre la celda para seleccionar
+        await driver.executeScript("arguments[0].click();", celdaTipo);
+
+        // Verificar si quedó seleccionada con la clase 'active'
+        const claseTipoSeleccionada = await filaTipo.getAttribute("class");
+        if (!claseTipoSeleccionada.includes("active")) {
+          throw new Error("❌ La fila con ID '1' no fue marcada como activa.");
+        }
+
+        console.log("✅ Fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) seleccionada correctamente.");
+        await driver.sleep(2500);
+      } catch (error) {
+        throw new Error("❌ Error en el paso 29 al seleccionar fila con ID 1: " + error.message);
+      }
+
+      // === Paso 30: Clic en el botón "Seleccionar" del modal de Tipo ===
+
+      try {
+        // Esperar el botón dentro del modal
+        const botonSeleccionarTipo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-type"]/div')),
+          10000
+        );
+
+        // Esperar que sea visible
+        await driver.wait(until.elementIsVisible(botonSeleccionarTipo), 10000);
+
+        // Esperar que no esté deshabilitado
+        await driver.wait(async () => {
+          const disabledAttr = await botonSeleccionarTipo.getAttribute('disabled');
+          const classAttr = await botonSeleccionarTipo.getAttribute('class');
+          return !disabledAttr && !classAttr.includes('disabled');
+        }, 10000, '❌ El botón "Seleccionar" del modal Tipo no se habilitó a tiempo.');
+
+        // Hacer scroll si es necesario
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarTipo);
+        await driver.sleep(500); // Espera ligera por si hay transición
+
+        // Clic usando JavaScript
+        await driver.executeScript("arguments[0].click();", botonSeleccionarTipo);
+
+        console.log("✅ Botón 'Seleccionar' del modal Tipo fue clickeado exitosamente.");
+        await driver.sleep(3000); // Espera por cierre de modal y procesamiento
+
+      } catch (error) {
+        throw new Error("❌ Error en el paso 30 al hacer clic en el botón 'Seleccionar': " + error.message);
+      }
+
+      // === Paso 31: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
+
+      try {
+        const contenedorDescripcion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-textfield-description"]')),
+          10000
+        );
+
+        // Buscar el input dentro del contenedor
+        const inputDescripcion = await contenedorDescripcion.findElement(By.css('input.form-control'));
+
+        // Asegurarse de que esté visible
+        await driver.wait(until.elementIsVisible(inputDescripcion), 10000);
+
+        // Limpiar y escribir nuevo valor
+        await inputDescripcion.clear();
+        await inputDescripcion.sendKeys("TEST EDITAR");
+
+        console.log("✅ Campo 'Descripción' diligenciado correctamente con 'TEST EDITAR'");
+        await driver.sleep(1000); // Pausa breve para estabilidad
+
+      } catch (error) {
+        throw new Error("❌ Error en el paso 31 al diligenciar el campo 'Descripción': " + error.message);
+      }
+
+      // === Paso 32: Clic en el botón "Guardar" en el formulario de edición ===
+
+      try {
+        // Esperar el contenedor del footer del modal
+        const footerGuardar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-crud-crud-31"]/div/div/div[3]')),
+          10000
+        );
+
+        // Esperar el botón "Guardar" dentro del footer
+        const botonGuardar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btAction-crud-31"]/div')),
+          10000
+        );
+
+        // Asegurar visibilidad
+        await driver.wait(until.elementIsVisible(botonGuardar), 10000);
+
+        // Hacer scroll hacia el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonGuardar);
+        await driver.sleep(500); // Pequeña pausa por animación
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].click();", botonGuardar);
+        await driver.sleep(5000); // Tiempo de espera por transición/post-guardado
+
+        console.log("✅ Botón 'Guardar' clickeado correctamente (Edición)");
+
+      } catch (error) {
+        throw new Error("❌ Error en el paso 32 al hacer clic en el botón 'Guardar': " + error.message);
+      }
+
+      // === Paso 33: Clic en la barra de búsqueda ===
+
+      try {
+        // Esperar que la barra de búsqueda esté presente y visible
+        const barraBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+
+        // Hacer scroll hacia la barra (por si está fuera de vista)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", barraBusqueda);
+        await driver.sleep(500); // Pausa por animaciones
+
+        // Clic en la barra de búsqueda
+        await driver.executeScript("arguments[0].click();", barraBusqueda);
+
+        await driver.sleep(1500);
+
+        console.log("✅ Barra de búsqueda clickeada correctamente.");
+
+      } catch (error) {
+        throw new Error("❌ Error en el paso 33 al hacer clic en la barra de búsqueda: " + error.message);
+      }
+
+      // === Paso 34: Digitar "TEST" en la barra de búsqueda y presionar Enter ===
+      try {
+        const inputBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputBusqueda), 10000);
+
+        // Limpiar texto previo si lo hay
+        await inputBusqueda.clear();
+
+        // Ingresar la palabra TEST y presionar Enter
+        await inputBusqueda.sendKeys('TEST', Key.ENTER);
+
+        console.log('✅ Se digitó "TEST" en la barra de búsqueda y se presionó Enter.');
+        await driver.sleep(2000); // Espera que cargue el resultado
+
+      } catch (error) {
+        throw new Error('❌ Error en el paso 34 al escribir en la barra de búsqueda: ' + error.message);
       }
 
 
