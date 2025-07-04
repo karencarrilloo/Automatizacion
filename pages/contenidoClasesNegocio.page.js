@@ -490,18 +490,18 @@ export default class ContenidoClasesNegocioPage {
 
       // === Paso 22: Digitar "TEST CREAR" en la barra de búsqueda y presionar Enter ===
       try {
-        const inputBusqueda = await driver.wait(
+        const inputBusquedaCrear = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
           10000
         );
 
-        await driver.wait(until.elementIsVisible(inputBusqueda), 10000);
+        await driver.wait(until.elementIsVisible(inputBusquedaCrear), 10000);
 
         // Limpiar texto previo si lo hay
-        await inputBusqueda.clear();
+        await inputBusquedaCrear.clear();
 
         // Ingresar la palabra TEST y presionar Enter
-        await inputBusqueda.sendKeys('TEST CREAR', Key.ENTER);
+        await inputBusquedaCrear.sendKeys('TEST CREAR', Key.ENTER);
 
         console.log('✅ Se digitó "TEST CREAR" en la barra de búsqueda y se presionó Enter.');
         await driver.sleep(3000); // Espera que cargue el resultado
@@ -733,7 +733,7 @@ export default class ContenidoClasesNegocioPage {
 
         // console.log('✅ Campo "Nombre" diligenciado con "TEST EDITAR".');
       } catch (error) {
-        throw new Error("❌ Error en el paso 26 al diligenciar el campo 'Nombre': " + error.message);
+        throw new Error("❌ Error en el paso 28 al diligenciar el campo 'Nombre': " + error.message);
       }
 
       // === Paso 29: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
@@ -759,7 +759,7 @@ export default class ContenidoClasesNegocioPage {
 
         // console.log(`✅ Campo "Cantidad de slots" diligenciado con: ${cantidadAleatoria}`);
       } catch (error) {
-        throw new Error("❌ Error en el paso 27 al diligenciar el campo 'Cantidad de slots': " + error.message);
+        throw new Error("❌ Error en el paso 29 al diligenciar el campo 'Cantidad de slots': " + error.message);
       }
 
       // === Paso 30: Dar clic en el botón del campo "Tipo" ===
@@ -781,7 +781,7 @@ export default class ContenidoClasesNegocioPage {
 
         console.log("✅ Clic realizado en el botón del campo 'Tipo'.");
       } catch (error) {
-        throw new Error("❌ Error en el paso 28 al hacer clic en el botón del campo 'Tipo': " + error.message);
+        throw new Error("❌ Error en el paso 30 al hacer clic en el botón del campo 'Tipo': " + error.message);
       }
 
       // === Paso 31: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
@@ -826,7 +826,7 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) seleccionada correctamente.");
         await driver.sleep(2500);
       } catch (error) {
-        throw new Error("❌ Error en el paso 29 al seleccionar fila con ID 1: " + error.message);
+        throw new Error("❌ Error en el paso 31 al seleccionar fila con ID 1: " + error.message);
       }
 
       // === Paso 32: Clic en el botón "Seleccionar" del modal de Tipo ===
@@ -859,7 +859,7 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Espera por cierre de modal y procesamiento
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 30 al hacer clic en el botón 'Seleccionar': " + error.message);
+        throw new Error("❌ Error en el paso 32 al hacer clic en el botón 'Seleccionar': " + error.message);
       }
 
       // === Paso 33: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
@@ -884,7 +884,7 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(1000); // Pausa breve para estabilidad
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 31 al diligenciar el campo 'Descripción': " + error.message);
+        throw new Error("❌ Error en el paso 33 al diligenciar el campo 'Descripción': " + error.message);
       }
 
       // === Paso 34: Clic en el botón "Guardar" en el formulario de edición ===
@@ -916,7 +916,29 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Botón 'Guardar' clickeado correctamente (Edición)");
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 32 al hacer clic en el botón 'Guardar': " + error.message);
+        throw new Error("❌ Error en el paso 34 al hacer clic en el botón 'Guardar': " + error.message);
+      }
+
+      // === Paso 35: Digitar "TEST EDITAR" en la barra de búsqueda y presionar Enter ===
+      try {
+        const inputBusquedaEditar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputBusquedaEditar), 10000);
+
+        // Limpiar texto previo si lo hay
+        await inputBusquedaEditar.clear();
+
+        // Ingresar la palabra TEST y presionar Enter
+        await inputBusquedaEditar.sendKeys('TEST EDITAR', Key.ENTER);
+
+        console.log('✅ Se digitó "TEST EDITAR" en la barra de búsqueda y se presionó Enter.');
+        await driver.sleep(3000); // Espera que cargue el resultado
+
+      } catch (error) {
+        throw new Error('❌ Error en el paso 35 al escribir en la barra de búsqueda: ' + error.message);
       }
 
     } catch (error) {
