@@ -226,7 +226,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(3000); // Espera después del clic
       // console.log('✅ Clic exitoso en botón "Seleccionar" de fabricante.');
 
-      // === Paso 11: Diligenciar el campo "Nombre" con "TEST" ===
+      // === Paso 11: Diligenciar el campo "Nombre" con "TEST CREAR" ===
 
       const inputNombre = await driver.wait(
         until.elementLocated(By.id('textfield-name')),
@@ -242,7 +242,7 @@ export default class ContenidoClasesNegocioPage {
 
       // Limpiar campo y escribir TEST
       await inputNombre.clear();
-      await inputNombre.sendKeys('TEST');
+      await inputNombre.sendKeys('TEST CREAR');
       await driver.sleep(3000);
 
       // console.log('✅ Campo "Nombre" diligenciado con "TEST".');
@@ -360,7 +360,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(500);
 
       await inputDescripcion.clear(); // Por si ya tiene algo
-      await inputDescripcion.sendKeys("TEST");
+      await inputDescripcion.sendKeys("TEST CREAR");
 
       // console.log("✅ Campo 'Descripción' diligenciado con 'TEST'");
       await driver.sleep(1000);
@@ -463,7 +463,55 @@ export default class ContenidoClasesNegocioPage {
       // console.log('✅ Se hizo clic en el botón "Guardar" correctamente.');
       await driver.sleep(5000); // Esperar posibles transiciones o validaciones
 
-      // === Paso 21: Seleccionar último registro creado y validar campo "Nombre" ===
+      // === Paso 21: Clic en la barra de búsqueda ===
+
+      try {
+        // Esperar que la barra de búsqueda esté presente y visible
+        const barraBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+
+        // Hacer scroll hacia la barra (por si está fuera de vista)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", barraBusqueda);
+        await driver.sleep(500); // Pausa por animaciones
+
+        // Clic en la barra de búsqueda
+        await driver.executeScript("arguments[0].click();", barraBusqueda);
+
+        await driver.sleep(1500);
+
+        console.log("✅ Barra de búsqueda clickeada correctamente.");
+
+      } catch (error) {
+        throw new Error("❌ Error en el paso 33 al hacer clic en la barra de búsqueda: " + error.message);
+      }
+
+      // === Paso 22: Digitar "TEST CREAR" en la barra de búsqueda y presionar Enter ===
+      try {
+        const inputBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputBusqueda), 10000);
+
+        // Limpiar texto previo si lo hay
+        await inputBusqueda.clear();
+
+        // Ingresar la palabra TEST y presionar Enter
+        await inputBusqueda.sendKeys('TEST CREAR', Key.ENTER);
+
+        console.log('✅ Se digitó "TEST CREAR" en la barra de búsqueda y se presionó Enter.');
+        await driver.sleep(3000); // Espera que cargue el resultado
+
+      } catch (error) {
+        throw new Error('❌ Error en el paso 34 al escribir en la barra de búsqueda: ' + error.message);
+      }
+
+
+      // === Paso 23: Seleccionar registro con el campo "Identificador" mayor y validar campo "Nombre" ===
 
       try {
         // Scroll al contenedor principal
@@ -482,7 +530,7 @@ export default class ContenidoClasesNegocioPage {
         await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", tablaContenedor);
         await driver.sleep(500);
 
-        // Obtener el tbody y sus filas
+        // Obtener tbody y filas
         const cuerpoTabla = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-31"]/div/div[2]/table/tbody')),
           10000
@@ -491,39 +539,50 @@ export default class ContenidoClasesNegocioPage {
         const filas = await cuerpoTabla.findElements(By.css('tr'));
         if (filas.length === 0) throw new Error('❌ No se encontraron filas.');
 
-        // Tomar la última fila
-        const ultimaFila = filas[filas.length - 1];
+        let filaMayorId = null;
+        let mayorId = -1;
 
-        // Buscar la celda con id="id" dentro de la última fila
-        const celdaId = await ultimaFila.findElement(By.css('td#id'));
+        for (const fila of filas) {
+          const celdaId = await fila.findElement(By.css('td#id'));
+          const textoId = await celdaId.getText();
+          const idNumero = parseInt(textoId.trim(), 10);
 
-        // Scroll y clic en la celda
-        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaId);
+          if (!isNaN(idNumero) && idNumero > mayorId) {
+            mayorId = idNumero;
+            filaMayorId = fila;
+          }
+        }
+
+        if (!filaMayorId) throw new Error('❌ No se pudo determinar la fila con el ID mayor.');
+
+        // Clic sobre la celda de ID de la fila mayor
+        const celdaIdSeleccion = await filaMayorId.findElement(By.css('td#id'));
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaIdSeleccion);
         await driver.sleep(500);
-        await driver.executeScript("arguments[0].click();", celdaId);
-        await driver.sleep(1000); // da tiempo para aplicar la clase active
+        await driver.executeScript("arguments[0].click();", celdaIdSeleccion);
+        await driver.sleep(1000);
 
-        // Verificar si se aplicó la clase "active"
-        const claseActiva = await ultimaFila.getAttribute("class");
-        if (!claseActiva.includes("active")) {
-          throw new Error("❌ La última fila no fue marcada como activa.");
+        // Verificar que la clase 'active' se haya aplicado
+        const claseSeleccionMayor = await filaMayorId.getAttribute("class");
+        if (!claseSeleccionMayor.includes("active")) {
+          throw new Error("❌ La fila con ID mayor no fue marcada como activa.");
         }
 
-        // Validar campo 'Nombre'
-        const celdaNombre = await ultimaFila.findElement(By.css('td#name'));
+        // Validar campo "Nombre"
+        const celdaNombre = await filaMayorId.findElement(By.css('td#name'));
         const textoNombre = await celdaNombre.getText();
-        if (textoNombre.trim() !== "TEST") {
-          throw new Error(`❌ El valor 'Nombre' no es 'TEST', es '${textoNombre}'.`);
+        if (textoNombre.trim() !== "TEST CREAR") {
+          throw new Error(`❌ El campo 'Nombre' no es 'TEST CREAR', es '${textoNombre}'.`);
         }
 
-        // console.log("✅ Último registro seleccionado y validado con éxito.");
+        console.log(`✅ Fila con ID mayor (${mayorId}) seleccionada y validada correctamente.`);
 
       } catch (error) {
-        console.error(`❌ Error en paso 21: ${error.message}`);
+        console.error(`❌ Error en paso 23: ${error.message}`);
         throw error;
       }
 
-      // === Paso 22: Clic en botón Editar ===
+      // === Paso 24: Clic en botón Editar ===
 
       try {
         // Esperar a que el contenedor del botón esté presente
@@ -554,7 +613,7 @@ export default class ContenidoClasesNegocioPage {
         throw error;
       }
 
-      // === Paso 23: Clic en el botón del campo "Fabricante" (modo edición) ===
+      // === Paso 25: Clic en el botón del campo "Fabricante" (modo edición) ===
 
       try {
         // Esperar el botón con clase específica en el contexto del formulario
@@ -583,7 +642,7 @@ export default class ContenidoClasesNegocioPage {
       }
 
 
-      // === Paso 24: Seleccionar fila del fabricante con ID "2" (FIBERHOME) ===
+      // === Paso 26: Seleccionar fila del fabricante con ID "2" (FIBERHOME) ===
 
       const contenedorModalFabricanteEditar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-manufacturer"]/div/div')),
@@ -621,7 +680,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log("✅ Fila 'FIBERHOME' seleccionada correctamente.");
 
-      // === Paso 25: Clic en el botón "Seleccionar" del modal Fabricante ===
+      // === Paso 27: Clic en el botón "Seleccionar" del modal Fabricante ===
 
       try {
         // Esperar a que el botón esté presente en el DOM
@@ -654,7 +713,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error al hacer clic en el botón 'Seleccionar' del modal Fabricante: " + error.message);
       }
 
-      // === Paso 26: Limpiar y diligenciar el campo "Nombre" con "TEST EDITAR" ===
+      // === Paso 28: Limpiar y diligenciar el campo "Nombre" con "TEST EDITAR" ===
 
       try {
         // Esperar el campo de nombre dentro del widget
@@ -677,7 +736,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 26 al diligenciar el campo 'Nombre': " + error.message);
       }
 
-      // === Paso 27: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
+      // === Paso 29: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
 
       try {
         // Esperar el campo input dentro del widget del slot
@@ -703,7 +762,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 27 al diligenciar el campo 'Cantidad de slots': " + error.message);
       }
 
-      // === Paso 28: Dar clic en el botón del campo "Tipo" ===
+      // === Paso 30: Dar clic en el botón del campo "Tipo" ===
 
       try {
         // Esperar el botón del campo "Tipo"
@@ -725,7 +784,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 28 al hacer clic en el botón del campo 'Tipo': " + error.message);
       }
 
-      // === Paso 29: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
+      // === Paso 31: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
 
       try {
         // Esperar el modal contenedor del listado
@@ -770,7 +829,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 29 al seleccionar fila con ID 1: " + error.message);
       }
 
-      // === Paso 30: Clic en el botón "Seleccionar" del modal de Tipo ===
+      // === Paso 32: Clic en el botón "Seleccionar" del modal de Tipo ===
 
       try {
         // Esperar el botón dentro del modal
@@ -803,7 +862,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 30 al hacer clic en el botón 'Seleccionar': " + error.message);
       }
 
-      // === Paso 31: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
+      // === Paso 33: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
 
       try {
         const contenedorDescripcion = await driver.wait(
@@ -828,7 +887,7 @@ export default class ContenidoClasesNegocioPage {
         throw new Error("❌ Error en el paso 31 al diligenciar el campo 'Descripción': " + error.message);
       }
 
-      // === Paso 32: Clic en el botón "Guardar" en el formulario de edición ===
+      // === Paso 34: Clic en el botón "Guardar" en el formulario de edición ===
 
       try {
         // Esperar el contenedor del footer del modal
@@ -852,62 +911,13 @@ export default class ContenidoClasesNegocioPage {
 
         // Clic en el botón
         await driver.executeScript("arguments[0].click();", botonGuardar);
-        await driver.sleep(5000); // Tiempo de espera por transición/post-guardado
+        await driver.sleep(6000); // Tiempo de espera por transición/post-guardado
 
         console.log("✅ Botón 'Guardar' clickeado correctamente (Edición)");
 
       } catch (error) {
         throw new Error("❌ Error en el paso 32 al hacer clic en el botón 'Guardar': " + error.message);
       }
-
-      // === Paso 33: Clic en la barra de búsqueda ===
-
-      try {
-        // Esperar que la barra de búsqueda esté presente y visible
-        const barraBusqueda = await driver.wait(
-          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
-          10000
-        );
-        await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
-
-        // Hacer scroll hacia la barra (por si está fuera de vista)
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", barraBusqueda);
-        await driver.sleep(500); // Pausa por animaciones
-
-        // Clic en la barra de búsqueda
-        await driver.executeScript("arguments[0].click();", barraBusqueda);
-
-        await driver.sleep(1500);
-
-        console.log("✅ Barra de búsqueda clickeada correctamente.");
-
-      } catch (error) {
-        throw new Error("❌ Error en el paso 33 al hacer clic en la barra de búsqueda: " + error.message);
-      }
-
-      // === Paso 34: Digitar "TEST" en la barra de búsqueda y presionar Enter ===
-      try {
-        const inputBusqueda = await driver.wait(
-          until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
-          10000
-        );
-
-        await driver.wait(until.elementIsVisible(inputBusqueda), 10000);
-
-        // Limpiar texto previo si lo hay
-        await inputBusqueda.clear();
-
-        // Ingresar la palabra TEST y presionar Enter
-        await inputBusqueda.sendKeys('TEST', Key.ENTER);
-
-        console.log('✅ Se digitó "TEST" en la barra de búsqueda y se presionó Enter.');
-        await driver.sleep(2000); // Espera que cargue el resultado
-
-      } catch (error) {
-        throw new Error('❌ Error en el paso 34 al escribir en la barra de búsqueda: ' + error.message);
-      }
-
-
 
     } catch (error) {
       console.error("❌ Error en contenido clases de negocio:", error.message);
