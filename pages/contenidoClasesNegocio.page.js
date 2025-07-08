@@ -941,6 +941,133 @@ export default class ContenidoClasesNegocioPage {
         throw new Error('❌ Error en el paso 35 al escribir en la barra de búsqueda: ' + error.message);
       }
 
+      // === Paso 36: Seleccionar registro con el campo "Identificador" mayor y nombre "TEST EDITAR" ===
+
+      try {
+        // Scroll al contenedor principal
+        const contenedorPrincipalBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="view-content-class"]/div[2]')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", contenedorPrincipalBusqueda);
+        await driver.sleep(1000);
+
+        // Scroll al contenedor de la tabla
+        const tablaContenedorBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-31"]/div/div[2]/table')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", tablaContenedorBusqueda);
+        await driver.sleep(500);
+
+        // Obtener el tbody y las filas
+        const cuerpoTablaBusqueda = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-31"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        const filasBusqueda = await cuerpoTablaBusqueda.findElements(By.css('tr'));
+        if (filasBusqueda.length === 0) throw new Error('❌ No se encontraron filas tras la búsqueda.');
+
+        let filaMayorIdBusqueda = null;
+        let mayorIdBusqueda = -1;
+
+        for (const fila of filasBusqueda) {
+          const celdaId = await fila.findElement(By.css('td#id'));
+          const celdaNombre = await fila.findElement(By.css('td#name'));
+
+          const textoId = await celdaId.getText();
+          const textoNombre = await celdaNombre.getText();
+
+          const idNumero = parseInt(textoId.trim(), 10);
+
+          if (
+            !isNaN(idNumero) &&
+            textoNombre.trim().toUpperCase() === "TEST EDITAR" &&
+            idNumero > mayorIdBusqueda
+          ) {
+            mayorIdBusqueda = idNumero;
+            filaMayorIdBusqueda = fila;
+          }
+        }
+
+        if (!filaMayorIdBusqueda) throw new Error('❌ No se encontró ninguna fila con nombre "TEST EDITAR".');
+
+        // Hacer clic sobre la celda del ID
+        const celdaIdSeleccionBusqueda = await filaMayorIdBusqueda.findElement(By.css('td#id'));
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaIdSeleccionBusqueda);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", celdaIdSeleccionBusqueda);
+        await driver.sleep(1000);
+
+        // Validar clase activa
+        const claseActivaBusqueda = await filaMayorIdBusqueda.getAttribute("class");
+        if (!claseActivaBusqueda.includes("active")) {
+          throw new Error("❌ La fila con nombre 'TEST EDITAR' no fue marcada como activa.");
+        }
+
+        console.log(`✅ Fila con nombre "TEST EDITAR" y mayor ID (${mayorIdBusqueda}) seleccionada correctamente.`);
+
+      } catch (error) {
+        console.error(`❌ Error en paso 36: ${error.message}`);
+        throw error;
+      }
+
+      // === Paso 37: Clic en botón "Eliminar" con el registro seleccionado ===
+
+      try {
+        // Esperar que el botón "Eliminar" esté disponible
+        const botonEliminar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-delete-btn"]')),
+          10000
+        );
+
+        // Asegurarse de que esté visible
+        await driver.wait(until.elementIsVisible(botonEliminar), 10000);
+
+        // Hacer scroll y clic con JavaScript para evitar overlays
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonEliminar);
+        await driver.sleep(500); // Espera ligera por animación
+        await driver.executeScript("arguments[0].click();", botonEliminar);
+
+        console.log("✅ Botón 'Eliminar' clickeado correctamente.");
+        await driver.sleep(2000); // Esperar que aparezca la ventana de confirmación
+
+      } catch (error) {
+        console.error(`❌ Error en paso 37 (clic en botón Eliminar): ${error.message}`);
+        throw error;
+      }
+
+      // === Paso 38: Confirmar eliminación - clic en botón "Sí" en modal ===
+
+      try {
+
+        // Esperar a que el botón "Sí" esté presente y visible
+        const botonConfirmarSi = await driver.wait(
+          until.elementLocated(By.xpath("//div[@id='widget-button-btConfirmYes']/div[contains(text(),'Sí')]")),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonConfirmarSi), 10000);
+
+        // Scroll hacia el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonConfirmarSi);
+        await driver.sleep(500); // Espera ligera
+
+        // Hacer clic usando JS para evitar overlays
+        await driver.executeScript("arguments[0].click();", botonConfirmarSi);
+
+        console.log("✅ Se hizo clic en el botón 'Sí' del modal de confirmación.");
+        await driver.sleep(3000); // Espera a que se procese la eliminación
+
+      } catch (error) {
+        console.error(`❌ Error al confirmar eliminación (paso 38): ${error.message}`);
+        throw error;
+      }
+
+
+
+
     } catch (error) {
       console.error("❌ Error en contenido clases de negocio:", error.message);
       const screenshot = await driver.takeScreenshot();

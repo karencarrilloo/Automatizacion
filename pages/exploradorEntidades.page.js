@@ -46,6 +46,46 @@ export default class ExploradorEntidadesPage {
       await driver.executeScript("arguments[0].click();", targetApp);
       await driver.sleep(5000);
 
+      // === Paso 4: Clic en el elemento OLT ===
+      const oltElemento = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-entity"]/div/div[1]/div[2]/div[14]')),
+        10000
+      );
+
+      // Asegurarse de que esté visible y listo para clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", oltElemento);
+      await driver.wait(until.elementIsVisible(oltElemento), 10000);
+      await driver.sleep(1000);
+      await driver.executeScript("arguments[0].click();", oltElemento);
+
+      console.log('✅ Paso 4: Clic en el elemento OLT realizado con éxito.');
+      await driver.sleep(3000); // Esperar para carga posterior
+
+      // === Paso 5: Clic en el botón "Ver todas" del contenedor OLT ===
+
+      const contenedorOLT = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-entity"]/div/div[1]/div[2]/div[14]')),
+        10000
+      );
+
+      // Asegurarse de que el contenedor esté visible
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", contenedorOLT);
+      await driver.wait(until.elementIsVisible(contenedorOLT), 10000);
+      await driver.sleep(1000);
+
+      // Ubicar el botón "Ver todas"
+      const botonVerTodas = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-entity"]/div/div[1]/div[2]/div[14]/div[4]')),
+        10000
+      );
+
+      // Hacer clic en el botón
+      await driver.executeScript("arguments[0].click();", botonVerTodas);
+      console.log("✅ Paso 5: Clic en el botón 'Ver todas' realizado correctamente.");
+      await driver.sleep(3000); // Esperar para que el modal o contenido cargue
+
+
+
     } catch (error) {
       console.error("❌ Error en Explorador de Entidades:", error.message);
       const screenshot = await driver.takeScreenshot();
