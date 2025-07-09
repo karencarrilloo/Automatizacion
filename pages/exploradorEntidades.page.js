@@ -292,6 +292,575 @@ export default class ExploradorEntidadesPage {
         throw new Error(`❌ Error en paso 11 (seleccionar VLANQINQ): ${error.message}`);
       }
 
+      // === Paso 12: Clic en botón "Seleccionar" del modal VLANQINQ ===
+
+      try {
+        const modalFooterVlan = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-vlanqinq"]/div/div/div[3]')),
+          10000
+        );
+
+        const botonSeleccionarVlan = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-vlanqinq"]/div')),
+          10000
+        );
+
+        // Esperar a que sea visible
+        await driver.wait(until.elementIsVisible(botonSeleccionarVlan), 10000);
+
+        // Verificar que no esté deshabilitado
+        await driver.wait(async () => {
+          const disabled = await botonSeleccionarVlan.getAttribute("disabled");
+          const clase = await botonSeleccionarVlan.getAttribute("class");
+          return !disabled && !clase.includes("disabled");
+        }, 10000, '❌ El botón "Seleccionar" no se habilitó a tiempo.');
+
+        // Scroll hacia el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonSeleccionarVlan);
+        await driver.sleep(500);
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].click();", botonSeleccionarVlan);
+        await driver.sleep(3000);
+
+        console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal VLANQINQ.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 12 (clic en botón Seleccionar VLANQINQ): ${error.message}`);
+      }
+
+      // === Paso 13: Clic en botón del campo "Protocolo de conexión" ===
+
+      try {
+        const campoProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-protocol"]')),
+          10000
+        );
+
+        const botonProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-protocol"]/div[1]/span/button')),
+          10000
+        );
+
+        // Verificar visibilidad del botón
+        await driver.wait(until.elementIsVisible(botonProtocolo), 10000);
+
+        // Scroll hacia el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonProtocolo);
+        await driver.sleep(500); // Dar tiempo a la animación
+
+        // Clic usando JavaScript para evitar overlays
+        await driver.executeScript("arguments[0].click();", botonProtocolo);
+        await driver.sleep(3000); // Espera apertura del modal
+
+        console.log("✅ Se hizo clic en el botón del campo 'Protocolo de conexión'.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 13 (clic en botón Protocolo de conexión): ${error.message}`);
+      }
+
+      // === Paso 14: Seleccionar el protocolo "IPOE" (ID 1) ===
+
+      try {
+        // Esperar el contenedor del modal
+        const modalProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-protocol"]/div/div[2]/table')),
+          10000
+        );
+
+        // Esperar el cuerpo de la tabla dentro del modal
+        const tablaBodyProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-protocol"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Esperar la fila con ID 1 (IPOE)
+        const filaIPOE = await tablaBodyProtocolo.findElement(By.css('tr#row-1'));
+
+        // Buscar la celda ID dentro de la fila
+        const celdaIdIPOE = await filaIPOE.findElement(By.css('td#id'));
+
+        // Hacer scroll hacia la fila dentro del modal
+        await driver.executeScript(
+          "arguments[0].scrollTop = arguments[1].offsetTop;",
+          modalProtocolo,
+          filaIPOE
+        );
+
+        await driver.sleep(500); // Espera ligera para el scroll
+
+        // Clic en la celda para activar selección
+        await driver.executeScript("arguments[0].click();", celdaIdIPOE);
+
+        // Verificar si fue seleccionada visualmente con la clase "active"
+        const claseFilaIPOE = await filaIPOE.getAttribute("class");
+        if (!claseFilaIPOE.includes("active")) {
+          throw new Error("❌ La fila con ID '1' (IPOE) no fue marcada como activa.");
+        }
+
+        console.log("✅ Fila 'IPOE' seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 14 (selección de IPOE): ${error.message}`);
+      }
+
+      // === Paso 15: Clic en el botón "Seleccionar" del modal de Protocolo ===
+
+      try {
+        // Esperar el contenedor del footer del modal
+        const footerProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-protocol"]/div/div/div[3]')),
+          10000
+        );
+
+        // Esperar el botón "Seleccionar"
+        const btnSeleccionarProtocolo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-protocol"]/div')),
+          10000
+        );
+
+        // Asegurar que el botón sea visible
+        await driver.wait(until.elementIsVisible(btnSeleccionarProtocolo), 10000);
+
+        // Asegurar que no esté deshabilitado por clase o atributo
+        await driver.wait(async () => {
+          const disabled = await btnSeleccionarProtocolo.getAttribute("disabled");
+          const clase = await btnSeleccionarProtocolo.getAttribute("class");
+          return !disabled && !clase.includes("disabled");
+        }, 10000);
+
+        // Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnSeleccionarProtocolo);
+        await driver.sleep(500); // Transición
+        await driver.executeScript("arguments[0].click();", btnSeleccionarProtocolo);
+
+        console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal de Protocolo.");
+        await driver.sleep(2000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 15 (clic en botón 'Seleccionar' del protocolo): ${error.message}`);
+      }
+
+      // === Paso 16: Clic en el botón del campo "Categoría" ===
+
+      try {
+        // Esperar que el campo categoría esté presente en el DOM
+        const campoCategoria = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-category"]')),
+          10000
+        );
+
+        // Scroll hacia el campo
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoCategoria);
+        await driver.sleep(500);
+
+        // Esperar y localizar el botón del campo categoría
+        const btnCategoria = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-category"]/div[1]/span/button')),
+          10000
+        );
+
+        // Verificar visibilidad del botón
+        await driver.wait(until.elementIsVisible(btnCategoria), 10000);
+
+        // Clic usando JavaScript para evitar overlays
+        await driver.executeScript("arguments[0].click();", btnCategoria);
+
+        console.log("✅ Se hizo clic en el botón del campo 'Categoría'");
+        await driver.sleep(1500); // Pausa por transición
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 16 (clic en botón de Categoría): ${error.message}`);
+      }
+      // === Paso 17: Seleccionar el elemento "Acceso" (ID 1) en el modal ===
+
+      try {
+        // Esperar que la tabla esté presente
+        const tablaCategoria = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-category"]/div/div[2]/table')),
+          10000
+        );
+
+        // Scroll a la tabla para asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", tablaCategoria);
+        await driver.sleep(500);
+
+        // Localizar el tbody de la tabla
+        const tbodyCategoria = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-category"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Esperar la fila con ID 1
+        const filaAcceso = await tbodyCategoria.findElement(By.xpath('.//*[@id="row-1"]'));
+
+        // Localizar la primera celda de la fila (con el ID)
+        const celdaAcceso = await filaAcceso.findElement(By.css('td#id'));
+
+        // Scroll al elemento
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaAcceso);
+        await driver.sleep(500);
+
+        // Clic sobre la celda
+        await driver.executeScript("arguments[0].click();", celdaAcceso);
+
+        // Verificar que se haya aplicado la clase "active"
+        const claseSeleccionada = await filaAcceso.getAttribute("class");
+        if (!claseSeleccionada.includes("active")) {
+          throw new Error("❌ La fila con ID 1 no fue marcada como activa.");
+        }
+
+        console.log("✅ Fila con ID 1 (Acceso) seleccionada correctamente.");
+        await driver.sleep(1500);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 17 (selección categoría 'Acceso'): ${error.message}`);
+      }
+
+      // === Paso 18: Clic en el botón "Seleccionar" en el modal ===
+
+      try {
+        // Esperar el footer del modal para asegurar que el botón esté presente
+        const footerModalCategoria = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-category"]/div/div/div[3]')),
+          10000
+        );
+
+        // Asegurarse que el botón sea localizable dentro del footer
+        const botonSeleccionarCategoria = await footerModalCategoria.findElement(
+          By.xpath('.//*[@id="widget-button-btSelect-category"]/div')
+        );
+
+        // Asegurar visibilidad del botón
+        await driver.wait(until.elementIsVisible(botonSeleccionarCategoria), 10000);
+
+        // Scroll al botón para asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarCategoria);
+        await driver.sleep(500); // Breve pausa por animaciones
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].click();", botonSeleccionarCategoria);
+
+        console.log("✅ Botón 'Seleccionar' del modal de categoría clickeado correctamente.");
+        await driver.sleep(3000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 18 (clic en botón 'Seleccionar' categoría): ${error.message}`);
+      }
+
+      // === Paso 19: Diligenciar el campo "Serial Fábrica" con un valor aleatorio ===
+
+      try {
+        // Generar los últimos 3 dígitos aleatorios entre 1 y 9
+        const ultimosDigitos = Array.from({ length: 3 }, () =>
+          Math.floor(Math.random() * 9) + 1
+        ).join('');
+
+        const serialCompleto = `2102301260N0M0000${ultimosDigitos}`;
+
+        // Esperar el campo input
+        const inputSerialFabrica = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-factoryserial"]')),
+          10000
+        );
+
+        // Asegurar visibilidad
+        await driver.wait(until.elementIsVisible(inputSerialFabrica), 10000);
+
+        // Limpiar y escribir el valor generado
+        await inputSerialFabrica.clear();
+        await inputSerialFabrica.sendKeys(serialCompleto);
+
+        console.log(`✅ Serial de fábrica ingresado: ${serialCompleto}`);
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 19 (campo Serial Fábrica): ${error.message}`);
+      }
+
+      // === Paso 20: Diligenciar campo "Cantidad de slots" con número aleatorio ===
+
+      try {
+        // Generar número aleatorio entre 1 y 50
+        const cantidadSlots = Math.floor(Math.random() * 50) + 1;
+
+        // Esperar el input del campo cantidad de slots
+        const inputSlots = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-numberofslots"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputSlots), 10000);
+
+        // Limpiar y escribir el valor generado
+        await inputSlots.clear();
+        await inputSlots.sendKeys(cantidadSlots.toString());
+
+        console.log(`✅ Cantidad de slots ingresada: ${cantidadSlots}`);
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 20 (campo Cantidad de slots): ${error.message}`);
+      }
+
+
+      // === Paso 21: Diligenciar campo "Firmware versión" con formato EAXXXXXXXXXXXXXXX ===
+
+      try {
+        // Generar parte aleatoria de 15 caracteres alfanuméricos
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let versionAleatoria = 'EA';
+        for (let i = 0; i < 15; i++) {
+          versionAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+        }
+
+        // Esperar el input del campo firmware version
+        const inputFirmware = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-firmwareversion"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputFirmware), 10000);
+
+        // Limpiar y escribir la versión generada
+        await inputFirmware.clear();
+        await inputFirmware.sendKeys(versionAleatoria);
+
+        console.log(`✅ Firmware versión ingresada: ${versionAleatoria}`);
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 21 (campo Firmware versión): ${error.message}`);
+      }
+
+      // === Paso 22: Diligenciar campo IP con formato IPv4 (iniciando en 172.) ===
+
+      try {
+        // Generar una IP aleatoria con prefijo 172.
+        const octeto2 = Math.floor(Math.random() * 256);
+        const octeto3 = Math.floor(Math.random() * 256);
+        const octeto4 = Math.floor(Math.random() * 256);
+        const ipAleatoria = `172.${octeto2}.${octeto3}.${octeto4}`;
+
+        // Esperar el input del campo IP
+        const inputIP = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-ip"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputIP), 10000);
+
+        // Limpiar y diligenciar IP
+        await inputIP.clear();
+        await inputIP.sendKeys(ipAleatoria);
+
+        console.log(`✅ IP ingresada: ${ipAleatoria}`);
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 22 (campo IP): ${error.message}`);
+      }
+
+      // === Paso 23: Diligenciar campo "Número de soporte" con valor aleatorio ===
+
+      try {
+        // Generar un número de soporte de 12 caracteres alfanuméricos
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const numeroSoporte = Array.from({ length: 12 }, () =>
+          caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+        ).join('');
+
+        // Esperar el input del campo
+        const inputNumeroSoporte = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-supportnumber"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputNumeroSoporte), 10000);
+
+        // Limpiar y diligenciar
+        await inputNumeroSoporte.clear();
+        await inputNumeroSoporte.sendKeys(numeroSoporte);
+
+        console.log(`✅ Número de soporte ingresado: ${numeroSoporte}`);
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 23 (Número de soporte): ${error.message}`);
+      }
+
+      // === Paso 24: Clic en el botón del campo "Fecha de instalación" ===
+
+      try {
+        // Esperar el contenedor del campo fecha
+        const campoFechaInstalacion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-datepicker-installationdate"]')),
+          10000
+        );
+
+        // Esperar el botón dentro del contenedor
+        const botonFechaInstalacion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="datapicker-select-button"]')),
+          10000
+        );
+
+        // Asegurar visibilidad y hacer clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonFechaInstalacion);
+        await driver.wait(until.elementIsVisible(botonFechaInstalacion), 10000);
+        await driver.sleep(500); // para posibles animaciones
+
+        // Hacer clic en el botón de fecha
+        await botonFechaInstalacion.click();
+
+        console.log("✅ Clic en el botón de 'Fecha de instalación' realizado correctamente.");
+        await driver.sleep(1000);
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 24 (clic en botón de 'Fecha de instalación'): ${error.message}`);
+      }
+
+      // === Paso 25: Clic en el botón "ACEPTAR" del calendario ===
+      try {
+        // Esperar a que aparezca el contenedor de botones del calendario
+        const contenedorBotonesCalendario = await driver.wait(
+          until.elementLocated(By.css(".dtp-buttons")),
+          10000
+        );
+
+        // Esperar específicamente el botón con clase "dtp-btn-ok"
+        const botonAceptar = await contenedorBotonesCalendario.findElement(
+          By.css(".dtp-btn-ok")
+        );
+
+        // Asegurarse que sea visible y clickeable
+        await driver.wait(until.elementIsVisible(botonAceptar), 5000);
+        await driver.wait(until.elementIsEnabled(botonAceptar), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAceptar);
+        await driver.sleep(500);
+        await botonAceptar.click();
+        await driver.sleep(3000);
+
+        console.log("✅ Botón 'Aceptar' del calendario presionado con éxito.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 25: No se pudo hacer clic en el botón ACEPTAR. ${error.message}`);
+      }
+
+      // === Paso 26: Clic en el botón "ACEPTAR" del selector de hora ===
+      try {
+        // Esperar a que aparezca el contenedor de botones del calendario/reloj
+        const contenedorBotonesHora = await driver.wait(
+          until.elementLocated(By.css(".dtp-buttons")),
+          10000
+        );
+
+        // Localizar el botón "Aceptar" dentro de ese contenedor
+        const botonAceptarHora = await contenedorBotonesHora.findElement(
+          By.css(".dtp-btn-ok")
+        );
+
+        // Asegurarse que el botón sea visible y esté habilitado
+        await driver.wait(until.elementIsVisible(botonAceptarHora), 5000);
+        await driver.wait(until.elementIsEnabled(botonAceptarHora), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAceptarHora);
+        await driver.sleep(500);
+        await botonAceptarHora.click();
+        await driver.sleep(3000);
+
+        console.log("✅ Botón 'Aceptar' del reloj presionado con éxito.");
+      } catch (error) {
+        throw new Error(`❌ Error al confirmar la hora: ${error.message}`);
+      }
+
+      // === Paso 27: Confirmar minutos en el selector de fecha ===
+      try {
+        // Esperar a que aparezca el contenedor de botones del calendario/reloj
+        const contenedorBotonesMinutos = await driver.wait(
+          until.elementLocated(By.css(".dtp-buttons")),
+          10000
+        );
+
+        // Localizar el botón "Aceptar" dentro de ese contenedor
+        const botonAceptarMinutos = await contenedorBotonesMinutos.findElement(
+          By.css(".dtp-btn-ok")
+        );
+
+        // Asegurarse que el botón sea visible y esté habilitado
+        await driver.wait(until.elementIsVisible(botonAceptarMinutos), 5000);
+        await driver.wait(until.elementIsEnabled(botonAceptarMinutos), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAceptarMinutos);
+        await driver.sleep(500);
+        await botonAceptarMinutos.click();
+        await driver.sleep(3000);
+
+        console.log("✅ Paso 27: Minutos confirmados correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 27 (confirmar minutos): ${error.message}`);
+      }
+
+      // === Paso 28: Confirmar segundos en el selector de fecha ===
+      try {
+        // Esperar a que aparezca el contenedor de botones del calendario/reloj
+        const contenedorBotonesSegundos = await driver.wait(
+          until.elementLocated(By.css(".dtp-buttons")),
+          10000
+        );
+
+        // Localizar el botón "Aceptar" dentro de ese contenedor
+        const botonAceptarSegundos = await contenedorBotonesSegundos.findElement(
+          By.css(".dtp-btn-ok")
+        );
+
+        // Asegurarse que el botón sea visible y esté habilitado
+        await driver.wait(until.elementIsVisible(botonAceptarSegundos), 5000);
+        await driver.wait(until.elementIsEnabled(botonAceptarSegundos), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAceptarSegundos);
+        await driver.sleep(500);
+        await botonAceptarSegundos.click();
+        await driver.sleep(3000);
+
+        console.log("✅ Paso 28: Segundos confirmados correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 28 (confirmar segundos): ${error.message}`);
+      }
+
+
+      // // === Paso 24: Clic en el botón del campo "Modelo" ===
+
+      // try {
+      //   // Esperar a que el contenedor del campo esté presente
+      //   const campoModelo = await driver.wait(
+      //     until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]')),
+      //     10000
+      //   );
+
+      //   // Esperar a que el botón esté dentro del contenedor
+      //   const botonModelo = await driver.wait(
+      //     until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]/div[1]/span/button')),
+      //     10000
+      //   );
+
+      //   // Asegurar visibilidad y hacer clic
+      //   await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonModelo);
+      //   await driver.wait(until.elementIsVisible(botonModelo), 10000);
+      //   await driver.sleep(500); // por animaciones
+      //   await botonModelo.click();
+
+      //   console.log("✅ Clic en el botón del campo 'Modelo' realizado correctamente.");
+      //   await driver.sleep(1000);
+
+      // } catch (error) {
+      //   throw new Error(`❌ Error en paso 24 (clic en botón 'Modelo'): ${error.message}`);
+      // }
+
+
 
     } catch (error) {
       console.error("❌ Error en Explorador de Entidades:", error.message);
