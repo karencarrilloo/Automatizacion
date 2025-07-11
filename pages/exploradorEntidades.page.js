@@ -832,33 +832,293 @@ export default class ExploradorEntidadesPage {
       }
 
 
-      // // === Paso 24: Clic en el botón del campo "Modelo" ===
+      // === Paso 29: Clic en el botón del campo "Modelo" ===
 
-      // try {
-      //   // Esperar a que el contenedor del campo esté presente
-      //   const campoModelo = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]')),
-      //     10000
-      //   );
+      try {
+        // Esperar a que el contenedor del campo esté presente
+        const campoModelo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]')),
+          10000
+        );
 
-      //   // Esperar a que el botón esté dentro del contenedor
-      //   const botonModelo = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]/div[1]/span/button')),
-      //     10000
-      //   );
+        // Esperar a que el botón esté dentro del contenedor
+        const botonModelo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-model"]/div[1]/span/button')),
+          10000
+        );
 
-      //   // Asegurar visibilidad y hacer clic
-      //   await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonModelo);
-      //   await driver.wait(until.elementIsVisible(botonModelo), 10000);
-      //   await driver.sleep(500); // por animaciones
-      //   await botonModelo.click();
+        // Asegurar visibilidad y hacer clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonModelo);
+        await driver.wait(until.elementIsVisible(botonModelo), 10000);
+        await driver.sleep(500); // por animaciones
+        await botonModelo.click();
 
-      //   console.log("✅ Clic en el botón del campo 'Modelo' realizado correctamente.");
-      //   await driver.sleep(1000);
+        console.log("✅ Clic en el botón del campo 'Modelo' realizado correctamente.");
+        await driver.sleep(1000);
 
-      // } catch (error) {
-      //   throw new Error(`❌ Error en paso 24 (clic en botón 'Modelo'): ${error.message}`);
-      // }
+      } catch (error) {
+        throw new Error(`❌ Error en paso 29 (clic en botón 'Modelo'): ${error.message}`);
+      }
+
+      // === Paso 29: Seleccionar fila con ID 1123 y nombre "PIBA" ===
+      try {
+        // Esperar el modal que contiene la tabla
+        const modalModelo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-model"]/div/div')),
+          10000
+        );
+
+        // Esperar a que el cuerpo de la tabla esté disponible
+        const tablaModeloBody = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-model"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Buscar la fila con ID 1123
+        const filaModelo1123 = await tablaModeloBody.findElement(By.css('tr#row-1123'));
+
+        // Buscar la celda con el ID (usualmente el primer td)
+        const celdaIdModelo = await filaModelo1123.findElement(By.css('td#id'));
+
+        // Hacer scroll hacia arriba en el contenedor visible
+        const contenedorScroll = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-model"]/div/div[2]')),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollTop = 0;", contenedorScroll); // Hacia arriba
+        await driver.sleep(500); // Pausa para animación
+
+        // Scroll específico al elemento
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", celdaIdModelo);
+        await driver.sleep(500);
+
+        // Hacer clic en la celda
+        await driver.executeScript("arguments[0].click();", celdaIdModelo);
+        await driver.sleep(1000); // Tiempo para que se aplique clase 'active'
+
+        // Validar clase activa
+        const claseActiva = await filaModelo1123.getAttribute("class");
+        if (!claseActiva.includes("active")) {
+          throw new Error("❌ La fila con ID '1123' no fue marcada como activa.");
+        }
+
+        console.log("✅ Paso 29: Registro PIBA (ID 1123) seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 29 (seleccionar registro PIBA): ${error.message}`);
+      }
+
+      // === Paso 30: Clic en el botón "Seleccionar" del modal de Modelo ===
+      try {
+        // Esperar a que el footer del modal esté presente
+        const footerModelo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-model"]/div/div/div[3]')),
+          10000
+        );
+
+        // Localizar el botón "Seleccionar"
+        const botonSeleccionarModelo = await footerModelo.findElement(
+          By.xpath('//*[@id="widget-button-btSelect-model"]/div')
+        );
+
+        // Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(botonSeleccionarModelo), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionarModelo), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonSeleccionarModelo);
+        await driver.sleep(500);
+        await botonSeleccionarModelo.click();
+        await driver.sleep(3000);
+
+        console.log("✅ Paso 30: Botón 'Seleccionar' del modal de Modelo clickeado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 30 (clic en botón 'Seleccionar' en Modelo): ${error.message}`);
+      }
+
+      // === Paso 31: Diligenciar campo "Nombre" con formato TEST_AUT_OLT_0X ===
+      try {
+        // Esperar el contenedor del input
+        const contenedorNombre = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-textfield-name"]')),
+          10000
+        );
+
+        // Localizar el input del nombre
+        const inputNombre = await contenedorNombre.findElement(
+          By.xpath('//*[@id="textfield-name"]')
+        );
+
+        // Generar valor con número aleatorio del 1 al 9
+        const numeroAleatorio = Math.floor(Math.random() * 9) + 1; // 1 al 9
+        const nombreGenerado = `TEST_AUT_OLT_0${numeroAleatorio}`;
+
+        // Limpiar el campo antes de escribir
+        await inputNombre.clear();
+        await driver.sleep(300); // breve pausa
+
+        // Ingresar el valor generado
+        await inputNombre.sendKeys(nombreGenerado);
+        await driver.sleep(2000);
+
+        console.log(`✅ Paso 31: Campo 'Nombre' diligenciado con: ${nombreGenerado}`);
+      } catch (error) {
+        throw new Error(`❌ Error en paso 31 (diligenciar campo Nombre): ${error.message}`);
+      }
+
+      // === Paso 32: Diligenciar campo "Descripción" con el mismo valor del campo "Nombre" ===
+      try {
+        // Localizar directamente el input del nombre para obtener su valor
+        const inputNombre = await driver.findElement(By.xpath('//*[@id="textfield-name"]'));
+        const valorNombre = await inputNombre.getAttribute("value");
+
+        // Esperar el contenedor del campo descripción
+        const contenedorDescripcion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-textfield-description"]')),
+          10000
+        );
+
+        // Localizar el input de descripción
+        const inputDescripcion = await contenedorDescripcion.findElement(
+          By.xpath('//*[@id="textfield-description"]')
+        );
+
+        // Limpiar el campo antes de escribir
+        await inputDescripcion.clear();
+        await driver.sleep(300); // Pausa corta
+
+        // Ingresar el valor del nombre en la descripción
+        await inputDescripcion.sendKeys(valorNombre);
+        await driver.sleep(2000);
+
+        console.log(`✅ Paso 32: Campo 'Descripción' diligenciado con: ${valorNombre}`);
+      } catch (error) {
+        throw new Error(`❌ Error en paso 32 (diligenciar campo Descripción): ${error.message}`);
+      }
+
+      // === Paso 33: Diligenciar campo "Ícono" con valor fijo ===
+      try {
+        const valorIcono = "img/icons_entity/ico-sub-comp-internal-storage.png";
+
+        // Esperar el contenedor del campo ícono
+        const contenedorIcono = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-textfield-icon"]')),
+          10000
+        );
+
+        // Localizar el input del campo ícono
+        const inputIcono = await contenedorIcono.findElement(
+          By.xpath('//*[@id="textfield-icon"]')
+        );
+
+        // Limpiar campo antes de escribir
+        await inputIcono.clear();
+        await driver.sleep(300); // Pausa breve
+
+        // Escribir valor
+        await inputIcono.sendKeys(valorIcono);
+        await driver.sleep(2000);
+
+        console.log(`✅ Paso 33: Campo 'Ícono' diligenciado con: ${valorIcono}`);
+      } catch (error) {
+        throw new Error(`❌ Error en paso 33 (diligenciar campo Ícono): ${error.message}`);
+      }
+
+      // === Paso 34: Clic en botón del campo "Localidad" ===
+      try {
+        // Esperar el contenedor del campo "Localidad"
+        const contenedorLocalidad = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklocation-location"]')),
+          10000
+        );
+
+        // Buscar el botón dentro del contenedor
+        const botonLocalidad = await contenedorLocalidad.findElement(
+          By.xpath('//*[@id="widget-picklocation-location"]/div[1]/span/button')
+        );
+
+        // Asegurarse de que sea visible
+        await driver.wait(until.elementIsVisible(botonLocalidad), 5000);
+        await driver.wait(until.elementIsEnabled(botonLocalidad), 5000);
+
+        // Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonLocalidad);
+        await driver.sleep(500); // Pausa por animación o transición
+
+        await botonLocalidad.click();
+        await driver.sleep(2000);
+
+        console.log("✅ Paso 34: Clic en el botón del campo 'Localidad' realizado con éxito.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 34 (clic en botón Localidad): ${error.message}`);
+      }
+
+      // === Paso 35: Clic en el botón "Seleccionar" del modal de Localidad ===
+      try {
+        // Esperar a que aparezca el contenedor del modal de localidad
+        const modalLocalidad = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklocation-location"]/div/div')),
+          10000
+        );
+
+        // Esperar el footer del modal donde está el botón "Seleccionar"
+        const footerModalLocalidad = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklocation-location"]/div/div/div[3]')),
+          10000
+        );
+
+        // Localizar el botón "Seleccionar"
+        const botonSeleccionarLocalidad = await footerModalLocalidad.findElement(
+          By.xpath('//*[@id="widget-button-btSelect"]/div')
+        );
+
+        // Esperar a que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(botonSeleccionarLocalidad), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionarLocalidad), 5000);
+
+        // Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonSeleccionarLocalidad);
+        await driver.sleep(500);
+
+        await botonSeleccionarLocalidad.click();
+        await driver.sleep(2000);
+
+        console.log("✅ Paso 35: Clic en botón 'Seleccionar' del modal de localidad realizado con éxito.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 35 (clic en botón 'Seleccionar' de localidad): ${error.message}`);
+      }
+      // === Paso 36: Clic en el botón "Aceptar" del modal de configuración masiva de agente ===
+      try {
+        // Esperar a que aparezca el contenedor del modal
+        const modalConfiguracionAgente = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-filter-massive-agents"]/div/div')),
+          10000
+        );
+
+        // Esperar a que el footer del modal esté presente
+        const footerModalConfiguracion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-filter-massive-agents"]/div/div/div[3]')),
+          10000
+        );
+
+        // Buscar el botón "Aceptar" en el footer
+        const botonAceptarConfiguracion = await footerModalConfiguracion.findElement(
+          By.xpath('//*[@id="widget-button-btn-acept-massive-agent"]/div')
+        );
+
+        // Asegurarse de que el botón sea visible y esté habilitado
+        await driver.wait(until.elementIsVisible(botonAceptarConfiguracion), 5000);
+        await driver.wait(until.elementIsEnabled(botonAceptarConfiguracion), 5000);
+
+        // Hacer scroll al botón y dar clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonAceptarConfiguracion);
+        await driver.sleep(500);
+        await botonAceptarConfiguracion.click();
+        await driver.sleep(1000); // Espera ligera tras la acción
+
+        console.log("✅ Paso 36: Se hizo clic en el botón 'Aceptar' del modal de configuración masiva de agente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 36 (clic en botón 'Aceptar'): ${error.message}`);
+      }
 
 
 
