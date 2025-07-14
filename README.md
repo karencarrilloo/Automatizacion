@@ -40,13 +40,16 @@ git clone <URL_REPOSITORIO>
 cd automatizacion-celsia
 ```
 
-2. Instala las dependencias:
+2. Instala las dependencias
 
 ```bash
-npm install
+
+npm init -y 
+npm install selenium-webdriver mocha chai --save-dev
+
 ```
 
-Esto instalará:
+Esto iniciará el proyecto e instalará:
 - `selenium-webdriver`
 - `mocha`
 - `chai`
@@ -56,6 +59,8 @@ Esto instalará:
 ## 🧪 Ejecutar pruebas
 
 ### Ejecutar todas las pruebas:
+Estar ubicado en la carpeta Automatización
+
 ```bash
 npm test
 ```
@@ -79,6 +84,11 @@ npx mocha tests/programadorTareas.mjs
 npx mocha tests/ocupacionPuertos.mjs
 npx mocha tests/configuracionTipoOrden.mjs
 ```
+
+Recomendación:
+
+en caso de ejecutar una prueba y no se abre el navegador chrome importar el chromedriver en los archivos mjs
+import chromedriver from 'chromedriver';
 
 ---
 

@@ -1,0 +1,14 @@
+flowchart TD
+  A[Inicio] --> B[Abrir navegador]
+  B --> C[Ir a URL OSS]
+  C --> D{¿Campo usuario visible?}
+  D --Sí--> E[Ingresar correo]
+  E --> F[Click en Siguiente]
+  F --> G[Ingresar contraseña]
+  G --> H[Click en Iniciar sesión]
+  H --> I{¿App Himalaya visible?}
+  I --Sí--> J[Click en Himalaya]
+  J --> K[Click en botón Sí]
+  K --> L[Fin]
+  D --No--> X[Error y screenshot]
+  I --No--> X

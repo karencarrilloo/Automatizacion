@@ -47,6 +47,100 @@ export default class PuertosActivosPage {
       await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", puertosActivosBtn);
       await driver.sleep(5000);
+      // === Paso 4: Clic en el botón "Mostrar filtro" en Puertos Activos ===
+      try {
+        // Esperar que el contenedor que contiene el botón esté presente
+        const contenedorBotonFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-4043-Active_ports_without_buttons"]/div/div[1]')),
+          10000
+        );
+
+        // Buscar el botón "Mostrar filtro"
+        const botonMostrarFiltro = await contenedorBotonFiltro.findElement(
+          By.xpath('//*[@id="widget-button-btn-show-filter"]/div')
+        );
+
+        // Asegurarse que el botón esté visible y habilitado
+        await driver.wait(until.elementIsVisible(botonMostrarFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(botonMostrarFiltro), 5000);
+
+        // Hacer scroll al botón y hacer clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonMostrarFiltro);
+        await driver.sleep(500);
+        await botonMostrarFiltro.click();
+        await driver.sleep(1000); // Espera breve tras acción
+
+        console.log("✅ Paso 4: Se hizo clic en el botón 'Mostrar filtro' correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 4 (clic en 'Mostrar filtro'): ${error.message}`);
+      }
+
+      // === Paso 5: Clic en el <select> para mostrar opciones del filtro ===
+      try {
+        // Esperar el contenedor principal de grupo de reglas
+        const grupoFiltro = await driver.wait(
+          until.elementLocated(By.css('.rules-group-container')),
+          10000
+        );
+
+        // Esperar el contenedor del filtro
+        const contenedorFiltro = await grupoFiltro.findElement(
+          By.css('.rule-filter-container')
+        );
+
+        // Localizar el select dentro del contenedor
+        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+
+        // Asegurar que sea visible e interactuable
+        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+
+        // Scroll y clic sobre el select
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
+        await driver.sleep(500);
+        await selectFiltro.click();
+        await driver.sleep(2000);
+
+        console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
+      }
+
+      // === Paso 6: Seleccionar la opción "CENTRO POBLADO" ===
+      try {
+        // Esperar el contenedor de grupo de reglas
+        const grupoFiltro = await driver.wait(
+          until.elementLocated(By.css('.rules-group-container')),
+          10000
+        );
+
+        // Esperar el contenedor de filtro dentro del grupo
+        const contenedorFiltro = await grupoFiltro.findElement(By.css('.rule-filter-container'));
+
+        // Localizar el <select>
+        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+
+        // Esperar a que el select sea interactuable
+        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+
+        // Clic (por si aún no está abierto)
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", selectFiltro);
+        await driver.sleep(500);
+
+        // Crear objeto Select desde Selenium
+        const { Select } = require('selenium-webdriver/lib/select');
+        const select = new Select(selectFiltro);
+
+        // Seleccionar la opción por texto visible
+        await select.selectByVisibleText('CENTRO POBLADO');
+        await driver.sleep(1000);
+
+        console.log("✅ Paso 6: Opción 'CENTRO POBLADO' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 6 (seleccionar 'CENTRO POBLADO'): ${error.message}`);
+      }
+
 
     } catch (error) {
       console.error('❌ Error en Puertos Activos:', error.message);
