@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By, Key, until } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -106,40 +106,80 @@ export default class PuertosActivosPage {
         throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
       }
 
-      // === Paso 6: Seleccionar la opción "CENTRO POBLADO" ===
+      // === Paso 6: Seleccionar "CENTRO POBLADO" correctamente ===
       try {
-        // Esperar el contenedor de grupo de reglas
-        const grupoFiltro = await driver.wait(
+        // Esperar contenedor de filtros
+        const contenedorGrupo = await driver.wait(
           until.elementLocated(By.css('.rules-group-container')),
           10000
         );
 
-        // Esperar el contenedor de filtro dentro del grupo
-        const contenedorFiltro = await grupoFiltro.findElement(By.css('.rule-filter-container'));
+        // Localizar el select de campos (dropdown)
+        const selectCampo = await contenedorGrupo.findElement(By.css('select'));
 
-        // Localizar el <select>
-        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+        // Clic manual para abrir la lista de opciones
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
+        await selectCampo.click();
+        await driver.sleep(500); // Esperar que se despliegue
 
-        // Esperar a que el select sea interactuable
-        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
-        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+        // Enviar teclas con texto de la opción (simula uso real del teclado)
+        await selectCampo.sendKeys("CENTRO POBLADO");
+        await driver.sleep(3000);
+        // await selectCampo.sendKeys(Key.ENTER); // Confirma la selección
 
-        // Clic (por si aún no está abierto)
-        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", selectFiltro);
+        await driver.sleep(2000); // Esperar render
+
+        console.log("✅ Opción 'CENTRO POBLADO' seleccionada con eventos correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 6 (selección real de 'CENTRO POBLADO'): ${error.message}`);
+      }
+
+      try {
+
+        // Paso 7: Esperar a que el <textarea> sea visible
+        const textareaCampo = await driver.wait(
+          until.elementLocated(By.css('textarea.form-control')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(textareaCampo), 5000);
+
+        // Clic, limpiar y escribir "PALMIRA"
+        await textareaCampo.click();
+        await driver.sleep(300);
+        await textareaCampo.clear();
+        await textareaCampo.sendKeys("PALMIRA");
+        await driver.sleep(1500);
+
+        console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 7 (textarea): ${error.message}`);
+      }
+
+      try {
+        // Paso 8 – Clic en el botón "Aplicar filtro": 
+        // Localizar el botón por XPath
+        const botonAplicarFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
+          10000
+        );
+
+        // Esperar a que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
         await driver.sleep(500);
 
-        // Crear objeto Select desde Selenium
-        const { Select } = require('selenium-webdriver/lib/select');
-        const select = new Select(selectFiltro);
+        // Hacer clic
+        await botonAplicarFiltro.click();
+        await driver.sleep(3000); // esperar que cargue la nueva tabla filtrada
 
-        // Seleccionar la opción por texto visible
-        await select.selectByVisibleText('CENTRO POBLADO');
-        await driver.sleep(1000);
+        console.log("✅ Paso 8 completado: Se hizo clic en 'Aplicar filtro'.");
 
-        console.log("✅ Paso 6: Opción 'CENTRO POBLADO' seleccionada correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 6 (seleccionar 'CENTRO POBLADO'): ${error.message}`);
+        throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
       }
+
 
 
     } catch (error) {
