@@ -70,7 +70,7 @@ export default class PuertosActivosPage {
         await botonMostrarFiltro.click();
         await driver.sleep(1000); // Espera breve tras acción
 
-        console.log("✅ Paso 4: Se hizo clic en el botón 'Mostrar filtro' correctamente.");
+        //console.log("✅ Paso 4: Se hizo clic en el botón 'Mostrar filtro' correctamente.");
       } catch (error) {
         throw new Error(`❌ Error en paso 4 (clic en 'Mostrar filtro'): ${error.message}`);
       }
@@ -101,7 +101,7 @@ export default class PuertosActivosPage {
         await selectFiltro.click();
         await driver.sleep(2000);
 
-        console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
+        //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
       } catch (error) {
         throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
       }
@@ -129,14 +129,14 @@ export default class PuertosActivosPage {
 
         await driver.sleep(2000); // Esperar render
 
-        console.log("✅ Opción 'CENTRO POBLADO' seleccionada con eventos correctamente.");
+        //console.log("✅ Opción 'CENTRO POBLADO' seleccionada con eventos correctamente.");
       } catch (error) {
         throw new Error(`❌ Error en paso 6 (selección real de 'CENTRO POBLADO'): ${error.message}`);
       }
 
       try {
 
-        // Paso 7: Esperar a que el <textarea> sea visible
+        // Paso 7: Esperar a que el <textarea> sea visible y diligenciar con la palabra "PALMIRA"
         const textareaCampo = await driver.wait(
           until.elementLocated(By.css('textarea.form-control')),
           10000
@@ -151,7 +151,7 @@ export default class PuertosActivosPage {
         await textareaCampo.sendKeys("PALMIRA");
         await driver.sleep(1500);
 
-        console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
+        //console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
 
       } catch (error) {
         throw new Error(`❌ Error en paso 7 (textarea): ${error.message}`);
@@ -179,7 +179,6 @@ export default class PuertosActivosPage {
       } catch (error) {
         throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
       }
-
 
 
     } catch (error) {
