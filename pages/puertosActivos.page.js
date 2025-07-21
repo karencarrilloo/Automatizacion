@@ -76,35 +76,36 @@ export default class PuertosActivosPage {
       }
 
       // === Paso 5: Clic en el <select> para mostrar opciones del filtro ===
-      try {
-        // Esperar el contenedor principal de grupo de reglas
-        const grupoFiltro = await driver.wait(
-          until.elementLocated(By.css('.rules-group-container')),
-          10000
-        );
+try {
+  // Esperar el contenedor principal del grupo de reglas
+  const grupoFiltro = await driver.wait(
+    until.elementLocated(By.css('.rules-group-container')),
+    10000
+  );
 
-        // Esperar el contenedor del filtro
-        const contenedorFiltro = await grupoFiltro.findElement(
-          By.css('.rule-filter-container')
-        );
+  // Esperar el contenedor específico del filtro (columna select)
+  const contenedorFiltro = await grupoFiltro.findElement(
+    By.css('.rule-filter-container')
+  );
 
-        // Localizar el select dentro del contenedor
-        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+  // Localizar el <select> dentro del contenedor
+  const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
 
-        // Asegurar que sea visible e interactuable
-        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
-        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+  // Asegurar que sea visible e interactuable
+  await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+  await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
 
-        // Scroll y clic sobre el select
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
-        await driver.sleep(500);
-        await selectFiltro.click();
-        await driver.sleep(2000);
+  // Scroll y clic sobre el select
+  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
+  await driver.sleep(500);
+  await selectFiltro.click();
+  await driver.sleep(2000);
 
-        //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
-      } catch (error) {
-        throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
-      }
+  //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
+} catch (error) {
+  throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
+}
+
 
       // === Paso 6: Seleccionar "CENTRO POBLADO" correctamente ===
       try {
@@ -180,6 +181,55 @@ export default class PuertosActivosPage {
         throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
       }
 
+      // === Paso 9: Clic Nuevamente en el botón "Mostrar filtro" en Puertos Activos ===
+      try {
+        // Esperar que el contenedor que contiene el botón esté presente
+        const contenedorBotonFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-4043-Active_ports_without_buttons"]/div/div[1]')),
+          10000
+        );
+
+        // Buscar el botón "Mostrar filtro"
+        const botonMostrarFiltro = await contenedorBotonFiltro.findElement(
+          By.xpath('//*[@id="widget-button-btn-show-filter"]/div')
+        );
+
+        // Asegurarse que el botón esté visible y habilitado
+        await driver.wait(until.elementIsVisible(botonMostrarFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(botonMostrarFiltro), 5000);
+
+        // Hacer scroll al botón y hacer clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonMostrarFiltro);
+        await driver.sleep(500);
+        await botonMostrarFiltro.click();
+        await driver.sleep(1000); // Espera breve tras acción
+
+        //console.log("✅ Paso 9: Se hizo clic en el botón nuevamente 'Mostrar filtro' correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 9 (clic en 'Mostrar filtro'): ${error.message}`);
+      }
+
+      try {
+        // Paso 10: Localizar el botón "+ Add rule" por XPath y dar clic sobre él
+        const botonAddRule = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="qb_40640_group_0"]/div[1]/div[1]/button[1]')),
+          10000
+        );
+
+        // Esperar a que el botón sea visible
+        await driver.wait(until.elementIsVisible(botonAddRule), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+        await driver.sleep(500);
+        await botonAddRule.click();
+
+        console.log("✅ Paso 10 completado: Se hizo clic en '+ Add rule'.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 10 (clic en '+ Add rule'): ${error.message}`);
+
+      }
 
     } catch (error) {
       console.error('❌ Error en Puertos Activos:', error.message);

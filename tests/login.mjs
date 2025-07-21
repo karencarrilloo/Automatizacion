@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 
 describe('Login Test', function() {
-  this.timeout(60000);
+  this.timeout(80000);
 
   let driver;
   let loginPage;

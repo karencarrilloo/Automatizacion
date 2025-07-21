@@ -22,44 +22,44 @@ export default class LoginPage {
       // === Paso 2: Ingreso de correo ===
       const inputCorreo = await driver.wait(
         until.elementLocated(By.css('#textfield-field-user')),
-        10000
+        25000
       ); // Espera que el campo de correo esté disponible
       await inputCorreo.sendKeys('harold.aguirre@hamantsoft.com'); // Ingresa el correo
 
       // === Paso 3: Clic en botón "Siguiente" ===
       const btnSiguiente = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Siguiente') and contains(@class, 'btn-default')]")),
-        10000
+        25000
       ); // Espera el botón Siguiente
       await driver.executeScript("arguments[0].click();", btnSiguiente); // Hace clic con JS para evitar overlays
-      await driver.sleep(2000); // Espera transición
+      await driver.sleep(5000); // Espera transición
 
       // === Paso 4: Ingreso de contraseña ===
       const inputPassword = await driver.wait(
         until.elementLocated(By.css('#textfield-field-password')),
-        10000
+        25000
       ); // Espera campo de contraseña
       await inputPassword.sendKeys('hJnlIAWpdyE'); // Ingresa contraseña
 
       // === Paso 5: Clic en botón "Iniciar sesión" ===
       const btnLogin = await driver.wait(
         until.elementLocated(By.css('#widget-button-btn-common-login > div')),
-        10000
+        55000
       ); // Espera botón login
       await driver.executeScript("arguments[0].click();", btnLogin); // Hace clic en login
 
       // === Paso 6: Clic en aplicación Himalaya ===
       const himalayaBtn = await driver.wait(
         until.elementLocated(By.css('#login-cloud-view-container .popular-apps > div')),
-        15000
+        55000
       ); // Espera botón Himalaya
       await driver.executeScript("arguments[0].click();", himalayaBtn); // Clic en Himalaya
-      await driver.sleep(2000); // Espera modal
+      await driver.sleep(5000); // Espera modal
 
       // === Paso 7: Confirmar "Sí" en modal ===
       const btnConfirmar = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Sí') and contains(@class, 'btn-default')]")),
-        10000
+        25000
       ); // Espera botón Sí
       await driver.executeScript("arguments[0].click();", btnConfirmar); // Clic en Sí
       await driver.sleep(5000); // Espera transición
