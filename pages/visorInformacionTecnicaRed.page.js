@@ -137,101 +137,236 @@ export default class VisorInformacionTecnicaRedPage {
         throw new Error(`❌ Error en paso 6 (selección de 'CENTRO POBLADO'): ${error.message}`);
       }
 
-          try {
+      try {
 
-            // Paso 7: Esperar a que el <textarea> sea visible y diligenciar con la palabra "PALMIRA"
-            const textareaCampo = await driver.wait(
-              until.elementLocated(By.css('textarea.form-control')),
-              10000
-            );
+        // Paso 7: Esperar a que el <textarea> sea visible y diligenciar con la palabra "PALMIRA"
+        const textareaCampo = await driver.wait(
+          until.elementLocated(By.css('textarea.form-control')),
+          10000
+        );
 
-            await driver.wait(until.elementIsVisible(textareaCampo), 5000);
+        await driver.wait(until.elementIsVisible(textareaCampo), 5000);
 
-            // Clic, limpiar y escribir "PALMIRA"
-            await textareaCampo.click();
-            await driver.sleep(300);
-            await textareaCampo.clear();
-            await textareaCampo.sendKeys("PALMIRA");
-            await driver.sleep(1500);
+        // Clic, limpiar y escribir "PALMIRA"
+        await textareaCampo.click();
+        await driver.sleep(300);
+        await textareaCampo.clear();
+        await textareaCampo.sendKeys("PALMIRA");
+        await driver.sleep(1500);
 
-            //console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
+        //console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
 
-          } catch (error) {
-            throw new Error(`❌ Error en paso 7 (textarea): ${error.message}`);
+      } catch (error) {
+        throw new Error(`❌ Error en paso 7 (textarea): ${error.message}`);
+      }
+
+      try {
+        // Paso 8 – Clic en el botón "Aplicar filtro": 
+        // Localizar el botón por XPath
+        const botonAplicarFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
+          10000
+        );
+
+        // Esperar a que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+        await driver.sleep(500);
+
+        // Hacer clic
+        await botonAplicarFiltro.click();
+        await driver.sleep(3000); // esperar que cargue la nueva tabla filtrada
+
+        // console.log("✅ Paso 8 completado: Se hizo clic en 'Aplicar filtro'.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
+      }
+
+      // === Paso 9: Clic Nuevamente en el botón "Mostrar filtro" en Puertos Activos ===
+      try {
+        // Esperar a que aparezca el botón por ID directamente
+        const botonMostrarFiltro = await driver.wait(
+          until.elementLocated(By.id("widget-button-btn-show-filter")),
+          10000
+        );
+
+        // Esperar a que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(botonMostrarFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(botonMostrarFiltro), 5000);
+
+        // Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonMostrarFiltro);
+        await driver.sleep(500);
+        await botonMostrarFiltro.click();
+        await driver.sleep(1000);
+
+        //console.log("✅ Paso 9: Botón 'Mostrar filtro' clickeado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 4 (clic en 'Mostrar filtro'): ${error.message}`);
+      }
+
+      try {
+        // Paso 10: Localizar el botón "+ Add rule" usando atributo estable
+        const botonAddRule = await driver.wait(
+          until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+          10000
+        );
+
+        // Esperar a que el botón sea visible e interactuable
+        await driver.wait(until.elementIsVisible(botonAddRule), 5000);
+        await driver.wait(until.elementIsEnabled(botonAddRule), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+        await driver.sleep(500);
+        await botonAddRule.click();
+        await driver.sleep(2500);
+
+        // console.log("✅ Paso 10 completado: Se hizo clic en '+ Add rule'.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 10 (clic en '+ Add rule'): ${error.message}`);
+      }
+
+      // === Paso 11: Clic nuevamente en el <select> para mostrar opciones del filtro ===
+      try {
+        // Esperar el contenedor principal del grupo de reglas
+        const grupoFiltro = await driver.wait(
+          until.elementLocated(By.css('.rules-group-container')),
+          10000
+        );
+
+        // Esperar el contenedor específico del filtro (columna select)
+        const contenedorFiltro = await grupoFiltro.findElement(
+          By.css('.rule-filter-container')
+        );
+
+        // Localizar el <select> dentro del contenedor
+        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+
+        // Asegurar que sea visible e interactuable
+        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+
+        // Scroll y clic sobre el select
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
+        await driver.sleep(500);
+        await selectFiltro.click();
+        await driver.sleep(2000);
+
+        //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
+      }
+
+      // === Paso 12: Seleccionar "NAP SERIAL CELSIA" correctamente en segundo filtro ===
+      try {
+        // Esperar todos los contenedores de filtros (rules)
+        const contenedoresFiltro = await driver.wait(
+          until.elementsLocated(By.css('.rule-container')),
+          10000
+        );
+
+        if (contenedoresFiltro.length < 2) {
+          throw new Error("No se encontró el segundo filtro para aplicar 'NAP SERIAL CELSIA'.");
+        }
+
+        // Obtener el segundo contenedor
+        const segundoFiltro = contenedoresFiltro[1];
+
+        // Localizar el select de campo dentro del segundo filtro
+        const selectCampo = await segundoFiltro.findElement(By.css('.rule-filter-container select'));
+
+        await driver.wait(until.elementIsVisible(selectCampo), 5000);
+        await driver.wait(until.elementIsEnabled(selectCampo), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
+        await selectCampo.click();
+        await driver.sleep(300);
+
+        // Seleccionar usando las opciones del DOM (más fiable que sendKeys)
+        const opciones = await selectCampo.findElements(By.css('option'));
+        let opcionEncontrada = false;
+        for (let opcion of opciones) {
+          const texto = await opcion.getText();
+          if (texto.trim().toUpperCase() === "NAP SERIAL CELSIA") {
+            await opcion.click();
+            opcionEncontrada = true;
+            break;
           }
+        }
 
-      //     try {
-      //       // Paso 8 – Clic en el botón "Aplicar filtro": 
-      //       // Localizar el botón por XPath
-      //       const botonAplicarFiltro = await driver.wait(
-      //         until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
-      //         10000
-      //       );
+        if (!opcionEncontrada) {
+          throw new Error("Opción 'NAP SERIAL CELSIA' no encontrada en el segundo filtro.");
+        }
 
-      //       // Esperar a que esté visible y habilitado
-      //       await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
-      //       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
-      //       await driver.sleep(500);
+        // Esperar a que se renderice el textarea como efecto del cambio
+        await driver.wait(
+          until.elementLocated(By.css('.rule-value-container textarea')),
+          5000
+        );
 
-      //       // Hacer clic
-      //       await botonAplicarFiltro.click();
-      //       await driver.sleep(3000); // esperar que cargue la nueva tabla filtrada
+        await driver.sleep(1000); // Espera adicional para asegurar render completo
 
-      //       console.log("✅ Paso 8 completado: Se hizo clic en 'Aplicar filtro'.");
+        //console.log("✅ Paso 12: 'NAP SERIAL CELSIA' seleccionado y textarea visible.");
 
-      //     } catch (error) {
-      //       throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
-      //     }
+      } catch (error) {
+        throw new Error(`❌ Error en paso 12 (selección de 'NAP SERIAL CELSIA'): ${error.message}`);
+      }
 
-      //     // === Paso 9: Clic Nuevamente en el botón "Mostrar filtro" en Puertos Activos ===
-      //     try {
-      //       // Esperar que el contenedor que contiene el botón esté presente
-      //       const contenedorBotonFiltro = await driver.wait(
-      //         until.elementLocated(By.xpath('//*[@id="crud-4043-Active_ports_without_buttons"]/div/div[1]')),
-      //         10000
-      //       );
 
-      //       // Buscar el botón "Mostrar filtro"
-      //       const botonMostrarFiltro = await contenedorBotonFiltro.findElement(
-      //         By.xpath('//*[@id="widget-button-btn-show-filter"]/div')
-      //       );
+      // === Paso 13: Ingresar número en segundo filtro (por jerarquía DOM) ===
+      try {
+        // Esperar al segundo bloque de regla (filtro)
+        const segundoFiltro = await driver.wait(
+          until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
+          10000
+        );
 
-      //       // Asegurarse que el botón esté visible y habilitado
-      //       await driver.wait(until.elementIsVisible(botonMostrarFiltro), 5000);
-      //       await driver.wait(until.elementIsEnabled(botonMostrarFiltro), 5000);
+        // Buscar el textarea dentro de ese contenedor
+        const textarea = await segundoFiltro.findElement(By.css('textarea'));
 
-      //       // Hacer scroll al botón y hacer clic
-      //       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonMostrarFiltro);
-      //       await driver.sleep(500);
-      //       await botonMostrarFiltro.click();
-      //       await driver.sleep(1000); // Espera breve tras acción
+        // Asegurarse que el campo esté visible y habilitado
+        await driver.wait(until.elementIsVisible(textarea), 5000);
+        await driver.wait(until.elementIsEnabled(textarea), 5000);
 
-      //       //console.log("✅ Paso 9: Se hizo clic en el botón nuevamente 'Mostrar filtro' correctamente.");
-      //     } catch (error) {
-      //       throw new Error(`❌ Error en paso 9 (clic en 'Mostrar filtro'): ${error.message}`);
-      //     }
+        // Scroll y escritura
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", textarea);
+        await driver.sleep(500);
+        await textarea.clear();
+        await textarea.sendKeys("3001385");
+        await driver.sleep(1000);
 
-      //     try {
-      //       // Paso 10: Localizar el botón "+ Add rule" por XPath y dar clic sobre él
-      //       const botonAddRule = await driver.wait(
-      //         until.elementLocated(By.xpath('//*[@id="qb_40640_group_0"]/div[1]/div[1]/button[1]')),
-      //         10000
-      //       );
+        //console.log("✅ Paso 13: Valor ingresado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en paso 13 (ingreso de valor en segundo filtro): ${error.message}`);
+      }
 
-      //       // Esperar a que el botón sea visible
-      //       await driver.wait(until.elementIsVisible(botonAddRule), 5000);
+      // === Paso 14: Clic en "Aplicar filtro" ===
+      try {
+        // Esperar el botón por XPath
+        const botonAplicarFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
+          10000
+        );
 
-      //       // Scroll al botón y clic
-      //       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
-      //       await driver.sleep(500);
-      //       await botonAddRule.click();
+        // Esperar que sea visible e interactuable
+        await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(botonAplicarFiltro), 5000);
 
-      //       console.log("✅ Paso 10 completado: Se hizo clic en '+ Add rule'.");
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+        await driver.sleep(300);
+        await botonAplicarFiltro.click();
+        await driver.sleep(5000);
 
-      //     } catch (error) {
-      //       throw new Error(`❌ Error en paso 10 (clic en '+ Add rule'): ${error.message}`);
+        console.log("✅ Paso 14 completado: Se hizo clic en 'Aplicar filtro'.");
 
-      //  }
+      } catch (error) {
+        throw new Error(`❌ Error en paso 14 (clic en 'Aplicar filtro'): ${error.message}`);
+      }
+
+
 
     } catch (error) {
       console.error('❌ Error en Puertos Activos:', error.message);

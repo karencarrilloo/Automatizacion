@@ -35,6 +35,7 @@ export default class GestionActivosPage {
       );
       await driver.sleep(1000);
 
+
       // === Paso 3: Clic en "Gestion de Activos" ===
       const gestionActivosBtn = await driver.wait(
         until.elementLocated(By.css('div.application-item[title="Gestion de Activos"]')),
@@ -63,6 +64,86 @@ export default class GestionActivosPage {
 
       await this.seleccionarEnTabla('ont');
       await this.clickBotonSeleccionar();
+      await driver.sleep(5000);
+
+      // === Paso 5: Seleccionar fila con ID 8 (OPERATIVE) ===
+      try {
+        // Esperar que el tbody del grid esté disponible
+        const cuerpoTabla = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-select-device"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Esperar específicamente la fila con ID 8
+        const filaOperative = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="row-8"]')),
+          5000
+        );
+
+        // Asegurar visibilidad y hacer scroll
+        await driver.wait(until.elementIsVisible(filaOperative), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", filaOperative);
+        await driver.sleep(300);
+
+        // Hacer clic sobre la fila
+        await filaOperative.click();
+        await driver.sleep(1000);
+
+        console.log("✅ Paso 5 completado: Fila con ID 8 seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 5 (selección de fila 'OPERATIVE'): ${error.message}`);
+      }
+
+      // === Paso 6: Hacer clic en el botón "FINALIZAR" ===
+      try {
+        // Esperar contenedor del footer del wizard
+        const contenedorFooter = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-wizard-dialog"]/div/div/div[3]')),
+          10000
+        );
+
+        // Buscar botón "FINALIZAR"
+        const botonFinalizar = await contenedorFooter.findElement(
+          By.xpath('//*[@id="widget-button-btn-next-step"]/div')
+        );
+
+        // Esperar a que el botón sea visible e interactuable
+        await driver.wait(until.elementIsVisible(botonFinalizar), 5000);
+        await driver.wait(until.elementIsEnabled(botonFinalizar), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonFinalizar);
+        await driver.sleep(300);
+        await botonFinalizar.click();
+
+        console.log("✅ Paso 6: clic en 'FINALIZAR' realizado.");
+
+        // === Espera dinámica tras clic en "FINALIZAR" ===
+        // Asumimos que aparece un progress bar o spinner que luego desaparece
+        try {
+          // Esperar hasta que el progress sea visible
+          const progressBar = await driver.wait(
+            until.elementLocated(By.css('.progress-bar')), // <- Ajustar clase si es otra
+            5000
+          );
+
+          // Esperar hasta que desaparezca (máx. 15s)
+          await driver.wait(
+            until.stalenessOf(progressBar),
+            15000
+          );
+
+          console.log("✅ Espera dinámica: Progress finalizó correctamente.");
+        } catch (waitError) {
+          console.warn("⚠️ Advertencia: No se detectó barra de progreso o ya había desaparecido.");
+        }
+
+      } catch (error) {
+        throw new Error(`❌ Error en paso 6 (clic en botón 'FINALIZAR'): ${error.message}`);
+      }
+
+
 
     } catch (error) {
       console.error("❌ Error en gestión de activos:", error.message);
@@ -74,6 +155,8 @@ export default class GestionActivosPage {
       throw error;
     }
   }
+
+
 
   async seleccionarEnTabla(valorBuscado) {
     const driver = this.driver;
