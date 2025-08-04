@@ -1,6 +1,7 @@
 import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
+import chromedriver from 'chromedriver';
 import GestionClientesServiciosPage from '../pages/gestionClientesServiciosDomiciliarios.page.js';
 
 describe('Prueba de Gestión sobre Clientes y Servicios Domiciliarios', function() {
