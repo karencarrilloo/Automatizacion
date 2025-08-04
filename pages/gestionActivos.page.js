@@ -17,7 +17,6 @@ export default class GestionActivosPage {
 
     try {
       // === CP_GESACT_001 - Validar el ingreso a la vista “Gestión de activos” se muestre la información correctamente ===
-
       // === CP_GESACT_001 Paso 1: Clic en módulo eCenter ===
       try {
         const eCenterBtn = await driver.wait(

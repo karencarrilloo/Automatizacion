@@ -1,0 +1,33 @@
+flowchart TD
+    A[Inicio] --> B[Clic en módulo eCenter]
+    B --> C[Scroll en contenedor de aplicaciones]
+    C --> D[Clic en 'Gestión de Activos']
+    
+    D --> E[Clic en 'Seleccionar entidad']
+    E --> F[Seleccionar fila 'elemento secundario']
+    F --> G[Clic en botón 'Siguiente']
+    
+    G --> H[Seleccionar opción 'ont']
+    H --> I[Clic en botón 'Siguiente']
+    
+    I --> J[Seleccionar fila con ID 9 'FAILED']
+    J --> K[Clic en botón 'FINALIZAR']
+    K --> L[Esperar a que desaparezca progress]
+    L --> M[Seleccionar primer registro ONT]
+    
+    M --> N[Clic en 'Actualizar estado operativo']
+    N --> O[Desplegar <select> estado]
+    O --> P[Seleccionar opción 'LOST']
+    P --> Q[Ingresar comentario 'test automatización']
+    Q --> R[Clic en botón 'Guardar']
+    R --> S[Esperar cierre de modal]
+    
+    S --> T[Clic en botón 'Mostrar filtro']
+    T --> U[Clic en <select> de campo]
+    U --> V[Seleccionar campo 'FACTORYSERIAL']
+    V --> W[Ingresar serial aleatorio]
+    W --> X[Clic en botón 'Aplicar filtro']
+    X --> Y[Fin]
+
+    %% classDef seleccion fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+    %% class E,F,G,H,I,O,P seleccion

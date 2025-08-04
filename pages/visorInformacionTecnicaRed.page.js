@@ -14,7 +14,8 @@ export default class VisorInformacionTecnicaRedPage {
   async ejecutarVisorInformacionTecnicaRed() {
     const driver = this.driver;
     try {
-      // === Paso 1: Clic en módulo eCenter ===
+      // === CP_VISORTECRED_001 - Validar que al ingresar a la vista “Visor de Información Técnico de Red” se muestre la información correctamente ===
+      // === CP_VISORTECRED_001 Paso 1: Clic en módulo eCenter ===
       const eCenterBtn = await driver.wait(
         until.elementLocated(By.xpath("//div[@id='118' and contains(@class, 'item-module')]")),
         10000
@@ -22,7 +23,7 @@ export default class VisorInformacionTecnicaRedPage {
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
 
-      // === Paso 2: Scroll contenedor apps ===
+      // === CP_VISORTECRED_001 Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
         until.elementLocated(By.css('.container-applications')),
         10000
@@ -33,7 +34,7 @@ export default class VisorInformacionTecnicaRedPage {
       );
       await driver.sleep(1000);
 
-      // === Paso 3: Clic en "Visor de información técnica de red" ===
+      // === CP_VISORTECRED_001 Paso 3: Clic en "Visor de información técnica de red" ===
       try {
         const visorInfoTecnica = await driver.wait(
           until.elementLocated(
