@@ -263,7 +263,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_004 paso 2 (clic en botón 'FINALIZAR'): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 3:  Seleccionar el primer registro de la tabla. ===
+      // === CP_GESACT_004 Paso 3:  Seleccionar el primer registro de la tabla y capturar FACTORYSERIAL ===
       try {
         // Esperar el <tbody> de la tabla
         const cuerpoTabla = await driver.wait(
@@ -281,16 +281,25 @@ export default class GestionActivosPage {
         // Tomar la primera fila
         const primeraFila = filas[0];
 
-        // Esperar que sea visible e interactuable
+        // Esperar visibilidad
         await driver.wait(until.elementIsVisible(primeraFila), 5000);
         await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", primeraFila);
-        await driver.sleep(300); // Espera breve
+        await driver.sleep(300);
 
-        // Clic sobre la fila
+        // Capturar el texto de la celda FACTORYSERIAL (3ra columna, índice 2 si inicia en 0)
+        const celdas = await primeraFila.findElements(By.css('td'));
+        const factorySerialSeleccionado = await celdas[2].getText(); // Ajusta el índice si FACTORYSERIAL no está en la 3ra columna
+
+        console.log(`📌 FACTORYSERIAL capturado: ${factorySerialSeleccionado}`);
+
+        // Guardar en una variable global/contextual si la necesitas en otros pasos
+        this.factorySerialSeleccionado = factorySerialSeleccionado;
+
+        // Clic en la fila
         await primeraFila.click();
         await driver.sleep(1000);
 
-        console.log("✅ CP_GESACT_004 Paso 3: Primer registro dinámico de ONTs seleccionado correctamente.");
+        console.log("✅ CP_GESACT_004 Paso 3: Primer registro dinámico seleccionado y FACTORYSERIAL capturado.");
       } catch (error) {
         throw new Error(`❌ Error en CP_GESACT_004 paso 3 (selección dinámica de primer registro): ${error.message}`);
       }
@@ -414,6 +423,221 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_005 Paso 5 (clic en botón 'Guardar'): ${error.message}`);
       }
 
+      // === CP_GESACT_00 Paso : Clic en botón "Seleccionar entidad" ===
+      try {
+        // Esperar dinámicamente a que el botón aparezca en el DOM (máx 15 seg)
+        const btnSeleccionarEntidad = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-button4"]/div')),
+          15000
+        );
+
+        // Scroll antes de validar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSeleccionarEntidad);
+        await driver.sleep(500);
+
+        // Esperar a que cualquier progress desaparezca (si existe)
+        try {
+          const progress = await driver.findElement(By.xpath('//*[contains(@class,"container-loading-iptotal") and contains(@style,"display: block")]'));
+          const isVisible = await progress.isDisplayed().catch(() => false);
+          if (isVisible) {
+            await driver.wait(until.stalenessOf(progress), 20000); // esperar a que desaparezca
+          }
+        } catch (e) {
+          console.warn("⚠️ No se detectó progress, se continúa.");
+        }
+
+        // Esperar visibilidad y habilitación
+        await driver.wait(until.elementIsVisible(btnSeleccionarEntidad), 10000);
+        await driver.wait(until.elementIsEnabled(btnSeleccionarEntidad), 5000);
+
+        // Clic en el botón
+        await btnSeleccionarEntidad.click();
+        await driver.sleep(1000);
+
+        console.log("✅ CP_GESACT_00 Paso : Botón 'Seleccionar entidad' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_GESACT_00 Paso  (clic en 'Seleccionar entidad'): ${error.message}`);
+      }
+
+      // CP_GESACT_00 Paso : Seleccionar la fila que contiene el texto "elemento secundario".
+      try {
+        const tabla = await driver.wait(
+          until.elementLocated(By.css('div.modal-body table tbody')),
+          10000
+        );
+        const filas = await tabla.findElements(By.css('tr'));
+        let encontrado = false;
+
+        for (const fila of filas) {
+          const celdas = await fila.findElements(By.css('td'));
+          for (const celda of celdas) {
+            const texto = (await celda.getText()).trim().toLowerCase();
+            if (texto.includes('elemento secundario')) {
+              await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", celda);
+              await driver.sleep(500);
+              await driver.executeScript("arguments[0].click();", celda);
+              encontrado = true;
+              break;
+            }
+          }
+          if (encontrado) break;
+        }
+
+        if (!encontrado) {
+          throw new Error("No se encontró ninguna opción que contenga 'elemento secundario'.");
+        }
+
+        console.log("✅ CP_GESACT_00 Paso : Se seleccionó 'elemento secundario'.");
+      } catch (error) {
+        throw new Error(`❌ Error en CP_GESACT_00 Paso  (selección de 'elemento secundario'): ${error.message}`);
+      }
+
+      // CP_GESACT_00 Paso : Clic en botón "Siguiente"
+      try {
+        const botonSeleccionar = await driver.wait(
+          until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
+          10000
+        );
+        await driver.wait(async () => {
+          const disabled = await botonSeleccionar.getAttribute('disabled');
+          return disabled === null;
+        }, 10000);
+        await botonSeleccionar.click();
+        await driver.sleep(3000);
+        console.log("✅ CP_GESACT_00 Paso : Botón 'Siguiente' presionado después de 'elemento secundario'.");
+      } catch (error) {
+        throw new Error(`❌ Error en CP_GESACT_00 Paso : (clic en 'Siguiente' después de 'elemento secundario'): ${error.message}`);
+      }
+
+      // === CP_GESACT_00 - Validar que el usuario pueda seleccionar la opción "ont" como parte del flujo de selección.
+      // CP_GESACT_00 Paso : Seleccionar "ont"
+      try {
+        const tabla = await driver.wait(
+          until.elementLocated(By.css('div.modal-body table tbody')),
+          10000
+        );
+        const filas = await tabla.findElements(By.css('tr'));
+        let encontrado = false;
+
+        for (const fila of filas) {
+          const celdas = await fila.findElements(By.css('td'));
+          for (const celda of celdas) {
+            const texto = (await celda.getText()).trim().toLowerCase();
+            if (texto.includes('ont')) {
+              await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", celda);
+              await driver.sleep(500);
+              await driver.executeScript("arguments[0].click();", celda);
+              encontrado = true;
+              break;
+            }
+          }
+          if (encontrado) break;
+        }
+
+        if (!encontrado) {
+          throw new Error("No se encontró ninguna opción que contenga 'ont'.");
+        }
+
+        console.log("✅ CP_GESACT_00 Paso : Se seleccionó 'ont'.");
+      } catch (error) {
+        throw new Error(`❌ CP_GESACT_00 Paso  (selección de 'ont'): ${error.message}`);
+      }
+
+      // CP_GESACT_00 Paso : Clic en botón "Siguiente"
+      try {
+        const botonSeleccionar = await driver.wait(
+          until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
+          10000
+        );
+        await driver.wait(async () => {
+          const disabled = await botonSeleccionar.getAttribute('disabled');
+          return disabled === null;
+        }, 10000);
+        await botonSeleccionar.click();
+        await driver.sleep(3000);
+        console.log("✅ CP_GESACT_00 Paso : Botón 'Siguiente' presionado después de 'ont'.");
+      } catch (error) {
+        throw new Error(`❌ CP_GESACT_00 Paso : (clic en 'Siguiente' después de 'ont'): ${error.message}`);
+      }
+
+      // === CP_GESACT_00 Paso : Seleccionar fila con ID 10 "LOST"  ===
+      try {
+        // Esperar que el tbody del grid esté disponible
+        const cuerpoTabla = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-select-device"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Esperar específicamente la fila con ID 10
+        const filaLost = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="row-10"]')),
+          5000
+        );
+
+        // Asegurar visibilidad y hacer scroll
+        await driver.wait(until.elementIsVisible(filaLost), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", filaLost);
+        await driver.sleep(300);
+
+        // Hacer clic sobre la fila
+        await filaLost.click();
+        await driver.sleep(1000);
+
+        console.log("✅ CP_GESACT_00 Paso : Fila con ID 10 (LOST) seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Error CP_GESACT_00 Paso : (selección de fila 'LOST'): ${error.message}`);
+      }
+
+      // === CP_GESACT_00 Paso : Hacer clic en el botón "FINALIZAR" ===
+      try {
+        // Esperar contenedor del footer del wizard
+        const contenedorFooter = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-wizard-dialog"]/div/div/div[3]')),
+          10000
+        );
+
+        // Buscar botón "FINALIZAR"
+        const botonFinalizar = await contenedorFooter.findElement(
+          By.xpath('//*[@id="widget-button-btn-next-step"]/div')
+        );
+
+        // Esperar a que el botón sea visible e interactuable
+        await driver.wait(until.elementIsVisible(botonFinalizar), 5000);
+        await driver.wait(until.elementIsEnabled(botonFinalizar), 5000);
+
+        // Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonFinalizar);
+        await driver.sleep(300);
+        await botonFinalizar.click();
+
+        console.log("✅ CP_GESACT_00 Paso : clic en 'FINALIZAR' realizado.");
+
+        // === Espera dinámica tras clic en "FINALIZAR" ===
+        // Asumimos que aparece un progress bar o spinner que luego desaparece
+        try {
+          // Esperar hasta que el progress sea visible
+          const progressBar = await driver.wait(
+            until.elementLocated(By.css('.progress-bar')), // <- Ajustar clase si es otra
+            8000
+          );
+
+          // Esperar hasta que desaparezca (máx. 15s)
+          await driver.wait(
+            until.stalenessOf(progressBar),
+            15000
+          );
+
+          console.log("✅ Espera dinámica: Progress finalizó correctamente.");
+        } catch (waitError) {
+          console.warn("⚠️ Advertencia: No se detectó barra de progreso o ya había desaparecido.");
+        }
+
+      } catch (error) {
+        throw new Error(`❌ Error en CP_GESACT_00 paso  (clic en botón 'FINALIZAR'): ${error.message}`);
+      }
+
+
       // === CP_GESACT_006 - Realizar filtro de busqueda por el campo FACTORYSERIAL
       // === CP_GESACT_006 Paso 1: Clic en el botón "Mostrar filtro" ===
       try {
@@ -497,19 +721,13 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_006 Paso 3 (selección de opción 'FACTORYSERIAL'): ${error.message}`);
       }
 
-      // === CP_GESACT_006 Paso 4: Diligenciar campo de texto con serial ONT aleatorio ===
+      // === CP_GESACT_006 Paso 4: Diligenciar campo de texto con serial ONT capturado previamente ===
       try {
-        const serialesONT = [
-          "485754435A5AC5A6",
-          "4857544370077AA5",
-          "485754435A637DA6",
-          "485754435A53E5A6",
-          "485754436E8B28A5",
-          "4857544370158EA5",
-          "485754436E8246A5",
-          "485754436EEDBFA5"
-        ];
-        const serialAleatorio = serialesONT[Math.floor(Math.random() * serialesONT.length)];
+        // Validar que la variable del paso anterior exista
+        const serialCapturado = this.factorySerialSeleccionado;
+        if (!serialCapturado) {
+          throw new Error("No se encontró un serial ONT capturado previamente (FACTORYSERIAL).");
+        }
 
         // Esperar contenedor del filtro
         const contenedorFiltro = await driver.wait(
@@ -524,15 +742,15 @@ export default class GestionActivosPage {
         await driver.wait(until.elementIsVisible(campoTexto), 5000);
         await driver.wait(until.elementIsEnabled(campoTexto), 5000);
 
-        // Hacer scroll al campo y escribir el serial aleatorio
+        // Hacer scroll al campo y escribir el serial capturado
         await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", campoTexto);
         await campoTexto.clear();
-        await campoTexto.sendKeys(serialAleatorio);
+        await campoTexto.sendKeys(serialCapturado);
         await driver.sleep(3000);
 
-        console.log(`✅ CP_GESACT_006 Paso 4: Se digitó el serial aleatorio "${serialAleatorio}" correctamente.`);
+        console.log(`✅ CP_GESACT_006 Paso 4: Se digitó el serial capturado "${serialCapturado}" correctamente.`);
       } catch (error) {
-        throw new Error(`❌ CP_GESACT_006 Paso 4 (diligenciar serial ONT aleatorio): ${error.message}`);
+        throw new Error(`❌ CP_GESACT_006 Paso 4 (diligenciar serial ONT capturado): ${error.message}`);
       }
 
       // === CP_GESACT_006 Paso 5: Clic en botón "Aplicar filtro" ===
@@ -545,25 +763,37 @@ export default class GestionActivosPage {
         await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
         await driver.wait(until.elementIsEnabled(botonAplicarFiltro), 5000);
 
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", botonAplicarFiltro);
-        await driver.sleep(500);
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonAplicarFiltro);
+        await driver.sleep(5000);
         await botonAplicarFiltro.click();
 
-        // === Espera dinámica a que desaparezca el progress ===
+        // === Espera dinámica robusta del progress ===
         try {
           const progress = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="progress-id-filter"]')),
             5000
           );
-          await driver.wait(until.stalenessOf(progress), 20000); // espera hasta que desaparezca
+
+          // Verifica si es visible antes de esperar su desaparición
+          const visible = await progress.isDisplayed().catch(() => false);
+          if (visible) {
+            await driver.wait(until.stalenessOf(progress), 20000); // espera hasta que desaparezca
+          } else {
+            console.warn("⚠️ Progress localizado pero no visible.");
+          }
+
         } catch (progressError) {
           console.warn("⚠️ No se detectó el progress, se continúa.");
         }
+
+        // Pequeña espera extra por seguridad antes de continuar
+        await driver.sleep(1000);
 
         console.log("✅ CP_GESACT_006 Paso 5: Botón 'Aplicar filtro' presionado y espera dinámica completada.");
       } catch (error) {
         throw new Error(`❌ CP_GESACT_006 Paso 5 (clic en botón 'Aplicar filtro'): ${error.message}`);
       }
+
 
 
 
