@@ -15,7 +15,8 @@ export default class ContenidoClasesNegocioPage {
     const driver = this.driver;
 
     try {
-      // === Paso 1: Clic en módulo eCenter ===
+      // === CP_CONTCLANEG_001 - Validar el ingreso a la vista “Contenido clases de negocio” se muestre la información correctamente ===
+      // === CP_CONTCLANEG_001 Paso 1: Clic en módulo eCenter ===
       const eCenterBtn = await driver.wait(
         until.elementLocated(By.xpath("//div[@id='118' and contains(@class, 'item-module')]")),
         10000
@@ -23,7 +24,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
 
-      // === Paso 2: Scroll en el contenedor de aplicaciones ===
+      // === CP_CONTCLANEG_001 Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
         until.elementLocated(By.css('.container-applications')),
         10000
@@ -34,7 +35,7 @@ export default class ContenidoClasesNegocioPage {
       );
       await driver.sleep(1000);
 
-      // === Paso 3: Clic en "Contenido clases de negocio" ===
+      // === CP_CONTCLANEG_001 Paso 3: Clic en "Contenido clases de negocio" ===
       const contenidoBtn = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(@class,'legend-application') and contains(text(),'Contenido clases de negocio')]")),
         10000
@@ -48,7 +49,8 @@ export default class ContenidoClasesNegocioPage {
 
       // Aquí podrías continuar con otros pasos si aplica
 
-      // === Paso 4: Clic en el botón de la tabla para desplegar la lista de clases de negocio ===
+      // === CP_CONTCLANEG_002 - Seleccionar la entidad modelo. 
+      // CP_CONTCLANEG_002 Paso 1: Clic en el botón de la tabla para desplegar la lista de clases de negocio ===
       const botonPicklist = await driver.wait(
         until.elementLocated(By.css('button.btn.btn-default.picklist-btn')),
         10000
@@ -70,7 +72,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.executeScript("arguments[0].click();", botonPicklist);
       await driver.sleep(3000); // Espera por la carga del contenido
 
-      // === Paso 5: Seleccionar la entidad con ID 31 ===
+      // === CP_CONTCLANEG_002 Paso 2: Seleccionar la entidad con ALIAS "Modelos" ===
 
       const tablaCuerpo = await driver.wait(
         until.elementLocated(By.css('div.modal-body table tbody')),
@@ -100,7 +102,8 @@ export default class ContenidoClasesNegocioPage {
       // console.log('✅ Fila con ID 31 seleccionada correctamente.');
       await driver.sleep(3000);
 
-      // === Paso 6: Clic en el botón "Seleccionar" ===
+
+      // ===CP_CONTCLANEG_002 Paso 3: Clic en el botón "Seleccionar" ===
 
       const botonSeleccionar = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Seleccionar') and contains(@class, 'btn-primary')]")),
@@ -126,7 +129,8 @@ export default class ContenidoClasesNegocioPage {
       // console.log('✅ Se hizo clic en el botón "Seleccionar".');
       await driver.sleep(5000);
 
-      // === Paso 7: Clic en el botón "+" (Nuevo registro) ===
+      // === CP_CONTCLANEG_003 - Crear un modelo.
+      // === CP_CONTCLANEG_003 Paso 1: Clic en el botón "+" (Nuevo) ===
 
       const botonAgregar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="crud-new-btn"]')),
@@ -143,7 +147,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log('✅ Se hizo clic en el botón "+" correctamente.');
       await driver.sleep(5000);
 
-      // === Paso 8: Clic en el botón del campo "Fabricante" ===
+      // === CP_CONTCLANEG_003 Paso 2: Clic en el botón del campo "Fabricante" ===
 
       const btnFabricante = await driver.wait(
         until.elementLocated(By.css('#widget-picklist-manufacturer button.picklist-btn')),
@@ -160,7 +164,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log('✅ Se hizo clic en el botón del campo "Fabricante".');
 
-      // === Paso 9: Seleccionar fila del fabricante con ID "1"(HUAWEI) ===
+      // === CP_CONTCLANEG_003 Paso 3: Seleccionar fila del fabricante con ID "1"(HUAWEI) ===
 
       // Esperar que el contenedor del modal esté presente
       const contenedorModalFabricante = await driver.wait(
@@ -201,7 +205,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Fabricante 'HUAWEI' seleccionado correctamente.");
       await driver.sleep(1500);
 
-      // === Paso 10: Clic en el botón "Seleccionar" tras elegir fabricante ===
+      // === CP_CONTCLANEG_003 Paso 4: Clic en el botón "Seleccionar" tras elegir fabricante ===
 
       const botonSeleccionarFabricante = await driver.wait(
         until.elementLocated(By.css('#widget-button-btSelect-manufacturer .btn.btn-primary')),
@@ -226,7 +230,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(3000); // Espera después del clic
       // console.log('✅ Clic exitoso en botón "Seleccionar" de fabricante.');
 
-      // === Paso 11: Diligenciar el campo "Nombre" con "TEST CREAR" ===
+      // === CP_CONTCLANEG_003 Paso 5: Diligenciar el campo "Nombre" con "TEST CREAR" ===
 
       const inputNombre = await driver.wait(
         until.elementLocated(By.id('textfield-name')),
@@ -247,7 +251,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log('✅ Campo "Nombre" diligenciado con "TEST".');
 
-      // === Paso 12: Diligenciar el campo "Cantidad de slots" con número aleatorio ===
+      // === CP_CONTCLANEG_003 Paso 6: Diligenciar el campo "Cantidad de slots" con número aleatorio ===
 
       // Generar número aleatorio entre 1 y 50
       const cantidadAleatoria = Math.floor(Math.random() * 50) + 1;
@@ -271,7 +275,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log(`✅ Campo "Cantidad de slots" diligenciado con el valor: ${cantidadAleatoria}`);
 
-      // === Paso 13: Clic en el botón del campo "Tipo" ===
+      // === CP_CONTCLANEG_003 Paso 7: Clic en el botón del campo "Tipo" ===
 
       const botonTipo = await driver.wait(
         until.elementLocated(By.css('#widget-picklist-type .picklist-btn')),
@@ -290,7 +294,7 @@ export default class ContenidoClasesNegocioPage {
 
       // console.log('✅ Botón del campo "Tipo" clickeado correctamente.');
 
-      // === Paso 14: Seleccionar tipo con ID 21 dentro del modal ===
+      // === CP_CONTCLANEG_003 Paso 8: Seleccionar tipo con NOMBRE "ELEMENTO TERCIARIO - GADGETS" dentro del modal ===
 
       const modalTipo = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-type"]/div/div')),
@@ -320,7 +324,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Fila con ID 21 seleccionada correctamente.");
       await driver.sleep(1000);
 
-      // === Paso 15: Clic en el botón "Seleccionar" del modal de tipo ===
+      // === CP_CONTCLANEG_003 Paso 9: Clic en el botón "Seleccionar" del modal de tipo ===
 
       const contenedorBtnSeleccionarTipo = await driver.wait(
         until.elementLocated(By.id("widget-button-btSelect-type")),
@@ -349,7 +353,7 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(3000);
 
 
-      // === Paso 16: Diligenciar el campo "Descripción" ===
+      // === CP_CONTCLANEG_003 Paso 10: Diligenciar el campo "Descripción" ===
 
       const inputDescripcion = await driver.wait(
         until.elementLocated(By.id('textfield-description')),
@@ -365,7 +369,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Campo 'Descripción' diligenciado con 'TEST'");
       await driver.sleep(1000);
 
-      // === Paso 17: Diligenciar campo "Ícono" ===
+      // === CP_CONTCLANEG_003 Paso 11: Diligenciar campo "Ícono" ===
 
       const inputIcono = await driver.wait(
         until.elementLocated(By.id('textfield-icon')),
@@ -381,7 +385,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Campo 'Ícono' diligenciado correctamente.");
       await driver.sleep(3000);
 
-      // === Paso 18: Clic en el botón del campo "Localidad" ===
+      // === CP_CONTCLANEG_003 Paso 12: Clic en el botón del campo "Localidad" ===
 
       const btnLocalidad = await driver.wait(
         until.elementLocated(By.css('button.picklocation-btn')),
@@ -398,7 +402,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Botón de 'Localidad' clicado correctamente.");
       await driver.sleep(3000); // Tiempo para que cargue el modal o panel
 
-      // === Paso 19: Clic en botón "Seleccionar" del modal de Localidad ===
+      // === CP_CONTCLANEG_003 Paso 13: Clic en botón "Seleccionar" del modal de Localidad ===
 
       const modalLocalidad = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklocation-location"]/div/div')),
@@ -431,7 +435,7 @@ export default class ContenidoClasesNegocioPage {
       // console.log("✅ Se hizo clic en el botón 'Seleccionar' del modal de localidad.");
       await driver.sleep(3000);
 
-      // === Paso 20: Clic en el botón "Guardar" ===
+      // === CP_CONTCLANEG_003 Paso 14: Clic en el botón "Guardar" ===
 
       const btnGuardar = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Guardar') and contains(@class, 'btn-primary')]")),
@@ -463,7 +467,8 @@ export default class ContenidoClasesNegocioPage {
       // console.log('✅ Se hizo clic en el botón "Guardar" correctamente.');
       await driver.sleep(5000); // Esperar posibles transiciones o validaciones
 
-      // === Paso 21: Clic en la barra de búsqueda ===
+      // === CP_CONTCLANEG_004 - Editar modelo
+      // === CP_CONTCLANEG_004 Paso 1: Clic en la barra de búsqueda ===
 
       try {
         // Esperar que la barra de búsqueda esté presente y visible
@@ -485,10 +490,10 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Barra de búsqueda clickeada correctamente.");
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 33 al hacer clic en la barra de búsqueda: " + error.message);
+        throw new Error("❌ Error CP_CONTCLANEG_004 Paso 1 al hacer clic en la barra de búsqueda: " + error.message);
       }
 
-      // === Paso 22: Digitar "TEST CREAR" en la barra de búsqueda y presionar Enter ===
+      // === CP_CONTCLANEG_004 Paso 2: Digitar "TEST CREAR" en la barra de búsqueda y presionar Enter ===
       try {
         const inputBusquedaCrear = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
@@ -507,11 +512,11 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Espera que cargue el resultado
 
       } catch (error) {
-        throw new Error('❌ Error en el paso 34 al escribir en la barra de búsqueda: ' + error.message);
+        throw new Error('❌ Error en el CP_CONTCLANEG_004 Paso 2 al escribir en la barra de búsqueda: ' + error.message);
       }
 
 
-      // === Paso 23: Seleccionar registro con el campo "Identificador" mayor y validar campo "Nombre" ===
+      // === CP_CONTCLANEG_004 Paso 3: Seleccionar registro con el campo "Identificador" mayor y validar campo "Nombre" ===
 
       try {
         // Scroll al contenedor principal
@@ -578,11 +583,11 @@ export default class ContenidoClasesNegocioPage {
         console.log(`✅ Fila con ID mayor (${mayorId}) seleccionada y validada correctamente.`);
 
       } catch (error) {
-        console.error(`❌ Error en paso 23: ${error.message}`);
+        console.error(`❌ Error en CP_CONTCLANEG_004 paso3: ${error.message}`);
         throw error;
       }
 
-      // === Paso 24: Clic en botón Editar ===
+      // === CP_CONTCLANEG_004 Paso 4: Clic en botón Editar ===
 
       try {
         // Esperar a que el contenedor del botón esté presente
@@ -609,11 +614,11 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(8000);// Esperar apertura de modal de edición
 
       } catch (error) {
-        console.error(`❌ Error en paso 22 (clic en botón Editar): ${error.message}`);
+        console.error(`❌ Error en CP_CONTCLANEG_004 Paso 4 (clic en botón Editar): ${error.message}`);
         throw error;
       }
 
-      // === Paso 25: Clic en el botón del campo "Fabricante" (modo edición) ===
+      // === CP_CONTCLANEG_004 Paso 5: Clic en el botón del campo "Fabricante" (modo edición) ===
 
       try {
         // Esperar el botón con clase específica en el contexto del formulario
@@ -637,12 +642,12 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Esperar apertura del modal
 
       } catch (error) {
-        console.error(`❌ Error en paso 23 (clic botón Fabricante edición): ${error.message}`);
+        console.error(`❌ Error en CP_CONTCLANEG_004 Paso 5: (clic botón Fabricante edición): ${error.message}`);
         throw error;
       }
 
 
-      // === Paso 26: Seleccionar fila del fabricante con ID "2" (FIBERHOME) ===
+      // === CP_CONTCLANEG_004 Paso 6: Seleccionar fila del fabricante con ID "2" (FIBERHOME) ===
 
       const contenedorModalFabricanteEditar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-manufacturer"]/div/div')),
@@ -675,12 +680,12 @@ export default class ContenidoClasesNegocioPage {
       // Validar que quedó seleccionada
       const claseFilaFIBERHOME = await filaFIBERHOME.getAttribute("class");
       if (!claseFilaFIBERHOME.includes("active")) {
-        throw new Error("❌ La fila con ID '2' no fue marcada como activa.");
+        throw new Error("❌ Error CP_CONTCLANEG_004 Paso 6: La fila con ID '2' no fue marcada como activa.");
       }
 
-      // console.log("✅ Fila 'FIBERHOME' seleccionada correctamente.");
+      console.log("✅ Fila 'FIBERHOME' seleccionada correctamente.");
 
-      // === Paso 27: Clic en el botón "Seleccionar" del modal Fabricante ===
+      // === CP_CONTCLANEG_004 Paso 7: Clic en el botón "Seleccionar" del modal Fabricante ===
 
       try {
         // Esperar a que el botón esté presente en el DOM
@@ -710,10 +715,10 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(5000); // Espera por cierre del modal
 
       } catch (error) {
-        throw new Error("❌ Error al hacer clic en el botón 'Seleccionar' del modal Fabricante: " + error.message);
+        throw new Error("❌ Error CP_CONTCLANEG_004 Paso 7 al hacer clic en el botón 'Seleccionar' del modal Fabricante: " + error.message);
       }
 
-      // === Paso 28: Limpiar y diligenciar el campo "Nombre" con "TEST EDITAR" ===
+      // === CP_CONTCLANEG_004 Paso 8: Limpiar y diligenciar el campo "Nombre" con "TEST EDITAR" ===
 
       try {
         // Esperar el campo de nombre dentro del widget
@@ -733,10 +738,10 @@ export default class ContenidoClasesNegocioPage {
 
         // console.log('✅ Campo "Nombre" diligenciado con "TEST EDITAR".');
       } catch (error) {
-        throw new Error("❌ Error en el paso 28 al diligenciar el campo 'Nombre': " + error.message);
+        throw new Error("❌ Error en el CP_CONTCLANEG_004 Paso 8 al diligenciar el campo 'Nombre': " + error.message);
       }
 
-      // === Paso 29: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
+      // === CP_CONTCLANEG_004 Paso 9: Limpiar y diligenciar el campo "Cantidad de slots" con valor aleatorio entre 51 y 100 ===
 
       try {
         // Esperar el campo input dentro del widget del slot
@@ -759,10 +764,10 @@ export default class ContenidoClasesNegocioPage {
 
         // console.log(`✅ Campo "Cantidad de slots" diligenciado con: ${cantidadAleatoria}`);
       } catch (error) {
-        throw new Error("❌ Error en el paso 29 al diligenciar el campo 'Cantidad de slots': " + error.message);
+        throw new Error("❌ Error en el CP_CONTCLANEG_004 Paso 9 al diligenciar el campo 'Cantidad de slots': " + error.message);
       }
 
-      // === Paso 30: Dar clic en el botón del campo "Tipo" ===
+      // === CP_CONTCLANEG_004 Paso 10: Dar clic en el botón del campo "Tipo" ===
 
       try {
         // Esperar el botón del campo "Tipo"
@@ -781,10 +786,10 @@ export default class ContenidoClasesNegocioPage {
 
         console.log("✅ Clic realizado en el botón del campo 'Tipo'.");
       } catch (error) {
-        throw new Error("❌ Error en el paso 30 al hacer clic en el botón del campo 'Tipo': " + error.message);
+        throw new Error("❌ Error en CP_CONTCLANEG_004 Paso 10: al hacer clic en el botón del campo 'Tipo': " + error.message);
       }
 
-      // === Paso 31: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
+      // === CP_CONTCLANEG_004 Paso 11: Seleccionar fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) ===
 
       try {
         // Esperar el modal contenedor del listado
@@ -826,10 +831,10 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Fila con ID 1 (ELEMENTO PRIMARIO - ACCESO) seleccionada correctamente.");
         await driver.sleep(2500);
       } catch (error) {
-        throw new Error("❌ Error en el paso 31 al seleccionar fila con ID 1: " + error.message);
+        throw new Error("❌ Error en CP_CONTCLANEG_004 Paso 11 al seleccionar fila con ID 1: " + error.message);
       }
 
-      // === Paso 32: Clic en el botón "Seleccionar" del modal de Tipo ===
+      // === CP_CONTCLANEG_004 Paso 12: Clic en el botón "Seleccionar" del modal de Tipo ===
 
       try {
         // Esperar el botón dentro del modal
@@ -859,10 +864,10 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Espera por cierre de modal y procesamiento
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 32 al hacer clic en el botón 'Seleccionar': " + error.message);
+        throw new Error("❌ Error en CP_CONTCLANEG_004 Paso 12: al hacer clic en el botón 'Seleccionar': " + error.message);
       }
 
-      // === Paso 33: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
+      // === CP_CONTCLANEG_004 Paso 13: Limpiar y diligenciar el campo "Descripción" con "TEST EDITAR" ===
 
       try {
         const contenedorDescripcion = await driver.wait(
@@ -884,10 +889,10 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(1000); // Pausa breve para estabilidad
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 33 al diligenciar el campo 'Descripción': " + error.message);
+        throw new Error("❌ Error en CP_CONTCLANEG_004 Paso 13 al diligenciar el campo 'Descripción': " + error.message);
       }
 
-      // === Paso 34: Clic en el botón "Guardar" en el formulario de edición ===
+      // === CP_CONTCLANEG_004 Paso 14 Clic en el botón "Guardar" en el formulario de edición ===
 
       try {
         // Esperar el contenedor del footer del modal
@@ -916,10 +921,10 @@ export default class ContenidoClasesNegocioPage {
         console.log("✅ Botón 'Guardar' clickeado correctamente (Edición)");
 
       } catch (error) {
-        throw new Error("❌ Error en el paso 34 al hacer clic en el botón 'Guardar': " + error.message);
+        throw new Error("❌ Error en CP_CONTCLANEG_004 Paso 14 al hacer clic en el botón 'Guardar': " + error.message);
       }
-
-      // === Paso 35: Digitar "TEST EDITAR" en la barra de búsqueda y presionar Enter ===
+      // === CP_CONTCLANEG_005 - Eliminar el modelo
+      // === CP_CONTCLANEG_005 Paso 1: Digitar "TEST EDITAR" en la barra de búsqueda y presionar Enter ===
       try {
         const inputBusquedaEditar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
@@ -938,10 +943,10 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Espera que cargue el resultado
 
       } catch (error) {
-        throw new Error('❌ Error en el paso 35 al escribir en la barra de búsqueda: ' + error.message);
+        throw new Error('❌ Error en CP_CONTCLANEG_004 Paso 15: al escribir en la barra de búsqueda: ' + error.message);
       }
 
-      // === Paso 36: Seleccionar registro con el campo "Identificador" mayor y nombre "TEST EDITAR" ===
+      // === CP_CONTCLANEG_005 Paso 2: Seleccionar registro con el campo "Identificador" mayor y nombre "TEST EDITAR" ===
 
       try {
         // Scroll al contenedor principal
@@ -1009,11 +1014,11 @@ export default class ContenidoClasesNegocioPage {
         console.log(`✅ Fila con nombre "TEST EDITAR" y mayor ID (${mayorIdBusqueda}) seleccionada correctamente.`);
 
       } catch (error) {
-        console.error(`❌ Error en paso 36: ${error.message}`);
+        console.error(`❌ Error en CP_CONTCLANEG_005 Paso 2: ${error.message}`);
         throw error;
       }
 
-      // === Paso 37: Clic en botón "Eliminar" con el registro seleccionado ===
+      // === CP_CONTCLANEG_005 Paso 3: Clic en botón "Eliminar" con el registro seleccionado ===
 
       try {
         // Esperar que el botón "Eliminar" esté disponible
@@ -1034,11 +1039,11 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(2000); // Esperar que aparezca la ventana de confirmación
 
       } catch (error) {
-        console.error(`❌ Error en paso 37 (clic en botón Eliminar): ${error.message}`);
+        console.error(`❌ Error en CP_CONTCLANEG_005 Paso 3: (clic en botón Eliminar): ${error.message}`);
         throw error;
       }
 
-      // === Paso 38: Confirmar eliminación - clic en botón "Sí" en modal ===
+      // === CP_CONTCLANEG_005 Paso 4: Confirmar eliminación - clic en botón "Sí" en modal ===
 
       try {
 
@@ -1061,10 +1066,40 @@ export default class ContenidoClasesNegocioPage {
         await driver.sleep(3000); // Espera a que se procese la eliminación
 
       } catch (error) {
-        console.error(`❌ Error al confirmar eliminación (paso 38): ${error.message}`);
+        console.error(`❌ Error al confirmar eliminación CP_CONTCLANEG_005 Paso 4:: ${error.message}`);
         throw error;
       }
 
+      // === CP_CONTCLANEG_006 - Refrescar vista
+      // === CP_CONTCLANEG_006 Paso 1: Clic en el botón "Refrescar" ===
+      try {
+        const btnRefrescar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-refresh-btn"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnRefrescar), 5000);
+        await driver.wait(until.elementIsEnabled(btnRefrescar), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnRefrescar);
+        await driver.sleep(300);
+        await btnRefrescar.click();
+
+        // Espera dinámica si hay barra de carga (opcional)
+        try {
+          const progressBar = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-crud-refresh"]')),
+            5000
+          );
+          await driver.wait(until.stalenessOf(progressBar), 20000);
+        } catch {
+          console.warn("⚠️ No se detectó progress de refresco, se continúa.");
+        }
+
+        console.log("✅ Paso X: Botón 'Refrescar' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_006 Paso 1: (clic en botón 'Refrescar'): ${error.message}`);
+      }
 
 
 
