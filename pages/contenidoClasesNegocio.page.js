@@ -1529,7 +1529,51 @@ export default class ContenidoClasesNegocioPage {
       }
 
       // === CP_CONTCLANEG_009 - Realizar Filtro
-      // === CP_CONTCLANEG_009 Paso 1: Clic en botón "Filtrar" ===
+      // === CP_CONTCLANEG_009 Paso 1: Seleccionar el primer registro de la tabla ===
+      try {
+        // Esperar el <tbody> de la tabla
+        const cuerpoTabla = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-135"]/div/div[2]/table/tbody')),
+          10000
+        );
+
+        // Obtener todas las filas visibles dentro del tbody
+        const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+
+        if (filas.length === 0) {
+          throw new Error("No se encontraron filas en la tabla.");
+        }
+
+        // Tomar la primera fila
+        const primeraFila = filas[0];
+
+        // Esperar que sea visible
+        await driver.wait(until.elementIsVisible(primeraFila), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", primeraFila);
+        await driver.sleep(300);
+
+        // Capturar texto de una celda específica si es necesario
+        const celdas = await primeraFila.findElements(By.css('td'));
+        let datoCapturado = "";
+        if (celdas.length > 0) {
+          datoCapturado = await celdas[0].getText(); // Ajusta el índice según la columna que quieras capturar
+          console.log(`📌 Dato capturado del primer registro: ${datoCapturado}`);
+        }
+
+        // Guardar el dato en variable global/contextual si es necesario
+        this.datoSeleccionado = datoCapturado;
+
+        // Clic en la fila
+        await primeraFila.click();
+        await driver.sleep(1000);
+
+        console.log("✅ CP_FILTRAR_002 Paso 1: Primer registro dinámico seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_FILTRAR_002 Paso 1 (selección dinámica de primer registro): ${error.message}`);
+      }
+
+
+      // === CP_CONTCLANEG_009 Paso 2: Clic en botón "Filtrar" ===
       try {
         const btnFiltrar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="crud-filter-btn"]')),
@@ -1559,7 +1603,9 @@ export default class ContenidoClasesNegocioPage {
       } catch (error) {
         throw new Error(`❌ CP_FILTRAR_001 Paso 1 (clic en botón 'Filtrar'): ${error.message}`);
       }
-      
+
+
+
 
 
 
