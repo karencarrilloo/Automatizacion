@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import AutodiagnosticoPage from '../pages/Autodiagnostico.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Prueba: Configuración de Autodiagnostico', function () {
   this.timeout(180000);

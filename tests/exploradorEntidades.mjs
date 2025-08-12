@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import ExploradorEntidadesPage from '../pages/exploradorEntidades.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Prueba de Explorador de Entidades', function () {
   this.timeout(180000);

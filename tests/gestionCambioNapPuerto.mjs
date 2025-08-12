@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import GestionCambioNapPuertoPage from '../pages/gestionCambioNapPuerto.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Prueba de Gestión cambio de NAP y puerto', function() {
   this.timeout(180000); // 3 minutos

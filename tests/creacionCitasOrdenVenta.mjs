@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import CreacionCitasOrdenVentaPage from '../pages/creacionCitasOrdenVenta.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Creación Orden Venta Test', function() {
   this.timeout(180000);

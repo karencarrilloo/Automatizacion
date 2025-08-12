@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import ConfiguracionTipoOrdenPage from '../pages/configuracionTipoOrden.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Prueba: Configuración de tipo de orden', function () {
   this.timeout(180000);

@@ -2,6 +2,7 @@ import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
 import LoginPage from '../pages/login.page.js';
 import OcupacionPuertosPage from '../pages/ocupacionPuertos.page.js';
+import chromedriver from 'chromedriver';
 
 describe('Prueba de Ocupación de Puertos', function () {
   this.timeout(180000);
