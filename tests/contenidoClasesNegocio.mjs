@@ -4,7 +4,7 @@ import LoginPage from '../pages/login.page.js';
 import ContenidoClasesNegocioPage from '../pages/contenidoClasesNegocio.page.js';
 
 describe('Prueba de Contenido clases de negocio', function () {
-  this.timeout(180000);
+  this.timeout(250000);
 
   let driver;
   let contenidoPage;

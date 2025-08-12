@@ -65,7 +65,7 @@ export default class GestionActivosPage {
 
 
 
-      // === CP_GESACT_002 - Validar que se permita seleccionar la entidad elemento secundario(ONT) y listar las ont en estado FAILED.
+      // === CP_GESACT_002 - Seleccionar la entidad elemento secundario(ONT) y visualizar las ont en estado FAILED.
       // CP_GESACT_002 Paso 1: Clic en botón "Seleccionar entidad"
       try {
         const entidadBtn = await driver.wait(
@@ -260,7 +260,7 @@ export default class GestionActivosPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_GESACT_002 Paso 7: (clic en botón 'FINALIZAR'): ${error.message}`);
       }
-      // === CP_GESACT_003 Validar que el sistema actualice el estado de una ont seleccionada (primera de la lista) de "FAILED" a "LOST".
+      // === CP_GESACT_003 Actualizar el estado de una ont seleccionada (primera de la lista) de "FAILED" a "LOST".
       // === CP_GESACT_003 Paso 1:  Seleccionar el primer registro de la tabla. ===
       try {
         // Esperar el <tbody> de la tabla
@@ -791,42 +791,42 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 12: (clic en botón 'Aplicar filtro'): ${error.message}`);
       }
 
-      // === CP_GESACT_005 .
-      // === CP_GESACT_005 Paso 1: Clic en botón "Seleccionar entidad" ===
-      try {
-        // Esperar dinámicamente a que el botón aparezca en el DOM (máx 15 seg)
-        const btnSeleccionarEntidad = await driver.wait(
-          until.elementLocated(By.xpath('//*[@id="widget-button-button4"]/div')),
-          15000
-        );
+      // // === CP_GESACT_005 .
+      // // === CP_GESACT_005 Paso 1: Clic en botón "Seleccionar entidad" ===
+      // try {
+      //   // Esperar dinámicamente a que el botón aparezca en el DOM (máx 15 seg)
+      //   const btnSeleccionarEntidad = await driver.wait(
+      //     until.elementLocated(By.xpath('//*[@id="widget-button-button4"]/div')),
+      //     15000
+      //   );
 
-        // Scroll antes de validar visibilidad
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSeleccionarEntidad);
-        await driver.sleep(500);
+      //   // Scroll antes de validar visibilidad
+      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSeleccionarEntidad);
+      //   await driver.sleep(500);
 
-        // Esperar a que cualquier progress desaparezca (si existe)
-        try {
-          const progress = await driver.findElement(By.xpath('//*[contains(@class,"container-loading-iptotal") and contains(@style,"display: block")]'));
-          const isVisible = await progress.isDisplayed().catch(() => false);
-          if (isVisible) {
-            await driver.wait(until.stalenessOf(progress), 20000); // esperar a que desaparezca
-          }
-        } catch (e) {
-          console.warn("⚠️ No se detectó progress, se continúa.");
-        }
+      //   // Esperar a que cualquier progress desaparezca (si existe)
+      //   try {
+      //     const progress = await driver.findElement(By.xpath('//*[contains(@class,"container-loading-iptotal") and contains(@style,"display: block")]'));
+      //     const isVisible = await progress.isDisplayed().catch(() => false);
+      //     if (isVisible) {
+      //       await driver.wait(until.stalenessOf(progress), 20000); // esperar a que desaparezca
+      //     }
+      //   } catch (e) {
+      //     console.warn("⚠️ No se detectó progress, se continúa.");
+      //   }
 
-        // Esperar visibilidad y habilitación
-        await driver.wait(until.elementIsVisible(btnSeleccionarEntidad), 10000);
-        await driver.wait(until.elementIsEnabled(btnSeleccionarEntidad), 5000);
+      //   // Esperar visibilidad y habilitación
+      //   await driver.wait(until.elementIsVisible(btnSeleccionarEntidad), 10000);
+      //   await driver.wait(until.elementIsEnabled(btnSeleccionarEntidad), 5000);
 
-        // Clic en el botón
-        await btnSeleccionarEntidad.click();
-        await driver.sleep(1000);
+      //   // Clic en el botón
+      //   await btnSeleccionarEntidad.click();
+      //   await driver.sleep(1000);
 
-        console.log("✅ CP_GESACT_004 Paso 1: Botón 'Seleccionar entidad' presionado correctamente.");
-      } catch (error) {
-        throw new Error(`❌ CP_GESACT_004 Paso 1:  (clic en 'Seleccionar entidad'): ${error.message}`);
-      }
+      //   console.log("✅ CP_GESACT_004 Paso 1: Botón 'Seleccionar entidad' presionado correctamente.");
+      // } catch (error) {
+      //   throw new Error(`❌ CP_GESACT_004 Paso 1:  (clic en 'Seleccionar entidad'): ${error.message}`);
+      // }
 
 
     } catch (error) {

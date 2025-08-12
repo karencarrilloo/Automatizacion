@@ -1,0 +1,21 @@
+flowchart TD
+    A[Inicio] --> B[Clic en módulo eCenter]
+    B --> C[Scroll en contenedor de aplicaciones]
+    C --> D[Clic en módulo 'Autodiagnóstico']
+
+    D --> E[Clic en botón 'ID DEAL']
+    E --> F[Ingresar número ID DEAL válido]
+    F --> G[Clic en botón 'Consultar cliente']
+
+    G --> H[Clic en botón 'Opciones']
+    H --> I[Seleccionar 'Configuración WiFi']
+
+    I --> J[Seleccionar campo 'Nombre de red']
+    J --> K[Digitar 'test_automatización']
+    K --> L[Clic en select 'CANAL']
+    L --> M[Seleccionar opción 'Auto']
+
+    M --> N[Fin]
+
+    %% classDef seleccion fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+    %% class E,F,G,H,I,L,M seleccion

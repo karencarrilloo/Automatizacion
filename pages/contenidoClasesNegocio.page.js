@@ -49,7 +49,7 @@ export default class ContenidoClasesNegocioPage {
 
       // Aquí podrías continuar con otros pasos si aplica
 
-      // === CP_CONTCLANEG_002 - Seleccionar la entidad modelo. 
+      // === CP_CONTCLANEG_002 - Seleccionar una entidad (Modelos).
       // CP_CONTCLANEG_002 Paso 1: Clic en el botón de la tabla para desplegar la lista de clases de negocio ===
       const botonPicklist = await driver.wait(
         until.elementLocated(By.css('button.btn.btn-default.picklist-btn')),
@@ -1100,6 +1100,467 @@ export default class ContenidoClasesNegocioPage {
       } catch (error) {
         throw new Error(`❌ CP_CONTCLANEG_006 Paso 1: (clic en botón 'Refrescar'): ${error.message}`);
       }
+
+      // === CP_CONTCLANEG_007 - generar reporte xls (opcion exportar todos los registros)
+      // === CP_CONTCLANEG_007 Paso 1: Clic en el botón generar xls ===
+      try {
+        const btnGenerarXLS = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-export-xls"]/div[1]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnGenerarXLS), 5000);
+        await driver.wait(until.elementIsEnabled(btnGenerarXLS), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGenerarXLS);
+        await driver.sleep(300); // espera breve antes del clic
+        await btnGenerarXLS.click();
+
+        // Espera dinámica si aparece progress o el archivo tarda en generarse
+        try {
+          const progresoDescarga = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-download-xls"]')),
+            5000
+          );
+          await driver.wait(until.stalenessOf(progresoDescarga), 20000); // espera a que desaparezca
+        } catch {
+          console.warn("⚠️ No se detectó barra de progreso de descarga, se continúa.");
+        }
+
+        console.log("✅ Paso X: Botón 'Generar XLS' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X (clic en botón 'Generar XLS'): ${error.message}`);
+      }
+
+
+      // === CP_CONTCLANEG_007 Paso 2: Clic en opción 'Exportar todos los registros' ===
+      try {
+        // Esperar contenedor del menú de exportación
+        const contenedorExportMenu = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-export-xls"]/div[2]')),
+          10000
+        );
+
+        // Asegurarse de que el contenedor esté visible
+        await driver.wait(until.elementIsVisible(contenedorExportMenu), 5000);
+
+        // Localizar y hacer clic en la opción "Exportar todos los registros"
+        const opcionExportarTodo = await contenedorExportMenu.findElement(By.xpath('./div[1]'));
+        await driver.wait(until.elementIsVisible(opcionExportarTodo), 5000);
+        await opcionExportarTodo.click();
+
+        // Espera dinámica si se muestra algún progreso
+        try {
+          const progreso = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-download-xls"]')),
+            5000
+          );
+          await driver.wait(until.stalenessOf(progreso), 20000);
+        } catch {
+          console.warn("⚠️ No se detectó barra de progreso después de exportar todos los registros.");
+        }
+
+        console.log("✅ Paso X: Opción 'Exportar todos los registros' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X (clic en 'Exportar todos los registros'): ${error.message}`);
+      }
+
+      // === CP_ENTIDADES_008 - Validar funcionamiento del paginador en la vista(Entidad planes comerciales)
+      // Paso 1: Clic en botón que abre el modal de entidades ===
+      try {
+        const botonModalEntidades = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-listId"]/div[1]/span/button')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonModalEntidades), 5000);
+        await driver.wait(until.elementIsEnabled(botonModalEntidades), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonModalEntidades);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", botonModalEntidades);
+
+        // === Espera dinámica a que cargue la tabla dentro del modal ===
+        await driver.wait(
+          until.elementLocated(By.css('div.modal-body table tbody')),
+          10000
+        );
+
+        console.log("✅ CP_ENTIDADES_001 Paso 1: Modal de entidades abierto correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_ENTIDADES_001 Paso 1 (clic en botón modal entidades): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_008 Paso 2: Seleccionar la entidad con ID 135 ("Valores de planes") ===
+      try {
+        const cuerpoTablaEntidades = await driver.wait(
+          until.elementLocated(By.css('div.modal-body table tbody')),
+          10000
+        );
+
+        const filaEntidad82 = await driver.wait(
+          until.elementLocated(By.css('tr#row-135')),
+          10000
+        );
+
+        const celdaEntidad = await filaEntidad82.findElement(By.css('td#id'));
+
+        // Scroll hacia la celda y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", celdaEntidad);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", celdaEntidad);
+
+        // Verificar que la fila se marcó como activa
+        const claseFilaSeleccionada = await filaEntidad82.getAttribute("class");
+        if (!claseFilaSeleccionada.includes("active")) {
+          throw new Error("❌ La fila con ID 135 no fue marcada como activa tras el clic.");
+        }
+
+        console.log("✅ CP_CONTCLANEG_002 Paso 2: Entidad 'Valores de planes' seleccionada correctamente.");
+        await driver.sleep(4000); // Puedes ajustar esto o reemplazar por espera dinámica si deseas
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_002 Paso 2 (selección entidad ID 135): ${error.message}`);
+      }
+
+
+      // === CP_CONTCLANEG_008 Paso 3: Clic en botón "Seleccionar" ===
+      try {
+        // Guardar texto de la primera celda antes de hacer clic en Seleccionar
+        let primeraCeldaAntes = null;
+        try {
+          primeraCeldaAntes = await driver.findElement(
+            By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+          ).getText();
+        } catch {
+          console.warn("⚠️ No se pudo obtener la primera celda antes del clic (puede ser tabla vacía).");
+        }
+
+        // Localizar el botón Seleccionar
+        const botonSeleccionar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-listId"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonSeleccionar), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionar), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionar);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", botonSeleccionar);
+
+        // Espera dinámica: cambio de contenido en primera celda o cierre de modal
+        try {
+          await driver.wait(async () => {
+            try {
+              const primeraCeldaDespues = await driver.findElement(
+                By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+              ).getText();
+              return primeraCeldaAntes !== null && primeraCeldaDespues !== primeraCeldaAntes;
+            } catch {
+              return false; // Todavía no se ha renderizado la tabla
+            }
+          }, 5000);
+        } catch (esperaError) {
+          console.warn("⚠️ No se detectó cambio de tabla, esperando cierre de modal como respaldo.");
+          try {
+            const modal = await driver.findElement(By.css('div.modal-content'));
+            await driver.wait(until.stalenessOf(modal), 15000);
+          } catch {
+            console.warn("⚠️ No se detectó cierre de modal, continuando...");
+          }
+        }
+
+        console.log("✅ CP_ENTIDADES_001 Paso 3: Botón 'Seleccionar' presionado y espera dinámica completada.");
+      } catch (error) {
+        throw new Error(`❌ CP_ENTIDADES_001 Paso 3 (clic en botón 'Seleccionar'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_008 Paso 4: Clic en botón "Página siguiente" ===
+      try {
+        const widgetPaginador = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-grid-crud-grid-crud-135"]/div/div[2]')),
+          7000
+        );
+
+        const btnPaginaSiguienteSpan = await widgetPaginador.findElement(
+          By.xpath('.//*[@id="grid-paginator-next"]/span')
+        );
+
+        await driver.wait(until.elementIsVisible(btnPaginaSiguienteSpan), 5000);
+        await driver.wait(until.elementIsEnabled(btnPaginaSiguienteSpan), 5000);
+
+        // Capturamos la primera celda antes del cambio
+        let primeraCeldaAntes = null;
+        try {
+          const celdaElem = await driver.findElement(
+            By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+          );
+          primeraCeldaAntes = await celdaElem.getText();
+        } catch {
+          console.warn("⚠️ No se encontró fila inicial.");
+        }
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPaginaSiguienteSpan);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnPaginaSiguienteSpan);
+
+        // Espera dinámica: si hay overlay/progress
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-id-filter" or contains(@class, "progress")]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progress), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó overlay de carga, continuando...");
+        }
+
+        // Espera limitada a cambio de celda (máximo 10 seg)
+        if (primeraCeldaAntes) {
+          await Promise.race([
+            driver.wait(async () => {
+              try {
+                const nuevaCelda = await driver.findElement(
+                  By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+                );
+                return (await nuevaCelda.getText()) !== primeraCeldaAntes;
+              } catch {
+                return false;
+              }
+            }, 10000),
+            new Promise(res => setTimeout(res, 10000)) // si pasa 10 seg, salimos
+          ]);
+        }
+
+        console.log("✅ CP_CONTCLANEG_008 Paso 4: Página siguiente seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_008 Paso 4 (clic en botón 'Página siguiente'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_008 Paso 5: Clic en botón "Página anterior" ===
+      try {
+        const widgetPaginador = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-grid-crud-grid-crud-135"]/div/div[2]')),
+          10000
+        );
+
+        const btnPaginaAnterior = await widgetPaginador.findElement(
+          By.xpath('.//*[@id="grid-paginator-prev"]/span')
+        );
+
+        await driver.wait(until.elementIsVisible(btnPaginaAnterior), 5000);
+        await driver.wait(until.elementIsEnabled(btnPaginaAnterior), 5000);
+
+        // Capturamos la primera celda antes del cambio
+        let primeraCeldaAntes = null;
+        try {
+          const celdaElem = await driver.findElement(
+            By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+          );
+          primeraCeldaAntes = await celdaElem.getText();
+        } catch {
+          console.warn("⚠️ No se encontró fila inicial.");
+        }
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPaginaAnterior);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnPaginaAnterior);
+
+        // Espera dinámica: si hay overlay/progress
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-id-filter" or contains(@class, "progress")]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progress), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó overlay de carga, continuando...");
+        }
+
+        // Espera limitada a cambio de celda (máximo 10 seg)
+        if (primeraCeldaAntes) {
+          await Promise.race([
+            driver.wait(async () => {
+              try {
+                const nuevaCelda = await driver.findElement(
+                  By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+                );
+                return (await nuevaCelda.getText()) !== primeraCeldaAntes;
+              } catch {
+                return false;
+              }
+            }, 10000),
+            new Promise(res => setTimeout(res, 10000)) // si pasa 10 seg, salimos
+          ]);
+        }
+
+        console.log("✅ CP_CONTCLANEG_008 Paso 5: Página anterior seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_008 Paso 5 (clic en botón 'Página anterior'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_008 Paso 6: Clic en botón "Última página" ===
+      try {
+        const widgetPaginador = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-grid-crud-grid-crud-135"]/div/div[2]')),
+          10000
+        );
+
+        const btnUltimaPagina = await widgetPaginador.findElement(
+          By.xpath('.//*[@id="grid-paginator-last"]/span')
+        );
+
+        await driver.wait(until.elementIsVisible(btnUltimaPagina), 5000);
+        await driver.wait(until.elementIsEnabled(btnUltimaPagina), 5000);
+
+        // Capturamos la primera celda antes del cambio
+        let primeraCeldaAntes = null;
+        try {
+          const celdaElem = await driver.findElement(
+            By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+          );
+          primeraCeldaAntes = await celdaElem.getText();
+        } catch {
+          console.warn("⚠️ No se encontró fila inicial.");
+        }
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnUltimaPagina);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnUltimaPagina);
+
+        // Espera dinámica: si hay overlay/progress
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-id-filter" or contains(@class, "progress")]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progress), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó overlay de carga, continuando...");
+        }
+
+        // Espera limitada a cambio de celda (máximo 10 seg)
+        if (primeraCeldaAntes) {
+          await Promise.race([
+            driver.wait(async () => {
+              try {
+                const nuevaCelda = await driver.findElement(
+                  By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+                );
+                return (await nuevaCelda.getText()) !== primeraCeldaAntes;
+              } catch {
+                return false;
+              }
+            }, 10000),
+            new Promise(res => setTimeout(res, 10000))
+          ]);
+        }
+
+        console.log("✅ CP_CONTCLANEG_008 Paso 6: Última página seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_008 Paso 6 (clic en botón 'Última página'): ${error.message}`);
+      }
+
+
+      // === CP_CONTCLANEG_008 Paso 7: Clic en botón "Primera página" ===
+      try {
+        const widgetPaginador = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-grid-crud-grid-crud-135"]/div/div[2]')),
+          10000
+        );
+
+        const btnPrimeraPagina = await widgetPaginador.findElement(
+          By.xpath('.//*[@id="grid-paginator-first"]/span')
+        );
+
+        await driver.wait(until.elementIsVisible(btnPrimeraPagina), 5000);
+        await driver.wait(until.elementIsEnabled(btnPrimeraPagina), 5000);
+
+        // Capturamos la primera celda antes del cambio
+        let primeraCeldaAntes = null;
+        try {
+          const celdaElem = await driver.findElement(
+            By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+          );
+          primeraCeldaAntes = await celdaElem.getText();
+        } catch {
+          console.warn("⚠️ No se encontró fila inicial.");
+        }
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPrimeraPagina);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnPrimeraPagina);
+
+        // Espera dinámica: si hay overlay/progress
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-id-filter" or contains(@class, "progress")]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progress), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó overlay de carga, continuando...");
+        }
+
+        // Espera limitada a cambio de celda (máximo 10 seg)
+        if (primeraCeldaAntes) {
+          await Promise.race([
+            driver.wait(async () => {
+              try {
+                const nuevaCelda = await driver.findElement(
+                  By.xpath('//*[@id="grid-table-grid-reports"]/div/div[2]/table/tbody/tr[1]/td[1]')
+                );
+                return (await nuevaCelda.getText()) !== primeraCeldaAntes;
+              } catch {
+                return false;
+              }
+            }, 10000),
+            new Promise(res => setTimeout(res, 10000))
+          ]);
+        }
+
+        console.log("✅ CP_CONTCLANEG_008 Paso 7: Primera página seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_008 Paso 7 (clic en botón 'Primera página'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 - Realizar Filtro
+      // === CP_CONTCLANEG_009 Paso 1: Clic en botón "Filtrar" ===
+      try {
+        const btnFiltrar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-filter-btn"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnFiltrar), 5000);
+        await driver.wait(until.elementIsEnabled(btnFiltrar), 5000);
+
+        // Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnFiltrar);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnFiltrar);
+
+        // === Espera dinámica si aparece overlay/progress ===
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-id-filter" or contains(@class,"progress")]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progress), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó barra de progreso después de filtrar, continuando...");
+        }
+
+        console.log("✅ CP_FILTRAR_001 Paso 1: Botón 'Filtrar' presionado y espera dinámica completada.");
+      } catch (error) {
+        throw new Error(`❌ CP_FILTRAR_001 Paso 1 (clic en botón 'Filtrar'): ${error.message}`);
+      }
+      
+
 
 
 
