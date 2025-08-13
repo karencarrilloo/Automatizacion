@@ -5,7 +5,7 @@ import ContenidoClasesNegocioPage from '../pages/contenidoClasesNegocio.page.js'
 import chromedriver from 'chromedriver';
 
 describe('Prueba de Contenido clases de negocio', function () {
-  this.timeout(250000);
+  this.timeout(270000);
 
   let driver;
   let contenidoPage;

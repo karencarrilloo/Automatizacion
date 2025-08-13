@@ -1165,8 +1165,8 @@ export default class ContenidoClasesNegocioPage {
         throw new Error(`❌ Paso X (clic en 'Exportar todos los registros'): ${error.message}`);
       }
 
-      // === CP_ENTIDADES_008 - Validar funcionamiento del paginador en la vista(Entidad planes comerciales)
-      // Paso 1: Clic en botón que abre el modal de entidades ===
+      // === CP_CONTCLANEG_008 - Validar funcionamiento del paginador en la vista(Entidad planes comerciales)
+      // CP_CONTCLANEG_008 Paso 1: Clic en botón que abre el modal de entidades ===
       try {
         const botonModalEntidades = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-picklist-listId"]/div[1]/span/button')),
@@ -1186,9 +1186,9 @@ export default class ContenidoClasesNegocioPage {
           10000
         );
 
-        console.log("✅ CP_ENTIDADES_001 Paso 1: Modal de entidades abierto correctamente.");
+        console.log("✅ CP_CONTCLANEG_008 Paso 1: Modal de entidades abierto correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_ENTIDADES_001 Paso 1 (clic en botón modal entidades): ${error.message}`);
+        throw new Error(`❌ CP_CONTCLANEG_008 Paso 1: (clic en botón modal entidades): ${error.message}`);
       }
 
       // === CP_CONTCLANEG_008 Paso 2: Seleccionar la entidad con ID 135 ("Valores de planes") ===
@@ -1529,39 +1529,38 @@ export default class ContenidoClasesNegocioPage {
       }
 
       // === CP_CONTCLANEG_009 - Realizar Filtro
-      // === CP_CONTCLANEG_009 Paso 1: Seleccionar el primer registro de la tabla ===
+      // === CP_CONTCLANEG_009 Paso 1: Seleccionar el primer registro de la tabla y capturar datos ===
       try {
-        // Esperar el <tbody> de la tabla
         const cuerpoTabla = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-crud-135"]/div/div[2]/table/tbody')),
           10000
         );
 
-        // Obtener todas las filas visibles dentro del tbody
         const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
 
         if (filas.length === 0) {
           throw new Error("No se encontraron filas en la tabla.");
         }
 
-        // Tomar la primera fila
         const primeraFila = filas[0];
 
-        // Esperar que sea visible
         await driver.wait(until.elementIsVisible(primeraFila), 5000);
         await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", primeraFila);
         await driver.sleep(300);
 
-        // Capturar texto de una celda específica si es necesario
+        // Obtener todas las celdas de la fila
         const celdas = await primeraFila.findElements(By.css('td'));
-        let datoCapturado = "";
-        if (celdas.length > 0) {
-          datoCapturado = await celdas[0].getText(); // Ajusta el índice según la columna que quieras capturar
-          console.log(`📌 Dato capturado del primer registro: ${datoCapturado}`);
-        }
 
-        // Guardar el dato en variable global/contextual si es necesario
-        this.datoSeleccionado = datoCapturado;
+        // Capturar datos por índice (ajusta si cambia el orden de columnas)
+        this.identificador = await celdas[0].getText();
+        this.nombre = await celdas[3].getText();
+        this.navigation = await celdas[4].getText();
+        this.valor = await celdas[5].getText();
+
+        console.log(`📌 IDENTIFICADOR: ${this.identificador}`);
+        console.log(`📌 NOMBRE: ${this.nombre}`);
+        console.log(`📌 NAVIGATION: ${this.navigation}`);
+        console.log(`📌 VALOR: ${this.valor}`);
 
         // Clic en la fila
         await primeraFila.click();
@@ -1604,9 +1603,288 @@ export default class ContenidoClasesNegocioPage {
         throw new Error(`❌ CP_FILTRAR_001 Paso 1 (clic en botón 'Filtrar'): ${error.message}`);
       }
 
+      // === CP_CONTCLANEG_009 Paso 3: Llenar modal con datos capturados ===
+      try {
+        // Campo IDENTIFICADOR
+        const inputIdentificador = await driver.findElement(By.xpath('//input[@placeholder="Identificador"]'));
+        await inputIdentificador.clear();
+        await inputIdentificador.sendKeys(this.identificador);
+
+        // Campo NOMBRE
+        const inputNombre = await driver.findElement(By.xpath('//input[@placeholder="Nombre"]'));
+        await inputNombre.clear();
+        await inputNombre.sendKeys(this.nombre);
+
+        // Campo NAVIGATION
+        const inputNavigation = await driver.findElement(By.xpath('//input[@placeholder="NAVIGATION"]'));
+        await inputNavigation.clear();
+        await inputNavigation.sendKeys(this.navigation);
+
+        // Campo VALOR
+        const inputValor = await driver.findElement(By.xpath('//input[@placeholder="Valor"]'));
+        await inputValor.clear();
+        await inputValor.sendKeys(this.valor);
+        await driver.sleep(5000);
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 3: Modal diligenciado correctamente con los datos capturados.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 3: ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 4 Clic en botón "SOCIALSTRATUMID" ===
+      try {
+        const btnSocialStratum = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-socialstratumid"]/div[1]/span/button')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnSocialStratum), 5000);
+        await driver.wait(until.elementIsEnabled(btnSocialStratum), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnSocialStratum);
+        await driver.sleep(300); // pequeña pausa antes del clic
+
+        await btnSocialStratum.click();
+
+        await driver.sleep(2000);
+        console.log("✅ CP_CONTCLANEG_009 Paso 4: Botón 'SOCIALSTRATUMID' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 4 (clic en botón 'SOCIALSTRATUMID'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 5: Seleccionar el primer registro de la tabla ===
+      try {
+        // Esperar a que el tbody del modal esté presente
+        const cuerpoTablaModal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-socialstratumid"]/div/div[2]/table/tbody')),
+          15000
+        );
+
+        // Esperar a que haya al menos una fila visible dentro del modal
+        await driver.wait(async () => {
+          const filas = await cuerpoTablaModal.findElements(By.xpath('./tr'));
+          return filas.length > 0;
+        }, 10000);
+
+        // Tomar la primera fila del modal (la que realmente se ve en pantalla)
+        const filas = await cuerpoTablaModal.findElements(By.xpath('./tr'));
+        const primeraFilaModal = filas[0];
+
+        // Asegurar visibilidad y hacer scroll
+        await driver.wait(until.elementIsVisible(primeraFilaModal), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", primeraFilaModal);
+        await driver.sleep(300);
+
+        // Intentar clic normal, si falla usar JS
+        try {
+          await primeraFilaModal.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", primeraFilaModal);
+        }
+
+        await driver.sleep(800);
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 5: Primer registro del modal seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 5 (selección primer registro modal): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 6: Clic en botón "Seleccionar" del modal ===
+      try {
+        const botonSeleccionarModal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-socialstratumid"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonSeleccionarModal), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionarModal), 5000);
+
+        // Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarModal);
+        await driver.sleep(300);
+
+        try {
+          await botonSeleccionarModal.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", botonSeleccionarModal);
+        }
+
+        // Espera dinámica a que desaparezca el modal
+        try {
+          const modal = await driver.findElement(By.xpath('//*[@id="widget-dialog-dialog-picklist-socialstratumid"]/div/div'));
+          await driver.wait(until.stalenessOf(modal), 10000);
+        } catch {
+          console.warn("⚠️ No se detectó cierre de modal, se continúa.");
+        }
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 6: Botón 'Seleccionar' del modal presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 6: (clic en botón 'Seleccionar'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 7: Clic en botón "MUNICIPALITYID" ===
+      try {
+        const btnMunicipality = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-municipalityid"]/div[1]/span/button')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnMunicipality), 5000);
+        await driver.wait(until.elementIsEnabled(btnMunicipality), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnMunicipality);
+        await driver.sleep(300); // pequeña pausa antes del clic
+
+        await btnMunicipality.click();
+
+        await driver.sleep(2000);
+        console.log("✅ CP_CONTCLANEG_009 Paso 7: Botón 'MUNICIPALITYID' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 7 (clic en botón 'MUNICIPALITYID'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 8: Buscar "ESPINAL" en la barra de búsqueda del modal MUNICIPALITYID ===
+      try {
+        const barraBusquedaModal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-municipalityid"]//input[@id="crud-search-bar"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(barraBusquedaModal), 5000);
+        await driver.wait(until.elementIsEnabled(barraBusquedaModal), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", barraBusquedaModal);
+        await driver.sleep(300);
+
+        // Limpiar y escribir el texto
+        await barraBusquedaModal.clear();
+        await barraBusquedaModal.sendKeys('ESPINAL', Key.RETURN);
+        await driver.sleep(2000);
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 8: Palabra 'ESPINAL' escrita en el modal y búsqueda ejecutada.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 8: (buscar 'ESPINAL' en modal): ${error.message}`);
+      }
+
+
+      // === CP_CONTCLANEG_009 Paso 9: Seleccionar resultado de búsqueda en modal MUNICIPALITYID ===
+      try {
+        const filaMunicipio = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="row-974"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(filaMunicipio), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", filaMunicipio);
+        await driver.sleep(300);
+
+        await filaMunicipio.click();
+        await driver.sleep(1000);
+
+        console.log("✅ CP_CONTCLANEG_010 Paso 4: Registro de MUNICIPALITYID seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_010 Paso 4 (selección de resultado en modal MUNICIPALITYID): ${error.message}`);
+      }
 
 
 
+      // === CP_CONTCLANEG_009 Paso 10: Clic en botón "Seleccionar" del modal MUNICIPALITYID ===
+      try {
+        const botonSeleccionarMunicipio = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-municipalityid"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonSeleccionarMunicipio), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionarMunicipio), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarMunicipio);
+        await driver.sleep(300);
+
+        await botonSeleccionarMunicipio.click();
+
+        // Esperar a que desaparezca el modal
+        try {
+          const modalMunicipio = await driver.findElement(By.xpath('//*[@id="widget-dialog-dialog-picklist-municipalityid"]/div/div'));
+          await driver.wait(until.stalenessOf(modalMunicipio), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó cierre del modal de MUNICIPALITYID, se continúa.");
+        }
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 9: Botón 'Seleccionar' en modal MUNICIPALITYID presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 9: (clic en botón 'Seleccionar' en modal MUNICIPALITYID): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_011 Paso 1: Scroll hasta el final y clic en botón "ID PLAN COMERCIAL" ===
+      try {
+        // 1️⃣ Localizar el modal-body
+        const modalBody = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-crud-crud-135"]/div/div/div[2]')),
+          10000
+        );
+
+        // 2️⃣ Hacer scroll hasta el final del modal
+        await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight", modalBody);
+        await driver.sleep(500); // breve pausa para que cargue cualquier contenido adicional
+
+        // 3️⃣ Localizar el botón "ID PLAN COMERCIAL"
+        const btnIdPlanComercial = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-picklist-commercialplanid"]/div[1]/span/button')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnIdPlanComercial), 5000);
+        await driver.wait(until.elementIsEnabled(btnIdPlanComercial), 5000);
+
+        // 4️⃣ Scroll hasta el botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnIdPlanComercial);
+        await driver.sleep(300);
+        await btnIdPlanComercial.click();
+
+        await driver.sleep(2000); // esperar que se abra el modal
+        console.log("✅ CP_CONTCLANEG_011 Paso 1: Scroll abajo y clic en botón 'ID PLAN COMERCIAL' realizado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_011 Paso 1 (scroll y clic en botón 'ID PLAN COMERCIAL'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_011 Paso 2: Seleccionar el primer registro del modal "ID PLAN COMERCIAL" ===
+      try {
+        // 1️⃣ Esperar a que se muestre el modal-body del picklist
+        const modalBodyPlanComercial = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-commercialplanid"]/div/div/div[2]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(modalBodyPlanComercial), 5000);
+
+        // 2️⃣ Dentro del modal, ubicar el tbody de la tabla
+        const tbodyPlanComercial = await modalBodyPlanComercial.findElement(
+          By.xpath('.//table/tbody')
+        );
+
+        // 3️⃣ Obtener todas las filas visibles
+        const filasPlanComercial = await tbodyPlanComercial.findElements(By.xpath('./tr'));
+
+        if (filasPlanComercial.length === 0) {
+          throw new Error("No se encontraron registros en el modal 'ID PLAN COMERCIAL'.");
+        }
+
+        // 4️⃣ Tomar la primera fila
+        const primeraFilaPlanComercial = filasPlanComercial[0];
+
+        await driver.wait(until.elementIsVisible(primeraFilaPlanComercial), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", primeraFilaPlanComercial);
+        await driver.sleep(300);
+
+        // 5️⃣ Clic en la primera fila
+        await primeraFilaPlanComercial.click();
+        await driver.sleep(2000);
+
+        console.log("✅ CP_CONTCLANEG_011 Paso 2: Primer registro del modal 'ID PLAN COMERCIAL' seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_011 Paso 2 (selección primer registro modal 'ID PLAN COMERCIAL'): ${error.message}`);
+      }
 
 
 
