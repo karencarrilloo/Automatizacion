@@ -1781,9 +1781,9 @@ export default class ContenidoClasesNegocioPage {
         await filaMunicipio.click();
         await driver.sleep(1000);
 
-        console.log("✅ CP_CONTCLANEG_010 Paso 4: Registro de MUNICIPALITYID seleccionado correctamente.");
+        console.log("✅ CP_CONTCLANEG_009 Paso 9: Registro de MUNICIPALITYID seleccionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_CONTCLANEG_010 Paso 4 (selección de resultado en modal MUNICIPALITYID): ${error.message}`);
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 9 (selección de resultado en modal MUNICIPALITYID): ${error.message}`);
       }
 
 
@@ -1811,12 +1811,12 @@ export default class ContenidoClasesNegocioPage {
           console.warn("⚠️ No se detectó cierre del modal de MUNICIPALITYID, se continúa.");
         }
 
-        console.log("✅ CP_CONTCLANEG_009 Paso 9: Botón 'Seleccionar' en modal MUNICIPALITYID presionado correctamente.");
+        console.log("✅ CP_CONTCLANEG_009 Paso 10: Botón 'Seleccionar' en modal MUNICIPALITYID presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_CONTCLANEG_009 Paso 9: (clic en botón 'Seleccionar' en modal MUNICIPALITYID): ${error.message}`);
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 10: (clic en botón 'Seleccionar' en modal MUNICIPALITYID): ${error.message}`);
       }
 
-      // === CP_CONTCLANEG_011 Paso 1: Scroll hasta el final y clic en botón "ID PLAN COMERCIAL" ===
+      // === CP_CONTCLANEG_009 Paso 11: Scroll hasta el final y clic en botón "ID PLAN COMERCIAL" ===
       try {
         // 1️⃣ Localizar el modal-body
         const modalBody = await driver.wait(
@@ -1843,12 +1843,12 @@ export default class ContenidoClasesNegocioPage {
         await btnIdPlanComercial.click();
 
         await driver.sleep(2000); // esperar que se abra el modal
-        console.log("✅ CP_CONTCLANEG_011 Paso 1: Scroll abajo y clic en botón 'ID PLAN COMERCIAL' realizado correctamente.");
+        console.log("✅ CP_CONTCLANEG_009 Paso 11: Scroll abajo y clic en botón 'ID PLAN COMERCIAL' realizado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_CONTCLANEG_011 Paso 1 (scroll y clic en botón 'ID PLAN COMERCIAL'): ${error.message}`);
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 11 (scroll y clic en botón 'ID PLAN COMERCIAL'): ${error.message}`);
       }
 
-      // === CP_CONTCLANEG_011 Paso 2: Seleccionar el primer registro del modal "ID PLAN COMERCIAL" ===
+      // === CP_CONTCLANEG_009 Paso 12: Seleccionar el primer registro del modal "ID PLAN COMERCIAL" ===
       try {
         // 1️⃣ Esperar a que se muestre el modal-body del picklist
         const modalBodyPlanComercial = await driver.wait(
@@ -1881,11 +1881,162 @@ export default class ContenidoClasesNegocioPage {
         await primeraFilaPlanComercial.click();
         await driver.sleep(2000);
 
-        console.log("✅ CP_CONTCLANEG_011 Paso 2: Primer registro del modal 'ID PLAN COMERCIAL' seleccionado correctamente.");
+        console.log("✅ CP_CONTCLANEG_009 Paso 12: Primer registro del modal 'ID PLAN COMERCIAL' seleccionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_CONTCLANEG_011 Paso 2 (selección primer registro modal 'ID PLAN COMERCIAL'): ${error.message}`);
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 12: (selección primer registro modal 'ID PLAN COMERCIAL'): ${error.message}`);
       }
 
+      // === CP_CONTCLANEG_009 Paso 13: Clic en botón "Seleccionar" del modal ID PLAN COMERCIAL ===
+      try {
+        // 1️⃣ Esperar a que esté visible el modal-body para confirmar que el modal está abierto
+        const modalBodyPlanComercial = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-commercialplanid"]/div/div/div[2]')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalBodyPlanComercial), 5000);
+
+        // 2️⃣ Localizar el botón "Seleccionar" dentro del modal-footer
+        const botonSeleccionarPlanComercial = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-commercialplanid"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonSeleccionarPlanComercial), 5000);
+        await driver.wait(until.elementIsEnabled(botonSeleccionarPlanComercial), 5000);
+
+        // 3️⃣ Scroll hacia el botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionarPlanComercial);
+        await driver.sleep(300);
+        await botonSeleccionarPlanComercial.click();
+
+        // 4️⃣ Espera dinámica a que desaparezca el modal
+        try {
+          const modalContentPlanComercial = await driver.findElement(
+            By.xpath('//*[@id="widget-dialog-dialog-picklist-commercialplanid"]/div/div')
+          );
+          await driver.wait(until.stalenessOf(modalContentPlanComercial), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó cierre del modal, continuando...");
+        }
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 13: Botón 'Seleccionar' del modal ID PLAN COMERCIAL presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_009 Paso 13: (clic en botón 'Seleccionar' modal ID PLAN COMERCIAL): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_009 Paso 14: Clic en botón "Filtrar" del modal cls_commercialplanvalue ===
+      try {
+        // 1️⃣ Esperar que el modal esté abierto (modal-content visible)
+        const modalContentFiltrar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-crud-crud-135"]/div/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalContentFiltrar), 5000);
+
+        // 2️⃣ Localizar el botón "Filtrar" dentro del modal
+        const botonFiltrarModal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btAction-crud-135"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(botonFiltrarModal), 5000);
+        await driver.wait(until.elementIsEnabled(botonFiltrarModal), 5000);
+
+        // 3️⃣ Scroll hacia el botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonFiltrarModal);
+        await driver.sleep(300);
+        await botonFiltrarModal.click();
+
+        // 4️⃣ Espera dinámica a que el modal se cierre
+        try {
+          await driver.wait(until.stalenessOf(modalContentFiltrar), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó cierre del modal, continuando...");
+        }
+
+        console.log("✅ CP_CONTCLANEG_009 Paso 14: Botón 'Filtrar' en modal cls_commercialplanvalue presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌  CP_CONTCLANEG_009 Paso 14: (clic en botón 'Filtrar' modal cls_commercialplanvalue): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_010 - Validar funcionalidad carga masiva objetos
+      // === CP_CONTCLANEG_010 Paso 1: Seleccionar el primer registro de la tabla y capturar datos ===
+
+
+      try {
+        // 1️⃣ Esperar que el contenedor principal esté visible
+        const contenedorPick = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="view-content-class"]/div[1]')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(contenedorPick), 5000);
+
+        // 2️⃣ Localizar el botón "Carga masiva de objetos"
+        const btnCargaMasiva = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="massive-load"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnCargaMasiva), 5000);
+        await driver.wait(until.elementIsEnabled(btnCargaMasiva), 5000);
+
+        // 3️⃣ Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnCargaMasiva);
+        await driver.sleep(300);
+        await btnCargaMasiva.click();
+        await driver.sleep(2000);
+
+        console.log("✅ CP_CONTCLANEG_010 Paso 1: Botón 'Carga masiva de objetos' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_010 Paso 1 (clic en botón 'Carga masiva de objetos'): ${error.message}`);
+      }
+
+      // === CP_CONTCLANEG_010 Paso 2: Clic en botón "Descargar plantilla" en modal de carga masiva ===
+      try {
+        // 1️⃣ Esperar que el modal de descarga esté visible
+        const modalContent = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialogExportXlsx"]/div/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalContent), 5000);
+
+        // 2️⃣ Esperar el contenedor interno del modal
+        const contentDownload = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialogExportXlsx"]/div/div/div[2]/div/div[1]')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(contentDownload), 5000);
+
+        // 3️⃣ Localizar el botón "Descargar plantilla"
+        const btnDescargarPlantilla = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="btn-download-template"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnDescargarPlantilla), 5000);
+        await driver.wait(until.elementIsEnabled(btnDescargarPlantilla), 5000);
+
+        // 4️⃣ Scroll al botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnDescargarPlantilla);
+        await driver.sleep(300);
+        await btnDescargarPlantilla.click();
+        await driver.sleep(2000);
+
+        // 5️⃣ Espera opcional por progreso de descarga (si existe)
+        try {
+          const progreso = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="progress-download-template"]')),
+            3000
+          );
+          await driver.wait(until.stalenessOf(progreso), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó barra de progreso de descarga, se continúa.");
+        }
+
+        console.log("✅ CP_CONTCLANEG_013 Paso 2: Botón 'Descargar plantilla' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_013 Paso 2 (clic en botón 'Descargar plantilla'): ${error.message}`);
+      }
 
 
     } catch (error) {
