@@ -2,6 +2,9 @@ import { By, until } from 'selenium-webdriver';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,7 +15,7 @@ export default class LoginPage {
     this.url = 'https://oss-dev.celsiainternet.com/';
   }
 
-  async ejecutarLogin() {
+  async ejecutarLogin(usuario = process.env.LOGIN_EMAIL, clave = process.env.LOGIN_PASSWORD) {
     try {
       const driver = this.driver;
       // === CP_LOGIN_001 - Validar inicio de sesión con credenciales válidas e ingreso a la aplicacion de emalaea ===
@@ -24,7 +27,7 @@ export default class LoginPage {
         until.elementLocated(By.css('#textfield-field-user')),
         25000
       ); // Espera que el campo de correo esté disponible
-      await inputCorreo.sendKeys('harold.aguirre@hamantsoft.com'); // Ingresa el correo
+      await inputCorreo.sendKeys(usuario); // Ingresa el correo
 
       // === CP_LOGIN_001 Paso 3: Clic en botón "Siguiente" ===
       const btnSiguiente = await driver.wait(
@@ -39,7 +42,7 @@ export default class LoginPage {
         until.elementLocated(By.css('#textfield-field-password')),
         25000
       ); // Espera campo de contraseña
-      await inputPassword.sendKeys('hJnlIAWpdyE'); // Ingresa contraseña
+      await inputPassword.sendKeys(clave); // Ingresa contraseña
 
       // === CP_LOGIN_001 Paso 5: Clic en botón "Iniciar sesión" ===
       const btnLogin = await driver.wait(

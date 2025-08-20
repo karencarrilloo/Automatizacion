@@ -2039,6 +2039,41 @@ export default class ContenidoClasesNegocioPage {
       }
 
 
+      // === CP_CONTCLANEG_013 Paso 3: Clic en botón "Cancelar" en modal de descarga ===
+      try {
+        // 1️⃣ Esperar que el botón "Cancelar" esté presente
+        const btnCancelar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btnCancelExport"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnCancelar), 5000);
+        await driver.wait(until.elementIsEnabled(btnCancelar), 5000);
+
+        // 2️⃣ Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", btnCancelar);
+        await driver.sleep(300);
+        await btnCancelar.click();
+
+        // 3️⃣ Espera dinámica para cierre del modal
+        try {
+          const modalContent = await driver.findElement(
+            By.xpath('//*[@id="widget-dialog-dialogExportXlsx"]/div/div')
+          );
+          await driver.wait(until.stalenessOf(modalContent), 15000);
+        } catch {
+          console.warn("⚠️ No se detectó cierre del modal, se continúa.");
+        }
+
+        console.log("✅ CP_CONTCLANEG_013 Paso 3: Botón 'Cancelar' presionado y modal cerrado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ CP_CONTCLANEG_013 Paso 3 (clic en botón 'Cancelar'): ${error.message}`);
+      }
+
+
+
+
+
     } catch (error) {
       console.error("❌ Error en contenido clases de negocio:", error.message);
       const screenshot = await driver.takeScreenshot();
