@@ -73,11 +73,11 @@ Esto iniciará el proyecto e instalará:
 
 ---
 
-⚙️ Variables de entorno
+## ⚙️ Variables de entorno
 
 En el archivo .env debes definir tus credenciales:
 
-## Credenciales Oracle Database
+### Credenciales Oracle Database
 DB_USER=usuario
 DB_PASSWORD=contraseña
 DB_CONNECT_STRING=(DESCRIPTION=...)
