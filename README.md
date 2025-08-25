@@ -77,7 +77,7 @@ Esto iniciará el proyecto e instalará:
 
 En el archivo .env debes definir tus credenciales:
 
-# === Credenciales Oracle Database ===
+# Credenciales Oracle Database
 DB_USER=usuario
 DB_PASSWORD=contraseña
 DB_CONNECT_STRING=(DESCRIPTION=...)
