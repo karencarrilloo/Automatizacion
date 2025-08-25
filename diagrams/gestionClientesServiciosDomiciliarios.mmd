@@ -1,0 +1,31 @@
+flowchart TD
+    A[Inicio] --> B[Clic en módulo eCenter]
+    B --> C[Scroll en contenedor de aplicaciones]
+    C --> D[Clic en 'Gestión sobre clientes y servicios domiciliarios']
+
+    D --> E[Seleccionar cliente ACTIVO]
+    E --> F[Capturar tipo de cliente]
+
+    F --> G[Clic en botón Opciones]
+    G --> H[Seleccionar 'Ver información técnica asociada']
+    H --> I[Cerrar modal información técnica]
+
+    I --> J[Clic en botón Opciones]
+    J --> K[Seleccionar 'Reconfiguración']
+    K --> L[Clic en botón 'Reconfigurar']
+    L --> M[Confirmar 'Sí' en modal]
+
+    M --> N{¿Cliente AMI?}
+    N -- Sí --> O[Esperar proceso AMI] --> P[Clic en 'Terminar']
+    N -- No --> Q[Clic en botón 'Siguiente'] --> R[Clic en 'Configurar WiFi']
+
+    P --> S[Fin]
+    R --> S[Fin]
+
+    %% %% Estilo para resaltar pasos de interacción con Opciones
+    %% classDef opciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+    %% class G,H,I,J,K,L,M opciones
+
+    %% %% Estilo para decisiones
+    %% classDef decision fill:#fff3cd,stroke:#f0ad4e,stroke-width:2px;
+    %% class N decision

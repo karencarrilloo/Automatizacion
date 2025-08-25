@@ -5,7 +5,7 @@ import chromedriver from 'chromedriver';
 import GestionClientesServiciosPage from '../pages/gestionClientesServiciosDomiciliarios.page.js';
 
 describe('Prueba de Gestión sobre Clientes y Servicios Domiciliarios', function() {
-  this.timeout(180000); // 3 min
+  this.timeout(800000); // 3 min
 
   let driver;
   let gestionPage;

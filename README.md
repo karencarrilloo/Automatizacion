@@ -2,7 +2,7 @@
 
 # Automatización con Selenium WebDriver, Mocha y Chai
 
-Este proyecto realiza automatización de pruebas sobre una aplicación web utilizando Selenium WebDriver con Mocha y Chai bajo módulos ESM (`.mjs` y `.page.js`).
+Este proyecto realiza automatización de pruebas sobre una aplicación web(emalaea) utilizando Selenium WebDriver con Mocha y Chai bajo módulos ESM (`.mjs` y `.page.js`).
 
 ---
 
@@ -10,15 +10,27 @@ Este proyecto realiza automatización de pruebas sobre una aplicación web utili
 
 ```
 automatizacion-celsia/
-├── pages/                     # Page Objects (ESM modules)
-│   ├── login.page.js
-│   └── ...otros archivos.page.js
-├── tests/                     # Pruebas automatizadas
-│   ├── login.mjs
-│   └── ...otros archivos.mjs
-├── errores/                   # Capturas de error
-├── package.json               # Configuración del proyecto
-└── README.md                  # Instrucciones de uso
+├── config/ # Configuración general del proyecto
+├── data/ # Archivos de datos para pruebas
+├── database/ # Conexión y utilidades para la base de datos
+├── diagrams/ # Diagramas de flujo o documentación visual
+├── drivers/ # Drivers necesarios para la automatización
+├── errores/ # Capturas de error
+├── node_modules/ # Dependencias del proyecto
+├── pages/ # Page Objects (ESM modules)
+│ ├── login.page.js
+│ └── ...otros archivos.page.js
+├── reports/ # Reportes de ejecución de pruebas
+├── tests/ # Pruebas automatizadas
+│ ├── login.mjs
+│ └── ...otros archivos.mjs
+├── utils/ # Utilidades y helpers
+├── .env # Variables de entorno
+├── .env.example # Ejemplo de configuración de variables
+├── .gitignore # Archivos ignorados por git
+├── package.json # Configuración del proyecto
+├── package-lock.json # Control de versiones de dependencias
+└── README.md # Instrucciones de uso
 ```
 
 ---
@@ -27,7 +39,10 @@ automatizacion-celsia/
 
 - Node.js ≥ 14
 - Navegador **Google Chrome**
-- ChromeDriver compatible (automáticamente manejado por Selenium)
+- ChromeDriver compatible (mantenido automáticamente por Selenium)
+- [Oracle Instant Client](https://www.oracle.com/database/technologies/instant-client.html) ≥ 21.9  
+- Microsoft Visual C++ 2019 Redistributable (x64)  
+- Credenciales válidas de Oracle Autonomous Database (se configuran en `.env`)
 
 ---
 
@@ -45,20 +60,32 @@ cd automatizacion-celsia
 ```bash
 
 npm init -y 
-npm install selenium-webdriver mocha chai --save-dev
+npm install selenium-webdriver mocha chai oracledb dotenv --save
 
 ```
 
 Esto iniciará el proyecto e instalará:
-- `selenium-webdriver`
-- `mocha`
-- `chai`
+- `selenium-webdriver` → Automatización del navegador.
+- `mocha` → Framework de pruebas.
+- `chai` → Librería de aserciones.
+- `oracledb` → Cliente para conexión con Oracle Database.
+- `dotenv` → Carga de variables de entorno desde .env.
 
 ---
 
+⚙️ Variables de entorno
+
+En el archivo .env debes definir tus credenciales:
+
+# === Credenciales Oracle Database ===
+DB_USER=usuario
+DB_PASSWORD=contraseña
+DB_CONNECT_STRING=(DESCRIPTION=...)
+
+
 ## 🧪 Ejecutar pruebas
 
-### Ejecutar todas las pruebas:
+### Ejecutar todas las pruebas (no recomendable, méjor ejecutar una prueba específica):
 Estar ubicado en la carpeta Automatización
 
 ```bash
@@ -67,30 +94,8 @@ npm test
 
 ### Ejecutar una prueba específica (ej. login):
 ```bash
-npx mocha tests/login.mjs --timeout 180000
+npx mocha tests/login.mjs 
 ```
-
-### Otras pruebas individuales:
-
-```bash
-npx mocha tests/puertosActivos.mjs
-npx mocha tests/gestionActivos.mjs
-npx mocha tests/contenidoClasesNegocio.mjs
-npx mocha tests/gestionCambioNapPuerto.mjs
-npx mocha tests/gestionContratos.mjs
-npx mocha tests/exploradorEntidades.mjs
-npx mocha tests/motorReglas.mjs
-npx mocha tests/programadorTareas.mjs
-npx mocha tests/ocupacionPuertos.mjs
-npx mocha tests/configuracionTipoOrden.mjs
-```
-
-Recomendación:
-
-en caso de ejecutar una prueba y no se abre el navegador chrome importar el chromedriver en los archivos mjs
-import chromedriver from 'chromedriver';
-
----
 
 ## 🧰 Scripts disponibles
 
@@ -105,7 +110,7 @@ Puedes modificar este comando si quieres ejecutar únicamente algunos tests espe
 
 ---
 
-## 📸 Captura de errores
+## 📸 Captura de errores(realizar mejoras)
 
 Si ocurre un error durante una prueba, se genera una captura de pantalla en la carpeta `errores/` con nombre: 
 
@@ -117,12 +122,11 @@ error_<nombre>_<timestamp>.png
 
 ## 💡 Consejos
 
-- Asegúrate de tener **resolución completa** para que los elementos no queden fuera del viewport.
-- Si una prueba no da clic correctamente, asegúrate de que no haya overlays o modales abiertos.
-- Usa scroll dinámico si algún campo no es visible.
+En caso de que al ejecutar un test aparezca un error relacionado con dependencias, configuraciones o ejecución, puedes consultar un asistente de IA (por ejemplo, ChatGPT) para obtener una guía más rápida hacia la solución.
+
 
 ---
 
 ## 📞 Soporte
 
-Para cualquier duda o mejora, contactar al equipo de QA o desarrollo.
+Para cualquier duda o mejora, contactar al equipo de QA.
