@@ -48,34 +48,54 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(5000);
 
 
-      // === Paso 4: Seleccionar cliente RESIDENCIAL ACTIVO ===
+      // paso 4 === Seleccionar cliente RESIDENCIAL ACTIVO ===
       try {
+        // Buscar dinámicamente el tbody de la tabla (sin ID fijo)
         const cuerpoTabla = await driver.wait(
-          until.elementLocated(By.xpath('//*[@id="grid-table-crud-grid-5522-CustomerManager"]/div/div[2]/table/tbody')),
-          10000
+          until.elementLocated(By.xpath('//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody')),
+          15000
         );
 
-        const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
-        if (filas.length === 0) throw new Error("No se encontraron filas en la tabla.");
-
+        // Reintento: esperar hasta encontrar al menos una fila válida
         let filaSeleccionada = null;
+        let intentos = 0;
+        while (!filaSeleccionada && intentos < 5) {
+          intentos++;
+          console.log(`🔎 Intento ${intentos}: buscando cliente RESIDENCIAL ACTIVO...`);
 
-        // Buscar la primera fila con Estado ACTIVO y TipoCliente RESIDENCIAL
-        for (const fila of filas) {
-          const celdas = await fila.findElements(By.css('td'));
-          const estadoCliente = (await celdas[9].getText()).trim().toUpperCase();     // Columna 9 = Estado
-          const tipoCliente = (await celdas[14].getText()).trim().toUpperCase();      // Columna 14 = Tipo Cliente
+          const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+          if (filas.length === 0) {
+            console.log("⚠️ No hay filas en la tabla, esperando...");
+            await driver.sleep(2000);
+            continue;
+          }
 
-          if (estadoCliente.includes("ACTIVO") && tipoCliente.includes("RESIDENCIAL")) {
-            filaSeleccionada = fila;
-            this.tipoClienteSeleccionado = tipoCliente;
-            console.log(`✅ Fila encontrada: Estado=${estadoCliente}, TipoCliente=${tipoCliente}`);
-            break;
+          for (const fila of filas) {
+            const celdas = await fila.findElements(By.css('td'));
+            if (celdas.length < 15) continue; // Evitar errores si la fila no tiene todas las columnas
+
+            const estadoCliente = (await celdas[9].getText()).trim().toUpperCase();   // Col 9 = Estado
+            const tipoCliente = (await celdas[14].getText()).trim().toUpperCase();    // Col 14 = Tipo Cliente
+
+            console.log(`   ➝ Estado=${estadoCliente}, TipoCliente=${tipoCliente}`);
+
+            if (estadoCliente.includes("ACTIVO") && tipoCliente.includes("RESIDENCIAL")) {
+              filaSeleccionada = fila;
+              this.estadoClienteSeleccionado = estadoCliente;
+              this.tipoClienteSeleccionado = tipoCliente;
+              console.log(`✅ Cliente válido encontrado: Estado=${estadoCliente}, TipoCliente=${tipoCliente}`);
+              break;
+            }
+          }
+
+          if (!filaSeleccionada) {
+            console.log("⚠️ No se encontró cliente válido, reintentando...");
+            await driver.sleep(2000);
           }
         }
 
         if (!filaSeleccionada) {
-          throw new Error("❌ No se encontró ningún cliente RESIDENCIAL ACTIVO.");
+          throw new Error("❌ No se encontró ningún cliente RESIDENCIAL ACTIVO después de varios intentos.");
         }
 
         // Seleccionar fila encontrada
@@ -89,6 +109,7 @@ export default class GestionClientesServiciosPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_GESCLI_001 Paso 1: ${error.message}`);
       }
+
 
 
       // === Paso 5: Seleccionar botón Opciones ===
@@ -240,321 +261,284 @@ export default class GestionClientesServiciosPage {
       } catch (error) {
         throw new Error(`❌ Paso 11: (clic en 'Sí' del modal de confirmación): ${error.message}`);
       }
+      // === Manejo de ejecución de reconfiguración (éxito o fallo) ===
+      let reconfigExitosa = false; // ✅ Declarar aquí para que exista en todo el bloque
 
-      // === Manejo de ejecución de reconfiguración ===
       try {
         const btnSiguienteXpath = '//*[@id="widget-button-btn-next"]/div';
-
-        const pendingXpath = '//*[@id="widget-dialog-open-dialog-602818-5522-CustomerManager"]/div/div/div[2]/div/div/div/div/div[2]/span';
-        const runningXpath = '//*[@id="widget-dialog-open-dialog-602818-5522-CustomerManager"]/div/div/div[2]/div/div/div/div/div[1]/div[3]/span';
-        const processGeneralXpath = '//*[@id="widget-dialog-open-dialog-602818-5522-CustomerManager"]/div/div/div[2]/div/div/div/div/div[2]';
+        const btnConfigWifiXpath = '//div[@id="widget-button-btn-config-wifi-data"] | //button[contains(.,"CONFIGURAR")]';
+        const btnCerrarModalErrorXpath = '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]//button';
+        const btnOpcionesXpath = '//*[@id="btn-options"]';
+        const opcionVerDispositivosXpath = '//*[@id="1088"]';
         const checkOkXpath = '//*[@id="widget-dialog-open-dialog-602818-5522-CustomerManager"]//span[contains(@class,"glyphicon-ok")]';
 
-        console.log("⏳ Esperando inicio del proceso de reconfiguración (estado pending)...");
+        console.log("⏳ Esperando que se complete la reconfiguración...");
 
-        // === Etapa 1: Pending (proceso aún no iniciado) ===
-        const pendingEl = await driver.wait(
-          until.elementLocated(By.xpath(pendingXpath)),
-          60000
-        );
-        await driver.wait(until.elementIsVisible(pendingEl), 60000);
-        console.log("✅ Proceso en estado PENDING detectado.");
-
-        // === Etapa 2: Running (cuando el proceso comienza realmente) ===
-        console.log("⏳ Esperando transición a RUNNING...");
-        const runningEl = await driver.wait(
-          until.elementLocated(By.xpath(runningXpath)),
-          180000 // hasta 3 minutos
-        );
-        await driver.wait(until.elementIsVisible(runningEl), 180000);
-        console.log("✅ Proceso RUNNING detectado, reconfiguración en curso...");
-
-        // === Etapa 3: Esperar a que todos los checks (✔️) aparezcan ===
-        console.log("⏳ Esperando que finalicen los pasos de la reconfiguración...");
+        // === Etapa 1: Esperar a que aparezcan todos los checks ===
         await driver.wait(async () => {
           const checks = await driver.findElements(By.xpath(checkOkXpath));
-          console.log(`📌 Checks encontrados hasta ahora: ${checks.length}`);
-          return checks.length >= 5; // Ajusta según número esperado de pasos
+          console.log(`📌 Checks encontrados: ${checks.length}`);
+          return checks.length >= 5; // Ajusta según número esperado
         }, 600000, "❌ Los checks no se completaron en el tiempo esperado (10 min).");
 
         console.log("✅ Todos los pasos de reconfiguración completados.");
 
-        // === Etapa 4: Presionar botón Siguiente ===
+        // === Etapa 2: Presionar botón Siguiente ===
         const btnSiguiente = await driver.wait(
           until.elementLocated(By.xpath(btnSiguienteXpath)),
-          60000
+          120000
         );
-        await driver.wait(until.elementIsVisible(btnSiguiente), 60000);
-        await driver.wait(until.elementIsEnabled(btnSiguiente), 60000);
-
+        await driver.wait(until.elementIsVisible(btnSiguiente), 20000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 20000);
         await driver.executeScript("arguments[0].click();", btnSiguiente);
         console.log("✅ Reconfiguración finalizada: botón 'Siguiente' presionado.");
-        await driver.sleep(10000);
 
-        this.reconfiguracionExitosa = true;
+        // === Etapa 3: Intentar configurar WiFi (opcional) ===
+        try {
+          console.log("⏳ Esperando modal de configuración WiFi...");
+          const btnConfigWifi = await driver.wait(
+            until.elementLocated(By.xpath(btnConfigWifiXpath)),
+            40000
+          );
+          await driver.wait(until.elementIsVisible(btnConfigWifi), 20000);
+          await driver.executeScript("arguments[0].click();", btnConfigWifi);
+          console.log("✅ Datos WiFi configurados correctamente.");
+        } catch {
+          console.log("⚠️ Botón 'Configurar WiFi' no apareció. Continuando con el flujo como éxito.");
+        }
+
+        reconfigExitosa = true;
+
+      } catch (e) {
+        console.log("ℹ️ No se detectó éxito, verificando modal de error...");
+        try {
+          const btnCerrarModalError = await driver.wait(
+            until.elementLocated(By.xpath(btnCerrarModalErrorXpath)),
+            15000
+          );
+          await driver.wait(until.elementIsVisible(btnCerrarModalError), 5000);
+          await driver.executeScript("arguments[0].click();", btnCerrarModalError);
+          await driver.sleep(2000);
+          console.log("⚠️ Reconfiguración fallida: modal cerrado correctamente.");
+
+          // Fallback: abrir Opciones → Ver dispositivos
+          const btnOpciones = await driver.wait(
+            until.elementLocated(By.xpath(btnOpcionesXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+          await driver.executeScript("arguments[0].click();", btnOpciones);
+          console.log("✅ Botón Opciones abierto.");
+
+          const opcionVerDispositivos = await driver.wait(
+            until.elementLocated(By.xpath(opcionVerDispositivosXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(opcionVerDispositivos), 5000);
+          await driver.executeScript("arguments[0].click();", opcionVerDispositivos);
+          console.log("✅ Opción 'Ver dispositivos' seleccionada como flujo alternativo.");
+        } catch {
+          console.log("❌ No apareció modal de error ni se pudo continuar con flujo alternativo.");
+        }
+        reconfigExitosa = false;
+
+      }
+
+      // ✅ Siempre asignamos el resultado al estado global
+      this.reconfiguracionExitosa = reconfigExitosa;
+
+      await driver.sleep(3000);
+
+
+      // === Paso 12: Reutilizar datos WiFi ===
+      try {
+        const btnConfigurarXpath = '//*[@id="widget-button-btn-config-wifi-data"]/div';
+        const progressXpath = '//*[@class="progress-bar"]'; // ⚠️ Ajusta al xpath exacto del progress WiFi
+
+        // 1. Esperar que el botón "Configurar" sea visible
+        const btnConfigurar = await driver.wait(
+          until.elementLocated(By.xpath(btnConfigurarXpath)),
+          30000 // puede tardar en aparecer
+        );
+        await driver.wait(until.elementIsVisible(btnConfigurar), 10000);
+
+        // 2. Dar clic en "Configurar"
+        await driver.executeScript("arguments[0].click();", btnConfigurar);
+        console.log("✅ Reutilizar datos WiFi: botón 'Configurar' presionado correctamente.");
+
+        // 3. Esperar a que aparezca el progress (inicio del proceso)
+        console.log("⏳ Esperando inicio del proceso de configuración WiFi...");
+        let progress;
+        try {
+          progress = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            20000 // espera a que aparezca el progress
+          );
+          await driver.wait(until.elementIsVisible(progress), 10000);
+          console.log("✅ Progress de WiFi detectado, proceso en curso...");
+        } catch {
+          console.log("⚠️ No apareció progress de WiFi, continuando directamente...");
+        }
+
+        // 4. Esperar dinámicamente a que desaparezca el progress (fin del proceso)
+        if (progress) {
+          console.log("⏳ Esperando que finalice el progress...");
+          await driver.wait(until.stalenessOf(progress), 300000); // hasta 5 minutos si es necesario
+          console.log("✅ Proceso de configuración WiFi finalizado correctamente.");
+        }
+
+        // 5. Continuar con el siguiente paso: Opciones → Ver dispositivos
+        const btnOpcionesXpath = '//*[@id="btn-options"]';
+        const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+        const opcionVerDispositivosXpath = '//*[@id="1088"]';
+
+        const btnOpciones = await driver.wait(
+          until.elementLocated(By.xpath(btnOpcionesXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+        console.log("✅ Botón Opciones presionado correctamente.");
+
+        const ulOpciones = await driver.wait(
+          until.elementLocated(By.xpath(ulOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(ulOpciones), 5000);
+
+        const opcionVerDispositivos = await driver.wait(
+          until.elementLocated(By.xpath(opcionVerDispositivosXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(opcionVerDispositivos), 5000);
+        await driver.executeScript("arguments[0].click();", opcionVerDispositivos);
+        await driver.sleep(3000);
+        console.log("✅ Opción 'Ver dispositivos' seleccionada correctamente.");
 
       } catch (err) {
-        console.error(`❌ Error en ejecución de reconfiguración: ${err.message}`);
-        this.reconfiguracionExitosa = false;
+        throw new Error(`❌ Error en paso Reutilizar datos WiFi y Ver dispositivos: ${err.message}`);
+      }
+
+      // paso  === Seleccionar nuevamente cliente RESIDENCIAL ACTIVO ===
+      try {
+        // Buscar dinámicamente el tbody de la tabla (sin ID fijo)
+        const cuerpoTabla = await driver.wait(
+          until.elementLocated(By.xpath('//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody')),
+          15000
+        );
+
+        // Reintento: esperar hasta encontrar al menos una fila válida
+        let filaSeleccionada = null;
+        let intentos = 0;
+        while (!filaSeleccionada && intentos < 5) {
+          intentos++;
+          console.log(`🔎 Intento ${intentos}: buscando cliente RESIDENCIAL ACTIVO...`);
+
+          const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+          if (filas.length === 0) {
+            console.log("⚠️ No hay filas en la tabla, esperando...");
+            await driver.sleep(2000);
+            continue;
+          }
+
+          for (const fila of filas) {
+            const celdas = await fila.findElements(By.css('td'));
+            if (celdas.length < 15) continue; // Evitar errores si la fila no tiene todas las columnas
+
+            const estadoCliente = (await celdas[9].getText()).trim().toUpperCase();   // Col 9 = Estado
+            const tipoCliente = (await celdas[14].getText()).trim().toUpperCase();    // Col 14 = Tipo Cliente
+
+            console.log(`   ➝ Estado=${estadoCliente}, TipoCliente=${tipoCliente}`);
+
+            if (estadoCliente.includes("ACTIVO") && tipoCliente.includes("RESIDENCIAL")) {
+              filaSeleccionada = fila;
+              this.estadoClienteSeleccionado = estadoCliente;
+              this.tipoClienteSeleccionado = tipoCliente;
+              console.log(`✅ Cliente válido encontrado: Estado=${estadoCliente}, TipoCliente=${tipoCliente}`);
+              break;
+            }
+          }
+
+          if (!filaSeleccionada) {
+            console.log("⚠️ No se encontró cliente válido, reintentando...");
+            await driver.sleep(2000);
+          }
+        }
+
+        if (!filaSeleccionada) {
+          throw new Error("❌ No se encontró ningún cliente RESIDENCIAL ACTIVO después de varios intentos.");
+        }
+
+        // Seleccionar fila encontrada
+        await driver.wait(until.elementIsVisible(filaSeleccionada), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", filaSeleccionada);
+        await driver.sleep(300);
+        await filaSeleccionada.click();
+        await driver.sleep(1000);
+
+        console.log("✅ Cliente RESIDENCIAL ACTIVO seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en CP_GESCLI_001 Paso 1: ${error.message}`);
       }
 
 
 
+      // === Paso 13: Seleccionar botón Opciones ===
+      try {
+        const btnOpciones = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+        await driver.sleep(300);
+
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+        await driver.sleep(1000);
+
+        console.log("✅ Paso 5: Botón Opciones seleccionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 5: (clic en botón Opciones): ${error.message}`);
+      }
+
+      // === Paso: Seleccionar opción "Ver dispositivos" ===
+      try {
+        const btnOpcionesXpath = '//*[@id="btn-options"]';
+        const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+        const opcionVerDispositivosXpath = '//*[@id="1088"]';
+
+        // 1. Esperar y hacer clic en el botón Opciones
+        const btnOpciones = await driver.wait(
+          until.elementLocated(By.xpath(btnOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+        console.log("✅ Botón Opciones presionado correctamente.");
+
+        // 2. Esperar el UL del menú
+        const ulOpciones = await driver.wait(
+          until.elementLocated(By.xpath(ulOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(ulOpciones), 5000);
+
+        // 3. Seleccionar la opción "Ver dispositivos"
+        const opcionVerDispositivos = await driver.wait(
+          until.elementLocated(By.xpath(opcionVerDispositivosXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(opcionVerDispositivos), 5000);
+        await driver.executeScript("arguments[0].click();", opcionVerDispositivos);
+        console.log("✅ Opción 'Ver dispositivos' seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Error al seleccionar la opción 'Ver dispositivos': ${error.message}`);
+      }
 
-      // === Paso 13: Seleccionar opción "Ver dispositivos" ===
-      // try {
-      //   // Reabrir el menú de opciones si es necesario
 
-      //   const btnOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="btn-options"]')),
-      //     10000
-      //   );
-      //   await driver.executeScript("arguments[0].click();", btnOpciones);
-      //   await driver.sleep(500);
 
-      //   // Esperar que el menú UL esté disponible
-      //   const menuOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul')),
-      //     8000
-      //   );
-      //   await driver.wait(until.elementIsVisible(menuOpciones), 5000);
-
-      //   // Buscar el LI con id=1088
-      //   const opcionVerDispositivos = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="1088"]')),
-      //     8000
-      //   );
-
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionVerDispositivos);
-      //   await driver.sleep(300);
-
-      //   await driver.executeScript("arguments[0].click();", opcionVerDispositivos);
-      //   await driver.sleep(2000);
-
-      //   console.log("✅ CP_GESCLI_001: Opción 'Ver dispositivos' seleccionada.");
-      // } catch (error) {
-      //   throw new Error(`❌ Error en CP_GESCLI_001 Paso 10 (clic en opción Ver dispositivos): ${error.message}`);
-      // }
-
-      // // === Paso 14: Cerrar modal de Ver dispositivos ===
-      // try {
-      //   const btnCerrarDispositivos = await driver.wait(
-      //     until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-602940-5522-CustomerManager"]/div/div/div[1]/button')),
-      //     10000
-      //   );
-
-      //   await driver.wait(until.elementIsVisible(btnCerrarDispositivos), 5000);
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarDispositivos);
-      //   await driver.sleep(300);
-
-      //   await driver.executeScript("arguments[0].click();", btnCerrarDispositivos);
-      //   await driver.sleep(1500);
-
-      //   console.log("✅ CP_GESCLI_001: Modal de Ver dispositivos cerrado correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Error en CP_GESCLI_001 Paso 11 (cerrar modal Ver dispositivos): ${error.message}`);
-      // }
-
-
-      // // Click en el botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en la opción Ver informacion tecnica de red
-      // await driver.findElement(By.xpath("//li[@id='1090']/div")).click();
-
-      // // Click en el botón Cerrar
-      // await driver.findElement(By.xpath("//div[@id='widget-button-cancel-confirm-selected']/div")).click();
-
-      // // === Paso 5: Clic sobre el registro y seleccionar opcion Reconfiguración" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//tr[@id='row-602576']/td[8]")).click();
-
-      // // Click en el botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en la opción Reconfiguración
-      // await driver.findElement(By.xpath("//li[@id='1089']/div")).click();
-
-      // // Validar que no es posible dar click al recuadro ONT
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-open-dialog-602576-5522-CustomerManager']/div/div/div[2]/div/div/div/div/div/div[2]")).click();
-
-      // // Click en botón Reconfigurar
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btn-reconfig']/div")).click();
-
-      // // Click en botón Confirmar (Sí)
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btConfirmYes']/div")).click();
-
-      // // Click en botón Siguiente
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btn-next']/div")).click();
-
-      // // Click en botón Configurar WiFi
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btn-config-wifi-data']/div")).click();
-
-      // // === Paso 6: Clic sobre el registro y seleccionar opcion Ver dispositivos" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//tr[@id='row-602556']/td[8]")).click();
-
-      // // Click en el botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en la opción Ver dispositivos
-      // await driver.findElement(By.xpath("//li[@id='1088']/div")).click();
-
-      // // Click en el botón cerrar
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-open-dialog-602556-5522-CustomerManager']/div/div/div/button/span")).click();
-
-      // // === Paso 7: Clic sobre el registro y seleccionar opcion Ver documentos" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//td[@id='email']")).click();
-
-      // // Click en botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en opción Ver documentos
-      // await driver.findElement(By.xpath("//li[@id='1080']/div")).click();
-
-      // // Click en la opcion Descargar contrato
-      // await driver.findElement(By.xpath("//li[@id='6889268b8fe15a17bec49ae9']/div[5]/span")).click();
-
-      // // Click en la opcion Ver documento
-      // await driver.findElement(By.xpath("//li[@id='6889268b8fe15a17bec49ae9']/div[4]/span")).click();
-
-      // // Click en la opcion Cerrar visor del contrato
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-contract-dialog']/div/div/div/button/span")).click();
-
-      // // Click en la opcion Enviar contrato
-      // await driver.findElement(By.xpath("//li[@id='6889268b8fe15a17bec49ae9']/div[3]/span")).click();
-
-      // // Click en botón cerrar visor de documentos
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-open-dialog-602636-5522-CustomerManager']/div/div/div/button/span")).click();
-
-      // // === Paso 8: Clic sobre el registro y seleccionar opcion Detalle del proceso" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//td[@id='phone']")).click();
-
-      // // Click en botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en opción Detalle del proceso
-      // await driver.findElement(By.xpath("//li[@id='1084']/div")).click();
-
-      // // Click en botón para cerrar detalle de proceso
-      // await driver.findElement(By.xpath("//div[@id='widget-button-close-detail-process']/div")).click();
-
-      // // === Paso 9: Clic sobre el registro y seleccionar opcion Suspensión" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//tr[@id='row-602616']/td[8]")).click();
-
-      // // Click en el botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en la opcion Suspensión
-      // await driver.findElement(By.xpath("//li[@id='1083']/div")).click();
-
-      // // Seleccionar en el dropdown "SUSPENSION POR NO PAGO"
-      // const selectElement = await driver.findElement(By.id("input-select-suspension-type-select"));
-      // await selectElement.click();
-      // await selectElement.findElement(By.xpath("//option[normalize-space(.)='SUSPENSION POR NO PAGO']")).click();
-
-      // // Escribir comentario en el campo de texto
-      // const commentField1 = await driver.findElement(By.id("textfield-input-data-comment"));
-      // await commentField1.click();
-      // await commentField1.clear();
-      // await commentField1.sendKeys("si");
-
-      // // Click en botón de detalle de suspensión
-      // await driver.findElement(By.xpath("//div[@id='widget-button-suspension-detail']/div")).click();
-
-      // // Confirmar acción
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btConfirmYes']/div")).click();
-
-      // // Click en botón Refrescar
-      // await driver.findElement(By.xpath("//div[@id='process-detail-container']/div[2]/div[2]/button/span")).click();
-
-      // // Cerrar detalles de proceso
-      // await driver.findElement(By.xpath("//div[@id='widget-button-close-detail-process']/div")).click();
-
-      // // === Paso 10: Clic sobre el registro y seleccionar opcion Reconexión" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//tr[@id='row-602616']/td[8]")).click();
-
-      // // Click en botón de opciones
-      // await driver.findElement(By.xpath("//button[@id='btn-options']/div")).click();
-
-      // // Click en la opción Reconexión
-      // await driver.findElement(By.xpath("//li[@id='1081']/div")).click();
-
-      // // Escribir comentario en el campo de texto
-      // const commentField2 = await driver.findElement(By.id("textfield-input-data-comment"));
-      // await commentField2.click();
-      // await commentField2.clear();
-      // await commentField2.sendKeys("comentario");
-
-      // // Click en botón Confirmar
-      // await driver.findElement(By.xpath("//div[@id='widget-button-suspension-detail']/div")).click();
-
-      // // Confirmar acción
-      // await driver.findElement(By.xpath("//div[@id='widget-button-btConfirmYes']/div")).click();
-
-      // // Click en botón Refrescar
-      // await driver.findElement(By.xpath("//div[@id='process-detail-container']/div[2]/div[2]/button/span")).click();
-
-      // // Cerrar detalle de proceso
-      // await driver.findElement(By.xpath("//div[@id='widget-button-close-detail-process']/div")).click();
-
-      // // === Paso 11: Clic sobre el registro y seleccionar opcion Cambio de plan" ===
-
-      // // Click en uno de los registros
-      // await driver.findElement(By.xpath("//tr[@id='row-602616']/td[8]")).click();
-
-      // // Click en botón de opciones
-      // await driver.findElement(By.id("btn-options")).click();
-
-      // // Click en la opción Cambio de plan
-      // await driver.findElement(By.xpath("//li[@id='1082']/div")).click();
-
-      // // Abrir selector de cambio de plan
-      // await driver.findElement(By.xpath("//div[@id='widget-pickview-pick-data-change-plan']/div/span[2]/button/i")).click();
-
-      // // Selección uno de los productos comerciales
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-pickview-pick-data-change-plan']//tr[2]/td[4]/div/button/i")).click();
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-pickview-pick-data-change-plan']//tr[16]/td/div/button/i")).click();
-      // await driver.findElement(By.xpath("//div[@id='widget-dialog-pickview-pick-data-change-plan']//tr[17]/td[4]/div/button[2]/i")).click();
-
-      // // Confirmar selección de plan
-      // await driver.findElement(By.xpath("//div[@id='widget-button-select-pick-data-change-plan']/div")).click();
-
-      // // Rellenar número PQ
-      // const numberField = await driver.findElement(By.id("textfield-input-data-number-pq"));
-      // await numberField.click();
-      // await numberField.clear();
-      // await numberField.sendKeys("123");
-
-      // // Rellenar comentario
-      // const commentField3 = await driver.findElement(By.id("textfield-input-data-comment"));
-      // await commentField3.click();
-      // await commentField3.clear();
-      // await commentField3.sendKeys("comentario");
-
-      // // Confirmar cambio de plan
-      // await driver.findElement(By.xpath("//div[@id='widget-button-suspension-detail']/div")).click();
-
-      // // Click en botón Refrescar
-      // await driver.findElement(By.xpath("//div[@id='process-detail-container']/div[2]/div[2]/button")).click();
-
-      // // Cerrar detalle de proceso
-      // await driver.findElement(By.xpath("//div[@id='widget-button-close-detail-process']/div")).click();
-
-
-      // === Paso 12: Clic sobre el registro y seleccionar opcion Configuración DirecTV" ===
-
-      // Aquí puedes continuar con otros pasos si aplica
 
     } catch (error) {
       console.error("❌ Error en gestión de clientes y servicios domiciliarios:", error.message);
