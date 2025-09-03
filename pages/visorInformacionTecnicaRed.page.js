@@ -14,7 +14,7 @@ export default class VisorInformacionTecnicaRedPage {
   async ejecutarVisorInformacionTecnicaRed() {
     const driver = this.driver;
     try {
-      // === CP_VISORTECRED_001 - Validar que al ingresar a la vista “Visor de Información Técnico de Red” se muestre la información correctamente ===
+      // === CP_VISORTECRED_001 - Acceso al módulo Visor de información técnica de red ===
       // === CP_VISORTECRED_001 Paso 1: Clic en módulo eCenter ===
       const eCenterBtn = await driver.wait(
         until.elementLocated(By.xpath("//div[@id='118' and contains(@class, 'item-module')]")),
@@ -23,7 +23,7 @@ export default class VisorInformacionTecnicaRedPage {
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
 
-      // === CP_VISORTECRED_001 Paso 2: Scroll en el contenedor de aplicaciones ===
+      //  === CP_VISORTECRED_001 Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
         until.elementLocated(By.css('.container-applications')),
         10000
@@ -50,12 +50,12 @@ export default class VisorInformacionTecnicaRedPage {
         await visorInfoTecnica.click();
         await driver.sleep(2000);
 
-        console.log("✅ Clic en 'Visor de información técnica de red' realizado correctamente.");
+        console.log("✅ CP_VISORTECRED_001 Paso 3 Clic en 'Visor de información técnica de red' realizado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 3 (clic en visor de información técnica de red): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_001 Paso 3 (clic en visor de información técnica de red): ${error.message}`);
       }
-
-      // === Paso 4: Clic en el botón "Mostrar filtro" ===
+      // === CP_VISORTECRED_002 - Visualización del filtro inicial
+      // === CP_VISORTECRED_002 Paso 1: Clic en el botón "Mostrar filtro" ===
       try {
         // Esperar a que aparezca el botón por ID directamente
         const botonMostrarFiltro = await driver.wait(
@@ -73,13 +73,13 @@ export default class VisorInformacionTecnicaRedPage {
         await botonMostrarFiltro.click();
         await driver.sleep(1000);
 
-        //console.log("✅ Paso 4: Botón 'Mostrar filtro' clickeado correctamente.");
+        console.log("✅ CP_VISORTECRED_002 Paso 1: Clic en el botón Mostrar filtro.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 4 (clic en 'Mostrar filtro'): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_002 Paso 1: Clic en el botón "Mostrar filtro": ${error.message}`);
       }
 
-
-      // === Paso 5: Clic en el <select> para mostrar opciones del filtro ===
+      // CP_VISORTECRED_003 - Selección de filtro “CENTRO POBLADO”
+      // === Paso 1: Clic en el <select> para mostrar opciones del filtro ===
       try {
         // Esperar el contenedor principal del grupo de reglas
         const grupoFiltro = await driver.wait(
@@ -107,11 +107,11 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 1: Clic en el <select> para mostrar opciones del filtro: ${error.message}`);
       }
 
 
-      // === Paso 6: Seleccionar "CENTRO POBLADO" correctamente ===
+      // === Paso 2: Seleccionar "CENTRO POBLADO" correctamente ===
       try {
         // Esperar contenedor de grupo de reglas
         const contenedorGrupo = await driver.wait(
@@ -135,12 +135,12 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Opción 'CENTRO POBLADO' seleccionada correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 6 (selección de 'CENTRO POBLADO'): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 2: Seleccionar "CENTRO POBLADO" correctamente: ${error.message}`);
       }
 
       try {
-
-        // Paso 7: Esperar a que el <textarea> sea visible y diligenciar con la palabra "PALMIRA"
+        // CP_VISORTECRED_004 - Ingreso de valor en filtro de ubicación
+        // Paso 1: Escribir “PALMIRA” en el campo de texto asociado.
         const textareaCampo = await driver.wait(
           until.elementLocated(By.css('textarea.form-control')),
           10000
@@ -158,11 +158,13 @@ export default class VisorInformacionTecnicaRedPage {
         //console.log("✅ Paso 7 completado: Se diligenció el campo con 'PALMIRA'.");
 
       } catch (error) {
-        throw new Error(`❌ Error en paso 7 (textarea): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_004 Paso 1: Escribir “PALMIRA” en el campo de texto asociado: ${error.message}`);
       }
 
       try {
-        // Paso 8 – Clic en el botón "Aplicar filtro": 
+        // CP_VISORTECRED_005 Aplicar filtro en Visor de Información Técnica de Red
+        // Paso 1: Clic en “Aplicar filtros”.
+
         // Localizar el botón por XPath
         const botonAplicarFiltro = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
@@ -181,10 +183,10 @@ export default class VisorInformacionTecnicaRedPage {
         // console.log("✅ Paso 8 completado: Se hizo clic en 'Aplicar filtro'.");
 
       } catch (error) {
-        throw new Error(`❌ Error en paso 8 (clic en 'Aplicar filtro'): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_005 Paso 1: Clic en “Aplicar filtros”: ${error.message}`);
       }
-
-      // === Paso 9: Clic Nuevamente en el botón "Mostrar filtro" en Puertos Activos ===
+      // CP_VISORTECRED_006 - Agregar nueva regla de filtro
+      // === Paso 1: Clic en el botón Mostrar filtro. ===
       try {
         // Esperar a que aparezca el botón por ID directamente
         const botonMostrarFiltro = await driver.wait(
@@ -204,11 +206,11 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 9: Botón 'Mostrar filtro' clickeado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 4 (clic en 'Mostrar filtro'): ${error.message}`);
+        throw new Error(`❌ Error CP_VISORTECRED_006 en Paso 1: Clic en el botón Mostrar filtro: ${error.message}`);
       }
 
       try {
-        // Paso 10: Localizar el botón "+ Add rule" usando atributo estable
+        // Paso 2: Clic en el botón + Add rule.
         const botonAddRule = await driver.wait(
           until.elementLocated(By.xpath('//button[@data-add="rule"]')),
           10000
@@ -226,10 +228,10 @@ export default class VisorInformacionTecnicaRedPage {
 
         // console.log("✅ Paso 10 completado: Se hizo clic en '+ Add rule'.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 10 (clic en '+ Add rule'): ${error.message}`);
+        throw new Error(`❌ Error CP_VISORTECRED_006 en Paso 2: Clic en el botón + Add rule: ${error.message}`);
       }
-
-      // === Paso 11: Clic nuevamente en el <select> para mostrar opciones del filtro ===
+      // CP_VISORTECRED_007 - Selección de filtro “NAP SERIAL CELSIA”
+      // === Paso 1: Clic en select del segundo filtro. ===
       try {
         // Esperar el contenedor principal del grupo de reglas
         const grupoFiltro = await driver.wait(
@@ -257,10 +259,10 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 5 (clic en select de filtro): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_007 Paso 1: Clic en select del segundo filtro: ${error.message}`);
       }
 
-      // === Paso 12: Seleccionar "NAP SERIAL CELSIA" correctamente en segundo filtro ===
+      // === Paso 2: Seleccionar “NAP SERIAL CELSIA”. ===
       try {
         // Esperar todos los contenedores de filtros (rules)
         const contenedoresFiltro = await driver.wait(
@@ -312,11 +314,11 @@ export default class VisorInformacionTecnicaRedPage {
         //console.log("✅ Paso 12: 'NAP SERIAL CELSIA' seleccionado y textarea visible.");
 
       } catch (error) {
-        throw new Error(`❌ Error en paso 12 (selección de 'NAP SERIAL CELSIA'): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_007 Paso 2: Seleccionar “NAP SERIAL CELSIA”: ${error.message}`);
       }
 
-
-      // === Paso 13: Ingresar número en segundo filtro (por jerarquía DOM) ===
+      // CP_VISORTECRED_008 - Ingreso de valor en filtro NAP SERIAL CELSIA
+      // === Paso 1: Diligenciar el campo con “3001385”. ===
       try {
         // Esperar al segundo bloque de regla (filtro)
         const segundoFiltro = await driver.wait(
@@ -338,12 +340,13 @@ export default class VisorInformacionTecnicaRedPage {
         await textarea.sendKeys("3001385");
         await driver.sleep(1000);
 
-        //console.log("✅ Paso 13: Valor ingresado correctamente.");
+        console.log("✅ CP_VISORTECRED_008 Paso 1: Valor ingresado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en paso 13 (ingreso de valor en segundo filtro): ${error.message}`);
+        throw new Error(`❌ CP_VISORTECRED_008 Error en paso 1 (Diligenciar el campo con “3001385”): ${error.message}`);
       }
 
-      // === Paso 14: Clic en "Aplicar filtro" ===
+      // CP_VISORTECRED_009 - Aplicar segundo filtro
+      // === Paso 1: Clic en el botón Aplicar filtro. ===
       try {
         // Esperar el botón por XPath
         const botonAplicarFiltro = await driver.wait(
@@ -361,10 +364,10 @@ export default class VisorInformacionTecnicaRedPage {
         await botonAplicarFiltro.click();
         await driver.sleep(5000);
 
-        console.log("✅ Paso 14 completado: Se hizo clic en 'Aplicar filtro'.");
+        console.log("✅ CP_VISORTECRED_009 Paso 1: Se hizo Clic en el botón Aplicar filtro.");
 
       } catch (error) {
-        throw new Error(`❌ Error en paso 14 (clic en 'Aplicar filtro'): ${error.message}`);
+        throw new Error(`❌ Error en CP_VISORTECRED_009 Paso 1: (Clic en el botón Aplicar filtro'): ${error.message}`);
       }
 
 

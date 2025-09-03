@@ -60,7 +60,7 @@ export default class GestionActivosPage {
         await driver.sleep(5000);
         console.log("✅ CP_GESACT_001 Paso 3: Botón 'Gestión de Activos' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_GESACT_001 Paso 3 (clic en 'Gestión de Activos'): ${error.message}`);
+        throw new Error(`❌ Error en CP_GESACT_001 Paso 3 (clic en 'Gestión de Activos'): ${error.message}`);
       }
 
 
@@ -79,7 +79,7 @@ export default class GestionActivosPage {
         await driver.sleep(5000);
         console.log("✅ CP_GESACT_002 Paso 1: Botón 'Seleccionar entidad' presionado.");
       } catch (error) {
-        throw new Error(`❌ CP_GESACT_002 Paso 1 (clic en 'Seleccionar entidad'): ${error.message}`);
+        throw new Error(`❌ Error en CP_GESACT_002 Paso 1 (clic en 'Seleccionar entidad'): ${error.message}`);
       }
 
       // CP_GESACT_002 Paso 2: Seleccionar la fila que contiene el texto "elemento secundario".

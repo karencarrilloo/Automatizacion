@@ -97,7 +97,7 @@ export default class AutodiagnosticoPage {
                 await driver.sleep(500);
 
                 await inputIDDeal.clear();
-                await inputIDDeal.sendKeys("28006167828");
+                await inputIDDeal.sendKeys("28006311748");
                 await driver.sleep(1000);
 
                 console.log("✅ CP_AUTO_002 Paso 2: ID DEAL ingresado correctamente.");
