@@ -137,10 +137,10 @@ export default class VisorInformacionTecnicaRedPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 2: Seleccionar "CENTRO POBLADO" correctamente: ${error.message}`);
       }
-
-      try {
         // CP_VISORTECRED_004 - Ingreso de valor en filtro de ubicación
         // Paso 1: Escribir “PALMIRA” en el campo de texto asociado.
+      try {
+        
         const textareaCampo = await driver.wait(
           until.elementLocated(By.css('textarea.form-control')),
           10000

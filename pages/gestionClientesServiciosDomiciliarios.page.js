@@ -45,7 +45,148 @@ export default class GestionClientesServiciosPage {
       await driver.wait(until.elementIsEnabled(gestionClientesBtn), 10000);
       await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", gestionClientesBtn);
-      await driver.sleep(5000);
+      await driver.sleep(10000);
+
+      // === Paso x: Abrir el modal de filtros ===
+      try {
+        const padreXpath = '//*[@id="widget-button-btn-add-filter"]';
+        const hijoXpath = './div';
+
+        // 1. Esperar el div padre
+        const divPadre = await driver.wait(
+          until.elementLocated(By.xpath(padreXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(divPadre), 5000);
+
+        // 2. Buscar el div hijo dentro del padre
+        const divHijo = await divPadre.findElement(By.xpath(hijoXpath));
+
+        // 3. Scroll y clic con JS en el hijo
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", divHijo);
+        await driver.executeScript("arguments[0].click();", divHijo);
+        await driver.sleep(5000);
+
+        // 4. Esperar que aparezca el contenedor de filtros (qb_xxx)
+        const modalFiltrosXpath = '//*[starts-with(@id,"qb_")]';
+
+        const modalFiltros = await driver.wait(
+          until.elementLocated(By.xpath(modalFiltrosXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(modalFiltros), 5000);
+
+        console.log("✅ Modal de filtros abierto y visible correctamente (Paso 42).");
+      } catch (error) {
+        console.error("❌ Error al intentar abrir el modal de filtros (Paso 42):", error.message);
+        throw error;
+      }
+
+
+      // === Paso x: Clic en el <select> para mostrar opciones del filtro ===
+      try {
+        // 1. Esperar el contenedor principal del grupo de reglas dinámico (qb_xxx_rule_0)
+        const grupoFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_0")]')),
+          10000
+        );
+
+        // 2. Buscar dentro el contenedor específico del filtro (columna del select)
+        const contenedorFiltro = await grupoFiltro.findElement(
+          By.css('.rule-filter-container')
+        );
+
+        // 3. Localizar el <select> dentro del contenedor
+        const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+
+        // 4. Asegurar que sea visible e interactuable
+        await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+        await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+
+        // 5. Hacer scroll y clic para desplegar las opciones
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
+        await driver.sleep(500);
+        await selectFiltro.click();
+        await driver.sleep(2000);
+
+        console.log("✅ Paso 43: Select de filtros desplegado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en Paso 43: Clic en el <select> de filtros -> ${error.message}`);
+      }
+
+      // === Paso x: Seleccionar "ID_DEAL" en el select del filtro ===
+      try {
+        // 1. Esperar contenedor de grupo de reglas
+        const contenedorGrupo = await driver.wait(
+          until.elementLocated(By.css('.rules-group-container')),
+          10000
+        );
+
+        // 2. Localizar el <select>
+        const selectCampo = await contenedorGrupo.findElement(By.css('select'));
+
+        // 3. Asegurar visibilidad
+        await driver.wait(until.elementIsVisible(selectCampo), 5000);
+
+        // 4. Hacer scroll y clic para abrir
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
+        await selectCampo.click();
+        await driver.sleep(500);
+
+        // 5. Escribir "ID_DEAL" para seleccionar esa opción
+        await selectCampo.sendKeys("ID_DEAL");
+        await driver.sleep(2000); // darle tiempo a que se renderice el cambio
+
+        console.log("✅ Paso 44: Opción 'ID_DEAL' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error en Paso 44: Seleccionar "ID_DEAL": ${error.message}`);
+      }
+
+
+      // === Paso x: Diligenciar el campo de ID_DEAL con "28006512626" ===
+      try {
+        // 1. Esperar el textarea del filtro activo
+        const textareaCampo = await driver.wait(
+          until.elementLocated(By.css('textarea.form-control')),
+          10000
+        );
+
+        // 2. Esperar a que sea visible
+        await driver.wait(until.elementIsVisible(textareaCampo), 5000);
+
+        // 3. Clic, limpiar y escribir el valor
+        await textareaCampo.click();
+        await driver.sleep(300);
+        await textareaCampo.clear();
+        await textareaCampo.sendKeys("28006512626");
+        await driver.sleep(1500);
+
+        console.log("✅ Paso 45: Campo ID_DEAL diligenciado con '28006512626'.");
+      } catch (error) {
+        throw new Error(`❌ Error en Paso 45: Diligenciar campo ID_DEAL: ${error.message}`);
+      }
+
+      // === Paso 46: Clic en el botón "Aplicar filtros" ===
+      try {
+        // Localizar el botón por XPath
+        const botonAplicarFiltro = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
+          10000
+        );
+
+        // Esperar que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+        await driver.sleep(500);
+
+        // Clic en el botón
+        await botonAplicarFiltro.click();
+        await driver.sleep(3000); // esperar que cargue la tabla filtrada
+
+        console.log("✅ Paso 46: Se hizo clic en 'Aplicar filtros'.");
+      } catch (error) {
+        throw new Error(`❌ Error en Paso 46: Clic en 'Aplicar filtros': ${error.message}`);
+      }
 
 
       // === Paso 4: Seleccionar cliente por NOMBRE (editable) ===
@@ -1020,10 +1161,10 @@ export default class GestionClientesServiciosPage {
 
         // Usamos JavaScript para asignar directamente el valor de la opción
         await driver.executeScript(`
-    const select = arguments[0];
-    select.value = select.options[1].value; // Opción index 1 = "SUSPENSION POR NO PAGO"
-    select.dispatchEvent(new Event('change', { bubbles: true }));
-  `, selectElement);
+          const select = arguments[0];
+          select.value = select.options[1].value; // Opción index 1 = "SUSPENSION POR NO PAGO"
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        `, selectElement);
 
         console.log("✅ Motivo de suspensión seleccionado: 'SUSPENSION POR NO PAGO'");
         await driver.sleep(2000);
