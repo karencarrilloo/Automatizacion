@@ -463,9 +463,6 @@ export default class GestionClientesServiciosPage {
 
 
 
-
-
-
       // // === Paso 12: Manejo de ejecución de reconfiguración no simulado (éxito o fallo)  === 
       // let reconfigExitosa = false; // ✅ Declarar aquí para que exista en todo el bloque
 
@@ -565,7 +562,6 @@ export default class GestionClientesServiciosPage {
       }
 
 
-
       // === Paso 14: Seleccionar nuevamente cliente por NOMBRE (editable) ===
       try {
         const TARGET_NAME = 'HAROLD AGUIRRE'; // <- Cambia este valor para seleccionar otro cliente
@@ -622,7 +618,6 @@ export default class GestionClientesServiciosPage {
       } catch (error) {
         throw new Error(`❌ Error al seleccionar cliente por nombre: ${error.message}`);
       }
-
 
 
       // === Paso 15: Seleccionar botón Opciones ===
@@ -1018,80 +1013,6 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // // === Paso 28: Seleccionar opción "Detalle del proceso" ===
-      // try {
-      //   const btnOpcionesXpath = '//*[@id="btn-options"]';
-      //   const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
-      //   const liDetalleProceso = '//*[@id="1084"]';
-      //   const modalGenericoXpath = '//div[starts-with(@id,"widget-dialog") and contains(@id,"CustomerManager")]';
-
-      //   // 1) Abrir el menú Opciones
-      //   const btnOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath(btnOpcionesXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnOpciones), 6000);
-      //   await driver.executeScript("arguments[0].click();", btnOpciones);
-      //   await driver.sleep(500);
-
-      //   // 2) Esperar el UL del menú y la opción "Detalle del proceso"
-      //   const menuOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath(ulOpcionesXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(menuOpciones), 5000);
-
-      //   const opcionDetalle = await menuOpciones.findElement(By.xpath('.//li[@id="1084"]'));
-      //   await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionDetalle);
-      //   await driver.sleep(250);
-      //   await driver.executeScript("arguments[0].click();", opcionDetalle);
-
-      //   // 3) Esperar que el modal se abra después del progress dinámico
-      //   const modalDetalle = await driver.wait(
-      //     until.elementLocated(By.xpath(modalGenericoXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(modalDetalle), 15000);
-
-      //   console.log("✅ Opción 'Detalle del proceso' abierta correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Error al abrir 'Detalle del proceso': ${error.message}`);
-      // }
-
-      // // === Paso 29: Cerrar modal "Detalle del proceso" ===
-      // try {
-      //   const btnCerrarModalXpath =
-      //     '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
-
-      //   // Esperar el botón de cerrar dentro del modal
-      //   const btnCerrarModal = await driver.wait(
-      //     until.elementLocated(By.xpath(btnCerrarModalXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
-
-      //   // Scroll y clic forzado
-      //   await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
-      //   await driver.sleep(300);
-      //   await driver.executeScript("arguments[0].click();", btnCerrarModal);
-
-      //   // Validar que el modal desapareció
-      //   try {
-      //     await driver.wait(async () => {
-      //       const visible = await btnCerrarModal.isDisplayed().catch(() => false);
-      //       return !visible;
-      //     }, 8000);
-      //     console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
-      //   } catch {
-      //     console.log("⚠️ Modal 'Detalle del proceso' no desapareció del todo, pero se presionó cerrar.");
-      //   }
-
-      //   await driver.sleep(1000);
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 29: Error al cerrar modal 'Detalle del proceso': ${error.message}`);
-      // }
-
-
       // === Paso 30: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
@@ -1237,7 +1158,99 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 35: Seleccionar botón Opciones ===
+      // // === Paso 35: Seleccionar botón Opciones ===
+      // try {
+      //   const btnOpciones = await driver.wait(
+      //     until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+      //     10000
+      //   );
+
+      //   await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+      //   await driver.sleep(300);
+
+      //   await driver.executeScript("arguments[0].click();", btnOpciones);
+      //   await driver.sleep(1000);
+
+      //   console.log("✅ Paso 8: Botón Opciones seleccionado correctamente.");
+      // } catch (error) {
+      //   throw new Error(`❌ Paso 8: (clic en botón Opciones): ${error.message}`);
+      // }
+
+      // === Paso x: Seleccionar opción "Detalle del proceso" ===
+      try {
+        const btnOpcionesXpath = '//*[@id="btn-options"]';
+        const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+        const liDetalleProceso = '//*[@id="1084"]';
+        const modalGenericoXpath = '//div[starts-with(@id,"widget-dialog") and contains(@id,"CustomerManager")]';
+
+        // 1) Abrir el menú Opciones
+        const btnOpciones = await driver.wait(
+          until.elementLocated(By.xpath(btnOpcionesXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnOpciones), 6000);
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+        await driver.sleep(500);
+
+        // 2) Esperar el UL del menú y la opción "Detalle del proceso"
+        const menuOpciones = await driver.wait(
+          until.elementLocated(By.xpath(ulOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+        const opcionDetalle = await menuOpciones.findElement(By.xpath('.//li[@id="1084"]'));
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionDetalle);
+        await driver.sleep(250);
+        await driver.executeScript("arguments[0].click();", opcionDetalle);
+
+        // 3) Esperar que el modal se abra después del progress dinámico
+        const modalDetalle = await driver.wait(
+          until.elementLocated(By.xpath(modalGenericoXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(modalDetalle), 15000);
+
+        console.log("✅ Opción 'Detalle del proceso' abierta correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Error al abrir 'Detalle del proceso': ${error.message}`);
+      }
+
+      // === Paso x: Cerrar modal "Detalle del proceso" ===
+      try {
+        const btnCerrarModalXpath =
+          '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
+
+        // Esperar el botón de cerrar dentro del modal
+        const btnCerrarModal = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarModalXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
+
+        // Scroll y clic forzado
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+        // Validar que el modal desapareció
+        try {
+          await driver.wait(async () => {
+            const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+            return !visible;
+          }, 8000);
+          console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
+        } catch {
+          console.log("⚠️ Modal 'Detalle del proceso' no desapareció del todo, pero se presionó cerrar.");
+        }
+
+        await driver.sleep(1000);
+      } catch (error) {
+        throw new Error(`❌ Paso 29: Error al cerrar modal 'Detalle del proceso': ${error.message}`);
+      }
+
+      // === Paso x: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -1255,6 +1268,7 @@ export default class GestionClientesServiciosPage {
       } catch (error) {
         throw new Error(`❌ Paso 8: (clic en botón Opciones): ${error.message}`);
       }
+
 
       // === Paso 36: Seleccionar opción "Reconexión" ===
       try {
