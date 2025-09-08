@@ -97,7 +97,7 @@ export default class AutodiagnosticoPage {
                 await driver.sleep(500);
 
                 await inputIDDeal.clear();
-                await inputIDDeal.sendKeys("28006311748");
+                await inputIDDeal.sendKeys("28006582524");
                 await driver.sleep(1000);
 
                 console.log("✅ CP_AUTO_002 Paso 2: ID DEAL ingresado correctamente.");
@@ -105,35 +105,44 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ CP_AUTO_002 Paso 2 (ingresar ID DEAL): ${error.message}`);
             }
 
-            // === CP_AUTO_002 Paso 3: Clic en botón "Consultar cliente" ===
+            // === CP_AUTO_002 Paso 3: Clic en botón "Consultar cliente" === 
             try {
                 const btnConsultarCliente = await driver.wait(
                     until.elementLocated(By.xpath('//*[@id="container-mainframe"]/div[4]/div/div/div/div[2]/div[3]/div[3]')),
-                    10000
+                    20000
                 );
 
-                await driver.wait(until.elementIsVisible(btnConsultarCliente), 5000);
-                await driver.wait(until.elementIsEnabled(btnConsultarCliente), 5000);
+                await driver.wait(until.elementIsVisible(btnConsultarCliente), 10000);
+                await driver.wait(until.elementIsEnabled(btnConsultarCliente), 10000);
                 await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConsultarCliente);
                 await driver.sleep(500);
 
                 await btnConsultarCliente.click();
 
-                // Espera dinámica: esperar a que desaparezca el contenedor de carga si aparece
+                // 🔹 Espera dinámica del loader
                 try {
+                    // Si aparece el contenedor de progreso, esperar hasta que desaparezca
                     const contenedorCarga = await driver.wait(
                         until.elementLocated(By.css("div.container-loading-iptotal")),
                         5000
                     );
-                    await driver.wait(until.stalenessOf(contenedorCarga), 15000); // Espera hasta que desaparezca
+                    console.log("⏳ Se detectó loader, esperando que finalice...");
+
+                    await driver.wait(
+                        until.stalenessOf(contenedorCarga),
+                        60000 // esperar hasta 60s a que desaparezca
+                    );
+
+                    console.log("✅ Loader finalizado, ventana habilitada.");
                 } catch (e) {
-                    console.log("ℹ️ No se detectó contenedor de progreso, se continúa.");
+                    console.log("ℹ️ No se detectó loader, se continúa directamente.");
                 }
 
                 console.log("✅ CP_AUTO_002 Paso 3: Botón 'Consultar cliente' presionado correctamente.");
             } catch (error) {
                 throw new Error(`❌ CP_AUTO_002 Paso 3 (clic en botón 'Consultar cliente'): ${error.message}`);
             }
+
             // === CP_AUTO_003 - Validar cambios en la opcion Configuracion Wifi
             // === CP_AUTO_003 Paso 1: Clic en botón "Opciones" ===
             try {
@@ -192,30 +201,29 @@ export default class AutodiagnosticoPage {
             }
 
 
-            // === CP_AUTO_003 Paso 3: Seleccionar el campo "Nombre de red" ===
+            // === CP_AUTO_003 Paso 3: Seleccionar el campo "Nombre de red" === 
             try {
                 const driver = this.driver;
 
-                // Esperar y enfocar el contenedor del modal
-                const modalContent = await driver.wait(
-                    until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-602636-undefined"]/div/div')),
-                    10000
+                // Esperar el contenedor del campo (div con id dinámico)
+                const contenedorCampo = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-textfield-2_4GHz-1"]')),
+                    20000
                 );
-                await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", modalContent);
+                await driver.wait(until.elementIsVisible(contenedorCampo), 10000);
 
-                // Esperar el input específico (Nombre de red)
-                const inputNombreRed = await driver.wait(
-                    until.elementLocated(By.xpath('//*[@id="textfield-2_4GHz-1"]')),
-                    10000
-                );
-                await driver.wait(until.elementIsVisible(inputNombreRed), 5000);
-                await driver.wait(until.elementIsEnabled(inputNombreRed), 5000);
+                // Dentro del contenedor buscar el <input> real
+                const inputNombreRed = await contenedorCampo.findElement(By.css('input'));
 
-                // Scroll y foco
+                // Esperar a que esté visible y habilitado
+                await driver.wait(until.elementIsVisible(inputNombreRed), 10000);
+                await driver.wait(until.elementIsEnabled(inputNombreRed), 10000);
+
+                // Scroll y foco en el input
                 await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputNombreRed);
-                await driver.sleep(500); // Breve pausa
+                await driver.sleep(500);
 
-                // (Opcional: puedes hacer foco con .click o .focus)
+                await inputNombreRed.click();
                 await driver.executeScript("arguments[0].focus();", inputNombreRed);
                 await driver.sleep(500);
 
@@ -224,7 +232,8 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ CP_AUTO_003 Paso 3 (selección campo 'Nombre de red'): ${error.message}`);
             }
 
-            // === CP_AUTO_003 Paso 4: Digitar "test_automatización" en el campo "Nombre de red" ===
+
+            // === CP_AUTO_003 Paso 4: Digitar "TEST_EDICION" en el campo "Nombre de red" ===
             try {
                 const driver = this.driver;
 
@@ -238,11 +247,11 @@ export default class AutodiagnosticoPage {
 
                 // Limpiar el campo si ya tiene texto
                 await inputNombreRed.clear();
-                await driver.sleep(300);
+                await driver.sleep(500);
 
                 // Escribir el nuevo valor
-                await inputNombreRed.sendKeys("test_automatización");
-                await driver.sleep(1000);
+                await inputNombreRed.sendKeys("TEST_EDICION");
+                await driver.sleep(2000);
 
                 console.log("✅ CP_AUTO_003 Paso 4: Se ingresó correctamente el texto 'test_automatización' en el campo Nombre de red.");
             } catch (error) {
@@ -272,7 +281,7 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ CP_AUTO_003 Paso 5 (clic en select 'CANAL'): ${error.message}`);
             }
 
-            // === CP_AUTO_003 Paso 6: Seleccionar opción del select de CANAL ===
+            // === CP_AUTO_003 Paso 6: Seleccionar opción aleatoria del select de CANAL ===  
             try {
                 const driver = this.driver;
 
@@ -282,41 +291,41 @@ export default class AutodiagnosticoPage {
                     10000
                 );
 
-                // Seleccionar opción con value="1" (Auto)
-                const optionAuto = await selectElement.findElement(By.css('option[value="1"]'));
-                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", optionAuto);
-                await driver.sleep(300);
-                await optionAuto.click();
-                await driver.sleep(1000);
+                // Obtener todas las opciones del select
+                const options = await selectElement.findElements(By.css('option'));
 
-                console.log("✅ CP_AUTO_003 Paso 6: Opción 'Auto' seleccionada correctamente.");
+                // Filtrar opciones válidas (evitamos la de "Seleccionar")
+                let opcionesValidas = [];
+                for (let opt of options) {
+                    const text = await opt.getText();
+                    if (text && text.trim() !== "Seleccionar") {
+                        opcionesValidas.push(opt);
+                    }
+                }
+
+                if (opcionesValidas.length === 0) {
+                    throw new Error("⚠️ No se encontraron opciones válidas en el select de CANAL.");
+                }
+
+                // Seleccionar una opción al azar
+                const randomIndex = Math.floor(Math.random() * opcionesValidas.length);
+                const opcionSeleccionada = opcionesValidas[randomIndex];
+
+                // Obtener texto antes de seleccionar
+                const textoSeleccionado = await opcionSeleccionada.getText();
+
+                // Forzar selección con JS para disparar evento change
+                await driver.executeScript(`
+        arguments[0].selected = true;
+        arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+    `, opcionSeleccionada);
+
+                await driver.sleep(1500); // pequeña espera para que cierre la lista
+
+                console.log(`✅ CP_AUTO_003 Paso 6: Opción '${textoSeleccionado}' seleccionada correctamente.`);
             } catch (error) {
-                throw new Error(`❌ CP_AUTO_003 Paso 6 (selección opción 'Auto'): ${error.message}`);
+                throw new Error(`❌ CP_AUTO_003 Paso 6 (selección opción aleatoria de CANAL): ${error.message}`);
             }
-
-
-            // === CP_AUTO_003 Paso 7: Seleccionar opción del select de CANAL ===
-            try {
-                const driver = this.driver;
-
-                // Esperar que el select esté presente
-                const selectElement = await driver.wait(
-                    until.elementLocated(By.xpath('//*[@id="input-select-select-2_4GHz3"]')),
-                    10000
-                );
-
-                // Seleccionar opción con value="1" (Auto)
-                const optionAuto = await selectElement.findElement(By.css('option[value="1"]'));
-                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", optionAuto);
-                await driver.sleep(300);
-                await optionAuto.click();
-                await driver.sleep(1000);
-
-                console.log("✅ CP_AUTO_003 Paso 7: Opción 'Auto' seleccionada correctamente.");
-            } catch (error) {
-                throw new Error(`❌ CP_AUTO_003 Paso 7 (selección opción 'Auto'): ${error.message}`);
-            }
-
 
 
 

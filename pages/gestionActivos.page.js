@@ -16,8 +16,8 @@ export default class GestionActivosPage {
     const driver = this.driver;
 
     try {
-      // === CP_GESACT_001 - Validar el ingreso a la vista “Gestión de activos” se muestre la información correctamente ===
-      // === CP_GESACT_001 Paso 1: Clic en módulo eCenter ===
+      // === CP_GESACT_001 - ingreso a la vista Gestion de activos ===
+      // === Paso 1: Clic en módulo eCenter ===
       try {
         const eCenterBtn = await driver.wait(
           until.elementLocated(By.xpath("//div[@id='118' and contains(@class, 'item-module')]")),
@@ -30,7 +30,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_001 Paso 1 (clic en módulo eCenter): ${error.message}`);
       }
 
-      // === CP_GESACT_001 Paso 2: Scroll en el contenedor de aplicaciones ===
+      // === Paso 2: Scroll en el contenedor de aplicaciones ===
       try {
         const scrollContainer = await driver.wait(
           until.elementLocated(By.css('.container-applications')),
@@ -46,7 +46,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_001 Paso 2 (scroll en contenedor de aplicaciones): ${error.message}`);
       }
 
-      // === CP_GESACT_001 Paso 3: Clic en 'Gestión de Activos' ===
+      // === Paso 3: Clic en 'Gestión de Activos' ===
       try {
         const gestionActivosBtn = await driver.wait(
           until.elementLocated(By.css('div.application-item[title="Gestion de Activos"]')),
@@ -65,8 +65,8 @@ export default class GestionActivosPage {
 
 
 
-      // === CP_GESACT_002 - Seleccionar la entidad elemento secundario(ONT) y visualizar las ont en estado FAILED.
-      // CP_GESACT_002 Paso 1: Clic en botón "Seleccionar entidad"
+      // === CP_GESACT_002.
+      //  Paso 1: Clic en botón "Seleccionar entidad"
       try {
         const entidadBtn = await driver.wait(
           until.elementLocated(By.xpath("//div[contains(text(), 'Seleccionar entidad') and contains(@class, 'btn-primary')]")),
@@ -82,7 +82,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_002 Paso 1 (clic en 'Seleccionar entidad'): ${error.message}`);
       }
 
-      // CP_GESACT_002 Paso 2: Seleccionar la fila que contiene el texto "elemento secundario".
+      //  Paso 2: Seleccionar la fila que contiene el texto "elemento secundario".
       try {
         const tabla = await driver.wait(
           until.elementLocated(By.css('div.modal-body table tbody')),
@@ -115,7 +115,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_002 Paso 2 (selección de 'elemento secundario'): ${error.message}`);
       }
 
-      // CP_GESACT_002 Paso 3: Clic en botón "Siguiente"
+      // Paso 3: Clic en botón "Siguiente"
       try {
         const botonSeleccionar = await driver.wait(
           until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
@@ -133,7 +133,7 @@ export default class GestionActivosPage {
       }
 
   
-      // CP_GESACT_002 Paso 4: Seleccionar "ont"
+      //  Paso 4: Seleccionar "ont"
       try {
         const tabla = await driver.wait(
           until.elementLocated(By.css('div.modal-body table tbody')),
@@ -166,7 +166,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_002 Paso 4: (selección de 'ont'): ${error.message}`);
       }
 
-      // CP_GESACT_002 Paso 5: Clic en botón "Siguiente"
+      // Paso 5: Clic en botón "Siguiente"
       try {
         const botonSeleccionar = await driver.wait(
           until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
@@ -183,7 +183,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_002 Paso 5: (clic en 'Siguiente' después de 'ont'): ${error.message}`);
       }
 
-      // === CP_GESACT_002 Paso 6: Seleccionar fila con ID 9 "FAILED"  ===
+      // === Paso 6: Seleccionar fila con ID 9 "FAILED"  ===
       try {
         // Esperar que el tbody del grid esté disponible
         const cuerpoTabla = await driver.wait(
@@ -213,7 +213,7 @@ export default class GestionActivosPage {
       }
 
 
-      // === CP_GESACT_002 Paso 7: Hacer clic en el botón "FINALIZAR" ===
+      // === Paso 7: Hacer clic en el botón "FINALIZAR" ===
       try {
         // Esperar contenedor del footer del wizard
         const contenedorFooter = await driver.wait(
@@ -260,8 +260,8 @@ export default class GestionActivosPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_GESACT_002 Paso 7: (clic en botón 'FINALIZAR'): ${error.message}`);
       }
-      // === CP_GESACT_003 Actualizar el estado de una ont seleccionada (primera de la lista) de "FAILED" a "LOST".
-      // === CP_GESACT_003 Paso 1:  Seleccionar el primer registro de la tabla. ===
+      // === CP_GESACT_003 .
+      // === Paso 1:  Seleccionar el primer registro de la tabla. ===
       try {
         // Esperar el <tbody> de la tabla
         const cuerpoTabla = await driver.wait(
@@ -302,7 +302,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_003 Paso 1: (selección dinámica de primer registro): ${error.message}`);
       }
 
-      // === CP_GESACT_003 Paso 2: Clic en el botón "Actualizar estado operativo" ===
+      // === Paso 2: Clic en el botón "Actualizar estado operativo" ===
       try {
         // Esperar que el botón esté presente
         const botonActualizar = await driver.wait(
@@ -326,7 +326,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_003 Paso 2: (clic en botón 'Actualizar estado operativo'): ${error.message}`);
       }
 
-      // === CP_GESACT_003 Paso 3: Clic en estado para mostrar la lista opciones. ===
+      // === Paso 3: Clic en estado para mostrar la lista opciones. ===
       try {
         // Esperar que el select esté presente dentro del modal
         const selectEstado = await driver.wait(
@@ -351,7 +351,7 @@ export default class GestionActivosPage {
       }
 
 
-      // ===  CP_GESACT_003 Paso 4: Seleccionar la opción "LOST" en el estado ===
+      // ===  Paso 4: Seleccionar la opción "LOST" en el estado ===
       try {
         // Esperar que el <option> esté presente
         const opcionLost = await driver.wait(
@@ -375,7 +375,7 @@ export default class GestionActivosPage {
       }
 
 
-      // === CP_GESACT_003 Paso 5: Diligenciar el campo de comentario con "test automatización" ===
+      // === Paso 5: Diligenciar el campo de comentario con "test automatización" ===
       try {
         // Esperar que el <textarea> esté presente y visible
         const textareaComentario = await driver.wait(
@@ -396,7 +396,7 @@ export default class GestionActivosPage {
       }
 
 
-      // === CP_GESACT_003 Paso 6: Clic en botón "Guardar" para actualizar estado ont ===
+      // === Paso 6: Clic en botón "Guardar" para actualizar estado ont ===
       try {
         // Esperar a que el botón esté presente y visible
         const btnGuardar = await driver.wait(
@@ -421,8 +421,8 @@ export default class GestionActivosPage {
       } catch (error) {
         throw new Error(`❌ CP_GESACT_003 Paso 6:(clic en botón 'Guardar'): ${error.message}`);
       }
-      // === CP_GESACT_004 Realizar filtro de busqueda por el campo FACTORYSERIAL de la ont que se actualizó el estado de "FAILED" a "LOST".
-      // === CP_GESACT_004 Paso 1: Clic en botón "Seleccionar entidad" ===
+      // === CP_GESACT_004 .
+      // === Paso 1: Clic en botón "Seleccionar entidad" ===
       try {
         // Esperar dinámicamente a que el botón aparezca en el DOM (máx 15 seg)
         const btnSeleccionarEntidad = await driver.wait(
@@ -458,7 +458,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 1:  (clic en 'Seleccionar entidad'): ${error.message}`);
       }
 
-      // CP_GESACT_004 Paso 2 : Seleccionar la fila que contiene el texto "elemento secundario".
+      // Paso 2 : Seleccionar la fila que contiene el texto "elemento secundario".
       try {
         const tabla = await driver.wait(
           until.elementLocated(By.css('div.modal-body table tbody')),
@@ -491,7 +491,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_004 Paso 2 :  (selección de 'elemento secundario'): ${error.message}`);
       }
 
-      // CP_GESACT_004 Paso 3 : Clic en botón "Siguiente"
+      // Paso 3 : Clic en botón "Siguiente"
       try {
         const botonSeleccionar = await driver.wait(
           until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
@@ -508,7 +508,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_004 Paso 3 : (clic en 'Siguiente' después de 'elemento secundario'): ${error.message}`);
       }
 
-      // CP_GESACT_004 Paso 4 : Seleccionar "ont"
+      // Paso 4 : Seleccionar "ont"
       try {
         const tabla = await driver.wait(
           until.elementLocated(By.css('div.modal-body table tbody')),
@@ -541,7 +541,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 4 :  (selección de 'ont'): ${error.message}`);
       }
 
-      // CP_GESACT_004 Paso 5 : Clic en botón "Siguiente"
+      // Paso 5 : Clic en botón "Siguiente"
       try {
         const botonSeleccionar = await driver.wait(
           until.elementLocated(By.css('#widget-button-btn-next-step .btn.btn-primary')),
@@ -558,7 +558,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 5 : (clic en 'Siguiente' después de 'ont'): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 6 : Seleccionar fila con ID 10 "LOST"  ===
+      // === Paso 6 : Seleccionar fila con ID 10 "LOST"  ===
       try {
         // Esperar que el tbody del grid esté disponible
         const cuerpoTabla = await driver.wait(
@@ -587,7 +587,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error CP_GESACT_004 Paso 6 : (selección de fila 'LOST'): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 7 : Hacer clic en el botón "FINALIZAR" ===
+      // === Paso 7 : Hacer clic en el botón "FINALIZAR" ===
       try {
         // Esperar contenedor del footer del wizard
         const contenedorFooter = await driver.wait(
@@ -636,7 +636,7 @@ export default class GestionActivosPage {
       }
 
 
-      // === CP_GESACT_004 Paso 8: Clic en el botón "Mostrar filtro" ===
+      // === Paso 8: Clic en el botón "Mostrar filtro" ===
       try {
         // Esperar que desaparezca el progreso (evita bloqueo visual)
         await driver.wait(async () => {
@@ -666,7 +666,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ Error en CP_GESACT_004 Paso 8: (clic en 'Mostrar filtro'): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 9: Clic en el estado para mostrar la lista de opciones. ===
+      // === Paso 9: Clic en el estado para mostrar la lista de opciones. ===
       try {
         // Esperar el contenedor general que incluye el select
         const contenedorFiltro = await driver.wait(
@@ -692,7 +692,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 9: (clic en <select>): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 10: Seleccionar opción "FACTORYSERIAL" en la lista de opciones ===
+      // === Paso 10: Seleccionar opción "FACTORYSERIAL" en la lista de opciones ===
       try {
         // Esperar el <select> directamente
         const selectCampo = await driver.wait(
@@ -718,7 +718,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 10: (selección de opción 'FACTORYSERIAL'): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 11: Diligenciar campo de texto con serial ONT capturado previamente ===
+      // === Paso 11: Diligenciar campo de texto con serial ONT capturado previamente ===
       try {
         // Validar que la variable del paso anterior exista
         const serialCapturado = this.factorySerialSeleccionado;
@@ -750,7 +750,7 @@ export default class GestionActivosPage {
         throw new Error(`❌ CP_GESACT_004 Paso 11: (diligenciar serial ONT capturado): ${error.message}`);
       }
 
-      // === CP_GESACT_004 Paso 12: Clic en botón "Aplicar filtro" ===
+      // === Paso 12: Clic en botón "Aplicar filtro" ===
       try {
         const botonAplicarFiltro = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),

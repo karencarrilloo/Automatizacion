@@ -18,18 +18,18 @@ export default class LoginPage {
   async ejecutarLogin(usuario = process.env.LOGIN_EMAIL, clave = process.env.LOGIN_PASSWORD) {
     try {
       const driver = this.driver;
-      // === CP_LOGIN_001 - Validar inicio de sesión con credenciales válidas e ingreso a la aplicacion de emalaea ===
-      // === CP_LOGIN_001 Paso 1: Abre la URL del sistema OSS ===
+      // === CP_LOGIN_001 - Ingreso a aplicacion web emalaea ===
+      // Paso 1: Abre la URL del sistema OSS ===
       await driver.get(this.url);
 
-      // === CP_LOGIN_001 Paso 2: En el campo "Correo electrónico", digitar un correo registrado ===
+      // Paso 2: En el campo "Correo electrónico", digitar un correo registrado ===
       const inputCorreo = await driver.wait(
         until.elementLocated(By.css('#textfield-field-user')),
         25000
       ); // Espera que el campo de correo esté disponible
       await inputCorreo.sendKeys(usuario); // Ingresa el correo
 
-      // === CP_LOGIN_001 Paso 3: Clic en botón "Siguiente" ===
+      // === Paso 3: Clic en botón "Siguiente" ===
       const btnSiguiente = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Siguiente') and contains(@class, 'btn-default')]")),
         25000
@@ -37,21 +37,21 @@ export default class LoginPage {
       await driver.executeScript("arguments[0].click();", btnSiguiente); // Hace clic con JS para evitar overlays
       await driver.sleep(5000); // Espera transición
 
-      // === CP_LOGIN_001 Paso 4:  Ingresar la contraseña válida ===
+      // === Paso 4: Ingresar la contraseña válida ===
       const inputPassword = await driver.wait(
         until.elementLocated(By.css('#textfield-field-password')),
         25000
       ); // Espera campo de contraseña
       await inputPassword.sendKeys(clave); // Ingresa contraseña
 
-      // === CP_LOGIN_001 Paso 5: Clic en botón "Iniciar sesión" ===
+      // === Paso 5: Clic en botón "Iniciar sesión" ===
       const btnLogin = await driver.wait(
         until.elementLocated(By.css('#widget-button-btn-common-login > div')),
         55000
       ); // Espera botón login
       await driver.executeScript("arguments[0].click();", btnLogin); // Hace clic en login
 
-      // === CP_LOGIN_001 Paso 6: Clic en aplicación Himalaya ===
+      // === Paso 6: Clic en aplicación Himalaya ===
       const himalayaBtn = await driver.wait(
         until.elementLocated(By.css('#login-cloud-view-container .popular-apps > div')),
         55000
@@ -59,7 +59,7 @@ export default class LoginPage {
       await driver.executeScript("arguments[0].click();", himalayaBtn); // Clic en Himalaya
       await driver.sleep(5000); // Espera modal
 
-      // === CP_LOGIN_001 Paso 7: En el recuadro de confirmacion dar clic en la opcion "Sí"===
+      // === Paso 7: En el recuadro de confirmacion dar clic en la opcion "Sí"===
       const btnConfirmar = await driver.wait(
         until.elementLocated(By.xpath("//div[contains(text(),'Sí') and contains(@class, 'btn-default')]")),
         25000
