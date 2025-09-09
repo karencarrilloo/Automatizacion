@@ -137,10 +137,10 @@ export default class VisorInformacionTecnicaRedPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 2: Seleccionar "CENTRO POBLADO" correctamente: ${error.message}`);
       }
-        // CP_VISORTECRED_004 - Ingreso de valor en filtro de ubicación
-        // Paso 1: Escribir “PALMIRA” en el campo de texto asociado.
+      // CP_VISORTECRED_004 - Ingreso de valor en filtro de ubicación
+      // Paso 1: Escribir “PALMIRA” en el campo de texto asociado.
       try {
-        
+
         const textareaCampo = await driver.wait(
           until.elementLocated(By.css('textarea.form-control')),
           10000
@@ -318,7 +318,7 @@ export default class VisorInformacionTecnicaRedPage {
       }
 
       // CP_VISORTECRED_008 - Ingreso de valor en filtro NAP SERIAL CELSIA
-      // === Paso 1: Diligenciar el campo con “3001385”. ===
+      // === Paso 1: Diligenciar el campo con “3241009”. ===
       try {
         // Esperar al segundo bloque de regla (filtro)
         const segundoFiltro = await driver.wait(
@@ -337,7 +337,7 @@ export default class VisorInformacionTecnicaRedPage {
         await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", textarea);
         await driver.sleep(500);
         await textarea.clear();
-        await textarea.sendKeys("3001385");
+        await textarea.sendKeys("3241009");
         await driver.sleep(1000);
 
         console.log("✅ CP_VISORTECRED_008 Paso 1: Valor ingresado correctamente.");
@@ -369,6 +369,409 @@ export default class VisorInformacionTecnicaRedPage {
       } catch (error) {
         throw new Error(`❌ Error en CP_VISORTECRED_009 Paso 1: (Clic en el botón Aplicar filtro'): ${error.message}`);
       }
+
+      // === Paso X: Seleccionar registro por Serial ONT (con Actions) ===
+      try {
+        const serial = "48575443702166A5";
+
+        // 1. Localizar la celda que contiene el serial
+        const tdSerial = await driver.wait(
+          until.elementLocated(By.xpath(`//td[contains(normalize-space(.), '${serial}')]`)),
+          10000
+        );
+
+        // 2. Asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", tdSerial);
+        await driver.wait(until.elementIsVisible(tdSerial), 5000);
+
+        // 3. Usar Actions para hacer clic real
+        const actions = driver.actions({ async: true });
+        await actions.move({ origin: tdSerial }).click().perform();
+        await driver.sleep(1000);
+
+        // 4. Subir al tr padre y validar que tiene la clase 'active'
+        const trElemento = await tdSerial.findElement(By.xpath("./ancestor::tr"));
+        await driver.wait(async () => {
+          const clase = await trElemento.getAttribute("class");
+          return clase.includes("active");
+        }, 5000, "El registro no se marcó como activo después del clic");
+
+        console.log(`✅ Paso X: Registro con Serial ONT '${serial}' seleccionado correctamente y marcado como activo.`);
+
+      } catch (error) {
+        throw new Error(`❌ Paso X: No se pudo seleccionar el registro con Serial ONT: ${error.message}`);
+      }
+
+
+      // === Paso X+1: Clic en el botón "Ver dispositivos" ===
+      try {
+        const btnVerDispositivosXpath = '//*[@id="widget-button-btn-view-amplifiers"]/div';
+
+        // 1. Esperar a que el botón esté presente
+        const btnVerDispositivos = await driver.wait(
+          until.elementLocated(By.xpath(btnVerDispositivosXpath)),
+          10000
+        );
+
+        // 2. Asegurarse de que esté visible
+        await driver.wait(until.elementIsVisible(btnVerDispositivos), 5000);
+
+        // 3. Scroll y clic (con fallback a JS)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnVerDispositivos);
+        await driver.sleep(300);
+
+        try {
+          await btnVerDispositivos.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnVerDispositivos);
+        }
+
+        await driver.sleep(2000);
+        console.log("✅ Paso X+1: Botón 'Ver dispositivos' presionado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+1: No se pudo presionar el botón 'Ver dispositivos': ${error.message}`);
+      }
+
+      // === Paso X+2: Cerrar modal "Ver dispositivos" ===
+      try {
+        const modalXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div';
+        const btnCerrarXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div/div[1]/button';
+
+        // 1. Esperar a que el modal esté visible
+        const modal = await driver.wait(
+          until.elementLocated(By.xpath(modalXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modal), 5000);
+
+        // 2. Localizar el botón de cerrar
+        const btnCerrar = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+
+        // 3. Scroll y clic (fallback a JS)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+        await driver.sleep(300);
+
+        try {
+          await btnCerrar.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnCerrar);
+        }
+        await driver.sleep(2000);
+
+        // 4. Esperar que el modal ya no sea visible
+        await driver.wait(async () => {
+          const isDisplayed = await modal.isDisplayed().catch(() => false);
+          return !isDisplayed;
+        }, 10000);
+
+        console.log("✅ Paso X+2: Modal 'Ver dispositivos' cerrado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+2: No se pudo cerrar el modal 'Ver dispositivos': ${error.message}`);
+      }
+
+      // === Paso X+3: Clic en el botón "Editar estado" ===
+      try {
+        const btnEditarEstadoXpath = '//*[@id="widget-button-btn-edit-status"]/div';
+
+        // 1. Esperar que el botón exista en el DOM
+        const btnEditarEstado = await driver.wait(
+          until.elementLocated(By.xpath(btnEditarEstadoXpath)),
+          10000
+        );
+
+        // 2. Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(btnEditarEstado), 5000);
+        await driver.wait(until.elementIsEnabled(btnEditarEstado), 5000);
+
+        // 3. Scroll y clic (con fallback a JS)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditarEstado);
+        await driver.sleep(300);
+
+        try {
+          await btnEditarEstado.click();
+          await driver.sleep(3000);
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnEditarEstado);
+          await driver.sleep(3000);
+        }
+
+        console.log("✅ Paso X+3: Botón 'Editar estado' clickeado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+3: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
+      }
+
+      // === Paso X+4: Abrir el menú desplegable de "Estado" ===
+      try {
+        const selectEstadoXpath = '//*[@id="input-select-select-status-order"]';
+
+        // 1. Esperar que el <select> exista en el DOM
+        const selectEstado = await driver.wait(
+          until.elementLocated(By.xpath(selectEstadoXpath)),
+          10000
+        );
+
+        // 2. Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(selectEstado), 5000);
+        await driver.wait(until.elementIsEnabled(selectEstado), 5000);
+
+        // 3. Scroll y clic para abrir opciones
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectEstado);
+        await driver.sleep(300);
+
+        await selectEstado.click();
+        await driver.sleep(1000); // Breve pausa para desplegar opciones
+
+        console.log("✅ Paso X+4: Menú desplegable 'Estado de orden' abierto correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+4: No se pudo abrir el menú desplegable 'Estado de orden': ${error.message}`);
+      }
+
+      // === Paso X+5: Seleccionar opción "Suspendido" en el menú desplegable ===
+      try {
+        const opcionSuspendidoXpath = '//*[@id="input-select-select-status-order"]/option[4]';
+        const selectXpath = '//*[@id="input-select-select-status-order"]';
+
+        // 1. Esperar que el <option> esté presente
+        const opcionSuspendido = await driver.wait(
+          until.elementLocated(By.xpath(opcionSuspendidoXpath)),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(opcionSuspendido), 5000);
+
+        // 2. Clic sobre la opción "Suspendido"
+        await opcionSuspendido.click();
+        await driver.sleep(800);
+
+        // 3. Forzar que el select se cierre
+        const selectElement = await driver.findElement(By.xpath(selectXpath));
+        await driver.executeScript("arguments[0].blur();", selectElement); // quita el foco
+        await driver.sleep(800);
+
+        console.log("✅ Paso X+5: Opción 'Suspendido' seleccionada y desplegable cerrado.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+5: No se pudo seleccionar la opción 'Suspendido': ${error.message}`);
+      }
+
+
+      // === Paso X+6: Guardar cambios en el estado (clic en botón "Editar estado") ===
+      try {
+        const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';
+
+        // 1. Esperar que el botón esté presente
+        const btnGuardar = await driver.wait(
+          until.elementLocated(By.xpath(btnGuardarXpath)),
+          10000
+        );
+
+        // 2. Esperar que sea visible
+        await driver.wait(until.elementIsVisible(btnGuardar), 5000);
+
+        // 3. Forzar scroll al centro y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGuardar);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnGuardar);
+
+        // 4. Pequeña espera por acción posterior (puedes ajustarla)
+        await driver.sleep(3000);
+
+        console.log("✅ Paso X+6: Botón 'Editar estado (guardar)' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
+      }
+
+      // === Paso X+7: Clic en el botón "Editar estado" ===
+      try {
+        const btnEditarEstadoXpath = '//*[@id="widget-button-btn-edit-status"]/div';
+
+        // 1. Esperar que el botón exista en el DOM
+        const btnEditarEstado = await driver.wait(
+          until.elementLocated(By.xpath(btnEditarEstadoXpath)),
+          10000
+        );
+
+        // 2. Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(btnEditarEstado), 5000);
+        await driver.wait(until.elementIsEnabled(btnEditarEstado), 5000);
+
+        // 3. Scroll y clic (con fallback a JS)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditarEstado);
+        await driver.sleep(300);
+
+        try {
+          await btnEditarEstado.click();
+          await driver.sleep(3000);
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnEditarEstado);
+          await driver.sleep(3000);
+        }
+
+        console.log("✅ Paso X+3: Botón 'Editar estado' clickeado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X+3: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
+      }
+
+      // === Paso X+8: Guardar cambios en el estado (clic en botón "Editar estado" Activo) ===
+      try {
+        const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';
+
+        // 1. Esperar que el botón esté presente
+        const btnGuardar = await driver.wait(
+          until.elementLocated(By.xpath(btnGuardarXpath)),
+          10000
+        );
+
+        // 2. Esperar que sea visible
+        await driver.wait(until.elementIsVisible(btnGuardar), 5000);
+
+        // 3. Forzar scroll al centro y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGuardar);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnGuardar);
+
+        // 4. Pequeña espera por acción posterior (puedes ajustarla)
+        await driver.sleep(3000);
+
+        console.log("✅ Paso X+6: Botón 'Editar estado (guardar)' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
+      }
+
+      // === Paso X+9: Clic en botón "Editar" ===
+      try {
+        const btnEditar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnEditar), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditar);
+        await driver.sleep(300);
+
+        // Usamos clic con JS para evitar que algo lo bloquee
+        await driver.executeScript("arguments[0].click();", btnEditar);
+        await driver.sleep(2000);
+
+        console.log("✅ Paso X+2: Botón 'Editar' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+2: No se pudo presionar el botón 'Editar': ${error.message}`);
+      }
+
+      // === Paso X+10: Diligenciar campo "Observaciones" en modal Editar ===
+      try {
+        const inputObservaciones = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-56_"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(inputObservaciones), 5000);
+        await driver.wait(until.elementIsEnabled(inputObservaciones), 5000);
+
+        // Hacer scroll hasta el campo
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputObservaciones);
+        await driver.sleep(500);
+
+        // Limpiar el campo antes de escribir
+        await inputObservaciones.clear();
+        await driver.sleep(300);
+
+        // Escribir el texto
+        await inputObservaciones.sendKeys("test automatizacion editar");
+        await driver.sleep(500);
+
+        console.log("✅ Paso X+3: Campo 'Observaciones' diligenciado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+3: No se pudo diligenciar el campo 'Observaciones': ${error.message}`);
+      }
+
+
+      // === Paso X+11: Clic en botón "Editar / Guardar" en modal ===
+      try {
+        const btnEditarGuardar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order-save"]/div')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnEditarGuardar), 5000);
+        await driver.wait(until.elementIsEnabled(btnEditarGuardar), 5000);
+
+        // Hacer scroll al botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditarGuardar);
+        await driver.sleep(500);
+
+        // Forzar clic con JS (más seguro en modales)
+        await driver.executeScript("arguments[0].click();", btnEditarGuardar);
+        await driver.sleep(3000);
+
+        console.log("✅ Paso X+4: Botón 'Editar / Guardar' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+4: No se pudo presionar el botón 'Editar / Guardar': ${error.message}`);
+      }
+
+
+      // === Paso X+5: Cerrar modal de edición ===
+      try {
+        const modalEditar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-edit-order"]/div/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalEditar), 5000);
+
+        const btnCerrarModal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-edit-order"]/div/div/div[1]/button')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModal), 5000);
+
+        // Scroll y clic forzado
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModal);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+        // ✅ Ajuste: esperar que el modal se oculte (pero no necesariamente desaparezca del DOM)
+        await driver.wait(until.elementIsNotVisible(modalEditar), 15000);
+
+        console.log("✅ Paso X+5: Modal de edición cerrado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+5: No se pudo cerrar el modal de edición: ${error.message}`);
+      }
+
+
+      // === Paso X+6: Clic en botón "Recargar" ===
+      try {
+        const btnRecargar = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="crud-refresh-btn"]')),
+          10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnRecargar), 5000);
+        await driver.wait(until.elementIsEnabled(btnRecargar), 5000);
+
+        // Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRecargar);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnRecargar);
+
+        // Pequeña espera por la recarga de la tabla
+        await driver.sleep(4000);
+
+        console.log("✅ Paso X+6: Botón 'Recargar' presionado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Recargar': ${error.message}`);
+      }
+
+
+
 
 
 
