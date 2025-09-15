@@ -2039,7 +2039,7 @@ export default class ContenidoClasesNegocioPage {
       }
 
 
-      // === CP_CONTCLANEG_013 Paso 3: Clic en botón "Cancelar" en modal de descarga ===
+      // === CP_CONTCLANEG_013 Paso 3: Clic en botón "Cancelar" en modal de carga masiva ===
       try {
         // 1️⃣ Esperar que el botón "Cancelar" esté presente
         const btnCancelar = await driver.wait(

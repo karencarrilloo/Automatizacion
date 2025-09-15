@@ -114,7 +114,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Error en Paso 43: Clic en el <select> de filtros -> ${error.message}`);
       }
 
-      // === Paso 5: Seleccionar "ID_DEAL" en el select del filtro ===
+      // === Paso 6: Seleccionar "ID_DEAL" en el select del filtro ===
       try {
         // 1. Esperar contenedor de grupo de reglas
         const contenedorGrupo = await driver.wait(
@@ -143,7 +143,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 6: Diligenciar el campo de ID_DEAL con "28006512626" ===
+      // === Paso 7: Diligenciar el campo de ID_DEAL con "28006512626" ===
       try {
         // 1. Esperar el textarea del filtro activo
         const textareaCampo = await driver.wait(
@@ -166,7 +166,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Error en Paso 6: Diligenciar campo ID_DEAL: ${error.message}`);
       }
 
-      // === Paso 7: Clic en el botón "Aplicar filtros" ===
+      // === Paso 8: Clic en el botón "Aplicar filtros" ===
       try {
         // Localizar el botón por XPath
         const botonAplicarFiltro = await driver.wait(
@@ -189,7 +189,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 8: Seleccionar cliente por NOMBRE (editable) ===
+      // === Paso 9: Seleccionar cliente por NOMBRE (editable) ===
       try {
         const TARGET_NAME = 'HAROLD AGUIRRE'; // <- Cambia este valor para seleccionar otro cliente
         const gridTbodyXpath = '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
@@ -248,7 +248,7 @@ export default class GestionClientesServiciosPage {
 
 
 
-      // === Paso 9: Seleccionar botón Opciones ===
+      // === Paso 10: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -267,7 +267,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 9: (clic en botón Opciones): ${error.message}`);
       }
 
-      // === Paso 10: Seleccionar opción "Ver información técnica asociada" ===
+      // === Paso 11: Seleccionar opción "Ver información técnica asociada" ===
       try {
         // Esperar a que se despliegue el menú UL de opciones
         const menuOpciones = await driver.wait(
@@ -294,7 +294,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 10: (clic en opción Ver información técnica asociada): ${error.message}`);
       }
 
-      // === Paso 11: Cerrar el modal de información técnica ===
+      // === Paso 12: Cerrar el modal de información técnica ===
       try {
         const btnCerrarModal = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-cancel-confirm-selected"]/div')),
@@ -313,7 +313,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 11: (cerrar modal): ${error.message}`);
       }
 
-      // === Paso 12: Seleccionar botón Opciones ===
+      // === Paso 13: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -333,7 +333,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 13: Seleccionar opción "Reconfiguración" ===
+      // === Paso 14: Seleccionar opción "Reconfiguración" ===
       try {
         // Esperar que el menú UL esté disponible nuevamente
         const menuOpciones = await driver.wait(
@@ -360,7 +360,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 13: (clic en opción Reconfiguración): ${error.message}`);
       }
 
-      // === Paso 14: Clic en botón "Reconfigurar" ===
+      // === Paso 15: Clic en botón "Reconfigurar" ===
       try {
         const btnReconfigurar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btn-reconfig"]/div')),
@@ -379,7 +379,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 14: (clic en botón Reconfigurar): ${error.message}`);
       }
 
-      // === Paso 15: Confirmar con "Sí" en el modal ===
+      // === Paso 16: Confirmar con "Sí" en el modal ===
       try {
         const btnConfirmarSi = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
@@ -400,7 +400,7 @@ export default class GestionClientesServiciosPage {
 
 
 
-      // === Paso 16: Manejo de ejecución de reconfiguración SIMULADA (espera de checks y clic en Siguiente) ===
+      // === Paso 17: Manejo de ejecución de reconfiguración SIMULADA (espera de checks y clic en Siguiente) ===
       let reconfigExitosa = false;
 
       try {
@@ -463,7 +463,7 @@ export default class GestionClientesServiciosPage {
 
 
 
-      // // === Paso 12: Manejo de ejecución de reconfiguración no simulado (éxito o fallo)  === 
+      // // === Paso x: Manejo de ejecución de reconfiguración no simulado (éxito o fallo)  === 
       // let reconfigExitosa = false; // ✅ Declarar aquí para que exista en todo el bloque
 
       // try {
@@ -517,7 +517,7 @@ export default class GestionClientesServiciosPage {
       // await driver.sleep(3000);
 
 
-      // === Paso 17: Reutilizar datos WiFi (opcional en cliente simulado) ===
+      // === Paso 18: Reutilizar datos WiFi (opcional en cliente simulado) ===
       try {
         const btnConfigurarXpath = '//*[@id="widget-button-btn-config-wifi-data"]/div';
         const progressXpath = '//*[@class="progress-bar"]'; // ⚠️ Ajusta si tu progress es distinto
@@ -562,7 +562,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 18: Seleccionar nuevamente cliente por NOMBRE (editable) ===
+      // === Paso 19: Seleccionar nuevamente cliente por NOMBRE (editable) ===
       try {
         const TARGET_NAME = 'HAROLD AGUIRRE'; // <- Cambia este valor para seleccionar otro cliente
         const gridTbodyXpath = '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
@@ -620,7 +620,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 19: Seleccionar botón Opciones ===
+      // === Paso 20: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -639,7 +639,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 19: (clic en botón Opciones): ${error.message}`);
       }
 
-      // === Paso 20: Seleccionar opción "Ver dispositivos" ===
+      // === Paso 21: Seleccionar opción "Ver dispositivos" ===
       try {
         // Esperar a que se despliegue el menú UL de opciones
         const menuOpciones = await driver.wait(
@@ -666,7 +666,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 21: Cerrar el modal "Ver dispositivos" (dinámico y tolerante) ===
+      // === Paso 22: Cerrar el modal "Ver dispositivos" (dinámico y tolerante) ===
       try {
         const btnCerrarModalXpath =
           '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]/div/div/div[1]/button';
@@ -707,7 +707,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 22: Seleccionar botón Opciones ===
+      // === Paso 23: Seleccionar botón Opciones ===
       try {
         const btnOpciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -726,7 +726,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 22: (clic en botón Opciones): ${error.message}`);
       }
 
-      // === Paso 23: Seleccionar opción "Ver documentos" ===
+      // === Paso 24: Seleccionar opción "Ver documentos" ===
       try {
         // Esperar a que se despliegue el menú UL de opciones
         const menuOpciones = await driver.wait(
@@ -752,226 +752,226 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 23: (clic en opción Ver documentos): ${error.message}`);
       }
 
-      // // === Paso 24: Enviar Acta de instalación al correo ===
-      // try {
-      //   const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
-      //   //*[@id="68b898e99877e54d10da4634"]/div[3]
-      //   const btnEnviarCorreoXpath = `${filaActaXpath}/div[3]`; // Botón dentro de la columna OPCIONES
+      // === Paso 24: Enviar Acta de instalación al correo ===
+      try {
+        const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
+        //*[@id="68b898e99877e54d10da4634"]/div[3]
+        const btnEnviarCorreoXpath = `${filaActaXpath}/div[3]`; // Botón dentro de la columna OPCIONES
 
-      //   // 1. Esperar a que aparezca la fila del acta
-      //   const filaActa = await driver.wait(
-      //     until.elementLocated(By.xpath(filaActaXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(filaActa), 5000);
+        // 1. Esperar a que aparezca la fila del acta
+        const filaActa = await driver.wait(
+          until.elementLocated(By.xpath(filaActaXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(filaActa), 5000);
 
-      //   // 2. Esperar y dar clic en el botón de enviar al correo
-      //   const btnEnviarCorreo = await driver.wait(
-      //     until.elementLocated(By.xpath(btnEnviarCorreoXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnEnviarCorreo), 5000);
+        // 2. Esperar y dar clic en el botón de enviar al correo
+        const btnEnviarCorreo = await driver.wait(
+          until.elementLocated(By.xpath(btnEnviarCorreoXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnEnviarCorreo), 5000);
 
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEnviarCorreo);
-      //   await driver.sleep(500);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEnviarCorreo);
+        await driver.sleep(500);
 
-      //   await driver.executeScript("arguments[0].click();", btnEnviarCorreo);
-      //   await driver.sleep(3000); // espera para simular envío
+        await driver.executeScript("arguments[0].click();", btnEnviarCorreo);
+        await driver.sleep(3000); // espera para simular envío
 
-      //   console.log("✅ Paso 24: Acta enviada al correo correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 24: Error al enviar el acta al correo: ${error.message}`);
-      // }
+        console.log("✅ Paso 24: Acta enviada al correo correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 24: Error al enviar el acta al correo: ${error.message}`);
+      }
 
 
-      // // === Paso 25: Ver documento del Acta de instalación ===
-      // try {
-      //   const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
-      //   const btnVerDocumentoXpath = `${filaActaXpath}/div[4]`; // Botón Ver documento
+      // === Paso 25: Ver documento del Acta de instalación ===
+      try {
+        const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
+        const btnVerDocumentoXpath = `${filaActaXpath}/div[4]`; // Botón Ver documento
 
-      //   // 1. Esperar a que la fila del acta esté presente
-      //   const filaActa = await driver.wait(
-      //     until.elementLocated(By.xpath(filaActaXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(filaActa), 5000);
+        // 1. Esperar a que la fila del acta esté presente
+        const filaActa = await driver.wait(
+          until.elementLocated(By.xpath(filaActaXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(filaActa), 5000);
 
-      //   // 2. Localizar el botón "Ver documento"
-      //   const btnVerDocumento = await driver.wait(
-      //     until.elementLocated(By.xpath(btnVerDocumentoXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnVerDocumento), 5000);
+        // 2. Localizar el botón "Ver documento"
+        const btnVerDocumento = await driver.wait(
+          until.elementLocated(By.xpath(btnVerDocumentoXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnVerDocumento), 5000);
 
-      //   // 3. Hacer scroll y clic
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnVerDocumento);
-      //   await driver.sleep(500);
+        // 3. Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnVerDocumento);
+        await driver.sleep(500);
 
-      //   await driver.executeScript("arguments[0].click();", btnVerDocumento);
-      //   await driver.sleep(5000); // Espera a que cargue el documento
+        await driver.executeScript("arguments[0].click();", btnVerDocumento);
+        await driver.sleep(5000); // Espera a que cargue el documento
 
-      //   console.log("✅ Paso 25: Opción 'Ver documento' seleccionada correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 25: Error al seleccionar la opción 'Ver documento': ${error.message}`);
-      // }
+        console.log("✅ Paso 25: Opción 'Ver documento' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 25: Error al seleccionar la opción 'Ver documento': ${error.message}`);
+      }
 
-      // // === Paso 26: Cerrar modal de Ver Documento ===
-      // try {
-      //   const btnCerrarModalDocXpath = '//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button';
+      // === Paso 26: Cerrar modal de Ver Documento ===
+      try {
+        const btnCerrarModalDocXpath = '//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button';
 
-      //   // 1. Esperar a que aparezca el botón de cerrar
-      //   const btnCerrarModalDoc = await driver.wait(
-      //     until.elementLocated(By.xpath(btnCerrarModalDocXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnCerrarModalDoc), 5000);
+        // 1. Esperar a que aparezca el botón de cerrar
+        const btnCerrarModalDoc = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarModalDocXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModalDoc), 5000);
 
-      //   // 2. Hacer scroll hasta el botón
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModalDoc);
-      //   await driver.sleep(500);
+        // 2. Hacer scroll hasta el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModalDoc);
+        await driver.sleep(500);
 
-      //   // 3. Dar clic en el botón de cerrar
-      //   await driver.executeScript("arguments[0].click();", btnCerrarModalDoc);
-      //   await driver.sleep(2000); // esperar a que el modal se cierre
+        // 3. Dar clic en el botón de cerrar
+        await driver.executeScript("arguments[0].click();", btnCerrarModalDoc);
+        await driver.sleep(2000); // esperar a que el modal se cierre
 
-      //   console.log("✅ Paso 26:Modal de Ver Documento cerrado correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 26: Error al cerrar modal de Ver Documento: ${error.message}`);
-      // }
+        console.log("✅ Paso 26:Modal de Ver Documento cerrado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 26: Error al cerrar modal de Ver Documento: ${error.message}`);
+      }
 
-      // // === Paso 27: Descargar documento del Acta de instalación ===
-      // try {
-      //   const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
-      //   const btnDescargarXpath = `${filaActaXpath}/div[5]`; // Botón Descargar documento
+      // === Paso 27: Descargar documento del Acta de instalación ===
+      try {
+        const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Acta de Instalación
+        const btnDescargarXpath = `${filaActaXpath}/div[5]`; // Botón Descargar documento
 
-      //   // 1. Esperar a que la fila del acta esté presente
-      //   const filaActa = await driver.wait(
-      //     until.elementLocated(By.xpath(filaActaXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(filaActa), 5000);
+        // 1. Esperar a que la fila del acta esté presente
+        const filaActa = await driver.wait(
+          until.elementLocated(By.xpath(filaActaXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(filaActa), 5000);
 
-      //   // 2. Localizar el botón "Descargar"
-      //   const btnDescargar = await driver.wait(
-      //     until.elementLocated(By.xpath(btnDescargarXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnDescargar), 5000);
+        // 2. Localizar el botón "Descargar"
+        const btnDescargar = await driver.wait(
+          until.elementLocated(By.xpath(btnDescargarXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnDescargar), 5000);
 
-      //   // 3. Hacer scroll y clic
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnDescargar);
-      //   await driver.sleep(500);
+        // 3. Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnDescargar);
+        await driver.sleep(500);
 
-      //   await driver.executeScript("arguments[0].click();", btnDescargar);
-      //   await driver.sleep(5000); // Espera a que el navegador inicie la descarga
+        await driver.executeScript("arguments[0].click();", btnDescargar);
+        await driver.sleep(5000); // Espera a que el navegador inicie la descarga
 
-      //   console.log("✅ Paso 27: Documento descargado correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 27: Error al descargar el documento: ${error.message}`);
-      // }
+        console.log("✅ Paso 27: Documento descargado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 27: Error al descargar el documento: ${error.message}`);
+      }
 
-      // // === Paso 28: Enviar documento Contrato al correo ===
-      // try {
-      //   const filaContratoXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Contrato
-      //   const btnEnviarCorreoContratoXpath = `${filaContratoXpath}/div[3]`; // Botón Enviar al correo
+      // === Paso 28: Enviar documento Contrato al correo ===
+      try {
+        const filaContratoXpath = '//*[@id="68b898e99877e54d10da4634"]'; // Fila Contrato
+        const btnEnviarCorreoContratoXpath = `${filaContratoXpath}/div[3]`; // Botón Enviar al correo
 
-      //   // 1. Esperar a que la fila del contrato esté presente
-      //   const filaContrato = await driver.wait(
-      //     until.elementLocated(By.xpath(filaContratoXpath)),
-      //     20000
-      //   );
-      //   await driver.wait(until.elementIsVisible(filaContrato), 5000);
+        // 1. Esperar a que la fila del contrato esté presente
+        const filaContrato = await driver.wait(
+          until.elementLocated(By.xpath(filaContratoXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(filaContrato), 5000);
 
-      //   // 2. Localizar el botón "Enviar al correo"
-      //   const btnEnviarCorreoContrato = await driver.wait(
-      //     until.elementLocated(By.xpath(btnEnviarCorreoContratoXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnEnviarCorreoContrato), 5000);
+        // 2. Localizar el botón "Enviar al correo"
+        const btnEnviarCorreoContrato = await driver.wait(
+          until.elementLocated(By.xpath(btnEnviarCorreoContratoXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnEnviarCorreoContrato), 5000);
 
-      //   // 3. Hacer scroll y clic
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEnviarCorreoContrato);
-      //   await driver.sleep(500);
+        // 3. Hacer scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEnviarCorreoContrato);
+        await driver.sleep(500);
 
-      //   await driver.executeScript("arguments[0].click();", btnEnviarCorreoContrato);
-      //   await driver.sleep(4000); // Tiempo para que se procese el envío
+        await driver.executeScript("arguments[0].click();", btnEnviarCorreoContrato);
+        await driver.sleep(4000); // Tiempo para que se procese el envío
 
-      //   console.log("✅ Paso 28: Documento Contrato enviado al correo correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 28: Error al enviar documento Contrato al correo: ${error.message}`);
-      // }
+        console.log("✅ Paso 28: Documento Contrato enviado al correo correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 28: Error al enviar documento Contrato al correo: ${error.message}`);
+      }
 
-      // // === Paso 29: Seleccionar opción "Ver Documento (Contrato)" ===
-      // try {
-      //   const opcionVerContratoXpath = '//*[@id="68b898e99877e54d10da4634"]/div[4]';
+      // === Paso 29: Seleccionar opción "Ver Documento (Contrato)" ===
+      try {
+        const opcionVerContratoXpath = '//*[@id="68b898e99877e54d10da4634"]/div[4]';
 
-      //   // 1. Esperar a que aparezca la opción de Ver Documento (Contrato)
-      //   const opcionVerContrato = await driver.wait(
-      //     until.elementLocated(By.xpath(opcionVerContratoXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(opcionVerContrato), 5000);
+        // 1. Esperar a que aparezca la opción de Ver Documento (Contrato)
+        const opcionVerContrato = await driver.wait(
+          until.elementLocated(By.xpath(opcionVerContratoXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(opcionVerContrato), 5000);
 
-      //   // 2. Hacer scroll hasta la opción
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionVerContrato);
-      //   await driver.sleep(500);
+        // 2. Hacer scroll hasta la opción
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionVerContrato);
+        await driver.sleep(500);
 
-      //   // 3. Dar clic en la opción
-      //   await driver.executeScript("arguments[0].click();", opcionVerContrato);
-      //   await driver.sleep(3000); // esperar a que cargue el modal del contrato
+        // 3. Dar clic en la opción
+        await driver.executeScript("arguments[0].click();", opcionVerContrato);
+        await driver.sleep(3000); // esperar a que cargue el modal del contrato
 
-      //   console.log("✅ Paso 29: Opción 'Ver Documento (Contrato)' seleccionada correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 29: Error al seleccionar 'Ver Documento (Contrato)': ${error.message}`);
-      // }
+        console.log("✅ Paso 29: Opción 'Ver Documento (Contrato)' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 29: Error al seleccionar 'Ver Documento (Contrato)': ${error.message}`);
+      }
 
-      // // === Paso 30: Cerrar modal "Ver Documento (Contrato)" ===
-      // try {
-      //   const btnCerrarModalContratoXpath = '//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button';
+      // === Paso 30: Cerrar modal "Ver Documento (Contrato)" ===
+      try {
+        const btnCerrarModalContratoXpath = '//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button';
 
-      //   // 1. Esperar a que aparezca el botón de cerrar
-      //   const btnCerrarModalContrato = await driver.wait(
-      //     until.elementLocated(By.xpath(btnCerrarModalContratoXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnCerrarModalContrato), 5000);
+        // 1. Esperar a que aparezca el botón de cerrar
+        const btnCerrarModalContrato = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarModalContratoXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModalContrato), 5000);
 
-      //   // 2. Scroll hasta el botón por seguridad
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModalContrato);
-      //   await driver.sleep(300);
+        // 2. Scroll hasta el botón por seguridad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModalContrato);
+        await driver.sleep(300);
 
-      //   // 3. Clic en el botón cerrar
-      //   await driver.executeScript("arguments[0].click();", btnCerrarModalContrato);
-      //   await driver.sleep(2000); // espera a que el modal se cierre
+        // 3. Clic en el botón cerrar
+        await driver.executeScript("arguments[0].click();", btnCerrarModalContrato);
+        await driver.sleep(2000); // espera a que el modal se cierre
 
-      //   console.log("✅ Paso 30:  Modal 'Ver Documento (Contrato)' cerrado correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 30:  Error al cerrar modal 'Ver Documento (Contrato)': ${error.message}`);
-      // }
+        console.log("✅ Paso 30:  Modal 'Ver Documento (Contrato)' cerrado correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 30:  Error al cerrar modal 'Ver Documento (Contrato)': ${error.message}`);
+      }
 
-      // // === Paso 31: Seleccionar opción "Descargar Documento (Contrato)" ===
-      // try {
-      //   const opcionDescargarContratoXpath = '//*[@id="68b898e99877e54d10da4634"]/div[5]';
+      // === Paso 31: Seleccionar opción "Descargar Documento (Contrato)" ===
+      try {
+        const opcionDescargarContratoXpath = '//*[@id="68b898e99877e54d10da4634"]/div[5]';
 
-      //   // 1. Esperar a que aparezca la opción Descargar Documento (Contrato)
-      //   const opcionDescargarContrato = await driver.wait(
-      //     until.elementLocated(By.xpath(opcionDescargarContratoXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(opcionDescargarContrato), 5000);
+        // 1. Esperar a que aparezca la opción Descargar Documento (Contrato)
+        const opcionDescargarContrato = await driver.wait(
+          until.elementLocated(By.xpath(opcionDescargarContratoXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(opcionDescargarContrato), 5000);
 
-      //   // 2. Hacer scroll hasta la opción
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDescargarContrato);
-      //   await driver.sleep(500);
+        // 2. Hacer scroll hasta la opción
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDescargarContrato);
+        await driver.sleep(500);
 
-      //   // 3. Dar clic en la opción
-      //   await driver.executeScript("arguments[0].click();", opcionDescargarContrato);
-      //   await driver.sleep(4000); // espera extra porque puede tardar la descarga
+        // 3. Dar clic en la opción
+        await driver.executeScript("arguments[0].click();", opcionDescargarContrato);
+        await driver.sleep(4000); // espera extra porque puede tardar la descarga
 
-      //   console.log("✅ Paso 31: Opción 'Descargar Documento (Contrato)' ejecutada correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 31: Error al seleccionar 'Descargar Documento (Contrato)': ${error.message}`);
-      // }
+        console.log("✅ Paso 31: Opción 'Descargar Documento (Contrato)' ejecutada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 31: Error al seleccionar 'Descargar Documento (Contrato)': ${error.message}`);
+      }
 
       // === Paso 32: Cerrar el modal "Ver Documentos" ===
       try {
@@ -1114,7 +1114,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 36: No se pudo diligenciar el comentario: ${error.message}`);
       }
 
-      // === Paso X: Clic en botón "Confirmar suspensión" ===
+      // === Paso 37: Clic en botón "Confirmar suspensión" ===
       try {
         const btnConfirmarSusp = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-suspension-detail"]/div')),
@@ -1236,7 +1236,7 @@ export default class GestionClientesServiciosPage {
       //   throw new Error(`❌ Paso 38: Error al abrir 'Detalle del proceso': ${error.message}`);
       // }
 
-      // === Paso X+1: Confirmar con "Sí" en el modal de suspensión ===
+      // === Paso 38: Confirmar con "Sí" en el modal de suspensión ===
       try {
         const btnConfirmarSi = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
@@ -1369,7 +1369,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 42: Error al seleccionar la opción 'Reconexión': ${error.message}`);
       }
 
-      // === Paso 43: Diligenciar comentario en Reconexión ===
+      // === Paso 42: Diligenciar comentario en Reconexión ===
       try {
         const comentarioXpath = '//*[@id="textfield-input-data-comment"]';
 
@@ -1393,7 +1393,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso 43: No se pudo diligenciar el comentario en Reconexión: ${error.message}`);
       }
 
-      // === Paso X: Clic en botón "Confirmar reconexión" ===
+      // === Paso 43: Clic en botón "Confirmar reconexión" ===
       try {
         const btnConfirmarReconexion = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-suspension-detail"]/div')),
@@ -1412,7 +1412,7 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Paso X: (clic en botón Confirmar reconexión): ${error.message}`);
       }
 
-      // === Paso X+1: Confirmar con "Sí" en el modal de reconexión ===
+      // === Paso 44: Confirmar con "Sí" en el modal de reconexión ===
       try {
         const btnConfirmarSi = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
@@ -1465,6 +1465,59 @@ export default class GestionClientesServiciosPage {
         throw new Error(`❌ Error Paso X+1: (confirmación reconexión con 'Sí'): ${error.message}`);
       }
 
+      // === Paso 45: Cerrar modal "Detalle del proceso" ===
+      try {
+        const btnCerrarModalXpath =
+          '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
+
+        // Esperar el botón de cerrar dentro del modal
+        const btnCerrarModal = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarModalXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
+
+        // Scroll y clic forzado
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+        // Validar que el modal desapareció
+        try {
+          await driver.wait(async () => {
+            const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+            return !visible;
+          }, 8000);
+          console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
+        } catch {
+          console.log("⚠️ Modal 'Detalle del proceso' no desapareció del todo, pero se presionó cerrar.");
+        }
+
+        await driver.sleep(1000);
+      } catch (error) {
+        throw new Error(`❌ Paso x: Error al cerrar modal 'Detalle del proceso': ${error.message}`);
+      }
+
+
+      //  // === Paso 35: Seleccionar botón Opciones ===
+      // try {
+      //   const btnOpciones = await driver.wait(
+      //     until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+      //     10000
+      //   );
+
+      //   await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+      //   await driver.sleep(300);
+
+      //   await driver.executeScript("arguments[0].click();", btnOpciones);
+      //   await driver.sleep(3000);
+
+      //   console.log("✅ Paso 8: Botón Opciones seleccionado correctamente.");
+      // } catch (error) {
+      //   throw new Error(`❌ Paso 8: (clic en botón Opciones): ${error.message}`);
+      // }
+
 
 
       // // === Paso 44: Cancelar Reconexión ===
@@ -1510,187 +1563,187 @@ export default class GestionClientesServiciosPage {
       // }
 
 
-      // // === Paso 45: Seleccionar opción "Cambio de plan" ===
-      // try {
-      //   const btnOpcionesXpath = '//*[@id="btn-options"]';
-      //   const menuOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
-      //   const opcionCambioPlanXpath = '//*[@id="1082"]';
+      // === Paso 46: Seleccionar opción "Cambio de plan" ===
+      try {
+        const btnOpcionesXpath = '//*[@id="btn-options"]';
+        const menuOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+        const opcionCambioPlanXpath = '//*[@id="1082"]';
 
-      //   // 1. Clic en botón Opciones
-      //   const btnOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath(btnOpcionesXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnOpciones), 5000);
-      //   await driver.executeScript("arguments[0].click();", btnOpciones);
-      //   console.log("✅ Botón 'Opciones' presionado correctamente.");
+        // 1. Clic en botón Opciones
+        const btnOpciones = await driver.wait(
+          until.elementLocated(By.xpath(btnOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+        console.log("✅ Botón 'Opciones' presionado correctamente.");
 
-      //   // 2. Esperar menú desplegado
-      //   const menuOpciones = await driver.wait(
-      //     until.elementLocated(By.xpath(menuOpcionesXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+        // 2. Esperar menú desplegado
+        const menuOpciones = await driver.wait(
+          until.elementLocated(By.xpath(menuOpcionesXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(menuOpciones), 5000);
 
-      //   // 3. Seleccionar "Cambio de plan"
-      //   const opcionCambioPlan = await driver.wait(
-      //     until.elementLocated(By.xpath(opcionCambioPlanXpath)),
-      //     10000
-      //   );
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionCambioPlan);
-      //   await driver.sleep(300);
-      //   await driver.executeScript("arguments[0].click();", opcionCambioPlan);
-      //   await driver.sleep(3000);
+        // 3. Seleccionar "Cambio de plan"
+        const opcionCambioPlan = await driver.wait(
+          until.elementLocated(By.xpath(opcionCambioPlanXpath)),
+          10000
+        );
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionCambioPlan);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", opcionCambioPlan);
+        await driver.sleep(3000);
 
-      //   console.log("✅ Paso 45: Opción 'Cambio de plan' seleccionada correctamente.");
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 45: Error al seleccionar la opción 'Cambio de plan': ${error.message}`);
-      // }
-
-
-      // // === Paso 46: Seleccionar botón "Nuevo plan comercial" en modal de Cambio de plan ===
-      // try {
-      //   const btnNuevoPlanXpath = '//*[@id="widget-pickview-pick-data-change-plan"]/div[1]/span[2]/button';
-
-      //   // 1. Esperar a que el botón esté presente
-      //   const btnNuevoPlan = await driver.wait(
-      //     until.elementLocated(By.xpath(btnNuevoPlanXpath)),
-      //     10000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnNuevoPlan), 5000);
-
-      //   // 2. Scroll y clic en el botón
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNuevoPlan);
-      //   await driver.sleep(300);
-      //   await driver.executeScript("arguments[0].click();", btnNuevoPlan);
-      //   console.log("✅ Paso 46: Botón 'Nuevo plan comercial' presionado correctamente.");
-
-      //   await driver.sleep(2000); // pequeña espera para carga de datos
-
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 46: No se pudo presionar el botón 'Nuevo plan comercial': ${error.message}`);
-      // }
+        console.log("✅ Paso 45: Opción 'Cambio de plan' seleccionada correctamente.");
+      } catch (error) {
+        throw new Error(`❌ Paso 45: Error al seleccionar la opción 'Cambio de plan': ${error.message}`);
+      }
 
 
-      // // === Paso 47: Seleccionar el plan "PLAN 600 MEGAS FC 2025 V" ===
-      // try {
-      //   const tbodyXpath = '//*[@id="widget-dialog-pickview-pick-data-change-plan"]/div/div/div[2]/div/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/table/tbody';
-      //   const nombrePlan = "PLAN 600 MEGAS FC 2025 V"; // 🔹 Cambia aquí el plan cuando quieras probar otro
+      // === Paso 47: Seleccionar botón "Nuevo plan comercial" en modal de Cambio de plan ===
+      try {
+        const btnNuevoPlanXpath = '//*[@id="widget-pickview-pick-data-change-plan"]/div[1]/span[2]/button';
 
-      //   // 1. Esperar el tbody
-      //   const tbodyPlanes = await driver.wait(
-      //     until.elementLocated(By.xpath(tbodyXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(tbodyPlanes), 5000);
+        // 1. Esperar a que el botón esté presente
+        const btnNuevoPlan = await driver.wait(
+          until.elementLocated(By.xpath(btnNuevoPlanXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnNuevoPlan), 5000);
 
-      //   // 2. Buscar todas las filas dentro del tbody
-      //   const filas = await tbodyPlanes.findElements(By.xpath("./tr"));
-      //   if (filas.length === 0) {
-      //     throw new Error("❌ No se encontraron planes comerciales en la tabla.");
-      //   }
+        // 2. Scroll y clic en el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNuevoPlan);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnNuevoPlan);
+        console.log("✅ Paso 46: Botón 'Nuevo plan comercial' presionado correctamente.");
 
-      //   let planEncontrado = false;
-      //   for (const fila of filas) {
-      //     const textoFila = (await fila.getText()).trim();
-      //     console.log(`📌 Fila encontrada: ${textoFila}`);
+        await driver.sleep(2000); // pequeña espera para carga de datos
 
-      //     // 3. Verificar si la fila corresponde al plan deseado
-      //     if (textoFila.includes(nombrePlan)) {
-      //       const btnMas = await fila.findElement(By.xpath("./td[4]/div/button"));
-      //       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnMas);
-      //       await driver.sleep(300);
-      //       await driver.executeScript("arguments[0].click();", btnMas);
-      //       await driver.sleep(3000); // pequeña espera para carga de datos
+      } catch (error) {
+        throw new Error(`❌ Paso 46: No se pudo presionar el botón 'Nuevo plan comercial': ${error.message}`);
+      }
 
-      //       console.log(`✅ Plan '${nombrePlan}' agregado correctamente.`);
-      //       planEncontrado = true;
-      //       break;
-      //     }
-      //   }
 
-      //   if (!planEncontrado) {
-      //     throw new Error(`❌ Paso 48: No se encontró el plan '${nombrePlan}' en la tabla.`);
-      //   }
+      // === Paso 48: Seleccionar el plan "PLAN 600 MEGAS FC 2025 V" ===
+      try {
+        const tbodyXpath = '//*[@id="widget-dialog-pickview-pick-data-change-plan"]/div/div/div[2]/div/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]/table/tbody';
+        const nombrePlan = "PLAN 600 MEGAS FC 2025 V"; // 🔹 Cambia aquí el plan cuando quieras probar otro
 
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 48: No se pudo agregar el plan: ${error.message}`);
-      // }
+        // 1. Esperar el tbody
+        const tbodyPlanes = await driver.wait(
+          until.elementLocated(By.xpath(tbodyXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(tbodyPlanes), 5000);
 
-      // // === Paso 49: Confirmar selección del plan (botón "Seleccionar") ===
-      // try {
-      //   const btnSeleccionarXpath = '//*[@id="widget-button-select-pick-data-change-plan"]/div';
+        // 2. Buscar todas las filas dentro del tbody
+        const filas = await tbodyPlanes.findElements(By.xpath("./tr"));
+        if (filas.length === 0) {
+          throw new Error("❌ No se encontraron planes comerciales en la tabla.");
+        }
 
-      //   // Esperar que el botón esté presente y visible
-      //   const btnSeleccionar = await driver.wait(
-      //     until.elementLocated(By.xpath(btnSeleccionarXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(btnSeleccionar), 5000);
-      //   await driver.wait(until.elementIsEnabled(btnSeleccionar), 5000);
+        let planEncontrado = false;
+        for (const fila of filas) {
+          const textoFila = (await fila.getText()).trim();
+          console.log(`📌 Fila encontrada: ${textoFila}`);
 
-      //   // Clic en el botón Seleccionar
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSeleccionar);
-      //   await driver.sleep(300);
-      //   await driver.executeScript("arguments[0].click();", btnSeleccionar);
+          // 3. Verificar si la fila corresponde al plan deseado
+          if (textoFila.includes(nombrePlan)) {
+            const btnMas = await fila.findElement(By.xpath("./td[4]/div/button"));
+            await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnMas);
+            await driver.sleep(300);
+            await driver.executeScript("arguments[0].click();", btnMas);
+            await driver.sleep(3000); // pequeña espera para carga de datos
 
-      //   console.log("✅ Botón 'Seleccionar' presionado correctamente.");
+            console.log(`✅ Plan '${nombrePlan}' agregado correctamente.`);
+            planEncontrado = true;
+            break;
+          }
+        }
 
-      //   // Espera breve para que se procese la acción
-      //   await driver.sleep(3000);
+        if (!planEncontrado) {
+          throw new Error(`❌ Paso 48: No se encontró el plan '${nombrePlan}' en la tabla.`);
+        }
 
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 49: No se pudo presionar el botón 'Seleccionar': ${error.message}`);
-      // }
+      } catch (error) {
+        throw new Error(`❌ Paso 48: No se pudo agregar el plan: ${error.message}`);
+      }
 
-      // // === Paso 50: Diligenciar número PQ con un número aleatorio de 10 dígitos ===
-      // try {
-      //   const inputNumeroPqXpath = '//*[@id="textfield-input-data-number-pq"]';
+      // === Paso 49: Confirmar selección del plan (botón "Seleccionar") ===
+      try {
+        const btnSeleccionarXpath = '//*[@id="widget-button-select-pick-data-change-plan"]/div';
 
-      //   // Esperar a que el input esté presente y visible
-      //   const inputNumeroPq = await driver.wait(
-      //     until.elementLocated(By.xpath(inputNumeroPqXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(inputNumeroPq), 5000);
+        // Esperar que el botón esté presente y visible
+        const btnSeleccionar = await driver.wait(
+          until.elementLocated(By.xpath(btnSeleccionarXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnSeleccionar), 5000);
+        await driver.wait(until.elementIsEnabled(btnSeleccionar), 5000);
 
-      //   // Generar número aleatorio de 10 dígitos
-      //   const numeroAleatorio = Math.floor(Math.random() * 9000000000) + 1000000000; // siempre 10 dígitos
+        // Clic en el botón Seleccionar
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSeleccionar);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnSeleccionar);
 
-      //   // Diligenciar número en el campo
-      //   await inputNumeroPq.clear();
-      //   await inputNumeroPq.sendKeys(numeroAleatorio.toString());
+        console.log("✅ Botón 'Seleccionar' presionado correctamente.");
 
-      //   console.log(`Paso 50: ✅ Número PQ diligenciado correctamente: ${numeroAleatorio}`);
+        // Espera breve para que se procese la acción
+        await driver.sleep(3000);
 
-      //   await driver.sleep(2000);
+      } catch (error) {
+        throw new Error(`❌ Paso 49: No se pudo presionar el botón 'Seleccionar': ${error.message}`);
+      }
 
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 50: No se pudo diligenciar el número PQ: ${error.message}`);
-      // }
+      // === Paso 50: Diligenciar número PQ con un número aleatorio de 10 dígitos ===
+      try {
+        const inputNumeroPqXpath = '//*[@id="textfield-input-data-number-pq"]';
 
-      // // === Paso 51: Diligenciar comentario ===
-      // try {
-      //   const inputComentarioXpath = '//*[@id="textfield-input-data-comment"]';
+        // Esperar a que el input esté presente y visible
+        const inputNumeroPq = await driver.wait(
+          until.elementLocated(By.xpath(inputNumeroPqXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(inputNumeroPq), 5000);
 
-      //   // Esperar a que el input esté presente y visible
-      //   const inputComentario = await driver.wait(
-      //     until.elementLocated(By.xpath(inputComentarioXpath)),
-      //     15000
-      //   );
-      //   await driver.wait(until.elementIsVisible(inputComentario), 5000);
+        // Generar número aleatorio de 10 dígitos
+        const numeroAleatorio = Math.floor(Math.random() * 9000000000) + 1000000000; // siempre 10 dígitos
 
-      //   // Limpiar y escribir el comentario
-      //   await inputComentario.clear();
-      //   await inputComentario.sendKeys("test automatizacion");
+        // Diligenciar número en el campo
+        await inputNumeroPq.clear();
+        await inputNumeroPq.sendKeys(numeroAleatorio.toString());
 
-      //   console.log("✅ Comentario diligenciado correctamente: 'test automatizacion'");
+        console.log(`Paso 50: ✅ Número PQ diligenciado correctamente: ${numeroAleatorio}`);
 
-      //   await driver.sleep(2000);
+        await driver.sleep(2000);
 
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 51: No se pudo diligenciar el comentario: ${error.message}`);
-      // }
+      } catch (error) {
+        throw new Error(`❌ Paso 50: No se pudo diligenciar el número PQ: ${error.message}`);
+      }
+
+      // === Paso 51: Diligenciar comentario ===
+      try {
+        const inputComentarioXpath = '//*[@id="textfield-input-data-comment"]';
+
+        // Esperar a que el input esté presente y visible
+        const inputComentario = await driver.wait(
+          until.elementLocated(By.xpath(inputComentarioXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(inputComentario), 5000);
+
+        // Limpiar y escribir el comentario
+        await inputComentario.clear();
+        await inputComentario.sendKeys("test automatizacion");
+
+        console.log("✅ Comentario diligenciado correctamente: 'test automatizacion'");
+
+        await driver.sleep(2000);
+
+      } catch (error) {
+        throw new Error(`❌ Paso 51: No se pudo diligenciar el comentario: ${error.message}`);
+      }
 
       // // // === Paso 52: Cancelar cambio de plan ===
       // // try {
@@ -1730,57 +1783,90 @@ export default class GestionClientesServiciosPage {
       // // }
 
 
-      // // === Paso 52: Confirmar cambio de plan ===
-      // try {
-      //   // Localizar dinámicamente el modal de CustomerManager
-      //   const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]';
-      //   const modal = await driver.wait(
-      //     until.elementLocated(By.xpath(modalXpath)),
-      //     15000
-      //   );
+      // === Paso 52: Confirmar cambio de plan ===
+      try {
+        // Localizar dinámicamente el modal de CustomerManager
+        const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]';
+        const modal = await driver.wait(
+          until.elementLocated(By.xpath(modalXpath)),
+          15000
+        );
 
-      //   // Buscar el botón Confirmar dentro del modal
-      //   const btnConfirmarXpath = './/*[@id="widget-button-suspension-detail"]/div';
-      //   const btnConfirmar = await modal.findElement(By.xpath(btnConfirmarXpath));
+        // Buscar el botón Confirmar dentro del modal
+        const btnConfirmarXpath = './/*[@id="widget-button-suspension-detail"]/div';
+        const btnConfirmar = await modal.findElement(By.xpath(btnConfirmarXpath));
 
-      //   await driver.wait(until.elementIsVisible(btnConfirmar), 10000);
-      //   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmar);
-      //   await driver.sleep(300);
+        await driver.wait(until.elementIsVisible(btnConfirmar), 10000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmar);
+        await driver.sleep(300);
 
-      //   // Dar clic en Confirmar
-      //   await driver.executeScript("arguments[0].click();", btnConfirmar);
-      //   console.log("✅ Botón 'Confirmar' en cambio de plan presionado correctamente.");
+        // Dar clic en Confirmar
+        await driver.executeScript("arguments[0].click();", btnConfirmar);
+        console.log("✅ Botón 'Confirmar' en cambio de plan presionado correctamente.");
 
-      //   // === Esperar a que desaparezca el progress ===
-      //   try {
-      //     const progressXpath = '//div[contains(@class,"progress") or contains(@class,"loading")]';
-      //     const progressElem = await driver.wait(
-      //       until.elementLocated(By.xpath(progressXpath)),
-      //       5000
-      //     );
+        // === Esperar a que desaparezca el progress ===
+        try {
+          const progressXpath = '//div[contains(@class,"progress") or contains(@class,"loading")]';
+          const progressElem = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            5000
+          );
 
-      //     // Esperar a que desaparezca
-      //     await driver.wait(until.stalenessOf(progressElem), 20000);
-      //     console.log("✅ Progress de cambio de plan finalizado.");
-      //   } catch {
-      //     console.log("⚠️ No se detectó progress, puede que haya sido muy rápido.");
-      //   }
+          // Esperar a que desaparezca
+          await driver.wait(until.stalenessOf(progressElem), 20000);
+          console.log("✅ Progress de cambio de plan finalizado.");
+        } catch {
+          console.log("⚠️ No se detectó progress, puede que haya sido muy rápido.");
+        }
 
-      //   // Validar si el modal se cierra
-      //   try {
-      //     await driver.wait(async () => {
-      //       const visible = await btnConfirmar.isDisplayed().catch(() => false);
-      //       return !visible;
-      //     }, 8000);
-      //     console.log("✅ Modal de cambio de plan cerrado correctamente.");
-      //   } catch {
-      //     console.log("⚠️ El modal de cambio de plan no desapareció completamente, pero se hizo clic en Confirmar.");
-      //   }
+        // Validar si el modal se cierra
+        try {
+          await driver.wait(async () => {
+            const visible = await btnConfirmar.isDisplayed().catch(() => false);
+            return !visible;
+          }, 8000);
+          console.log("✅ Modal de cambio de plan cerrado correctamente.");
+        } catch {
+          console.log("⚠️ El modal de cambio de plan no desapareció completamente, pero se hizo clic en Confirmar.");
+        }
 
-      //   await driver.sleep(1500);
-      // } catch (error) {
-      //   throw new Error(`❌ Paso 52: No se pudo confirmar el cambio de plan: ${error.message}`);
-      // }
+        await driver.sleep(2500);
+      } catch (error) {
+        throw new Error(`❌ Paso 52: No se pudo confirmar el cambio de plan: ${error.message}`);
+      }
+
+      // === Paso 53: Cerrar modal "Detalle del proceso" en cambio de plan ===
+      try {
+        const btnCerrarModalXpath =
+          '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
+
+        // Esperar el botón de cerrar dentro del modal
+        const btnCerrarModal = await driver.wait(
+          until.elementLocated(By.xpath(btnCerrarModalXpath)),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
+
+        // Scroll y clic forzado
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
+        await driver.sleep(900);
+        await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+        // Validar que el modal desapareció
+        try {
+          await driver.wait(async () => {
+            const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+            return !visible;
+          }, 8000);
+          console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
+        } catch {
+          console.log("⚠️ Modal 'Detalle del proceso' no desapareció del todo, pero se presionó cerrar.");
+        }
+
+        await driver.sleep(1000);
+      } catch (error) {
+        throw new Error(`❌ Paso x: Error al cerrar modal 'Detalle del proceso': ${error.message}`);
+      }
 
 
 

@@ -14,8 +14,7 @@ export default class VisorInformacionTecnicaRedPage {
   async ejecutarVisorInformacionTecnicaRed() {
     const driver = this.driver;
     try {
-      // === CP_VISORTECRED_001 - Acceso al módulo Visor de información técnica de red ===
-      // === CP_VISORTECRED_001 Paso 1: Clic en módulo eCenter ===
+      //  Paso 1: Clic en módulo eCenter ===
       const eCenterBtn = await driver.wait(
         until.elementLocated(By.xpath("//div[@id='118' and contains(@class, 'item-module')]")),
         10000
@@ -23,7 +22,7 @@ export default class VisorInformacionTecnicaRedPage {
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
 
-      //  === CP_VISORTECRED_001 Paso 2: Scroll en el contenedor de aplicaciones ===
+      //  Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
         until.elementLocated(By.css('.container-applications')),
         10000
@@ -34,7 +33,7 @@ export default class VisorInformacionTecnicaRedPage {
       );
       await driver.sleep(1000);
 
-      // === CP_VISORTECRED_001 Paso 3: Clic en "Visor de información técnica de red" ===
+      // Paso 3: Clic en "Visor de información técnica de red" ===
       try {
         const visorInfoTecnica = await driver.wait(
           until.elementLocated(
@@ -50,12 +49,12 @@ export default class VisorInformacionTecnicaRedPage {
         await visorInfoTecnica.click();
         await driver.sleep(2000);
 
-        console.log("✅ CP_VISORTECRED_001 Paso 3 Clic en 'Visor de información técnica de red' realizado correctamente.");
+        console.log("✅ Paso 3 Clic en 'Visor de información técnica de red' realizado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_001 Paso 3 (clic en visor de información técnica de red): ${error.message}`);
+        throw new Error(`❌ Error en Paso 3 (clic en visor de información técnica de red): ${error.message}`);
       }
-      // === CP_VISORTECRED_002 - Visualización del filtro inicial
-      // === CP_VISORTECRED_002 Paso 1: Clic en el botón "Mostrar filtro" ===
+
+      // ===  Paso 4: Clic en el botón "Mostrar filtro" ===
       try {
         // Esperar a que aparezca el botón por ID directamente
         const botonMostrarFiltro = await driver.wait(
@@ -73,13 +72,13 @@ export default class VisorInformacionTecnicaRedPage {
         await botonMostrarFiltro.click();
         await driver.sleep(1000);
 
-        console.log("✅ CP_VISORTECRED_002 Paso 1: Clic en el botón Mostrar filtro.");
+        console.log("✅ Paso 4:: Clic en el botón Mostrar filtro.");
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_002 Paso 1: Clic en el botón "Mostrar filtro": ${error.message}`);
+        throw new Error(`❌ Error en Paso 4: Clic en el botón "Mostrar filtro": ${error.message}`);
       }
 
-      // CP_VISORTECRED_003 - Selección de filtro “CENTRO POBLADO”
-      // === Paso 1: Clic en el <select> para mostrar opciones del filtro ===
+
+      // Paso 5: Clic en el <select> para mostrar opciones del filtro ===
       try {
         // Esperar el contenedor principal del grupo de reglas
         const grupoFiltro = await driver.wait(
@@ -107,11 +106,11 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 1: Clic en el <select> para mostrar opciones del filtro: ${error.message}`);
+        throw new Error(`❌ Error en Paso 5: Clic en el <select> para mostrar opciones del filtro: ${error.message}`);
       }
 
 
-      // === Paso 2: Seleccionar "CENTRO POBLADO" correctamente ===
+      // === Paso 6: Seleccionar "CENTRO POBLADO" correctamente ===
       try {
         // Esperar contenedor de grupo de reglas
         const contenedorGrupo = await driver.wait(
@@ -135,10 +134,10 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Opción 'CENTRO POBLADO' seleccionada correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_003 Paso 2: Seleccionar "CENTRO POBLADO" correctamente: ${error.message}`);
+        throw new Error(`❌ Error en Paso 6: Seleccionar "CENTRO POBLADO" correctamente: ${error.message}`);
       }
-      // CP_VISORTECRED_004 - Ingreso de valor en filtro de ubicación
-      // Paso 1: Escribir “PALMIRA” en el campo de texto asociado.
+
+      //  Paso 7: Escribir “PALMIRA” en el campo de texto asociado.
       try {
 
         const textareaCampo = await driver.wait(
@@ -162,8 +161,8 @@ export default class VisorInformacionTecnicaRedPage {
       }
 
       try {
-        // CP_VISORTECRED_005 Aplicar filtro en Visor de Información Técnica de Red
-        // Paso 1: Clic en “Aplicar filtros”.
+       
+        // Paso 8: Clic en “Aplicar filtros”.
 
         // Localizar el botón por XPath
         const botonAplicarFiltro = await driver.wait(
@@ -183,10 +182,10 @@ export default class VisorInformacionTecnicaRedPage {
         // console.log("✅ Paso 8 completado: Se hizo clic en 'Aplicar filtro'.");
 
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_005 Paso 1: Clic en “Aplicar filtros”: ${error.message}`);
+        throw new Error(`❌ Error en Paso 8: Clic en “Aplicar filtros”: ${error.message}`);
       }
-      // CP_VISORTECRED_006 - Agregar nueva regla de filtro
-      // === Paso 1: Clic en el botón Mostrar filtro. ===
+      
+      // === Paso 9: Clic en el botón Mostrar filtro. ===
       try {
         // Esperar a que aparezca el botón por ID directamente
         const botonMostrarFiltro = await driver.wait(
@@ -206,11 +205,11 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 9: Botón 'Mostrar filtro' clickeado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error CP_VISORTECRED_006 en Paso 1: Clic en el botón Mostrar filtro: ${error.message}`);
+        throw new Error(`❌ Paso 9: Clic en el botón Mostrar filtro: ${error.message}`);
       }
 
       try {
-        // Paso 2: Clic en el botón + Add rule.
+        // Paso 10: Clic en el botón + Add rule.
         const botonAddRule = await driver.wait(
           until.elementLocated(By.xpath('//button[@data-add="rule"]')),
           10000
@@ -228,10 +227,10 @@ export default class VisorInformacionTecnicaRedPage {
 
         // console.log("✅ Paso 10 completado: Se hizo clic en '+ Add rule'.");
       } catch (error) {
-        throw new Error(`❌ Error CP_VISORTECRED_006 en Paso 2: Clic en el botón + Add rule: ${error.message}`);
+        throw new Error(`❌ Error Paso 10: Clic en el botón + Add rule: ${error.message}`);
       }
-      // CP_VISORTECRED_007 - Selección de filtro “NAP SERIAL CELSIA”
-      // === Paso 1: Clic en select del segundo filtro. ===
+      
+      // === Paso 11: Clic en select del segundo filtro. ===
       try {
         // Esperar el contenedor principal del grupo de reglas
         const grupoFiltro = await driver.wait(
@@ -259,10 +258,10 @@ export default class VisorInformacionTecnicaRedPage {
 
         //console.log("✅ Paso 5: Select del filtro desplegado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_007 Paso 1: Clic en select del segundo filtro: ${error.message}`);
+        throw new Error(`❌ Error en Paso 11:Clic en select del segundo filtro: ${error.message}`);
       }
 
-      // === Paso 2: Seleccionar “NAP SERIAL CELSIA”. ===
+      // === Paso 12: Seleccionar “NAP SERIAL CELSIA”. ===
       try {
         // Esperar todos los contenedores de filtros (rules)
         const contenedoresFiltro = await driver.wait(
@@ -314,11 +313,11 @@ export default class VisorInformacionTecnicaRedPage {
         //console.log("✅ Paso 12: 'NAP SERIAL CELSIA' seleccionado y textarea visible.");
 
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_007 Paso 2: Seleccionar “NAP SERIAL CELSIA”: ${error.message}`);
+        throw new Error(`❌ Error en Paso 12: Seleccionar “NAP SERIAL CELSIA”: ${error.message}`);
       }
 
-      // CP_VISORTECRED_008 - Ingreso de valor en filtro NAP SERIAL CELSIA
-      // === Paso 1: Diligenciar el campo con “3241009”. ===
+
+      // === Paso 13: Diligenciar el campo con “3241009”. ===
       try {
         // Esperar al segundo bloque de regla (filtro)
         const segundoFiltro = await driver.wait(
@@ -340,13 +339,13 @@ export default class VisorInformacionTecnicaRedPage {
         await textarea.sendKeys("3241009");
         await driver.sleep(1000);
 
-        console.log("✅ CP_VISORTECRED_008 Paso 1: Valor ingresado correctamente.");
+        console.log("✅ Paso 13: Valor ingresado correctamente.");
       } catch (error) {
-        throw new Error(`❌ CP_VISORTECRED_008 Error en paso 1 (Diligenciar el campo con “3001385”): ${error.message}`);
+        throw new Error(`❌ Error en Paso 13: (Diligenciar el campo con “3001385”): ${error.message}`);
       }
 
-      // CP_VISORTECRED_009 - Aplicar segundo filtro
-      // === Paso 1: Clic en el botón Aplicar filtro. ===
+     
+      // === Paso 14: Clic en el botón Aplicar filtro. ===
       try {
         // Esperar el botón por XPath
         const botonAplicarFiltro = await driver.wait(
@@ -364,13 +363,13 @@ export default class VisorInformacionTecnicaRedPage {
         await botonAplicarFiltro.click();
         await driver.sleep(5000);
 
-        console.log("✅ CP_VISORTECRED_009 Paso 1: Se hizo Clic en el botón Aplicar filtro.");
+        console.log("✅ Paso 14: Se hizo Clic en el botón Aplicar filtro.");
 
       } catch (error) {
-        throw new Error(`❌ Error en CP_VISORTECRED_009 Paso 1: (Clic en el botón Aplicar filtro'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 14: (Clic en el botón Aplicar filtro'): ${error.message}`);
       }
 
-      // === Paso X: Seleccionar registro por Serial ONT (con Actions) ===
+      // === Paso 15: Seleccionar registro por Serial ONT (con Actions) ===
       try {
         const serial = "48575443702166A5";
 
@@ -396,14 +395,14 @@ export default class VisorInformacionTecnicaRedPage {
           return clase.includes("active");
         }, 5000, "El registro no se marcó como activo después del clic");
 
-        console.log(`✅ Paso X: Registro con Serial ONT '${serial}' seleccionado correctamente y marcado como activo.`);
+        console.log(`✅ Paso 15: Registro con Serial ONT '${serial}' seleccionado correctamente y marcado como activo.`);
 
       } catch (error) {
-        throw new Error(`❌ Paso X: No se pudo seleccionar el registro con Serial ONT: ${error.message}`);
+        throw new Error(`❌ Paso 15: No se pudo seleccionar el registro con Serial ONT: ${error.message}`);
       }
 
 
-      // === Paso X+1: Clic en el botón "Ver dispositivos" ===
+      // === Paso 16: Clic en el botón "Ver dispositivos" ===
       try {
         const btnVerDispositivosXpath = '//*[@id="widget-button-btn-view-amplifiers"]/div';
 
@@ -427,13 +426,13 @@ export default class VisorInformacionTecnicaRedPage {
         }
 
         await driver.sleep(2000);
-        console.log("✅ Paso X+1: Botón 'Ver dispositivos' presionado correctamente.");
+        console.log("✅ Paso 16: Botón 'Ver dispositivos' presionado correctamente.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+1: No se pudo presionar el botón 'Ver dispositivos': ${error.message}`);
+        throw new Error(`❌ Paso 16: No se pudo presionar el botón 'Ver dispositivos': ${error.message}`);
       }
 
-      // === Paso X+2: Cerrar modal "Ver dispositivos" ===
+      // === Paso 17: Cerrar modal "Ver dispositivos" ===
       try {
         const modalXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div';
         const btnCerrarXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div/div[1]/button';
@@ -469,13 +468,13 @@ export default class VisorInformacionTecnicaRedPage {
           return !isDisplayed;
         }, 10000);
 
-        console.log("✅ Paso X+2: Modal 'Ver dispositivos' cerrado correctamente.");
+        console.log("✅ Paso 17: Modal 'Ver dispositivos' cerrado correctamente.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+2: No se pudo cerrar el modal 'Ver dispositivos': ${error.message}`);
+        throw new Error(`❌ Paso 17: No se pudo cerrar el modal 'Ver dispositivos': ${error.message}`);
       }
 
-      // === Paso X+3: Clic en el botón "Editar estado" ===
+      // === Paso 18: Clic en el botón "Editar estado" ===
       try {
         const btnEditarEstadoXpath = '//*[@id="widget-button-btn-edit-status"]/div';
 
@@ -501,13 +500,13 @@ export default class VisorInformacionTecnicaRedPage {
           await driver.sleep(3000);
         }
 
-        console.log("✅ Paso X+3: Botón 'Editar estado' clickeado correctamente.");
+        console.log("✅ Paso 18: Botón 'Editar estado' clickeado correctamente.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+3: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
+        throw new Error(`❌ Paso 18: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
       }
 
-      // === Paso X+4: Abrir el menú desplegable de "Estado" ===
+      // === Paso 19: Abrir el menú desplegable de "Estado" ===
       try {
         const selectEstadoXpath = '//*[@id="input-select-select-status-order"]';
 
@@ -528,13 +527,13 @@ export default class VisorInformacionTecnicaRedPage {
         await selectEstado.click();
         await driver.sleep(1000); // Breve pausa para desplegar opciones
 
-        console.log("✅ Paso X+4: Menú desplegable 'Estado de orden' abierto correctamente.");
+        console.log("✅ Paso 19: Menú desplegable 'Estado de orden' abierto correctamente.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+4: No se pudo abrir el menú desplegable 'Estado de orden': ${error.message}`);
+        throw new Error(`❌ Paso 19: No se pudo abrir el menú desplegable 'Estado de orden': ${error.message}`);
       }
 
-      // === Paso X+5: Seleccionar opción "Suspendido" en el menú desplegable ===
+      // === Paso 20: Seleccionar opción "Suspendido" en el menú desplegable ===
       try {
         const opcionSuspendidoXpath = '//*[@id="input-select-select-status-order"]/option[4]';
         const selectXpath = '//*[@id="input-select-select-status-order"]';
@@ -556,14 +555,14 @@ export default class VisorInformacionTecnicaRedPage {
         await driver.executeScript("arguments[0].blur();", selectElement); // quita el foco
         await driver.sleep(800);
 
-        console.log("✅ Paso X+5: Opción 'Suspendido' seleccionada y desplegable cerrado.");
+        console.log("✅ Paso 20: Opción 'Suspendido' seleccionada y desplegable cerrado.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+5: No se pudo seleccionar la opción 'Suspendido': ${error.message}`);
+        throw new Error(`❌ Error Paso 20: No se pudo seleccionar la opción 'Suspendido': ${error.message}`);
       }
 
 
-      // === Paso X+6: Guardar cambios en el estado (clic en botón "Editar estado") ===
+      // === Paso 21: Guardar cambios en el estado (clic en botón "Editar estado") ===
       try {
         const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';
 
@@ -584,12 +583,12 @@ export default class VisorInformacionTecnicaRedPage {
         // 4. Pequeña espera por acción posterior (puedes ajustarla)
         await driver.sleep(3000);
 
-        console.log("✅ Paso X+6: Botón 'Editar estado (guardar)' presionado correctamente.");
+        console.log("✅ Paso 21: Botón 'Editar estado (guardar)' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
+        throw new Error(`❌ Error en Paso 21: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
       }
 
-      // === Paso X+7: Clic en el botón "Editar estado" ===
+      // === Paso 22: Clic en el botón "Editar estado" ===
       try {
         const btnEditarEstadoXpath = '//*[@id="widget-button-btn-edit-status"]/div';
 
@@ -615,13 +614,13 @@ export default class VisorInformacionTecnicaRedPage {
           await driver.sleep(3000);
         }
 
-        console.log("✅ Paso X+3: Botón 'Editar estado' clickeado correctamente.");
+        console.log("✅ Paso 22: Botón 'Editar estado' clickeado correctamente.");
 
       } catch (error) {
-        throw new Error(`❌ Paso X+3: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
+        throw new Error(`❌ Error Paso 22: No se pudo dar clic en el botón 'Editar estado': ${error.message}`);
       }
 
-      // === Paso X+8: Guardar cambios en el estado (clic en botón "Editar estado" Activo) ===
+      // === Paso 23: Guardar cambios en el estado (clic en botón "Editar estado" Activo) ===
       try {
         const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';
 
@@ -642,12 +641,12 @@ export default class VisorInformacionTecnicaRedPage {
         // 4. Pequeña espera por acción posterior (puedes ajustarla)
         await driver.sleep(3000);
 
-        console.log("✅ Paso X+6: Botón 'Editar estado (guardar)' presionado correctamente.");
+        console.log("✅ Paso 23: Botón 'Editar estado (guardar)' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
+        throw new Error(`❌ Error en Paso 23: No se pudo presionar el botón 'Editar estado (guardar)': ${error.message}`);
       }
 
-      // === Paso X+9: Clic en botón "Editar" ===
+      // === Paso 24: Clic en botón "Editar" ===
       try {
         const btnEditar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order"]/div')),
@@ -662,12 +661,12 @@ export default class VisorInformacionTecnicaRedPage {
         await driver.executeScript("arguments[0].click();", btnEditar);
         await driver.sleep(2000);
 
-        console.log("✅ Paso X+2: Botón 'Editar' presionado correctamente.");
+        console.log("✅ Paso 24: Botón 'Editar' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+2: No se pudo presionar el botón 'Editar': ${error.message}`);
+        throw new Error(`❌ Paso 24: No se pudo presionar el botón 'Editar': ${error.message}`);
       }
 
-      // === Paso X+10: Diligenciar campo "Observaciones" en modal Editar ===
+      // === Paso 25: Diligenciar campo "Observaciones" en modal Editar ===
       try {
         const inputObservaciones = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="textfield-56_"]')),
@@ -689,13 +688,13 @@ export default class VisorInformacionTecnicaRedPage {
         await inputObservaciones.sendKeys("test automatizacion editar");
         await driver.sleep(500);
 
-        console.log("✅ Paso X+3: Campo 'Observaciones' diligenciado correctamente.");
+        console.log("✅ Paso 25: Campo 'Observaciones' diligenciado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+3: No se pudo diligenciar el campo 'Observaciones': ${error.message}`);
+        throw new Error(`❌ Paso 25: No se pudo diligenciar el campo 'Observaciones': ${error.message}`);
       }
 
 
-      // === Paso X+11: Clic en botón "Editar / Guardar" en modal ===
+      // === Paso 26: Clic en botón "Editar / Guardar" en modal ===
       try {
         const btnEditarGuardar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order-save"]/div')),
@@ -713,13 +712,13 @@ export default class VisorInformacionTecnicaRedPage {
         await driver.executeScript("arguments[0].click();", btnEditarGuardar);
         await driver.sleep(3000);
 
-        console.log("✅ Paso X+4: Botón 'Editar / Guardar' presionado correctamente.");
+        console.log("✅ Paso 26: Botón 'Editar / Guardar' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+4: No se pudo presionar el botón 'Editar / Guardar': ${error.message}`);
+        throw new Error(`❌ Paso 26: No se pudo presionar el botón 'Editar / Guardar': ${error.message}`);
       }
 
 
-      // === Paso X+5: Cerrar modal de edición ===
+      // === Paso 27: Cerrar modal de edición ===
       try {
         const modalEditar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-edit-order"]/div/div')),
@@ -741,13 +740,13 @@ export default class VisorInformacionTecnicaRedPage {
         // ✅ Ajuste: esperar que el modal se oculte (pero no necesariamente desaparezca del DOM)
         await driver.wait(until.elementIsNotVisible(modalEditar), 15000);
 
-        console.log("✅ Paso X+5: Modal de edición cerrado correctamente.");
+        console.log("✅ Paso 27: Modal de edición cerrado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+5: No se pudo cerrar el modal de edición: ${error.message}`);
+        throw new Error(`❌ Paso 27: No se pudo cerrar el modal de edición: ${error.message}`);
       }
 
 
-      // === Paso X+6: Clic en botón "Recargar" ===
+      // === Paso 28: Clic en botón "Recargar" ===
       try {
         const btnRecargar = await driver.wait(
           until.elementLocated(By.xpath('//*[@id="crud-refresh-btn"]')),
@@ -765,13 +764,10 @@ export default class VisorInformacionTecnicaRedPage {
         // Pequeña espera por la recarga de la tabla
         await driver.sleep(4000);
 
-        console.log("✅ Paso X+6: Botón 'Recargar' presionado correctamente.");
+        console.log("✅ Paso 28: Botón 'Recargar' presionado correctamente.");
       } catch (error) {
-        throw new Error(`❌ Paso X+6: No se pudo presionar el botón 'Recargar': ${error.message}`);
+        throw new Error(`❌ Paso 28: No se pudo presionar el botón 'Recargar': ${error.message}`);
       }
-
-
-
 
 
 

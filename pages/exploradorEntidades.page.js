@@ -48,7 +48,7 @@ export default class ExploradorEntidadesPage {
 
       // === Paso 4: Clic en el elemento OLT ===
       const oltElemento = await driver.wait(
-        until.elementLocated(By.xpath('//*[@id="container-entity"]/div/div[1]/div[2]/div[14]')),
+        until.elementLocated(By.xpath('//*[@id="container-entity"]/div/div[1]/div[2]/div[16]')),
         10000
       );
 

@@ -18,7 +18,6 @@ export default class LoginPage {
   async ejecutarLogin(usuario = process.env.LOGIN_EMAIL, clave = process.env.LOGIN_PASSWORD) {
     try {
       const driver = this.driver;
-      // === CP_LOGIN_001 - Ingreso a aplicacion web emalaea ===
       // Paso 1: Abre la URL del sistema OSS ===
       await driver.get(this.url);
 
