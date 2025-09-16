@@ -561,7 +561,7 @@ export default class VisorInformacionTecnicaRedPage {
         throw new Error(`❌ Error Paso 20: No se pudo seleccionar la opción 'Suspendido': ${error.message}`);
       }
 
-
+      
       // === Paso 21: Guardar cambios en el estado (clic en botón "Editar estado") ===
       try {
         const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';

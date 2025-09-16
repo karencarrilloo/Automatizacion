@@ -46,6 +46,53 @@ export default class GestionCambioNapPuertoPage {
       await driver.executeScript("arguments[0].click();", cambioNapBtn);
       await driver.sleep(5000);
 
+      // === Paso 4: Clic en el botón picklist (Seleccionar NAP) ===
+      try {
+        const btnPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]/div[1]/span/button';
+        const opcionesPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]//ul[contains(@class,"ui-menu") or contains(@class,"dropdown-menu")]';
+
+        // 1. Esperar a que el botón esté presente
+        const btnPicklist = await driver.wait(
+          until.elementLocated(By.xpath(btnPicklistXpath)),
+          10000
+        );
+
+        // 2. Asegurarnos que sea visible / enabled
+        await driver.wait(until.elementIsVisible(btnPicklist), 5000);
+        await driver.wait(until.elementIsEnabled(btnPicklist), 5000);
+
+        // 3. Scroll y pequeña pausa
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPicklist);
+        await driver.sleep(300);
+
+        // 4. Intentar clic normal y fallback a JS si hay interceptación
+        try {
+          await btnPicklist.click();
+        } catch (e) {
+          // fallback: clic via JS (más fiable cuando hay overlays)
+          await driver.executeScript("arguments[0].click();", btnPicklist);
+        }
+
+        // 5. Espera corta para que el picklist se renderice
+        await driver.sleep(2000);
+
+        // 6. (Opcional / recomendado) esperar a que se desplieguen las opciones
+        try {
+          const opciones = await driver.wait(
+            until.elementLocated(By.xpath(opcionesPicklistXpath)),
+            8000
+          );
+          await driver.wait(until.elementIsVisible(opciones), 5000);
+          console.log("✅ Paso 4: Picklist abierto y opciones visibles.");
+        } catch {
+          console.log("⚠️ Paso 4: Click realizado pero no se detectó el contenedor de opciones (ajustar xpath de opciones si es necesario).");
+        }
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: No se pudo hacer clic en el picklist: ${error.message}`);
+      }
+
+
       // Aquí continuarías con pasos adicionales si aplican
 
     } catch (error) {

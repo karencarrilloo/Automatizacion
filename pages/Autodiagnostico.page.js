@@ -328,6 +328,111 @@ export default class AutodiagnosticoPage {
             }
 
 
+            // === Paso 13: Clic en el select "ANCHO BANDA CANAL" ===
+            try {
+                const driver = this.driver;
+
+                // Esperar que el <select> de ancho banda esté presente y visible
+                const selectAnchoBanda = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-select-2_4GHz4"]')),
+                    10000
+                );
+                await driver.wait(until.elementIsVisible(selectAnchoBanda), 5000);
+                await driver.wait(until.elementIsEnabled(selectAnchoBanda), 5000);
+
+                // Hacer clic en el <select>
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectAnchoBanda);
+                await driver.sleep(300);
+                await selectAnchoBanda.click();
+                await driver.sleep(1000);
+
+                console.log("✅ Paso 13: Clic en el select 'ANCHO BANDA CANAL' realizado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 13: (clic en select 'ANCHO BANDA CANAL'): ${error.message}`);
+            }
+
+            // === Paso 14: Seleccionar opción aleatoria del select "ANCHO BANDA CANAL" ===
+            try {
+                const driver = this.driver;
+
+                // Esperar que el <select> de ANCHO BANDA CANAL esté presente
+                const selectElement = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-select-2_4GHz4"]')),
+                    10000
+                );
+
+                // Obtener todas las opciones del select
+                const options = await selectElement.findElements(By.css('option'));
+
+                // Filtrar opciones válidas (evitamos la de "Seleccionar" si existiera)
+                let opcionesValidas = [];
+                for (let opt of options) {
+                    const text = await opt.getText();
+                    if (text && text.trim() !== "Seleccionar") {
+                        opcionesValidas.push(opt);
+                    }
+                }
+
+                if (opcionesValidas.length === 0) {
+                    throw new Error("⚠️ No se encontraron opciones válidas en el select de ANCHO BANDA CANAL.");
+                }
+
+                // Seleccionar una opción al azar
+                const randomIndex = Math.floor(Math.random() * opcionesValidas.length);
+                const opcionSeleccionada = opcionesValidas[randomIndex];
+
+                // Obtener texto antes de seleccionar
+                const textoSeleccionado = await opcionSeleccionada.getText();
+
+                // Forzar selección con JS para disparar evento change
+                await driver.executeScript(`
+        arguments[0].selected = true;
+        arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+    `, opcionSeleccionada);
+
+                await driver.sleep(1500); // pequeña espera para que cierre la lista/desencadene eventos
+
+                console.log(`✅ Paso 14: Opción '${textoSeleccionado}' seleccionada correctamente en 'ANCHO BANDA CANAL'.`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 14: (selección opción aleatoria de ANCHO BANDA CANAL): ${error.message}`);
+            }
+
+            // === Paso 15: Clic en el checkbox "Unsecured" (clic en el label) ===
+            try {
+                const driver = this.driver;
+
+                // Ubicar el <label> que envuelve al input
+                const checkboxLabel = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-checkbox-checklist-data2_4GHz1"]/label')
+                    ),
+                    10000
+                );
+
+                // Esperar a que el label sea visible
+                await driver.wait(until.elementIsVisible(checkboxLabel), 5000);
+
+                // Scroll por si no está en pantalla
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    checkboxLabel
+                );
+                await driver.sleep(300);
+
+                // Clic en el label para marcar el checkbox
+                await driver.executeScript("arguments[0].click();", checkboxLabel);
+                await driver.sleep(800);
+
+                console.log("✅ Paso 15: Checkbox 'Unsecured' marcado correctamente mediante clic en el label.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 15 (clic en label de checkbox 'Unsecured'): ${error.message}`);
+            }
+
+
+
+
+
+
         } catch (error) {
             console.error("❌ Error en Autodiagnostico:", error.message);
 
