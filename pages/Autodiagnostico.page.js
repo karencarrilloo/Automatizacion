@@ -428,6 +428,342 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ Error en Paso 15 (clic en label de checkbox 'Unsecured'): ${error.message}`);
             }
 
+            // === Paso 16: Clic en el botón "ENVIAR" con espera dinámica de progress ===
+            try {
+                const driver = this.driver;
+                const btnEnviarXpath = '//*[@id="widget-button-send-info"]/div';
+                const progressXpath = '//*[@class="progress-bar"]'; // ajusta si la clase cambia
+
+                // 1️⃣ Localizar y asegurar visibilidad/habilitación del botón
+                const btnEnviar = await driver.wait(
+                    until.elementLocated(By.xpath(btnEnviarXpath)),
+                    10000
+                );
+                await driver.wait(until.elementIsVisible(btnEnviar), 5000);
+                await driver.wait(until.elementIsEnabled(btnEnviar), 5000);
+
+                // 2️⃣ Centrarlo en pantalla
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    btnEnviar
+                );
+                await driver.sleep(300);
+
+                // 3️⃣ Clic (fallback a JS si es interceptado)
+                try {
+                    await btnEnviar.click();
+                } catch {
+                    await driver.executeScript("arguments[0].click();", btnEnviar);
+                }
+                console.log("✅ Paso 16: Botón 'ENVIAR' presionado.");
+
+                // 4️⃣ Espera dinámica de progress
+                try {
+                    const progress = await driver.wait(
+                        until.elementLocated(By.xpath(progressXpath)),
+                        5000 // esperar a que aparezca (si no aparece, sigue sin error)
+                    );
+                    console.log("⏳ Progress detectado. Esperando a que finalice...");
+                    await driver.wait(until.stalenessOf(progress), 30000); // esperar a que desaparezca
+                    console.log("✅ Progress finalizado.");
+                } catch {
+                    console.log("⚠️ No se detectó progress, se continúa.");
+                }
+
+                // 5️⃣ (Opcional) Esperar a un mensaje de éxito o nuevo elemento
+                // await driver.wait(until.elementLocated(By.xpath("//div[contains(text(),'Configuración aplicada')]")), 15000);
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 16: (clic en botón 'ENVIAR'): ${error.message}`);
+            }
+
+
+            // === Paso 17: Cerrar el modal de Configuración WiFi ===
+            try {
+                const driver = this.driver;
+                const closeBtnXpath = '//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[1]/button';
+                const modalRootXpath = '//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div';
+
+                const closeBtn = await driver.wait(
+                    until.elementLocated(By.xpath(closeBtnXpath)),
+                    10000
+                );
+                await driver.wait(until.elementIsVisible(closeBtn), 5000);
+
+                // Desplazar y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", closeBtn);
+                await driver.sleep(200);
+                try {
+                    await closeBtn.click();
+                } catch {
+                    await driver.executeScript("arguments[0].click();", closeBtn);
+                }
+
+                // 🔎 Esperar a que el modal ya no sea visible (aunque siga en el DOM)
+                await driver.wait(async () => {
+                    try {
+                        const modalRoot = await driver.findElement(By.xpath(modalRootXpath));
+                        const displayed = await modalRoot.isDisplayed();
+                        return !displayed;               // esperamos a que deje de mostrarse
+                    } catch {
+                        return true;                      // si ya no está en el DOM, también ok
+                    }
+                }, 15000); // hasta 15 s
+
+                console.log("✅ Paso 17: Modal de Configuración WiFi cerrado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 17: (cerrar modal de Configuración WiFi): ${error.message}`);
+            }
+
+
+            // === Paso 18 Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 18 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 18 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+
+            // === Paso 18: Clic en opción "Redirigir ONT" y esperar modal ===
+            try {
+                const driver = this.driver;
+
+                // Clic en la opción
+                const opcionRedirigir = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1201"]')),
+                    15000
+                );
+                await driver.wait(until.elementIsVisible(opcionRedirigir), 5000);
+                await driver.wait(until.elementIsEnabled(opcionRedirigir), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionRedirigir);
+                await driver.sleep(500);
+                await opcionRedirigir.click();
+                console.log("✅ Clic en 'Redirigir ONT' realizado.");
+
+                // Esperar a que desaparezca el loader (si existe)
+                const loaderXPath = '//*[contains(@id,"progress-id-progress")]';
+                try {
+                    const progressDiv = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXPath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(progressDiv), 20000);
+                    console.log("⏳ Loader finalizado.");
+                } catch {
+                    console.log("ℹ️ No se encontró loader visible, continuando…");
+                }
+
+                // 🔑 Esperar al modal por texto único
+                const modalXPath = "//*[contains(text(),'Desea ser redirigido a la pagina de la ONT')]";
+                const modal = await driver.wait(
+                    until.elementLocated(By.xpath(modalXPath)),
+                    20000
+                );
+                await driver.wait(until.elementIsVisible(modal), 6000);
+
+                console.log("✅ Paso 18: Modal de confirmación visible y listo para el próximo paso.");
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 18 (clic o espera de modal): ${error.message}`);
+            }
+
+            // === Paso 19: Clic en el botón "NO" del modal de confirmación (robusto) ===
+            try {
+                const driver = this.driver;
+
+                // Aseguramos que el modal con texto está visible (precondición)
+                const modalTextoXPath = "//*[contains(text(),'Desea ser redirigido')]";
+                await driver.wait(until.elementLocated(By.xpath(modalTextoXPath)), 10000);
+                const modalTextoElem = await driver.findElement(By.xpath(modalTextoXPath));
+                await driver.wait(until.elementIsVisible(modalTextoElem), 5000);
+
+                // Localizar y clicar en "NO"
+                const btnNo = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmNo"]/div')),
+                    10000
+                );
+                await driver.wait(until.elementIsVisible(btnNo), 5000);
+                await driver.wait(until.elementIsEnabled(btnNo), 5000);
+
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNo);
+                await driver.sleep(200);
+                try {
+                    await btnNo.click();
+                } catch {
+                    await driver.executeScript("arguments[0].click();", btnNo);
+                }
+
+                // Espera robusta: devuelve true cuando:
+                //  - no existe ya ningun modal con ese texto, o
+                //  - existe pero NO es visible (oculto), lo que indica que se cerró visualmente.
+                await driver.wait(async () => {
+                    try {
+                        const modales = await driver.findElements(By.xpath(
+                            "//div[contains(@id,'widget-dialog-open-dialog') and contains(., 'Desea ser redirigido')]"
+                        ));
+                        if (modales.length === 0) {
+                            return true; // ya no existe en DOM
+                        }
+                        // si existe, verificar visibilidad del primero
+                        const visible = await modales[0].isDisplayed().catch(() => false);
+                        return !visible; // true cuando está oculto
+                    } catch (err) {
+                        // Si ocurre cualquier error (p. ej. DOM cambió), consideramos que ya no está visible
+                        return true;
+                    }
+                }, 15000, "El modal no se cerró o no se ocultó dentro del timeout.");
+
+                // pequeña pausa para estabilizar DOM
+                await driver.sleep(500);
+
+                console.log("✅ Paso 19: Clic en botón 'NO' realizado y modal cerrado/oculto correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 19: (clic en botón 'NO'): ${error.message}`);
+            }
+
+            // === Paso 20 Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 20 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 20 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+
+            // === Paso 21: Clic en opción "Creación de órdenes" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar la opción en el menú/lista
+                const opcionCreacion = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1202"]')),
+                    15000
+                );
+
+                // Esperar a que esté visible y habilitada
+                await driver.wait(until.elementIsVisible(opcionCreacion), 5000);
+                await driver.wait(until.elementIsEnabled(opcionCreacion), 5000);
+
+                // Desplazarla al centro de la vista y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionCreacion);
+                await driver.sleep(300);
+                try {
+                    await opcionCreacion.click();
+                } catch {
+                    // Click de respaldo por si hay overlay
+                    await driver.executeScript("arguments[0].click();", opcionCreacion);
+                }
+
+                // --- Espera dinámica de progress/loader si aparece ---
+                // Ajusta el xpath del loader si en tu entorno usa otro id.
+                const loaderXPath = "//*[contains(@id,'progress-id-progress')]";
+                try {
+                    const progressElem = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXPath)),
+                        5000
+                    );
+                    // Esperar a que desaparezca el loader
+                    await driver.wait(until.stalenessOf(progressElem), 20000);
+                } catch {
+                    console.log("ℹ️ No se encontró loader visible, continuando...");
+                }
+
+                console.log("✅ Paso 21: Opción 'Creación de órdenes' seleccionada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 21: (clic en opción 'Creación de órdenes'): ${error.message}`);
+            }
+
+            // === Paso 22: Clic en el select "Tipo de orden" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el <select> por su id
+                const selectTipoOrden = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-selectType"]')),
+                    15000
+                );
+
+                // Esperar a que sea visible y habilitado
+                await driver.wait(until.elementIsVisible(selectTipoOrden), 5000);
+                await driver.wait(until.elementIsEnabled(selectTipoOrden), 5000);
+
+                // Desplazarlo a la vista y hacer clic para desplegar opciones
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectTipoOrden);
+                await driver.sleep(300);
+                try {
+                    await selectTipoOrden.click();
+                    await driver.sleep(3000);
+                } catch {
+                    // Click de respaldo en caso de overlay o intercept
+                    await driver.executeScript("arguments[0].click();", selectTipoOrden);
+                    await driver.sleep(3000);
+                }
+
+                console.log("✅ Paso 22: Clic en el select 'Tipo de orden' realizado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 22: (clic en select 'Tipo de orden'): ${error.message}`);
+            }
+
+            // === Paso 23: Seleccionar opción "Orden de mantenimiento" del select "Tipo de orden" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el elemento <select>
+                const selectTipoOrden = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-selectType"]')),
+                    10000
+                );
+
+                // Asegurarse de que sea visible y habilitado
+                await driver.wait(until.elementIsVisible(selectTipoOrden), 5000);
+                await driver.wait(until.elementIsEnabled(selectTipoOrden), 5000);
+
+                // Buscar la segunda opción (Orden de mantenimiento)
+                const opcionMantenimiento = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-selectType"]/option[2]')),
+                    5000
+                );
+
+                // Obtener el texto de la opción para registrar en log
+                const textoOpcion = await opcionMantenimiento.getText();
+
+                // Seleccionar forzando el cambio para que dispare el evento 'change'
+                await driver.executeScript(`
+    arguments[0].selected = true;
+    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+  `, opcionMantenimiento);
+
+                await driver.sleep(1000); // pequeña espera para que el select procese el cambio
+
+                console.log(`✅ Paso 23: Opción '${textoOpcion}' seleccionada correctamente en "Tipo de orden".`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 23: (selección opción 'Orden de mantenimiento'): ${error.message}`);
+            }
 
 
 
