@@ -765,6 +765,82 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ Error en Paso 23: (selección opción 'Orden de mantenimiento'): ${error.message}`);
             }
 
+            // === Paso 24: Clic en el select "Posible falla" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el elemento <select> de "Posible falla"
+                const selectPosibleFalla = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-selectTypeDiagnosis"]')),
+                    10000
+                );
+
+                // Asegurarse de que sea visible y habilitado
+                await driver.wait(until.elementIsVisible(selectPosibleFalla), 5000);
+                await driver.wait(until.elementIsEnabled(selectPosibleFalla), 5000);
+
+                // Desplazarlo a la vista para evitar problemas de superposición
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    selectPosibleFalla
+                );
+                await driver.sleep(300);
+
+                // Clic para desplegar las opciones
+                await selectPosibleFalla.click();
+                await driver.sleep(1000); // pequeña espera para que aparezcan las opciones
+
+                console.log("✅ Paso 24: Clic en el select 'Posible falla' realizado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 24: (clic en select 'Posible falla'): ${error.message}`);
+            }
+
+
+            // === Paso 25: Seleccionar opción aleatoria del select "Posible falla" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el elemento <select>
+                const selectElement = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-selectTypeDiagnosis"]')),
+                    10000
+                );
+
+                // Obtener todas las <option> internas
+                const options = await selectElement.findElements(By.css('option'));
+
+                // Filtrar para descartar opciones vacías o tipo "Seleccionar"
+                const opcionesValidas = [];
+                for (let opt of options) {
+                    const text = await opt.getText();
+                    if (text && text.trim().toLowerCase() !== 'seleccionar') {
+                        opcionesValidas.push(opt);
+                    }
+                }
+
+                if (opcionesValidas.length === 0) {
+                    throw new Error('⚠️ No se encontraron opciones válidas en el select de "Posible falla".');
+                }
+
+                // Elegir una opción aleatoria
+                const randomIndex = Math.floor(Math.random() * opcionesValidas.length);
+                const opcionSeleccionada = opcionesValidas[randomIndex];
+                const textoSeleccionado = await opcionSeleccionada.getText();
+
+                // Forzar selección con JavaScript para disparar el evento change
+                await driver.executeScript(`
+    arguments[0].selected = true;
+    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+  `, opcionSeleccionada);
+
+                await driver.sleep(1000); // pequeña espera para reflejar el cambio
+
+                console.log(`✅ Paso 25: Opción '${textoSeleccionado}' seleccionada correctamente en "Posible falla".`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 25: (selección de opción en "Posible falla"): ${error.message}`);
+            }
+
+
 
 
 
