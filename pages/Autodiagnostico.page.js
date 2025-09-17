@@ -841,6 +841,72 @@ export default class AutodiagnosticoPage {
             }
 
 
+            // === Paso 26: Diligenciar campo "Observaciones" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el <textarea> de Observaciones
+                const observacionesInput = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-textareafield-observations"]/textarea')),
+                    10000
+                );
+
+                // Asegurar que sea visible y editable
+                await driver.wait(until.elementIsVisible(observacionesInput), 5000);
+                await driver.wait(until.elementIsEnabled(observacionesInput), 5000);
+
+                // Limpiar cualquier texto previo y escribir el nuevo
+                await observacionesInput.clear();
+                await observacionesInput.sendKeys('test creacion ordenes');
+                await driver.sleep(3000);
+
+                console.log('✅ Paso 26: Campo "Observaciones" diligenciado correctamente.');
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 26: (diligenciar campo "Observaciones"): ${error.message}`);
+            }
+
+
+            // === Paso 27: Clic en botón "Generar orden" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón
+                const btnGenerarOrden = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-button-create-order"]/div')),
+                    10000
+                );
+
+                // Asegurar visibilidad y disponibilidad
+                await driver.wait(until.elementIsVisible(btnGenerarOrden), 5000);
+                await driver.wait(until.elementIsEnabled(btnGenerarOrden), 5000);
+
+                // Desplazar y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGenerarOrden);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", btnGenerarOrden);
+
+                // Espera breve para permitir la acción
+                await driver.sleep(2000);
+
+                // Espera opcional de progress
+                try {
+                    const progress = await driver.wait(
+                        until.elementLocated(By.xpath('//*[@class="progress-bar"]')),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(progress), 20000);
+                    console.log("⏳ Progress completado tras generar orden.");
+                } catch {
+                    console.log("ℹ️ No se detectó progress después de generar la orden.");
+                }
+
+
+                console.log("✅ Paso 27: Botón 'Generar orden' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 27: (clic en botón 'Generar orden'): ${error.message}`);
+            }
+
+
 
 
 
