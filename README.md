@@ -10,27 +10,28 @@ Este proyecto realiza automatización de pruebas sobre una aplicación web(emala
 
 ```
 automatizacion-celsia/
-├── config/ # Configuración general del proyecto
-├── data/ # Archivos de datos para pruebas
-├── database/ # Conexión y utilidades para la base de datos
-├── diagrams/ # Diagramas de flujo o documentación visual
-├── drivers/ # Drivers necesarios para la automatización
-├── errores/ # Capturas de error
-├── node_modules/ # Dependencias del proyecto
-├── pages/ # Page Objects (ESM modules)
-│ ├── login.page.js
-│ └── ...otros archivos.page.js
-├── reports/ # Reportes de ejecución de pruebas
-├── tests/ # Pruebas automatizadas
-│ ├── login.mjs
-│ └── ...otros archivos.mjs
-├── utils/ # Utilidades y helpers
-├── .env # Variables de entorno
-├── .env.example # Ejemplo de configuración de variables
-├── .gitignore # Archivos ignorados por git
-├── package.json # Configuración del proyecto
-├── package-lock.json # Control de versiones de dependencias
-└── README.md # Instrucciones de uso
+├─ config/        # Configuración general del proyecto
+├─ data/          # Archivos de datos para pruebas
+├─ database/      # Conexión y utilidades para la base de datos
+├─ diagrams/      # Diagramas de flujo o documentación visual
+├─ drivers/       # Drivers necesarios para la automatización
+├─ errores/       # Capturas de error
+├─ node_modules/  # Dependencias del proyecto
+├─ pages/         # Page Objects (ESM modules)
+│   ├─ login.page.js
+│   └─ ...otros archivos.page.js
+├─ report/        # Reportes de ejecución de pruebas
+├─ tests/         # Pruebas automatizadas
+│   ├─ login.mjs
+│   └─ ...otros archivos.mjs
+├─ utils/         # Utilidades y helpers
+├─ .env           # Variables de entorno
+├─ .env.example   # Ejemplo de configuración de variables
+├─ .gitignore     # Archivos ignorados por git
+├─ package.json   # Configuración del proyecto
+├─ package-lock.json # Control de versiones de dependencias
+└─ README.md      # Instrucciones de uso
+
 ```
 
 ---
