@@ -17,7 +17,8 @@ export default class LoginPage {
   // === Login completo en un solo método ===
 async ejecutarLogin(
   usuario = process.env.LOGIN_EMAIL,
-  clave = process.env.LOGIN_PASSWORD
+  clave = process.env.LOGIN_PASSWORD,
+  caseName = 'default'           // ➜ nombre del caso de prueba
 ) {
   try {
     const driver = this.driver;
@@ -77,16 +78,29 @@ async ejecutarLogin(
     await driver.sleep(5000); // espera redirección o carga final
 
   } catch (error) {
-    console.error('❌ Error en login:', error.message);
-
-    // Captura de pantalla ante error
+    // === Captura de pantalla organizada por carpetas ===
     const screenshot = await this.driver.takeScreenshot();
-    const carpetaErrores = path.resolve(__dirname, '../errores');
-    if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
+
+    // 🟢 Carpeta raíz del proyecto: ../../.. desde src/pages
+    const rootErrors = path.resolve(__dirname, '../../../errors');
+
+    // 🟢 Carpeta del Page Object: "login"
+    const pageFolder = path.join(rootErrors, 'login');
+
+    // 🟢 Carpeta del caso de prueba, p. ej. "CP_LOGIN_002"
+    const caseFolder = path.join(pageFolder, caseName);
+
+    // Crear carpetas si no existen
+    [rootErrors, pageFolder, caseFolder].forEach(folder => {
+      if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+    });
+
+    // Nombre de archivo con timestamp
     const archivoSalida = path.join(
-      carpetaErrores,
-      `error_login_${Date.now()}.png`
+      caseFolder,
+      `error_${Date.now()}.png`
     );
+
     fs.writeFileSync(archivoSalida, screenshot, 'base64');
 
     throw error; // relanza para que la prueba falle

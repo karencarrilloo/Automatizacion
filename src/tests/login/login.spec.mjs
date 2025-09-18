@@ -38,7 +38,9 @@ describe('Pruebas de Login', function () {
   });
 
   it.only('CP_LOGIN_001: Inicio de sesión exitoso con credenciales válidas.', async () => {
-  await loginPage.ejecutarLogin(); // Pasos 1–7
+  await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL,
+                              process.env.LOGIN_PASSWORD,
+                              'CP_LOGIN_001'); // Pasos 1–7
 
   // Esperar a que aparezca el contenedor principal de la plataforma
   const mainFrame = await driver.wait(
@@ -54,10 +56,9 @@ describe('Pruebas de Login', function () {
 
   it('CP_LOGIN_002: Error de autenticación con contraseña inválida', async () => {
   try {
-    await loginPage.ejecutarLogin(
-      process.env.LOGIN_EMAIL,
-      'Clave_Incorrecta_123'
-    );
+    await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL,
+                              'Clave_Incorrecta_123',
+                              'CP_LOGIN_002');
 
     // Esperar la alerta
     const alert = await driver.wait(
