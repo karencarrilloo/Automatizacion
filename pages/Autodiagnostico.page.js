@@ -907,6 +907,46 @@ export default class AutodiagnosticoPage {
             }
 
 
+            // === Paso 28: Clic en botón "Sí" del modal de confirmación ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón "Sí" en el modal
+                const btnConfirmYes = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(btnConfirmYes), 5000);
+                await driver.wait(until.elementIsEnabled(btnConfirmYes), 5000);
+
+                // Desplazar y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnConfirmYes);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", btnConfirmYes);
+                console.log("✅ Paso 28: Botón 'Sí' de confirmación presionado correctamente.");
+
+                // --- Espera opcional: si se muestra un progress mientras se confirma ---
+                try {
+                    const progressXpath = '//*[@class="progress-bar"]';
+                    const progressElem = await driver.wait(
+                        until.elementLocated(By.xpath(progressXpath)),
+                        5000
+                    );
+                    console.log("⏳ Progress detectado tras confirmación de la orden...");
+                    await driver.wait(until.stalenessOf(progressElem), 30000);
+                    console.log("✅ Progress completado después de confirmar la orden.");
+                } catch {
+                    console.log("ℹ️ No se detectó progress después de confirmar la orden.");
+                }
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 28: (clic en botón 'Sí' de confirmación): ${error.message}`);
+            }
+
+
+
 
 
 
