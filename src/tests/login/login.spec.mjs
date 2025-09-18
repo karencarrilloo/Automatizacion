@@ -38,7 +38,7 @@ describe('Pruebas de Login', function () {
   });
 
   it.only('CP_LOGIN_001: Inicio de sesión exitoso con credenciales válidas.', async () => {
-  await loginPage.ejecutarLoginExitoso(); // Pasos 1–7
+  await loginPage.ejecutarLogin(); // Pasos 1–7
 
   // Esperar a que aparezca el contenedor principal de la plataforma
   const mainFrame = await driver.wait(
@@ -52,15 +52,38 @@ describe('Pruebas de Login', function () {
 });
 
 
-  // it('CP_LOGIN_002: Contraseña inválida', async () => {
-  //   await loginPage.open();
-  //   await loginPage.enterEmail(process.env.LOGIN_EMAIL);
-  //   await loginPage.clickNext();
-  //   await loginPage.enterPassword('contraseña_incorrecta');    // usa clave errónea
-  //   await loginPage.clickLogin();
-  //   const error = await loginPage.getGenericError();
-  //   expect(error.toLowerCase()).to.include('credencial');      // verifica mensaje de error
-  // });
+  it('CP_LOGIN_002: Error de autenticación con contraseña inválida', async () => {
+  try {
+    await loginPage.ejecutarLogin(
+      process.env.LOGIN_EMAIL,
+      'Clave_Incorrecta_123'
+    );
+
+    // Esperar la alerta
+    const alert = await driver.wait(
+      until.elementLocated(
+        By.css('div[data-growl="container"][role="alert"]')
+      ),
+      30000
+    );
+    await driver.wait(until.elementIsVisible(alert), 10000);
+
+    // Tomar screenshot en la carpeta raíz /errors
+    await loginPage.takeScreenshotOnError('CP_LOGIN_002');
+
+    // Validar texto
+    const text = await alert.getText();
+    expect(text.toLowerCase()).to.include('datos inválidos');
+
+  } finally {
+    // Cerrar navegador siempre al final de la prueba
+    if (driver) await driver.quit();
+  }
+});
+
+
+
+
 
   // it('CP_LOGIN_003: Correo no registrado', async () => {
   //   await loginPage.open();

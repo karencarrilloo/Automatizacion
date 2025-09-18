@@ -15,7 +15,7 @@ export default class LoginPage {
   }
 
   // === Login completo en un solo método ===
-async ejecutarLoginExitoso(
+async ejecutarLogin(
   usuario = process.env.LOGIN_EMAIL,
   clave = process.env.LOGIN_PASSWORD
 ) {
@@ -119,14 +119,16 @@ async ejecutarLoginExitoso(
   // }
 
   async takeScreenshotOnError(prefix = 'error_login') {
-    const screenshot = await this.driver.takeScreenshot();      // captura pantalla en base64
-    const carpetaErrores = path.resolve(__dirname, '../errores'); // carpeta destino
-    if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores); // crea la carpeta si no existe
-    const archivoSalida = path.join(
-      carpetaErrores,
-      `${prefix}_${Date.now()}.png`                             // nombre único con timestamp
-    );
-    fs.writeFileSync(archivoSalida, screenshot, 'base64');       // guarda la imagen en disco
-    return archivoSalida;                                        // devuelve la ruta del archivo
-  }
+  const screenshot = await this.driver.takeScreenshot();
+  // 📁 Subir 3 niveles: de src/pages -> src -> raíz
+  const carpetaErrores = path.resolve(__dirname, '../../../errors');
+  if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
+  const archivoSalida = path.join(
+    carpetaErrores,
+    `${prefix}_${Date.now()}.png`
+  );
+  fs.writeFileSync(archivoSalida, screenshot, 'base64');
+  return archivoSalida;
+}
+
 }
