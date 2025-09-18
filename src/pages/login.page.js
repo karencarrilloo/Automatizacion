@@ -1,111 +1,132 @@
-// src/pages/login.page.js
-import { By, until } from 'selenium-webdriver';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import { By, until } from 'selenium-webdriver';                // localizar/esperar elementos en la página
+import path from 'path';                                       // manejo de rutas de archivos
+import fs from 'fs';                                           // lectura/escritura de archivos
+import { fileURLToPath } from 'url';                           // obtener ruta absoluta en módulos ES
+import dotenv from 'dotenv';                                   // cargar variables de entorno
+dotenv.config();                                               // habilita process.env.LOGIN_EMAIL, etc.
 
-dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);             // ruta completa de este archivo
+const __dirname = path.dirname(__filename);                    // carpeta de este archivo
 
 export default class LoginPage {
   constructor(driver) {
-    this.driver = driver;
-    this.url = 'https://oss-dev.celsiainternet.com/';
+    this.driver = driver;                                      // guarda la instancia de WebDriver
+    this.url = 'https://oss-dev.celsiainternet.com/';          // URL de la página de login
   }
 
-  async open() {
-    await this.driver.get(this.url);
-  }
+  // === Login completo en un solo método ===
+async ejecutarLoginExitoso(
+  usuario = process.env.LOGIN_EMAIL,
+  clave = process.env.LOGIN_PASSWORD
+) {
+  try {
+    const driver = this.driver;
 
-  async enterEmail(email) {
-    const inputCorreo = await this.driver.wait(
+    // Paso 1: Abrir https://oss-dev.celsiainternet.com/
+    await driver.get(this.url);
+
+    // Paso 2: Ingresar correo válido en el campo “Correo electrónico”.
+    const inputCorreo = await driver.wait(
       until.elementLocated(By.css('#textfield-field-user')),
       25000
     );
-    await inputCorreo.clear();
-    await inputCorreo.sendKeys(email);
-  }
+    await inputCorreo.sendKeys(usuario);
 
-  async clickNext() {
-    const btnSiguiente = await this.driver.wait(
+    // Paso 3: Clic en Siguiente.
+    const btnSiguiente = await driver.wait(
       until.elementLocated(
         By.xpath("//div[contains(text(),'Siguiente') and contains(@class, 'btn-default')]")
       ),
       25000
     );
-    await this.driver.executeScript('arguments[0].click();', btnSiguiente);
-  }
+    await driver.executeScript('arguments[0].click();', btnSiguiente);
+    await driver.sleep(5000); // espera transición
 
-  async enterPassword(password) {
-    const inputPassword = await this.driver.wait(
+    // Paso 4: Ingresar contraseña válida.
+    const inputPassword = await driver.wait(
       until.elementLocated(By.css('#textfield-field-password')),
       25000
     );
-    await inputPassword.clear();
-    await inputPassword.sendKeys(password);
-  }
+    await inputPassword.sendKeys(clave);
 
-  async clickLogin() {
-    const btnLogin = await this.driver.wait(
+    // Paso 5: Clic en Iniciar sesión.
+    const btnLogin = await driver.wait(
       until.elementLocated(By.css('#widget-button-btn-common-login > div')),
-      25000
-    );
-    await this.driver.executeScript('arguments[0].click();', btnLogin);
-  }
-
-  async selectHimalayaAndConfirm() {
-    const himalayaBtn = await this.driver.wait(
-      until.elementLocated(By.css('#login-cloud-view-container .popular-apps > div')),
       55000
     );
-    await this.driver.executeScript('arguments[0].click();', himalayaBtn);
+    await driver.executeScript('arguments[0].click();', btnLogin);
 
-    const btnConfirmar = await this.driver.wait(
+    // Paso 6: Seleccionar aplicación Himalaya.
+    const himalayaBtn = await driver.wait(
+      until.elementLocated(
+        By.css('#login-cloud-view-container .popular-apps > div')
+      ),
+      55000
+    );
+    await driver.executeScript('arguments[0].click();', himalayaBtn);
+    await driver.sleep(5000); // espera modal de confirmación
+
+    // Paso 7: Confirmar en el modal con Sí.
+    const btnConfirmar = await driver.wait(
       until.elementLocated(
         By.xpath("//div[contains(text(),'Sí') and contains(@class, 'btn-default')]")
       ),
       25000
     );
-    await this.driver.executeScript('arguments[0].click();', btnConfirmar);
-  }
+    await driver.executeScript('arguments[0].click();', btnConfirmar);
+    await driver.sleep(5000); // espera redirección o carga final
 
-  // ✅ Métodos de validación de mensajes de error
-  async getEmailError() {
-    const el = await this.driver.wait(
-      until.elementLocated(By.css('.error-email')),
-      5000
-    );
-    return el.getText();
-  }
+  } catch (error) {
+    console.error('❌ Error en login:', error.message);
 
-  async getPasswordError() {
-    const el = await this.driver.wait(
-      until.elementLocated(By.css('.error-password')),
-      5000
-    );
-    return el.getText();
-  }
-
-  async getGenericError() {
-    const el = await this.driver.wait(
-      until.elementLocated(By.css('.error-message')),
-      5000
-    );
-    return el.getText();
-  }
-
-  async takeScreenshotOnError(prefix = 'error_login') {
+    // Captura de pantalla ante error
     const screenshot = await this.driver.takeScreenshot();
     const carpetaErrores = path.resolve(__dirname, '../errores');
     if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
     const archivoSalida = path.join(
       carpetaErrores,
-      `${prefix}_${Date.now()}.png`
+      `error_login_${Date.now()}.png`
     );
     fs.writeFileSync(archivoSalida, screenshot, 'base64');
-    return archivoSalida;
+
+    throw error; // relanza para que la prueba falle
+  }
+}
+
+
+  // async getEmailError() {
+  //   const el = await this.driver.wait(
+  //     until.elementLocated(By.css('.error-email')),             // busca mensaje de error de correo
+  //     5000
+  //   );
+  //   return el.getText();                                        // devuelve el texto del error
+  // }
+
+  // async getPasswordError() {
+  //   const el = await this.driver.wait(
+  //     until.elementLocated(By.css('.error-password')),          // busca mensaje de error de contraseña
+  //     5000
+  //   );
+  //   return el.getText();
+  // }
+
+  // async getGenericError() {
+  //   const el = await this.driver.wait(
+  //     until.elementLocated(By.css('.error-message')),           // busca mensaje de error genérico
+  //     5000
+  //   );
+  //   return el.getText();
+  // }
+
+  async takeScreenshotOnError(prefix = 'error_login') {
+    const screenshot = await this.driver.takeScreenshot();      // captura pantalla en base64
+    const carpetaErrores = path.resolve(__dirname, '../errores'); // carpeta destino
+    if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores); // crea la carpeta si no existe
+    const archivoSalida = path.join(
+      carpetaErrores,
+      `${prefix}_${Date.now()}.png`                             // nombre único con timestamp
+    );
+    fs.writeFileSync(archivoSalida, screenshot, 'base64');       // guarda la imagen en disco
+    return archivoSalida;                                        // devuelve la ruta del archivo
   }
 }
