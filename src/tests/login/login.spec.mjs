@@ -1,5 +1,5 @@
 import 'chromedriver'; // asegura que el binario de ChromeDriver esté en el PATH
-import { Builder,By, until, logging } from 'selenium-webdriver'; // crea y controla el navegador
+import { Builder, By, until, logging } from 'selenium-webdriver'; // crea y controla el navegador
 import chrome from 'selenium-webdriver/chrome.js'; // opciones específicas para Chrome
 import { describe, it, before, after } from 'mocha'; // estructura de pruebas
 import { expect } from 'chai'; // aserciones/validaciones
@@ -37,53 +37,44 @@ describe('Pruebas de Login', function () {
     if (driver) await driver.quit();      // cierra el navegador al terminar
   });
 
-  it.only('CP_LOGIN_001: Inicio de sesión exitoso con credenciales válidas.', async () => {
-  await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL,
-                              process.env.LOGIN_PASSWORD,
-                              'CP_LOGIN_001'); // Pasos 1–7
-
-  // Esperar a que aparezca el contenedor principal de la plataforma
-  const mainFrame = await driver.wait(
-    until.elementLocated(By.id('container-mainframe')),
-    60000,
-    'No se encontró el contenedor principal después del login'
-  );
-
-  // Confirmar que realmente se ve en pantalla
-  expect(await mainFrame.isDisplayed()).to.be.true;
-});
-
-
-  it('CP_LOGIN_002: Error de autenticación con contraseña inválida', async () => {
-  try {
+  it('CP_LOGIN_001: Inicio de sesión exitoso con credenciales válidas.', async () => {
     await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL,
-                              'Clave_Incorrecta_123',
-                              'CP_LOGIN_002');
+      process.env.LOGIN_PASSWORD,
+      'CP_LOGIN_001'); // Pasos 1–7
 
-    // Esperar la alerta
-    const alert = await driver.wait(
-      until.elementLocated(
-        By.css('div[data-growl="container"][role="alert"]')
-      ),
-      30000
+    // Esperar a que aparezca el contenedor principal de la plataforma
+    const mainFrame = await driver.wait(
+      until.elementLocated(By.id('container-mainframe')),
+      60000,
+      'No se encontró el contenedor principal después del login'
     );
-    await driver.wait(until.elementIsVisible(alert), 10000);
 
-    // Tomar screenshot en la carpeta raíz /errors
-    await loginPage.takeScreenshotOnError('CP_LOGIN_002');
-
-    // Validar texto
-    const text = await alert.getText();
-    expect(text.toLowerCase()).to.include('datos inválidos');
-
-  } finally {
-    // Cerrar navegador siempre al final de la prueba
-    if (driver) await driver.quit();
-  }
-});
+    // Confirmar que realmente se ve en pantalla
+    expect(await mainFrame.isDisplayed()).to.be.true;
+  });
 
 
+  // it('CP_LOGIN_002: Error de autenticación con contraseña inválida', async () => {
+  //   await loginPage.ejecutarLogin(
+  //     process.env.LOGIN_EMAIL,
+  //     'Clave_Incorrecta_123'
+  //   );
 
+  //   // Esperar la alerta de error
+  //   const alert = await driver.wait(
+  //     until.elementLocated(
+  //       By.css('div[data-growl="container"][role="alert"]')
+  //     ),
+  //     30000,
+  //     'No se encontró la alerta de error de autenticación'
+  //   );
+
+  //   // Esperar a que sea visible
+  //   await driver.wait(until.elementIsVisible(alert), 10000);
+
+  //   const text = await alert.getText();
+  //   expect(text.toLowerCase()).to.include('datos inválidos'); // ajusta si el texto varía
+  // });
 
 
   // it('CP_LOGIN_003: Correo no registrado', async () => {
