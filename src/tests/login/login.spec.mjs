@@ -3,7 +3,7 @@ import { Builder,By, until, logging } from 'selenium-webdriver'; // crea y contr
 import chrome from 'selenium-webdriver/chrome.js'; // opciones específicas para Chrome
 import { describe, it, before, after } from 'mocha'; // estructura de pruebas
 import { expect } from 'chai'; // aserciones/validaciones
-import LoginPage from '../../pages/login.page.js'; // Page Object del login
+import LoginPage from '../../pages/login/login.page.js'; // Page Object del login
 
 let driver;      // instancia global de WebDriver
 let loginPage;   // instancia global del Page Object
@@ -81,8 +81,6 @@ describe('Pruebas de Login', function () {
     if (driver) await driver.quit();
   }
 });
-
-
 
 
 
