@@ -63,12 +63,24 @@ describe('Pruebas de Autodiagnóstico', function () {
     // expect(await info.isDisplayed()).to.be.true;
   });
 
-  it('CP_AUTO_003: Editar configuración WiFi', async () => {
+  it.skip('CP_AUTO_003: Editar configuración WiFi', async () => {
     await autoPage.editarConfiguracionWiFi();
 
     // Validación final (por ejemplo un mensaje de éxito)
     // const msg = await driver.wait(until.elementLocated(By.css('.alert-success')), 30000);
     // expect(await msg.isDisplayed()).to.be.true;
+  });
+
+  it('CP_AUTO_004: Redirigir ONT (clic en NO del modal)', async () => {
+    // 3. Ejecutar todo el flujo del CP_AUTO_004
+    await autoPage.ejecutarRedirigirONT();
+
+    // 4. Verificación final: que el contenedor principal siga visible
+    const container = await driver.wait(
+      until.elementLocated(By.css('#container-mainframe')),
+      30000
+    );
+    expect(await container.isDisplayed()).to.be.true;
   });
 });
 

@@ -248,9 +248,106 @@ export default class AutodiagnosticoPage {
       } catch { return true; }
     }, 15000);
 
+
     } catch (e) {
       await this.screenshotError('CP_AUTO_003');
       throw e;
     }
   }
+
+  /**
+   * ===========================
+   * CP_AUTO_004 – Redirigir ONT
+   * ===========================
+   * Flujo completo:
+   *   1. Clic en botón “Opciones”
+   *   2. Clic en opción “Redirigir ONT”
+   *   3. Clic en el botón "NO" del modal de confirmación
+   */
+  async ejecutarRedirigirONT(caseName = 'CP_AUTO_004') {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Clic en botón "Opciones"
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(500);
+      await btnOpciones.click();
+      await driver.sleep(3000);
+
+      // Paso 2: Clic en opción "Redirigir ONT"
+      const opcionRedirigir = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="1201"]')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(opcionRedirigir), 5000);
+      await driver.wait(until.elementIsEnabled(opcionRedirigir), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionRedirigir);
+      await driver.sleep(500);
+      await opcionRedirigir.click();
+
+      // Esperar loader (opcional)
+      const loaderXPath = '//*[contains(@id,"progress-id-progress")]';
+      try {
+        const loader = await driver.wait(
+          until.elementLocated(By.xpath(loaderXPath)),
+          5000
+        );
+        await driver.wait(until.stalenessOf(loader), 20000);
+        
+      } catch {
+        console.log("ℹ️ No se detectó loader, continuando…");
+      }
+
+      const modalXPath = "//*[contains(text(),'Desea ser redirigido a la pagina de la ONT')]";
+      const modal = await driver.wait(
+        until.elementLocated(By.xpath(modalXPath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(modal), 6000);
+
+      // Paso 3: Clic en el botón "NO" del modal de confirmación
+      const btnNo = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmNo"]/div')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnNo), 5000);
+      await driver.wait(until.elementIsEnabled(btnNo), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnNo);
+      await driver.sleep(1000);
+      await btnNo.click().catch(() =>
+        driver.executeScript("arguments[0].click();", btnNo)
+      );
+
+      // Confirmar que el modal desapareció
+      await driver.wait(async () => {
+        const modales = await driver.findElements(
+          By.xpath("//div[contains(@id,'widget-dialog-open-dialog') and contains(., 'Desea ser redirigido')]")
+        );
+        if (modales.length === 0) return true;
+        const visible = await modales[0].isDisplayed().catch(() => false);
+        return !visible;
+      }, 15000);
+      await driver.sleep(500);
+
+    } catch (error) {
+      console.error(`❌ [CP_AUTO_004] Error: ${error.message}`);
+
+      // Captura de pantalla en caso de fallo
+      const screenshot = await driver.takeScreenshot();
+      const errorsRoot = path.resolve(__dirname, '../../../../errors', 'autodiagnostico', caseName);
+      fs.mkdirSync(errorsRoot, { recursive: true });
+      const filePath = path.join(errorsRoot, `error_${Date.now()}.png`);
+      fs.writeFileSync(filePath, screenshot, 'base64');
+
+      throw error;
+    }
+  }
+
+
 }
