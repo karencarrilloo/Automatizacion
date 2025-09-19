@@ -78,34 +78,26 @@ async ejecutarLogin(
     await driver.sleep(5000); // espera redirección o carga final
 
   } catch (error) {
-    // === Captura de pantalla organizada por carpetas ===
-    const screenshot = await this.driver.takeScreenshot();
-
-    // 🟢 Carpeta raíz del proyecto: ../../.. desde src/pages
-    const rootErrors = path.resolve(__dirname, '../../../errors');
-
-    // 🟢 Carpeta del Page Object: "login"
-    const pageFolder = path.join(rootErrors, 'login');
-
-    // 🟢 Carpeta del caso de prueba, p. ej. "CP_LOGIN_002"
-    const caseFolder = path.join(pageFolder, caseName);
-
-    // Crear carpetas si no existen
-    [rootErrors, pageFolder, caseFolder].forEach(folder => {
-      if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-    });
-
-    // Nombre de archivo con timestamp
-    const archivoSalida = path.join(
-      caseFolder,
-      `error_${Date.now()}.png`
-    );
-
-    fs.writeFileSync(archivoSalida, screenshot, 'base64');
-
-    throw error; // relanza para que la prueba falle
-  }
+      // ⚠️ NO cerramos el driver aquí para permitir captura en el test
+      console.error('❌ Error en login:', error.message);
+      throw error; // El test decidirá qué hacer y tomará la evidencia
+    }
 }
+}
+// // Captura de pantalla ante error
+//     const screenshot = await this.driver.takeScreenshot();
+//     const carpetaErrores = path.resolve(__dirname, '../../../errors');
+//     if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
+//     const archivoSalida = path.join(
+//       carpetaErrores,
+//       `error_login_${Date.now()}.png`
+//     );
+//     fs.writeFileSync(archivoSalida, screenshot, 'base64');
+
+//     throw error; // relanza para que la prueba falle
+//   }
+
+
 
 
   // async getEmailError() {
@@ -132,17 +124,17 @@ async ejecutarLogin(
   //   return el.getText();
   // }
 
-  async takeScreenshotOnError(prefix = 'error_login') {
-  const screenshot = await this.driver.takeScreenshot();
-  // 📁 Subir 3 niveles: de src/pages -> src -> raíz
-  const carpetaErrores = path.resolve(__dirname, '../../../errors');
-  if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
-  const archivoSalida = path.join(
-    carpetaErrores,
-    `${prefix}_${Date.now()}.png`
-  );
-  fs.writeFileSync(archivoSalida, screenshot, 'base64');
-  return archivoSalida;
-}
+//   async takeScreenshotOnError(prefix = 'error_login') {
+//   const screenshot = await this.driver.takeScreenshot();
+//   // 📁 Subir 3 niveles: de src/pages -> src -> raíz
+//   const carpetaErrores = path.resolve(__dirname, '../../../errors');
+//   if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
+//   const archivoSalida = path.join(
+//     carpetaErrores,
+//     `${prefix}_${Date.now()}.png`
+//   );
+//   fs.writeFileSync(archivoSalida, screenshot, 'base64');
+//   return archivoSalida;
+// }
 
-}
+
