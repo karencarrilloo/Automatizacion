@@ -60,32 +60,6 @@ describe('Pruebas de Login', function () {
   //     'Clave_Incorrecta_123'
   //   );
 
-  //   // Esperar la alerta de error
-  //   const alert = await driver.wait(
-  //     until.elementLocated(
-  //       By.css('div[data-growl="container"][role="alert"]')
-  //     ),
-  //     30000,
-  //     'No se encontró la alerta de error de autenticación'
-  //   );
-
-  //   // Esperar a que sea visible
-  //   await driver.wait(until.elementIsVisible(alert), 10000);
-
-    // Validar texto
-    const text = await alert.getText();
-    expect(text.toLowerCase()).to.include('datos inválidos');
-
-  } finally {
-    // Cerrar navegador siempre al final de la prueba
-    if (driver) await driver.quit();
-  }
-});
-
-
-
-
-
   // it('CP_LOGIN_003: Correo no registrado', async () => {
   //   await loginPage.open();
   //   await loginPage.enterEmail('noexiste@dominio.com');        // correo inexistente
