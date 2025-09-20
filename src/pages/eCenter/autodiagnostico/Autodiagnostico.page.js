@@ -301,7 +301,7 @@ export default class AutodiagnosticoPage {
         await driver.wait(until.stalenessOf(loader), 20000);
         
       } catch {
-        console.log("ℹ️ No se detectó loader, continuando…");
+  
       }
 
       const modalXPath = "//*[contains(text(),'Desea ser redirigido a la pagina de la ONT')]";
