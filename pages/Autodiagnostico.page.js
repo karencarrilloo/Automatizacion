@@ -946,16 +946,290 @@ export default class AutodiagnosticoPage {
             }
 
 
+            // === Paso 29: Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 29 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 29 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+            // === Paso 30: Clic en opción "Función UPnP" ===
+            try {
+                const driver = this.driver;
+
+                // Esperar a que la opción "Función UPnP" esté presente en el DOM
+                const opcionUPnP = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1203"]')),
+                    15000
+                );
+
+                // Asegurar que sea visible y habilitada
+                await driver.wait(until.elementIsVisible(opcionUPnP), 5000);
+                await driver.wait(until.elementIsEnabled(opcionUPnP), 5000);
+
+                // Desplazar a la vista y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionUPnP);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", opcionUPnP);
+                console.log("✅ Paso 29: Opción 'Función UPnP' seleccionada correctamente.");
+
+                // --- Espera opcional: si aparece un progress después del clic ---
+                try {
+                    const progressXpath = '//*[@class="progress-bar"]';
+                    const progressElem = await driver.wait(
+                        until.elementLocated(By.xpath(progressXpath)),
+                        5000
+                    );
+                    console.log("⏳ Progress detectado tras seleccionar 'Función UPnP'...");
+                    await driver.wait(until.stalenessOf(progressElem), 30000);
+                    console.log("✅ Progress completado después de seleccionar 'Función UPnP'.");
+                } catch {
+                    console.log("ℹ️ No se detectó progress, se continúa directamente.");
+                }
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 29: (clic en opción 'Función UPnP'): ${error.message}`);
+            }
 
 
+            // === Paso 31: Clic en botón "Cancelar" para cerrar el modal ===
+            try {
+                const driver = this.driver;
 
+                // Localizar el botón Cancelar dentro del modal
+                const btnCancelar = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')),
+                    15000
+                );
+
+                // Asegurar que el botón sea visible y habilitado
+                await driver.wait(until.elementIsVisible(btnCancelar), 5000);
+                await driver.wait(until.elementIsEnabled(btnCancelar), 5000);
+
+                // Hacer clic en el botón
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCancelar);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", btnCancelar);
+                console.log("✅ Paso 30: Botón 'Cancelar' clickeado correctamente.");
+
+                // Espera a que el modal se cierre por completo (desaparezca del DOM)
+                try {
+                    const modalXpath = '//*[@id="widget-dialog-open-dialog"]'; // ajusta si el ID varía
+                    const modalElem = await driver.findElements(By.xpath(modalXpath));
+                    if (modalElem.length > 0) {
+                        await driver.wait(until.stalenessOf(modalElem[0]), 15000);
+                        console.log("✅ Modal cerrado correctamente después de hacer clic en 'Cancelar'.");
+                    } else {
+                        console.log("ℹ️ No se encontró el modal tras el clic en 'Cancelar', se continúa.");
+                    }
+                } catch {
+                    console.log("ℹ️ Modal no presente para esperar su cierre, continuando...");
+                }
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 30: (clic en botón 'Cancelar' para cerrar modal): ${error.message}`);
+            }
+
+
+            // === Paso 32: Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 32 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 32 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+            // === Paso 33: Clic en opción "Función DMZ" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar la opción DMZ
+                const opcionDMZ = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1204"]/div')),
+                    15000
+                );
+
+                // Asegurar que esté visible y habilitada
+                await driver.wait(until.elementIsVisible(opcionDMZ), 5000);
+                await driver.wait(until.elementIsEnabled(opcionDMZ), 5000);
+
+                // Desplazar al elemento y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDMZ);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", opcionDMZ);
+                console.log("✅ Paso 31: Opción 'Función DMZ' seleccionada correctamente.");
+
+                // Espera dinámica por si aparece un progress/loader después de la selección
+                try {
+                    const loaderXpath = '//*[@id="progress-id-progress-DMZ"]'; // Ajusta si el ID real difiere
+                    const loader = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXpath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(loader), 15000);
+                    console.log("ℹ️ Loader de DMZ finalizado.");
+                } catch {
+                    console.log("ℹ️ No se encontró loader de DMZ, continuando sin esperar.");
+                }
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 31: (clic en opción 'Función DMZ'): ${error.message}`);
+            }
+
+
+            // === Paso 34: Marcar la casilla "Habilitar DMZ" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el <label> que envuelve el checkbox
+                const labelHabilitarDMZ = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="widget-checkbox-checklist-1"]/label')),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(labelHabilitarDMZ), 5000);
+                await driver.wait(until.elementIsEnabled(labelHabilitarDMZ), 5000);
+
+                // Desplazar al elemento y hacer clic en el <label>
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", labelHabilitarDMZ);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", labelHabilitarDMZ);
+                await driver.sleep(1000);
+
+                console.log("✅ Paso 32: Casilla 'Habilitar DMZ' marcada correctamente.");
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 32: (marcar casilla 'Habilitar DMZ'): ${error.message}`);
+            }
+
+            // === Paso 35: Diligenciar dirección IPv4 aleatoria en el campo "Dirección del servidor" ===
+            try {
+                const driver = this.driver;
+
+                // Generar una IPv4 aleatoria en el rango 1–254 por octeto
+                const randomIPv4 = Array.from({ length: 4 }, () => Math.floor(Math.random() * 254) + 1).join('.');
+
+                // Localizar el campo de texto
+                const ipField = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="textfield-textfield-2"]')),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(ipField), 5000);
+                await driver.wait(until.elementIsEnabled(ipField), 5000);
+
+                // Limpiar cualquier texto previo y escribir la IP
+                await ipField.clear();
+                await ipField.sendKeys(randomIPv4);
+                await driver.sleep(1000);
+
+                console.log(`✅ Paso 33: Dirección IPv4 '${randomIPv4}' diligenciada correctamente.`);
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 33: (diligenciar dirección IPv4 aleatoria): ${error.message}`);
+            }
+
+
+            // === Paso 36: Clic en el botón "Refrescar" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón de refrescar dentro del modal
+                const btnRefrescar = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div/div[2]/div[1]/div/span')
+                    ),
+                    15000 // espera máxima de 15 s a que aparezca
+                );
+
+                // Asegurar que el botón esté visible y habilitado
+                await driver.wait(until.elementIsVisible(btnRefrescar), 5000);
+                await driver.wait(until.elementIsEnabled(btnRefrescar), 5000);
+
+                // Desplazar al botón por si está fuera de la vista y hacer clic
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescar);
+                await driver.sleep(300);
+                await btnRefrescar.click();
+
+                console.log("✅ Paso 36: Botón 'Refrescar' clicado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 36: (clic en botón 'Refrescar'): ${error.message}`);
+            }
+
+
+            // === Paso 37: Clic en el botón "Cancelar" del modal ===
+            try {
+                const driver = this.driver;
+
+                // Esperar a que el botón "Cancelar" esté presente en el DOM
+                const btnCancelar = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')
+                    ),
+                    15000 // espera máxima de 15 s
+                );
+
+                // Verificar que el botón esté visible y habilitado
+                await driver.wait(until.elementIsVisible(btnCancelar), 5000);
+                await driver.wait(until.elementIsEnabled(btnCancelar), 5000);
+
+                // Asegurar visibilidad y hacer clic
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    btnCancelar
+                );
+                await driver.sleep(300);
+                await btnCancelar.click();
+
+                // Esperar a que el modal se cierre completamente
+                const modalXPath = '//*[@id="widget-button-cancel-open-dialog"]/div';
+                try {
+                    await driver.wait(
+                        until.stalenessOf(await driver.findElement(By.xpath(modalXPath))),
+                        10000
+                    );
+                    console.log("✅ Paso 37: Botón 'Cancelar' clicado y modal cerrado correctamente.");
+                } catch {
+                    console.log("⚠️ Paso 37: El modal pudo haber sido cerrado sin necesidad de esperar staleness.");
+                }
+
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 37: (clic en botón 'Cancelar' del modal): ${error.message}`);
+            }
 
 
         } catch (error) {
             console.error("❌ Error en Autodiagnostico:", error.message);
 
             const screenshot = await driver.takeScreenshot();
-            const carpetaErrores = path.resolve(__dirname, '../errores');
+            const carpetaErrores = path.resolve(__dirname, '../errors');
             if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
             const ruta = path.join(carpetaErrores, `error_Autodiagnostico_${Date.now()}.png`);
             fs.writeFileSync(ruta, screenshot, 'base64');
