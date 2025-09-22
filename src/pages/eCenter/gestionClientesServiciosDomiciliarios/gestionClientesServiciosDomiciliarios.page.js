@@ -13,12 +13,9 @@ export default class GestionClientesServiciosPage {
 
   /**
    * ===============================
-   * CP_GESTION_001 – Ingreso a vista
+   * CP_GESCLSERDOM_001 – Ingreso a vista
+   * 3 pasos
    * ===============================
-   * Pasos:
-   *   1. Clic en módulo eCenter
-   *   2. Scroll en contenedor de aplicaciones
-   *   3. Clic en “Gestión sobre clientes y servicios domiciliarios”
    */
   async ingresarVistaGestionClientes(caseName = 'CP_GESTION_001') {
     const driver = this.driver;
@@ -62,7 +59,7 @@ export default class GestionClientesServiciosPage {
       
 
     } catch (error) {
-      console.error(`❌ [CP_GESTION_001] Error: ${error.message}`);
+      console.error(`❌ [CP_GESCLSERDOM_001] Error: ${error.message}`);
       
       }
   }
@@ -70,12 +67,13 @@ export default class GestionClientesServiciosPage {
   /**
    * ==================================================
    * CP_GESCLSERDOM_002 – Filtro de búsqueda por ID_DEAL
+   * 5 pasos
    * ==================================================
    */
   async filtrarPorIdDeal(caseName = 'CP_GESCLSERDOM_002', idDeal = '28006512626') {
     const driver = this.driver;
     try {
-      // === Paso 4: Abrir modal de filtros ===
+      // === Paso 1: Abrir modal de filtros ===
       const padreXpath = '//*[@id="widget-button-btn-add-filter"]';
       const hijoXpath  = './div';
 
@@ -92,7 +90,7 @@ export default class GestionClientesServiciosPage {
       );
       await driver.wait(until.elementIsVisible(modalFiltros), 5000);
 
-      // === Paso 5: Desplegar select de filtros ===
+      // === Paso 2: Desplegar select de filtros ===
       const grupoFiltro = await driver.wait(
         until.elementLocated(By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_0")]')),
         10000
@@ -106,7 +104,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(2000);
       console.log("✅ Select de filtros desplegado.");
 
-      // === Paso 6: Seleccionar "ID_DEAL" ===
+      // === Paso 3: Seleccionar "ID_DEAL" ===
       const selectCampo = await grupoFiltro.findElement(By.css('select'));
       await driver.wait(until.elementIsVisible(selectCampo), 5000);
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
@@ -115,7 +113,7 @@ export default class GestionClientesServiciosPage {
       await selectCampo.sendKeys("ID_DEAL");
       await driver.sleep(2000);
 
-      // === Paso 7: Diligenciar el campo de ID_DEAL ===
+      // === Paso 4: Diligenciar el campo de ID_DEAL ===
       const textareaCampo = await driver.wait(
         until.elementLocated(By.css('textarea.form-control')),
         10000
@@ -127,7 +125,7 @@ export default class GestionClientesServiciosPage {
       await textareaCampo.sendKeys(idDeal);
       await driver.sleep(1500);
 
-      // === Paso 8: Clic en "Aplicar filtros" ===
+      // === Paso 5: Clic en "Aplicar filtros" ===
       const botonAplicarFiltro = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
         10000
