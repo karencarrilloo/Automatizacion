@@ -66,7 +66,7 @@ export default class GestionClientesServiciosPage {
 
   /**
    * ==================================================
-   * CP_GESCLSERDOM_002 – Filtro de búsqueda por ID_DEAL
+   * CP_GESCLSERDOM_002 – Filtro de búsqueda cliente por ID_DEAL
    * 5 pasos
    * ==================================================
    */
@@ -140,7 +140,102 @@ export default class GestionClientesServiciosPage {
       await this._capturarError(error, caseName);
       throw error;
     }
+
   
     }
+    // ==========================================
+// CP_GESCLSERDOM_003: Ver información técnica asociada
+// ==========================================
+async verInformacionTecnicaAsociada(
+  caseName = 'CP_GESCLSERDOM_003',
+  cliente = 'HAROLD AGUIRRE'     // Cambia el nombre si se requiere
+) {
+  const driver = this.driver;
+  try {
+    // === Paso 9: Seleccionar cliente por NOMBRE ===
+    const gridTbodyXpath =
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+
+    const cuerpoTabla = await driver.wait(
+      until.elementLocated(By.xpath(gridTbodyXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+    const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+    if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+    let filaSeleccionada = null;
+    for (const fila of filas) {
+      try {
+        const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+        const texto = (await tdName.getText()).trim();
+        if (texto.toUpperCase() === cliente.toUpperCase()) {
+          filaSeleccionada = fila;
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+    if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+    await driver.sleep(300);
+    try {
+      await filaSeleccionada.click();
+    } catch {
+      await driver.executeScript('arguments[0].click();', filaSeleccionada);
+    }
+    await driver.sleep(800);
+    console.log(`✅ Cliente "${cliente}" seleccionado.`);
+
+    // === Paso 10: Botón Opciones ===
+    const btnOpciones = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', btnOpciones);
+    await driver.sleep(300);
+    await driver.executeScript('arguments[0].click();', btnOpciones);
+    await driver.sleep(1000);
+    console.log('✅ Botón Opciones presionado.');
+
+    // === Paso 11: Opción "Ver información técnica asociada" ===
+    const menuOpciones = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+    const opcionVerInfo = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="1090"]')),
+      10000
+    );
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', opcionVerInfo);
+    await driver.sleep(300);
+    await driver.executeScript('arguments[0].click();', opcionVerInfo);
+    await driver.sleep(3000);
+    console.log('✅ Opción "Ver información técnica asociada" seleccionada.');
+
+    // === Paso 12: Cerrar modal ===
+    const btnCerrarModal = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-cancel-confirm-selected"]/div')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnCerrarModal), 5000);
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', btnCerrarModal);
+    await driver.sleep(300);
+    await driver.executeScript('arguments[0].click();', btnCerrarModal);
+    await driver.sleep(2000);
+    console.log('✅ Modal cerrado correctamente.');
+  } catch (error) {
+    // Reutiliza tu helper de captura de pantallas si ya existe
+    if (this._capturarError) await this._capturarError(error, caseName);
+    throw error;
+  }
+}
+
   }
 

@@ -56,11 +56,19 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
      });
 
 
-     
      it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
     // Aquí podrías agregar una aserción que valide que la tabla muestre los resultados esperados.
+    expect(true).to.be.true;
+  });
+
+
+  it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
+    await gestionPage.verInformacionTecnicaAsociada(
+      'CP_GESCLSERDOM_003',
+      'HAROLD AGUIRRE'   // puedes parametrizar el nombre del cliente
+    );
     expect(true).to.be.true;
   });
 
