@@ -1225,6 +1225,235 @@ export default class AutodiagnosticoPage {
             }
 
 
+            // === Paso 38: Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 38 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 38 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+            // === Paso 39: Clic en opción "IPv4 Port Mapping" ===
+            try {
+                const driver = this.driver;
+
+                // Esperar que la opción esté presente en el DOM
+                const opcionIPv4PortMapping = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1205"]')),
+                    15000 // tiempo máximo de espera
+                );
+
+                // Verificar que sea visible y habilitada
+                await driver.wait(until.elementIsVisible(opcionIPv4PortMapping), 5000);
+                await driver.wait(until.elementIsEnabled(opcionIPv4PortMapping), 5000);
+
+                // Desplazar hasta la vista y hacer clic
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    opcionIPv4PortMapping
+                );
+                await driver.sleep(300);
+                await opcionIPv4PortMapping.click();
+
+                // Espera dinámica: si aparece un progress/loader, aguarda a que desaparezca
+                const loaderXPath = '//*[@id="progress-id-progress-PORTMAPPING"]'; // ajusta si el id difiere
+                try {
+                    const loader = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXPath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(loader), 15000);
+                } catch {
+                    console.log("ℹ️ No se encontró loader para 'IPv4 Port Mapping', continuando…");
+                }
+
+                console.log("✅ Paso 39: Opción 'IPv4 Port Mapping' seleccionada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 39: (clic en opción 'IPv4 Port Mapping'): ${error.message}`);
+            }
+
+            // === Paso 40: Clic en el campo "Protocolo" ===
+            try {
+                const driver = this.driver;
+
+                // Esperar a que el <select> de Protocolo esté presente en el DOM
+                const selectProtocolo = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-select-3"]')),
+                    15000 // tiempo máximo de espera
+                );
+
+                // Verificar que sea visible y habilitado
+                await driver.wait(until.elementIsVisible(selectProtocolo), 5000);
+                await driver.wait(until.elementIsEnabled(selectProtocolo), 5000);
+
+                // Desplazarlo al centro de la vista y hacer clic
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    selectProtocolo
+                );
+                await driver.sleep(300);
+                await selectProtocolo.click();
+                await driver.sleep(1000); // breve espera para que se despliegue el menú
+
+                console.log("✅ Paso 40: Clic en el campo 'Protocolo' realizado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 40: (clic en campo 'Protocolo'): ${error.message}`);
+            }
+
+            // === Paso 41: Seleccionar opción aleatoria en el select "Protocolo" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el <select> de Protocolo
+                const selectProtocolo = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="input-select-select-3"]')),
+                    15000
+                );
+
+                // Obtener todas las opciones del select
+                const opciones = await selectProtocolo.findElements(By.css('option'));
+
+                // Filtrar las opciones válidas (excluyendo la de "Seleccionar" si existiera)
+                let opcionesValidas = [];
+                for (const opt of opciones) {
+                    const texto = await opt.getText();
+                    if (texto && texto.trim() !== 'Seleccionar') {
+                        opcionesValidas.push(opt);
+                    }
+                }
+
+                if (opcionesValidas.length === 0) {
+                    throw new Error("⚠️ No se encontraron opciones válidas en el select de Protocolo.");
+                }
+
+                // Elegir una opción aleatoria
+                const randomIndex = Math.floor(Math.random() * opcionesValidas.length);
+                const opcionSeleccionada = opcionesValidas[randomIndex];
+                const textoSeleccionado = await opcionSeleccionada.getText();
+
+                // Forzar la selección con JavaScript para disparar el evento change
+                await driver.executeScript(`
+      arguments[0].selected = true;
+      arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+    `,
+                    opcionSeleccionada
+                );
+
+                await driver.sleep(1500); // pequeña espera para que se procese la selección
+
+                console.log(`✅ Paso 41: Opción '${textoSeleccionado}' seleccionada correctamente en el select 'Protocolo'.`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 41: (selección aleatoria en select 'Protocolo'): ${error.message}`);
+            }
+
+
+            // === Paso 42: Diligenciar campo "Dirección IP" con una IPv4 aleatoria ===
+            try {
+                const driver = this.driver;
+
+                // Generar una IPv4 aleatoria (rango 1-254 en cada octeto)
+                function generarIPv4() {
+                    const octeto = () => Math.floor(Math.random() * 254) + 1;
+                    return `${octeto()}.${octeto()}.${octeto()}.${octeto()}`;
+                }
+                const ipAleatoria = generarIPv4();
+
+                // Localizar el campo de texto
+                const campoIP = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="textfield-textfield-4"]')),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(campoIP), 5000);
+                await driver.wait(until.elementIsEnabled(campoIP), 5000);
+
+                // Limpiar cualquier valor previo y escribir la IP generada
+                await campoIP.clear();
+                await campoIP.sendKeys(ipAleatoria);
+
+                console.log(`✅ Paso 42: Dirección IP '${ipAleatoria}' diligenciada correctamente.`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 42: (diligenciar Dirección IP aleatoria): ${error.message}`);
+            }
+
+            // === Paso 43: Clic en el botón "Refrescar" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón de refrescar
+                const btnRefrescar = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div/div[2]/div[1]/div')
+                    ),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(btnRefrescar), 5000);
+                await driver.wait(until.elementIsEnabled(btnRefrescar), 5000);
+
+                // Scroll y clic
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnRefrescar);
+                await driver.sleep(1000);
+                await driver.executeScript("arguments[0].click();", btnRefrescar);
+                await driver.sleep(1000);
+
+                console.log("✅ Paso 43: Botón 'Refrescar' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 43: (clic en botón 'Refrescar'): ${error.message}`);
+            }
+
+            // === Paso 44: Clic en el botón "Cancelar" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón "Cancelar"
+                const btnCancelar = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')
+                    ),
+                    15000
+                );
+
+                // Asegurar visibilidad y que esté habilitado
+                await driver.wait(until.elementIsVisible(btnCancelar), 5000);
+                await driver.wait(until.elementIsEnabled(btnCancelar), 5000);
+
+                // Scroll y clic forzado con JS
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCancelar);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", btnCancelar);
+
+                // Esperar a que el modal se cierre (desaparezca de la vista)
+                const modalXpath = '//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div';
+                try {
+                    const modal = await driver.findElement(By.xpath(modalXpath));
+                    await driver.wait(until.stalenessOf(modal), 15000);
+                } catch {
+                    console.log("ℹ️ El modal ya estaba cerrado o no se encontró para esperar su cierre.");
+                }
+
+                console.log("✅ Paso 44: Botón 'Cancelar' presionado y modal cerrado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 44: (clic en botón 'Cancelar'): ${error.message}`);
+            }
+
+
+
+
         } catch (error) {
             console.error("❌ Error en Autodiagnostico:", error.message);
 
