@@ -1451,6 +1451,288 @@ export default class AutodiagnosticoPage {
                 throw new Error(`❌ Error en Paso 44: (clic en botón 'Cancelar'): ${error.message}`);
             }
 
+            // === Paso 45: Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 45 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 45 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+            // === Paso 46: Clic en la opción "Reserva DHCP" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar la opción del menú
+                const opcionReservaDHCP = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1206"]')),
+                    15000
+                );
+
+                // Asegurar que el elemento sea visible y habilitado
+                await driver.wait(until.elementIsVisible(opcionReservaDHCP), 5000);
+                await driver.wait(until.elementIsEnabled(opcionReservaDHCP), 5000);
+
+                // Scroll y clic forzado con JS para evitar interceptaciones
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionReservaDHCP);
+                await driver.sleep(300);
+                await driver.executeScript("arguments[0].click();", opcionReservaDHCP);
+
+                // Espera dinámica: en caso de que aparezca un progress/loader
+                const loaderXpath = '//*[@class="progress-bar"]'; // Ajusta si tu loader usa otro identificador
+                try {
+                    const loader = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXpath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(loader), 15000);
+                    console.log("⏳ Loader detectado y completado.");
+                } catch {
+                    console.log("ℹ️ No se detectó loader, continuando...");
+                }
+
+                console.log("✅ Paso 46: Opción 'Reserva DHCP' seleccionada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 46: (clic en opción 'Reserva DHCP'): ${error.message}`);
+            }
+
+
+            // === Paso 47: Diligenciar una dirección MAC aleatoria ===
+            try {
+                const driver = this.driver;
+
+                // Generar una MAC aleatoria con formato XX:XX:XX:XX:XX:XX
+                const randomMAC = Array.from({ length: 6 }, () =>
+                    Math.floor(Math.random() * 256)
+                        .toString(16)
+                        .padStart(2, "0")
+                ).join(":");
+
+                // Localizar el campo de texto
+                const macField = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="textfield-textfield-1"]')),
+                    15000
+                );
+
+                await driver.wait(until.elementIsVisible(macField), 5000);
+                await driver.wait(until.elementIsEnabled(macField), 5000);
+
+                // Limpiar y escribir la dirección MAC
+                await macField.clear();
+                await macField.sendKeys(randomMAC);
+
+                console.log(`✅ Paso 47: Dirección MAC aleatoria ingresada correctamente: ${randomMAC}`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 47: (diligenciar dirección MAC): ${error.message}`);
+            }
+
+
+            // === Paso 48: Diligenciar una dirección IPv4 aleatoria ===
+            try {
+                const driver = this.driver;
+
+                // Generar una IPv4 aleatoria (rango 1-254 en cada octeto)
+                const randomIPv4 = Array.from({ length: 4 }, () =>
+                    Math.floor(Math.random() * 254) + 1
+                ).join(".");
+
+                // Localizar el campo de texto
+                const ipField = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="textfield-textfield-2"]')),
+                    15000
+                );
+
+                await driver.wait(until.elementIsVisible(ipField), 5000);
+                await driver.wait(until.elementIsEnabled(ipField), 5000);
+
+                // Limpiar y escribir la dirección IPv4
+                await ipField.clear();
+                await ipField.sendKeys(randomIPv4);
+
+                console.log(`✅ Paso 48: Dirección IPv4 aleatoria ingresada correctamente: ${randomIPv4}`);
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 48: (diligenciar dirección IPv4): ${error.message}`);
+            }
+
+
+            // === Paso 49: Clic en botón Actualizar / Refrescar ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón de refrescar
+                const refreshBtn = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div/div[2]/div[1]/div/span')
+                    ),
+                    15000
+                );
+
+                await driver.wait(until.elementIsVisible(refreshBtn), 5000);
+                await driver.wait(until.elementIsEnabled(refreshBtn), 5000);
+
+                // Asegurar que el botón esté en el viewport
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", refreshBtn);
+                await driver.sleep(300);
+
+                // Clic en el botón
+                await refreshBtn.click();
+
+                // Espera dinámica: aguarda a que el progreso desaparezca si se muestra
+                const loaderXPath = '//*[@id="progress-id-progress-REFRESH"]'; // Ajusta el ID si corresponde
+                try {
+                    const loader = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXPath)),
+                        3000
+                    );
+                    await driver.wait(until.stalenessOf(loader), 15000);
+                } catch {
+                    console.log("ℹ️ No se detectó loader de progreso, continuando...");
+                }
+
+                console.log("✅ Paso 49: Botón Actualizar/Refrescar presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 49: (clic en botón Actualizar/Refrescar): ${error.message}`);
+            }
+
+            // === Paso 50: Clic en botón Cancelar para cerrar el modal ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón Cancelar dentro del modal
+                const cancelBtn = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')
+                    ),
+                    15000
+                );
+
+                await driver.wait(until.elementIsVisible(cancelBtn), 5000);
+                await driver.wait(until.elementIsEnabled(cancelBtn), 5000);
+
+                // Asegurar que esté en el viewport
+                await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", cancelBtn);
+                await driver.sleep(300);
+
+                // Hacer clic en Cancelar
+                await cancelBtn.click();
+
+                // ✅ Espera dinámica: aguarda a que el modal desaparezca por completo
+                const modalXPath = '//*[@id="widget-dialog-open-dialog-603378-undefined"]';
+                try {
+                    const modal = await driver.wait(
+                        until.elementLocated(By.xpath(modalXPath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(modal), 15000);
+                } catch {
+                    console.log("ℹ️ No se encontró modal activo tras el clic, continuando...");
+                }
+
+                console.log("✅ Paso 50: Botón Cancelar presionado y modal cerrado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 50: (clic en botón Cancelar): ${error.message}`);
+            }
+
+
+            // === Paso 51: Clic en botón "Opciones" ===
+            try {
+                const btnOpciones = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+                    10000
+                );
+
+                await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+                await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+                await driver.sleep(500); // Pausa corta
+
+                await btnOpciones.click();
+                await driver.sleep(3000); // Espera breve post-clic
+
+                console.log("✅ Paso 51 Botón 'Opciones' presionado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 51 (clic en botón 'Opciones'): ${error.message}`);
+            }
+
+            // === Paso 52: Clic en opción "Dispositivos Conectados" ===
+            try {
+                const driver = this.driver;
+
+                // Localizar la opción del menú
+                const opcionDispositivos = await driver.wait(
+                    until.elementLocated(By.xpath('//*[@id="1208"]')),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(opcionDispositivos), 5000);
+                await driver.wait(until.elementIsEnabled(opcionDispositivos), 5000);
+
+                // Desplazar al centro de la vista
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDispositivos);
+                await driver.sleep(300);
+
+                // Clic en la opción
+                await opcionDispositivos.click();
+
+                // Espera dinámica para que desaparezca un posible progress/loader
+                const loaderXPath = '//*[@id="progress-id-progress-DEVICES"]'; // Ajusta si el ID real es distinto
+                try {
+                    const loader = await driver.wait(
+                        until.elementLocated(By.xpath(loaderXPath)),
+                        5000
+                    );
+                    await driver.wait(until.stalenessOf(loader), 15000);
+                } catch {
+                    console.log("ℹ️ No se detectó loader visible, continuando...");
+                }
+
+                console.log("✅ Paso 52: Opción 'Dispositivos Conectados' seleccionada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 52: (clic en 'Dispositivos Conectados'): ${error.message}`);
+            }
+
+            // === Paso 53: Clic en flecha desplegable del primer dispositivo ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón/flecha indicado
+                const flechaDispositivo = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]')
+                    ),
+                    15000
+                );
+
+                // Asegurar que sea visible y clickeable
+                await driver.wait(until.elementIsVisible(flechaDispositivo), 5000);
+                await driver.wait(until.elementIsEnabled(flechaDispositivo), 5000);
+
+                // Desplazarlo a la vista para evitar errores de intercepción
+                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", flechaDispositivo);
+                await driver.sleep(300);
+
+                // Hacer clic en la flecha
+                await flechaDispositivo.click();
+
+                console.log("✅ Paso 53: Flecha del primer dispositivo desplegada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 53: (clic en flecha primer dispositivo): ${error.message}`);
+            }
+
+
 
 
 
