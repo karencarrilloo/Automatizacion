@@ -5,7 +5,7 @@ import AutodiagnosticoPage from '../pages/Autodiagnostico.page.js';
 import chromedriver from 'chromedriver';
 
 describe('Prueba: Configuración de Autodiagnostico', function () {
-  this.timeout(270000);
+  this.timeout(300000);
 
   let driver;
   let configuracionPage;

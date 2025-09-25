@@ -1708,30 +1708,146 @@ export default class AutodiagnosticoPage {
             try {
                 const driver = this.driver;
 
-                // Localizar el botón/flecha indicado
+                // Localizar la flecha con el nuevo XPath
                 const flechaDispositivo = await driver.wait(
                     until.elementLocated(
-                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]')
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div[2]')
                     ),
                     15000
                 );
 
-                // Asegurar que sea visible y clickeable
+                // Asegurar que sea visible y habilitada
                 await driver.wait(until.elementIsVisible(flechaDispositivo), 5000);
                 await driver.wait(until.elementIsEnabled(flechaDispositivo), 5000);
 
-                // Desplazarlo a la vista para evitar errores de intercepción
-                await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", flechaDispositivo);
+                // Desplazar para evitar problemas de intercepción
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    flechaDispositivo
+                );
                 await driver.sleep(300);
 
-                // Hacer clic en la flecha
+                // Clic en la flecha
                 await flechaDispositivo.click();
+                await driver.sleep(1500);
 
                 console.log("✅ Paso 53: Flecha del primer dispositivo desplegada correctamente.");
             } catch (error) {
-                throw new Error(`❌ Error en Paso 53: (clic en flecha primer dispositivo): ${error.message}`);
+                throw new Error(`❌ Error en Paso 53 (clic en flecha primer dispositivo): ${error.message}`);
             }
 
+            // === Paso 54: Clic en flecha desplegable del segundo dispositivo ===
+            try {
+                const driver = this.driver;
+
+                // Localizar la segunda flecha
+                const flechaSegundoDispositivo = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[2]/div[1]/div')
+                    ),
+                    15000
+                );
+
+                // Asegurar visibilidad y habilitación
+                await driver.wait(until.elementIsVisible(flechaSegundoDispositivo), 5000);
+                await driver.wait(until.elementIsEnabled(flechaSegundoDispositivo), 5000);
+
+                // Desplazar para evitar problemas de intercepción
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    flechaSegundoDispositivo
+                );
+                await driver.sleep(300);
+
+                // Clic en la flecha
+                await flechaSegundoDispositivo.click();
+                await driver.sleep(1500);
+
+                console.log("✅ Paso 54: Flecha del segundo dispositivo desplegada correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 54 (clic en flecha segundo dispositivo): ${error.message}`);
+            }
+
+            // === Paso 55: Clic en botón "Recargar/Refrescar" del modal ===
+            try {
+                const driver = this.driver;
+
+                // Localizar el botón de recarga
+                const botonRecargar = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[1]/div/span')
+                    ),
+                    15000
+                );
+
+                // Esperar a que sea visible y habilitado
+                await driver.wait(until.elementIsVisible(botonRecargar), 5000);
+                await driver.wait(until.elementIsEnabled(botonRecargar), 5000);
+
+                // Desplazar a la vista por si está fuera del área visible
+                await driver.executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    botonRecargar
+                );
+                await driver.sleep(300);
+
+                // Hacer clic en el botón
+                await botonRecargar.click();
+                await driver.sleep(500);
+
+                console.log("✅ Paso 55: Botón 'Recargar/Refrescar' clicado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 55 (clic en botón Recargar/Refrescar): ${error.message}`);
+            }
+            // === Paso 56: Cerrar modal "Dispositivos conectados" ===
+            try {
+                const driver = this.driver;
+
+                // 1️⃣ Esperar que desaparezca cualquier overlay de progreso
+                const overlayXPath = '//*[@id="progress-progress_resultSelfDiagnosis"]';
+                try {
+                    const overlay = await driver.wait(
+                        until.elementLocated(By.xpath(overlayXPath)),
+                        5000
+                    );
+                    await driver.wait(until.elementIsNotVisible(overlay), 15000);
+                    console.log("ℹ️ Overlay oculto.");
+                } catch {
+                    console.log("ℹ️ No se detectó overlay visible.");
+                }
+
+                // 2️⃣ Contenedor del modal (para verificar visibilidad luego)
+                const modalHeader = await driver.wait(
+                    until.elementLocated(
+                        By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[1]')
+                    ),
+                    15000
+                );
+
+                // 3️⃣ Botón de cerrar
+                const btnCerrar = await modalHeader.findElement(By.css('button.close'));
+                await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+
+                // 4️⃣ Clic forzado
+                await driver.executeScript('arguments[0].click();', btnCerrar);
+                console.log("ℹ️ Click forzado en botón Cerrar.");
+                await driver.sleep(1000);
+                
+
+                // 5️⃣ Esperar a que el modal se oculte (display:none o aria-hidden)
+                const modalContainer = await driver.findElement(
+                    By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]')
+                );
+                await driver.wait(async () => {
+                    const display = await modalContainer.getCssValue('display');
+                    const hidden = await modalContainer.getAttribute('aria-hidden');
+                    return display === 'none' || hidden === 'true';
+                }, 15000);
+
+                console.log("✅ Paso 56: Modal 'Dispositivos conectados' cerrado correctamente.");
+            } catch (error) {
+                throw new Error(`❌ Error en Paso 56 (cerrar modal Dispositivos conectados): ${error.message}`);
+            }
 
 
 
