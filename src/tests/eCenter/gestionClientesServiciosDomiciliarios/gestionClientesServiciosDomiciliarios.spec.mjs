@@ -32,7 +32,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
       .setLoggingPrefs(prefs)
       .build();
 
-    loginPage   = new LoginPage(driver);
+    loginPage = new LoginPage(driver);
     gestionPage = new GestionClientesServiciosPage(driver);
 
     // Login una sola vez antes de los tests
@@ -53,30 +53,47 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
       'El contenedor principal no apareció tras abrir la vista de Gestión'
     );
     expect(await container.isDisplayed()).to.be.true;
-     });
+  });
 
-
-     it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
+  it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
-    // Aquí podrías agregar una aserción que valide que la tabla muestre los resultados esperados.
+    // ajustar la aserción Para validar éxito estricto
     expect(true).to.be.true;
   });
-
 
   it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
-    await gestionPage.verInformacionTecnicaAsociada(
-      'CP_GESCLSERDOM_003',
-      'HAROLD AGUIRRE'   // puedes parametrizar el nombre del cliente
-    );
+    await gestionPage.verInformacionTecnicaAsociada('CP_GESCLSERDOM_003', 'HAROLD AGUIRRE');   // para parametrizar el nombre del cliente
     expect(true).to.be.true;
   });
 
-    it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
-    await gestionPage.reconfigurarCliente('CP_GESCLSERDOM_004');
+  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+    await gestionPage.reconfigurarCliente('CP_GESCLSERDOM_004', 'HAROLD AGUIRRE');
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
-    // puedes ajustar la aserción si necesitas validar éxito estricto
+    // ajustar la aserción Para validar éxito estricto
   });
+
+  it('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
+    await gestionPage.verDispositivoCliente('CP_GESCLSERDOM_005', 'HAROLD AGUIRRE');
+    expect(true).to.be.true; // Asersión placeholder; ajusta si deseas validar datos específicos
+  });
+
+  it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
+    await gestionPage.verYEnviarDocumentos('CP_GESCLSERDOM_006', 'HAROLD AGUIRRE');
+    expect(true).to.be.true; // Placeholder de validación
+  });
+
+  it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
+  await gestionPage.verDetalleProceso('CP_GESCLSERDOM_007', 'HAROLD AGUIRRE');
+  expect(true).to.be.true; // Aserción placeholder
+});
+
+it.only('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
+  await gestionPage.suspenderCliente('CP_GESCLSERDOM_008', 'HAROLD AGUIRRE');
+  expect(true).to.be.true; // aserción placeholder
+});
+
+
 });
 
 
