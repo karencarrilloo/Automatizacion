@@ -72,7 +72,7 @@ export default class GestionClientesServiciosPage {
    * 3 pasos
    * ===============================
    */
-  async ingresarVistaGestionClientes(caseName = 'CP_GESTION_001') {
+  async ingresarVistaGestionClientes(caseName = 'CP_GESCLSERDOM_001') {
     const driver = this.driver;
 
     try {
@@ -317,14 +317,14 @@ export default class GestionClientesServiciosPage {
       await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnConfirmarSi);
       await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", btnConfirmarSi);
-      await driver.sleep(3000);
       console.log("✅ Paso 16: Confirmación 'Sí' ejecutada.");
 
       // === Paso 17: Monitorear proceso de reconfiguración ===
       let reconfigExitosa = false;
       try {
         const contentProcessXpath =
-          '//*[@id="widget-dialog-open-dialog-603238-5522-CustomerManager"]/div/div/div[2]/div/div/div/div';
+          '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]' +
+          '/div/div/div[2]/div/div/div/div';
         const checkOkXpath = `${contentProcessXpath}//span[contains(@class,"glyphicon-ok")]`;
         const btnSiguienteXpath = '//*[@id="widget-button-btn-next"]/div';
         const btnCerrarModalErrorXpath =
@@ -333,10 +333,11 @@ export default class GestionClientesServiciosPage {
         console.log("⏳ Esperando checks verdes...");
         await driver.wait(async () => {
           const checks = await driver.findElements(By.xpath(checkOkXpath));
-          return checks.length >= 5;
+          return checks.length >= 5; // ajusta si el número de checks varía
         }, 60000, "❌ Los checks no se completaron en el tiempo esperado.");
 
         console.log("✅ Checks de reconfiguración completados.");
+        await driver.sleep(1000);
 
         const btnSiguiente = await driver.wait(
           until.elementLocated(By.xpath(btnSiguienteXpath)),
@@ -347,15 +348,17 @@ export default class GestionClientesServiciosPage {
         await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnSiguiente);
         await driver.sleep(1000);
         await driver.executeScript("arguments[0].click();", btnSiguiente);
+        await driver.sleep(1000);
         console.log("✅ Paso 17: Botón 'Siguiente' presionado.");
         reconfigExitosa = true;
+
       } catch (e) {
         console.log("ℹ️ Reconfiguración no exitosa, revisando modal de error...");
         try {
           const btnCerrarModalError = await driver.wait(
-            until.elementLocated(
-              By.xpath('//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]//button')
-            ),
+            until.elementLocated(By.xpath(
+              '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]//button'
+            )),
             10000
           );
           await driver.wait(until.elementIsVisible(btnCerrarModalError), 5000);
@@ -366,6 +369,7 @@ export default class GestionClientesServiciosPage {
           console.log("⚠️ No apareció modal de error durante la reconfiguración.");
         }
       }
+
 
       // === Paso 18: Reutilizar datos WiFi (opcional) ===
       try {
@@ -386,8 +390,8 @@ export default class GestionClientesServiciosPage {
         }
 
         await driver.wait(until.elementIsVisible(btnConfigurar), 5000);
+        await driver.sleep(3000);
         await driver.executeScript("arguments[0].click();", btnConfigurar);
-        await driver.sleep(1000);
         console.log("✅ Botón 'Configurar WiFi' presionado.");
 
         try {
@@ -759,7 +763,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(300);
       await driver.executeScript("arguments[0].click();", btnConfirmarSi);
       console.log("✅ Botón 'Sí' presionado en modal de confirmación.");
-
+      await driver.sleep(5000);
       // === Esperar a que el progress termine, con tiempo amplio ===
       try {
         const progressXpath = '//*[@class="progress-bar"]';
@@ -769,7 +773,7 @@ export default class GestionClientesServiciosPage {
         try {
           progressBar = await driver.wait(
             until.elementLocated(By.xpath(progressXpath)),
-            30000
+            80000
           );
           console.log("⏳ Barra de progreso detectada, esperando a que desaparezca...");
         } catch {

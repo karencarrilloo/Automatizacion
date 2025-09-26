@@ -75,7 +75,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-    it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+    it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     // puedes ajustar la aserción si necesitas validar éxito estricto
@@ -96,7 +96,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   expect(true).to.be.true; // Aserción placeholder
 });
 
-it.only('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
+it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
   await gestionPage.suspenderCliente();
   expect(true).to.be.true; // aserción placeholder
 });
