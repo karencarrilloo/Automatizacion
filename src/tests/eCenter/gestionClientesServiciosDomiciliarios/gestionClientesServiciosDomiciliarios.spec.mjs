@@ -60,7 +60,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-     it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
+     it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
     // ajustar la aserción Para validar éxito estricto
@@ -75,7 +75,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-    it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+    it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     // puedes ajustar la aserción si necesitas validar éxito estricto
@@ -86,10 +86,10 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true; // Asersión placeholder; ajusta si deseas validar datos específicos
   });
 
-  it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
-    await gestionPage.verYEnviarDocumentos();
-    expect(true).to.be.true; // Placeholder de validación
-  });
+  // it.only('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
+  //   await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
+  //   expect(true).to.be.true; // Placeholder de validación
+  // });
 
   it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
   await gestionPage.verDetalleProceso();

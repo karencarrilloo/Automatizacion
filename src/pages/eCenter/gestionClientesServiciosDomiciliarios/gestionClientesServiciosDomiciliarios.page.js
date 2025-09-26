@@ -66,6 +66,7 @@ export default class GestionClientesServiciosPage {
   }
 
 
+
   /**
    * ===============================
    * CP_GESCLSERDOM_001 – Ingreso a vista
@@ -489,7 +490,7 @@ export default class GestionClientesServiciosPage {
   }
 
   // =====================================================
-  // CP_GESCLSERDOM_006: Ver y enviar documentos (Acta y Contrato)
+  // CP_GESCLSERDOM_006: Ver y enviar documentos (Acta y Contrato) **CORREGIR**
   // =====================================================
   async verYEnviarDocumentos(
     caseName = 'CP_GESCLSERDOM_007', idDeal) {
@@ -527,22 +528,40 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(3000);
       console.log("✅ Opción 'Ver documentos' seleccionada.");
 
-      // === Paso 4: Acciones sobre el Acta de instalación ===
-      const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]';
-      // Enviar al correo
-      await this._clickXpath(`${filaActaXpath}/div[3]`, "Enviar Acta al correo");
-      // Ver documento
-      await this._clickXpath(`${filaActaXpath}/div[4]`, "Ver documento Acta");
-      await this._cerrarModal('//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button', "Cerrar modal Acta");
-      // Descargar documento
-      await this._clickXpath(`${filaActaXpath}/div[5]`, "Descargar Acta");
+      
+      // === Esperar a que el modal de documentos cargue filas ===
+    const modalBase =
+      '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]';
+    const modalContainer = await driver.wait(
+      until.elementLocated(By.xpath(`${modalBase}//div[contains(@class,"grid-row")]`)),
+      60000
+    );
+    await driver.wait(until.elementIsVisible(modalContainer), 60000);
+    console.log("✅ Paso 3: Modal de Ver Documentos cargado correctamente.");
 
-      // === Paso 5: Acciones sobre el Contrato ===
-      const filaContratoXpath = '//*[@id="68b898e99877e54d10da4634"]';
-      await this._clickXpath(`${filaContratoXpath}/div[3]`, "Enviar Contrato al correo");
-      await this._clickXpath(`${filaContratoXpath}/div[4]`, "Ver documento Contrato");
-      await this._cerrarModal('//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button', "Cerrar modal Contrato");
-      await this._clickXpath(`${filaContratoXpath}/div[5]`, "Descargar Contrato");
+    // === Paso 4: Acciones sobre el Acta de instalación ===
+    const filaActaXpath = `${modalBase}//div[contains(@class,"grid-row")][.//*[contains(translate(normalize-space(.),"ACTA","acta"),"acta")]]`;
+    await this._clickXpath(`${filaActaXpath}/div[3]`, "Enviar Acta al correo", 60000);
+    await this._clickXpath(`${filaActaXpath}/div[4]`, "Ver documento Acta", 60000);
+    await this._cerrarModal(
+      '//*[@id="widget-dialog-contract-dialog"]//button[contains(@class,"close")]',
+      "Cerrar modal Acta",
+      60000
+    );
+    await this._clickXpath(`${filaActaXpath}/div[5]`, "Descargar Acta", 60000);
+    console.log("✅ Paso 4: Acciones del Acta completadas.");
+
+    // === Paso 5: Acciones sobre el Contrato ===
+    const filaContratoXpath = `${modalBase}//div[contains(@class,"grid-row")][.//*[contains(translate(normalize-space(.),"CONTRATO","contrato"),"contrato")]]`;
+    await this._clickXpath(`${filaContratoXpath}/div[3]`, "Enviar Contrato al correo", 60000);
+    await this._clickXpath(`${filaContratoXpath}/div[4]`, "Ver documento Contrato", 60000);
+    await this._cerrarModal(
+      '//*[@id="widget-dialog-contract-dialog"]//button[contains(@class,"close")]',
+      "Cerrar modal Contrato",
+      60000
+    );
+    await this._clickXpath(`${filaContratoXpath}/div[5]`, "Descargar Contrato", 60000);
+    console.log("✅ Paso 5: Acciones del Contrato completadas.");
 
       // === Paso 6: Cerrar modal principal de Ver Documentos ===
       await this._cerrarModal(
