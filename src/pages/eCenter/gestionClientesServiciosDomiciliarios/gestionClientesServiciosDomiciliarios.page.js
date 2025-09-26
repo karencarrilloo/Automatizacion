@@ -7,8 +7,62 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default class GestionClientesServiciosPage {
-  constructor(driver) {
+  /**
+   * @param {WebDriver} driver  instancia de selenium
+   * @param {string} defaultClientName nombre del cliente que se usará en todos los casos
+   */
+  constructor(driver, defaultClientName = 'TEST AUTOMATIZACION 02') {
     this.driver = driver;
+    this.defaultClientName = defaultClientName; // 👈 nombre global reutilizable
+  }
+
+  /**
+   * Metodo Reutilizable.
+   * Si no se envía `nombreCliente`, se usa el `defaultClientName` del constructor.
+   */
+  async seleccionarClientePorNombre(nombreCliente) {
+    const driver = this.driver;
+    const cliente = nombreCliente || this.defaultClientName;
+
+    const gridTbodyXpath =
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+      
+
+    const cuerpoTabla = await driver.wait(
+      until.elementLocated(By.xpath(gridTbodyXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+    const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+    if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+    let filaSeleccionada = null;
+    for (const fila of filas) {
+      try {
+        const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+        
+        const texto = (await tdName.getText()).trim();
+        if (texto.toUpperCase() === cliente.toUpperCase()) {
+          filaSeleccionada = fila;
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+    await driver.sleep(300);
+    try {
+      await filaSeleccionada.click();
+    } catch {
+      await driver.executeScript('arguments[0].click();', filaSeleccionada);
+    }
+    await driver.sleep(800);
+    console.log(`✅ Cliente "${cliente}" seleccionado.`);
   }
 
   /**
@@ -70,7 +124,7 @@ export default class GestionClientesServiciosPage {
    * 5 pasos
    * ==================================================
    */
-  async filtrarPorIdDeal(caseName = 'CP_GESCLSERDOM_002', idDeal = '28006512626') {
+  async filtrarPorIdDeal(caseName = 'CP_GESCLSERDOM_002', idDeal = '28006757991') {
     const driver = this.driver;
     try {
       // === Paso 1: Abrir modal de filtros ===
@@ -141,56 +195,17 @@ export default class GestionClientesServiciosPage {
       throw error;
     }
 
-
   }
   // ==========================================
   // CP_GESCLSERDOM_003: Ver información técnica asociada
   // ==========================================
-  async verInformacionTecnicaAsociada(
-    caseName = 'CP_GESCLSERDOM_003',
-    cliente = 'HAROLD AGUIRRE'     // Cambia el nombre si se requiere
-  ) {
+  async verInformacionTecnicaAsociada(caseName = 'CP_GESCLSERDOM_003', cliente) {
     const driver = this.driver;
     try {
-      // === Paso 9: Seleccionar cliente por NOMBRE ===
-      const gridTbodyXpath =
-        '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+      // Paso 1: seleccionar cliente (global o parámetro)
+      await this.seleccionarClientePorNombre(cliente);
 
-      const cuerpoTabla = await driver.wait(
-        until.elementLocated(By.xpath(gridTbodyXpath)),
-        15000
-      );
-      await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
-
-      const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
-      if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
-
-      let filaSeleccionada = null;
-      for (const fila of filas) {
-        try {
-          const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
-          const texto = (await tdName.getText()).trim();
-          if (texto.toUpperCase() === cliente.toUpperCase()) {
-            filaSeleccionada = fila;
-            break;
-          }
-        } catch {
-          continue;
-        }
-      }
-      if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
-
-      await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
-      await driver.sleep(300);
-      try {
-        await filaSeleccionada.click();
-      } catch {
-        await driver.executeScript('arguments[0].click();', filaSeleccionada);
-      }
-      await driver.sleep(800);
-      console.log(`✅ Cliente "${cliente}" seleccionado.`);
-
-      // === Paso 10: Botón Opciones ===
+      // Paso 2: abrir opciones
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
         10000
@@ -202,7 +217,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(1000);
       console.log('✅ Botón Opciones presionado.');
 
-      // === Paso 11: Opción "Ver información técnica asociada" ===
+      // Paso 3: seleccionar "Ver información técnica asociada"
       const menuOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul')),
         10000
@@ -219,7 +234,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(3000);
       console.log('✅ Opción "Ver información técnica asociada" seleccionada.');
 
-      // === Paso 12: Cerrar modal ===
+      // Paso 4: cerrar modal
       const btnCerrarModal = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-cancel-confirm-selected"]/div')),
         10000
@@ -231,11 +246,11 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(2000);
       console.log('✅ Modal cerrado correctamente.');
     } catch (error) {
-      // Reutiliza tu helper de captura de pantallas si ya existe
       if (this._capturarError) await this._capturarError(error, caseName);
       throw error;
     }
   }
+
 
   // =====================================================
   // CP_GESCLSERDOM_004: Reconfiguración del cliente

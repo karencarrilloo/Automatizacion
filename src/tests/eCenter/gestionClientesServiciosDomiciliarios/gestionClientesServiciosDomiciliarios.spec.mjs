@@ -56,7 +56,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
      });
 
 
-     it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
+     it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
     // Aquí podrías agregar una aserción que valide que la tabla muestre los resultados esperados.
@@ -64,19 +64,22 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-  it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
-    await gestionPage.verInformacionTecnicaAsociada(
-      'CP_GESCLSERDOM_003',
-      'HAROLD AGUIRRE'   // puedes parametrizar el nombre del cliente
-    );
+  it.only('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
+    // Si quieres usar el cliente global, no pasas nada más
+    await gestionPage.verInformacionTecnicaAsociada();
+
+    // O si quieres otro cliente puntual:
+    // await gestionPage.verInformacionTecnicaAsociada('CP_GESCLSERDOM_003', 'JUAN PÉREZ');
     expect(true).to.be.true;
   });
 
-    it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+    it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente('CP_GESCLSERDOM_004');
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     // puedes ajustar la aserción si necesitas validar éxito estricto
   });
+
+
 });
 
 
