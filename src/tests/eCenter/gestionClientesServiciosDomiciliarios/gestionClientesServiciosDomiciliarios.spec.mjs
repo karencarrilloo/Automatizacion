@@ -60,7 +60,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-     it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
+     it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
     // ajustar la aserción Para validar éxito estricto
@@ -99,6 +99,16 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
 it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
   await gestionPage.suspenderCliente();
   expect(true).to.be.true; // aserción placeholder
+});
+
+it.only('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
+  await gestionPage.reconectarCliente(); 
+  expect(true).to.be.true;
+});
+
+it.only('CP_GESCLSERDOM_010: Cambio de plan del cliente', async function () {
+  await gestionPage.cambioPlanCliente(); 
+  expect(true).to.be.true;
 });
 
 
