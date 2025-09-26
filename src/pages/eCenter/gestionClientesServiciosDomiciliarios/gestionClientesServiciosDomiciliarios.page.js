@@ -256,7 +256,7 @@ export default class GestionClientesServiciosPage {
   // CP_GESCLSERDOM_004: Reconfiguración del cliente
   // =====================================================
   async reconfigurarCliente(caseName = 'CP_GESCLSERDOM_004',
-    cliente = 'HAROLD AGUIRRE',     // Cambia el nombre si se requiere
+    cliente = 'HAROLD AGUIRRE', // Cambia el nombre si se requiere
   ) {
     const driver = this.driver;
     try {
@@ -445,6 +445,564 @@ export default class GestionClientesServiciosPage {
     }
   }
 
+  // =====================================================
+  // CP_GESCLSERDOM_005: Ver dispositivos del cliente
+  // =====================================================
+  async verDispositivoCliente(
+    caseName = 'CP_GESCLSERDOM_005',
+    cliente = 'HAROLD AGUIRRE' // Cambia este valor si es necesario
+  ) {
+    const driver = this.driver;
+    try {
+      // === Paso 1: Seleccionar cliente por NOMBRE ===
+      const gridTbodyXpath =
+        '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+
+      const cuerpoTabla = await driver.wait(
+        until.elementLocated(By.xpath(gridTbodyXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+      const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+      if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+      let filaSeleccionada = null;
+      for (const fila of filas) {
+        try {
+          const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+          const texto = (await tdName.getText()).trim();
+          if (texto.toUpperCase() === cliente.toUpperCase()) {
+            filaSeleccionada = fila;
+            break;
+          }
+        } catch {
+          continue;
+        }
+      }
+      if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+      await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+      await driver.sleep(300);
+      try {
+        await filaSeleccionada.click();
+      } catch {
+        await driver.executeScript('arguments[0].click();', filaSeleccionada);
+      }
+      await driver.sleep(800);
+      console.log(`✅ Cliente "${cliente}" seleccionado.`);
+
+      // === Paso 2: Botón Opciones ===
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+      console.log("✅ Botón 'Opciones' presionado.");
+
+      // === Paso 3: Seleccionar opción "Ver dispositivos" ===
+      const menuOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+      const opcionVerDispositivos = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="1088"]')),
+        10000
+      );
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionVerDispositivos);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", opcionVerDispositivos);
+      await driver.sleep(3000);
+      console.log("✅ Opción 'Ver dispositivos' seleccionada.");
+
+      // === Paso 4: Cerrar el modal "Ver dispositivos" ===
+      const btnCerrarModalXpath =
+        '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]/div/div/div[1]/button';
+
+      const btnCerrarModal = await driver.wait(
+        until.elementLocated(By.xpath(btnCerrarModalXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnCerrarModal), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModal);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnCerrarModal);
+      console.log("✅ Botón 'Cerrar' del modal presionado.");
+
+      // Esperar que el modal desaparezca (opcional, tolerante)
+      try {
+        await driver.wait(async () => {
+          const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+          return !visible;
+        }, 8000);
+        console.log("✅ Modal 'Ver dispositivos' cerrado correctamente.");
+      } catch {
+        console.log("⚠️ Modal no desapareció completamente, continuando...");
+      }
+
+      await driver.sleep(1500);
+    } catch (error) {
+      if (this._capturarError) await this._capturarError(error, caseName);
+      throw error;
+    }
+  }
+
+  // =====================================================
+  // CP_GESCLSERDOM_006: Ver y enviar documentos (Acta y Contrato)
+  // =====================================================
+  async verYEnviarDocumentos(
+    caseName = 'CP_GESCLSERDOM_007',
+    cliente = 'HAROLD AGUIRRE'   // Cambia el nombre si se requiere
+  ) {
+    const driver = this.driver;
+    try {
+      // === Paso 1: Seleccionar cliente por NOMBRE ===
+      const gridTbodyXpath =
+        '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+
+      const cuerpoTabla = await driver.wait(
+        until.elementLocated(By.xpath(gridTbodyXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+      const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+      if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+      let filaSeleccionada = null;
+      for (const fila of filas) {
+        try {
+          const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+          const texto = (await tdName.getText()).trim();
+          if (texto.toUpperCase() === cliente.toUpperCase()) {
+            filaSeleccionada = fila;
+            break;
+          }
+        } catch {
+          continue;
+        }
+      }
+      if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+      await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+      await driver.sleep(300);
+      try {
+        await filaSeleccionada.click();
+      } catch {
+        await driver.executeScript('arguments[0].click();', filaSeleccionada);
+      }
+      await driver.sleep(800);
+      console.log(`✅ Cliente "${cliente}" seleccionado.`);
+
+      // === Paso 2: Botón Opciones ===
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+      console.log("✅ Botón 'Opciones' presionado.");
+
+      // === Paso 3: Seleccionar opción "Ver documentos" ===
+      const menuOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+      const opcionVerDocumentos = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="1080"]')),
+        10000
+      );
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionVerDocumentos);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", opcionVerDocumentos);
+      await driver.sleep(3000);
+      console.log("✅ Opción 'Ver documentos' seleccionada.");
+
+      // === Paso 4: Acciones sobre el Acta de instalación ===
+      const filaActaXpath = '//*[@id="68b898e99877e54d10da4634"]';
+      // Enviar al correo
+      await this._clickXpath(`${filaActaXpath}/div[3]`, "Enviar Acta al correo");
+      // Ver documento
+      await this._clickXpath(`${filaActaXpath}/div[4]`, "Ver documento Acta");
+      await this._cerrarModal('//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button', "Cerrar modal Acta");
+      // Descargar documento
+      await this._clickXpath(`${filaActaXpath}/div[5]`, "Descargar Acta");
+
+      // === Paso 5: Acciones sobre el Contrato ===
+      const filaContratoXpath = '//*[@id="68b898e99877e54d10da4634"]';
+      await this._clickXpath(`${filaContratoXpath}/div[3]`, "Enviar Contrato al correo");
+      await this._clickXpath(`${filaContratoXpath}/div[4]`, "Ver documento Contrato");
+      await this._cerrarModal('//*[@id="widget-dialog-contract-dialog"]/div/div/div[1]/button', "Cerrar modal Contrato");
+      await this._clickXpath(`${filaContratoXpath}/div[5]`, "Descargar Contrato");
+
+      // === Paso 6: Cerrar modal principal de Ver Documentos ===
+      await this._cerrarModal(
+        '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]',
+        "Cerrar modal principal de Ver Documentos"
+      );
+
+    } catch (error) {
+      if (this._capturarError) await this._capturarError(error, caseName);
+      throw error;
+    }
+  }
+
+  /**
+   * Helper para clic en un elemento por XPath con logs.
+   */
+  async _clickXpath(xpath, descripcion) {
+    const driver = this.driver;
+    const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), 20000);
+    await driver.wait(until.elementIsVisible(elem), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", elem);
+    await driver.sleep(500);
+    await driver.executeScript("arguments[0].click();", elem);
+    await driver.sleep(3000);
+    console.log(`✅ ${descripcion} ejecutado correctamente.`);
+  }
+
+  /**
+   * Helper para cerrar modal por XPath con logs.
+   */
+  async _cerrarModal(xpath, descripcion) {
+    const driver = this.driver;
+    const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), 15000);
+    await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnCerrar);
+    try {
+      await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
+    } catch {
+      console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
+    }
+    console.log(`✅ ${descripcion} completado.`);
+  }
+
+  // =====================================================
+  // CP_GESCLSERDOM_007: Ver detalle del proceso
+  // =====================================================
+  async verDetalleProceso(
+    caseName = 'CP_GESCLSERDOM_007',
+    cliente = 'HAROLD AGUIRRE'   // Cambia el nombre si se requiere
+  ) {
+    const driver = this.driver;
+    try {
+      // === Paso 1: Seleccionar cliente por NOMBRE ===
+      const gridTbodyXpath =
+        '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+
+      const cuerpoTabla = await driver.wait(
+        until.elementLocated(By.xpath(gridTbodyXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+      const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+      if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+      let filaSeleccionada = null;
+      for (const fila of filas) {
+        try {
+          const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+          const texto = (await tdName.getText()).trim();
+          if (texto.toUpperCase() === cliente.toUpperCase()) {
+            filaSeleccionada = fila;
+            break;
+          }
+        } catch {
+          continue;
+        }
+      }
+      if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+      await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+      await driver.sleep(300);
+      try {
+        await filaSeleccionada.click();
+      } catch {
+        await driver.executeScript('arguments[0].click();', filaSeleccionada);
+      }
+      await driver.sleep(800);
+      console.log(`✅ Cliente "${cliente}" seleccionado.`);
+
+      // === Paso 2: Botón Opciones ===
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+      console.log("✅ Botón 'Opciones' presionado.");
+
+      // === Paso 3: Seleccionar opción "Detalle del proceso" ===
+      const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+      const liDetalleProceso = '//*[@id="1084"]';
+      const modalGenericoXpath = '//div[starts-with(@id,"widget-dialog") and contains(@id,"CustomerManager")]';
+
+      const menuOpciones = await driver.wait(
+        until.elementLocated(By.xpath(ulOpcionesXpath)),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+      const opcionDetalle = await menuOpciones.findElement(By.xpath('.//li[@id="1084"]'));
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionDetalle);
+      await driver.sleep(250);
+      await driver.executeScript("arguments[0].click();", opcionDetalle);
+      await driver.sleep(5000);
+
+      const modalDetalle = await driver.wait(
+        until.elementLocated(By.xpath(modalGenericoXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(modalDetalle), 15000);
+      console.log("✅ Opción 'Detalle del proceso' abierta correctamente.");
+
+      // === Paso 4: Cerrar modal "Detalle del proceso" ===
+      const btnCerrarModalXpath =
+        '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
+
+      const btnCerrarModal = await driver.wait(
+        until.elementLocated(By.xpath(btnCerrarModalXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+      // Validar que el modal desapareció
+      try {
+        await driver.wait(async () => {
+          const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+          return !visible;
+        }, 8000);
+        console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
+      } catch {
+        console.log("⚠️ Modal 'Detalle del proceso' no desapareció por completo, pero se presionó cerrar.");
+      }
+
+      await driver.sleep(1000);
+    } catch (error) {
+      if (this._capturarError) await this._capturarError(error, caseName);
+      throw error;
+    }
+  }
+
+  // =====================================================
+// CP_GESCLSERDOM_008: Suspensión del cliente
+// =====================================================
+async suspenderCliente(
+  caseName = 'CP_GESCLSERDOM_008',
+  cliente = 'HAROLD AGUIRRE'     // Cambia si se requiere
+) {
+  const driver = this.driver;
+  try {
+    // === Paso 1: Seleccionar cliente por NOMBRE ===
+    const gridTbodyXpath =
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+
+    const cuerpoTabla = await driver.wait(
+      until.elementLocated(By.xpath(gridTbodyXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+
+    const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
+    if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
+
+    let filaSeleccionada = null;
+    for (const fila of filas) {
+      try {
+        const tdName = await fila.findElement(By.xpath('.//*[@id="nameCustomer"]'));
+        const texto = (await tdName.getText()).trim();
+        if (texto.toUpperCase() === cliente.toUpperCase()) {
+          filaSeleccionada = fila;
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+    if (!filaSeleccionada) throw new Error(`No se encontró cliente "${cliente}"`);
+
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+    await driver.sleep(300);
+    try {
+      await filaSeleccionada.click();
+    } catch {
+      await driver.executeScript('arguments[0].click();', filaSeleccionada);
+    }
+    await driver.sleep(800);
+    console.log(`✅ Cliente "${cliente}" seleccionado.`);
+
+    // === Paso 2: Abrir menú Opciones ===
+    const btnOpciones = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnOpciones);
+    await driver.sleep(1000);
+    console.log("✅ Botón 'Opciones' presionado.");
+
+    // === Paso 3: Seleccionar opción "Suspensión" ===
+    const ulOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+    const opcionSuspensionXpath = '//*[@id="1083"]';
+    const modalSuspensionXpath =
+      '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]';
+
+    const menuOpciones = await driver.wait(
+      until.elementLocated(By.xpath(ulOpcionesXpath)),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+
+    const opcionSuspension = await driver.wait(
+      until.elementLocated(By.xpath(opcionSuspensionXpath)),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(opcionSuspension), 5000);
+
+    await driver.actions({ bridge: true }).move({ origin: opcionSuspension }).click().perform();
+    console.log("✅ Opción 'Suspensión' seleccionada.");
+
+    const modalSuspension = await driver.wait(
+      until.elementLocated(By.xpath(modalSuspensionXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(modalSuspension), 8000);
+    console.log("✅ Modal 'Suspensión' abierto.");
+
+    // === Paso 4: Seleccionar motivo "SUSPENSION POR NO PAGO" ===
+    const selectXpath = '//*[@id="input-select-suspension-type-select"]';
+    const selectElement = await driver.wait(
+      until.elementLocated(By.xpath(selectXpath)),
+      10000
+    );
+
+    await driver.executeScript(`
+      const select = arguments[0];
+      select.value = select.options[1].value; // index 1 = "SUSPENSION POR NO PAGO"
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    `, selectElement);
+    console.log("✅ Motivo de suspensión seleccionado: 'SUSPENSION POR NO PAGO'");
+    await driver.sleep(2000);
+
+    // === Paso 5: Diligenciar comentario ===
+    const comentarioXpath = '//*[@id="textfield-input-data-comment"]';
+    const inputComentario = await driver.wait(
+      until.elementLocated(By.xpath(comentarioXpath)),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(inputComentario), 5000);
+    await inputComentario.clear();
+    await inputComentario.sendKeys("test automatizacion");
+    console.log("✅ Comentario diligenciado: 'test automatizacion'");
+
+    // === Paso 6: Confirmar suspensión ===
+    const btnConfirmarSusp = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-suspension-detail"]/div')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnConfirmarSusp), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmarSusp);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnConfirmarSusp);
+    console.log("✅ Botón 'Confirmar suspensión' presionado.");
+    await driver.sleep(2000);
+
+    // === Paso 7: Confirmar con “Sí” ===
+    const btnConfirmarSi = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnConfirmarSi), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmarSi);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnConfirmarSi);
+    console.log("✅ Botón 'Sí' presionado en modal de confirmación.");
+
+    // Espera de progress opcional
+    try {
+      const progressXpath = '//*[@class="progress-bar"]';
+      const progress = await driver.wait(
+        until.elementLocated(By.xpath(progressXpath)),
+        3000
+      );
+      await driver.wait(until.stalenessOf(progress), 20000);
+      console.log("✅ Progress completado.");
+    } catch {
+      console.log("⚠️ No se detectó progress, continuando.");
+    }
+
+    // === Paso 8: Validar modal de detalle de proceso ===
+    const modalDetalleXpath = '//*[@id="widget-dialog-open-dialog-603238-5522-CustomerManager"]/div/div';
+    const modalDetalle = await driver.wait(
+      until.elementLocated(By.xpath(modalDetalleXpath)),
+      30000
+    );
+    await driver.wait(until.elementIsVisible(modalDetalle), 30000);
+
+    const ordenSuspensionXpath = "//*[contains(text(),'ORDEN - SUSPENSION')]";
+    await driver.wait(
+      until.elementLocated(By.xpath(ordenSuspensionXpath)),
+      20000
+    );
+    console.log("✅ Detalle de proceso con orden de suspensión visible.");
+    await driver.sleep(8000);
+
+    // === Paso 9: Cerrar modal de detalle ===
+    const btnCerrarModalXpath =
+      '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
+
+    const btnCerrarModal = await driver.wait(
+      until.elementLocated(By.xpath(btnCerrarModalXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(btnCerrarModal), 6000);
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCerrarModal);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+    try {
+      await driver.wait(async () => {
+        const visible = await btnCerrarModal.isDisplayed().catch(() => false);
+        return !visible;
+      }, 8000);
+      console.log("✅ Modal 'Detalle del proceso' cerrado correctamente.");
+    } catch {
+      console.log("⚠️ Modal 'Detalle del proceso' no desapareció del todo, pero se presionó cerrar.");
+    }
+
+    await driver.sleep(1000);
+  } catch (error) {
+    if (this._capturarError) await this._capturarError(error, caseName);
+    throw error;
+  }
+}
+
+
 
 }
+
+
 
