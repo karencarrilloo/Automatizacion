@@ -101,15 +101,22 @@ it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
   expect(true).to.be.true; // aserción placeholder
 });
 
-it.only('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
+it('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
   await gestionPage.reconectarCliente(); 
   expect(true).to.be.true;
 });
 
-it.only('CP_GESCLSERDOM_010: Cambio de plan del cliente', async function () {
+it('CP_GESCLSERDOM_010: Cambio de plan del cliente(confirmar)', async function () {
   await gestionPage.cambioPlanCliente(); 
   expect(true).to.be.true;
 });
+
+it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)', async function () {
+  await gestionPage.cambioPlanClienteCancelar(); 
+  expect(true).to.be.true;
+});
+
+
 
 
 });
