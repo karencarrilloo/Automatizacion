@@ -12,8 +12,8 @@ let driver;
 let loginPage;
 let gestionPage;
 
- // === ID_DEAL GLOBAL para todas las pruebas ===
-  const ID_DEAL_GLOBAL = '28006757991';
+// === ID_DEAL GLOBAL para todas las pruebas ===
+const ID_DEAL_GLOBAL = '28006757991';
 
 
 describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
@@ -60,7 +60,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-     it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
+  it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
     // ajustar la aserción Para validar éxito estricto
@@ -75,7 +75,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-    it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     // puedes ajustar la aserción si necesitas validar éxito estricto
@@ -92,29 +92,29 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   // });
 
   it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
-  await gestionPage.verDetalleProceso();
-  expect(true).to.be.true; // Aserción placeholder
-});
+    await gestionPage.verDetalleProceso();
+    expect(true).to.be.true; // Aserción placeholder
+  });
 
-it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
-  await gestionPage.suspenderCliente();
-  expect(true).to.be.true; // aserción placeholder
-});
+  it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
+    await gestionPage.suspenderCliente();
+    expect(true).to.be.true; // aserción placeholder
+  });
 
-it('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
-  await gestionPage.reconectarCliente(); 
-  expect(true).to.be.true;
-});
+  it('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
+    await gestionPage.reconectarCliente();
+    expect(true).to.be.true;
+  });
 
-it('CP_GESCLSERDOM_010: Cambio de plan del cliente(confirmar)', async function () {
-  await gestionPage.cambioPlanCliente(); 
-  expect(true).to.be.true;
-});
+  it('CP_GESCLSERDOM_010: Cambio de plan del cliente(confirmar)', async function () {
+    await gestionPage.cambioPlanCliente();
+    expect(true).to.be.true;
+  });
 
-it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)', async function () {
-  await gestionPage.cambioPlanClienteCancelar(); 
-  expect(true).to.be.true;
-});
+  it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)', async function () {
+    await gestionPage.cambioPlanClienteCancelar();
+    expect(true).to.be.true;
+  });
 
 
 

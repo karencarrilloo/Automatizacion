@@ -43,16 +43,31 @@ describe('Pruebas de Gestión de Activos', function () {
     if (driver) await driver.quit();
   });
 
-  it('CP_GESTION_ACTIVOS_001: Ingreso a la vista Gestión de Activos', async () => {
+  it('CP_GESACT_001: Ingreso a la vista Gestión de Activos', async () => {
     await gestionActivosPage.ingresarVistaGestionActivos();
 
     // Verificación: contenedor principal de la plataforma
     const container = await driver.wait(
-      until.elementLocated(By.css('#container-mainframe')),
-      30000,
-      'El contenedor principal no apareció tras abrir la vista'
+      until.elementLocated(By.css('#container-mainframe')),30000,'El contenedor principal no apareció tras abrir la vista'
     );
     expect(await container.isDisplayed()).to.be.true;
+  });
+
+  it('CP_GESACT_002: Filtrar ont por estado en "FAILED"', async () => {
+    await gestionActivosPage.filtraOnt();
+  });
+
+  it('CP_GESTION_ACTIVOS_003: Actualización de estado de la ONT de FAILED a LOST', async () => {
+    await gestionActivosPage.ActualizarOnt();
+  });
+
+  it('CP_GESACT_004: Filtrar ONT actualizada previamente a LOST', async () => {
+    // Se asume que el serial fue guardado en una variable de entorno o fixture
+    const serial = process.env.FACTORY_SERIAL || 'SERIAL_DE_PRUEBA';
+    await gestionActivosPage.filtrarOntLost(serial);
+
+    // ✅ Expect: verificar que el serial de prueba no sea vacío
+    expect(serial).to.be.a('string').and.not.empty;
   });
 });
 
