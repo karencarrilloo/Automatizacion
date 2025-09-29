@@ -14,12 +14,12 @@ export default class LoginPage {
     this.url = 'https://oss-dev.celsiainternet.com/';          // URL de la página de login
   }
 
-  /**
-   * ===============================
-   * CP_LOGIN_001 – Ingreso a vista
-   * 7 pasos
-   * ===============================
-   */
+
+  //  ===============================
+  //  CP_LOGIN_001 – Ingreso a vista
+  //  7 pasos
+  //  ===============================
+  
 async ejecutarLogin(
   usuario = process.env.LOGIN_EMAIL,
   clave = process.env.LOGIN_PASSWORD,

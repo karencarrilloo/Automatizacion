@@ -11,15 +11,12 @@ export default class ContenidoClasesNegocioPage {
     this.driver = driver;
   }
 
-  /**
-   * ==================================
-   * CP_CONTENIDO_001 – Ingreso a vista
-   * ==================================
-   * Pasos:
-   *   1. Clic en módulo eCenter
-   *   2. Scroll en contenedor de aplicaciones
-   *   3. Clic en "Contenido clases de negocio"
-   */
+ 
+  //  ==================================
+  //  CP_CONTENIDO_001 – Ingreso a vista
+  // 3 pasos
+  //  ==================================
+   
   async ingresarVistaContenidoClases(caseName = 'CP_CONTENIDO_001') {
     const driver = this.driver;
 

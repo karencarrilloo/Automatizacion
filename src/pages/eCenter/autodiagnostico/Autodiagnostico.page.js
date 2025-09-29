@@ -24,7 +24,7 @@ export default class AutodiagnosticoPage {
 
   // =======================
   // CP_AUTO_001: Ingreso a la vista Autodiagnóstico
-  // Pasos 1–3
+  // Pasos 3
   // =======================
   async ingresarVistaAutodiagnostico() {
     const d = this.driver;
@@ -62,12 +62,12 @@ export default class AutodiagnosticoPage {
 
   // =======================
   // CP_AUTO_002: Consulta del cliente por ID DEAL
-  // Pasos 4–6
+  // Pasos 3
   // =======================
   async consultarClientePorID(idDeal = '28006582524') {
     const d = this.driver;
     try {
-      // Paso 4: clic en botón ID DEAL
+      // Paso 1: clic en botón ID DEAL
       const botonID = await d.wait(
         until.elementLocated(By.xpath('//*[@id="container-mainframe"]/div[4]/div/div/div/div[2]/div[2]/div[3]')),
         15000
@@ -76,7 +76,7 @@ export default class AutodiagnosticoPage {
       await d.executeScript("arguments[0].click();", botonID);
       await d.sleep(2000);
 
-      // Paso 5: ingresar número
+      // Paso 2: ingresar número
       const inputID = await d.wait(
         until.elementLocated(By.xpath('//*[@id="textfield-input-consult-customer"]')),
         10000
@@ -85,7 +85,7 @@ export default class AutodiagnosticoPage {
       await inputID.sendKeys(idDeal);
       await d.sleep(1000);
 
-      // Paso 6: clic en Consultar cliente
+      // Paso 3: clic en Consultar cliente
       const btnConsultar = await d.wait(
         until.elementLocated(By.xpath('//*[@id="container-mainframe"]/div[4]/div/div/div/div[2]/div[3]/div[3]')),
         15000
@@ -111,21 +111,21 @@ export default class AutodiagnosticoPage {
 
   // =======================
   // CP_AUTO_003: Editar configuración de WiFi
-  // Pasos 7–17
+  // Pasos 11
   // =======================
   async editarConfiguracionWiFi() {
     const d = this.driver;
     try {
-      // Paso 7: opciones
+      // Paso 1: opciones
       const btnOpciones = await d.wait(until.elementLocated(By.xpath('//*[@id="btn-options"]')), 15000);
       await d.executeScript("arguments[0].click();", btnOpciones);
       await d.sleep(2000);
 
-      // Paso 8: Configuración WiFi
+      // Paso 2: Configuración WiFi
       const opcionWifi = await d.wait(until.elementLocated(By.xpath('//*[@id="1200"]/div')), 15000);
       await d.executeScript("arguments[0].click();", opcionWifi);
 
-    // === Paso 9: Seleccionar el campo "Nombre de red"
+    // === Paso 3: Seleccionar el campo "Nombre de red"
     const contenedorCampo = await d.wait(
       until.elementLocated(By.xpath('//*[@id="widget-textfield-2_4GHz-1"]')),
       20000
@@ -140,13 +140,13 @@ export default class AutodiagnosticoPage {
     await d.executeScript("arguments[0].focus();", inputNombreRed);
     await d.sleep(500);
 
-    // === Paso 10: Digitar nuevo nombre de red
+    // === Paso 4: Digitar nuevo nombre de red
     await inputNombreRed.clear();
     await d.sleep(500);
     await inputNombreRed.sendKeys("TEST_EDICION");
     await d.sleep(2000);
 
-    // === Paso 11: Clic en el select CANAL
+    // === Paso 5: Clic en el select CANAL
     const selectCanal = await d.wait(
       until.elementLocated(By.xpath('//*[@id="input-select-select-2_4GHz3"]')),
       10000
@@ -158,7 +158,7 @@ export default class AutodiagnosticoPage {
     await selectCanal.click();
     await d.sleep(1000);
 
-    // === Paso 12: Selección aleatoria de canal
+    // === Paso 6: Selección aleatoria de canal
     const opcionesCanal = await selectCanal.findElements(By.css('option'));
     const canalesValidos = [];
     for (const opt of opcionesCanal) {
@@ -174,7 +174,7 @@ export default class AutodiagnosticoPage {
     );
     await d.sleep(1500);
 
-    // === Paso 13: Clic en select ANCHO BANDA CANAL
+    // === Paso 7: Clic en select ANCHO BANDA CANAL
     const selectAncho = await d.wait(
       until.elementLocated(By.xpath('//*[@id="input-select-select-2_4GHz4"]')),
       10000
@@ -186,7 +186,7 @@ export default class AutodiagnosticoPage {
     await selectAncho.click();
     await d.sleep(1000);
 
-    // === Paso 14: Selección aleatoria de ancho de banda
+    // === Paso 8: Selección aleatoria de ancho de banda
     const opcionesAncho = await selectAncho.findElements(By.css('option'));
     const anchosValidos = [];
     for (const opt of opcionesAncho) {
@@ -202,7 +202,7 @@ export default class AutodiagnosticoPage {
     );
     await d.sleep(1500);
 
-    // === Paso 15: Marcar checkbox 'Unsecured'
+    // === Paso 9: Marcar checkbox 'Unsecured'
     const labelUnsecured = await d.wait(
       until.elementLocated(By.xpath('//*[@id="widget-checkbox-checklist-data2_4GHz1"]/label')),
       10000
@@ -213,7 +213,7 @@ export default class AutodiagnosticoPage {
     await d.executeScript("arguments[0].click();", labelUnsecured);
     await d.sleep(800);
 
-    // === Paso 16: Clic en botón ENVIAR y esperar progress
+    // === Paso 10: Clic en botón ENVIAR y esperar progress
     const btnEnviar = await d.wait(
       until.elementLocated(By.xpath('//*[@id="widget-button-send-info"]/div')),
       10000
@@ -231,7 +231,7 @@ export default class AutodiagnosticoPage {
       await d.wait(until.stalenessOf(progress), 30000);
     } catch { }
 
-    // === Paso 17: Cerrar modal de Configuración WiFi
+    // === Paso 11: Cerrar modal de Configuración WiFi
     const closeBtn = await d.wait(
       until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[1]/button')),
       10000

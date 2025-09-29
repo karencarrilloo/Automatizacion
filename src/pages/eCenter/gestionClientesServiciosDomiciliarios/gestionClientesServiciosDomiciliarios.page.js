@@ -67,12 +67,12 @@ export default class GestionClientesServiciosPage {
 
 
 
-  /**
-   * ===============================
-   * CP_GESCLSERDOM_001 – Ingreso a vista
-   * 3 pasos
-   * ===============================
-   */
+  
+  //  ===============================
+  //  CP_GESCLSERDOM_001 – Ingreso a vista
+  //  3 pasos
+  //  ===============================
+   
   async ingresarVistaGestionClientes(caseName = 'CP_GESCLSERDOM_001') {
     const driver = this.driver;
 
@@ -120,13 +120,11 @@ export default class GestionClientesServiciosPage {
     }
   }
 
-  /**
-   * ==================================================
-   * CP_GESCLSERDOM_002 – Filtro de búsqueda cliente por ID_DEAL
-   * 5 pasos
-   * ==================================================
-   */
-  // Dentro de src/pages/eCenter/gestionClientesServiciosDomiciliarios/gestionClientesServiciosDomiciliarios.page.js
+  
+  //  ==================================================
+  //  CP_GESCLSERDOM_002 – Filtro de búsqueda cliente por ID_DEAL
+  //  5 pasos
+  //  ==================================================
 
   async filtrarPorIdDeal(caseName = 'CP_GESCLSERDOM_002', idDeal) {
     const driver = this.driver;
@@ -163,7 +161,7 @@ export default class GestionClientesServiciosPage {
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
       await selectFiltro.click();
       await driver.sleep(2000);
-      console.log("✅ Select de filtros desplegado.");
+      //console.log("✅ Select de filtros desplegado.");
 
       // === Paso 3: Seleccionar "ID_DEAL" ===
       const selectCampo = await grupoFiltro.findElement(By.css('select'));
@@ -206,6 +204,7 @@ export default class GestionClientesServiciosPage {
   }
   // ==========================================
   // CP_GESCLSERDOM_003: Ver información técnica asociada
+  // 4 pasos
   // ==========================================
   async verInformacionTecnicaAsociada(caseName = 'CP_GESCLSERDOM_003', idDeal) {
     const driver = this.driver;
@@ -261,6 +260,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_004: Reconfiguración del cliente
+  // 7 pasos
   // =====================================================
   async reconfigurarCliente(caseName = 'CP_GESCLSERDOM_004', idDeal) {
     const driver = this.driver;
@@ -309,7 +309,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(2000);
       console.log("✅ Paso 15: Botón 'Reconfigurar' presionado.");
 
-      // === Paso 16: Confirmar con "Sí" en el modal ===
+      // === Paso 5: Confirmar con "Sí" en el modal ===
       const btnConfirmarSi = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
         10000
@@ -320,7 +320,7 @@ export default class GestionClientesServiciosPage {
       await driver.executeScript("arguments[0].click();", btnConfirmarSi);
       console.log("✅ Paso 16: Confirmación 'Sí' ejecutada.");
 
-      // === Paso 17: Monitorear proceso de reconfiguración ===
+      // === Paso 6: Monitorear proceso de reconfiguración ===
       let reconfigExitosa = false;
       try {
         const contentProcessXpath =
@@ -372,7 +372,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 18: Reutilizar datos WiFi (opcional) ===
+      // === Paso 7: Reutilizar datos WiFi (opcional) ===
       try {
         const btnConfigurarXpath = '//*[@id="widget-button-btn-config-wifi-data"]/div';
         const progressXpath = '//*[@class="progress-bar"]';
@@ -420,6 +420,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_005: Ver dispositivos del cliente
+  // 4 pasos
   // =====================================================
   async verDispositivoCliente(
     caseName = 'CP_GESCLSERDOM_005', idDeal) {
@@ -491,6 +492,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_006: Ver y enviar documentos (Acta y Contrato) **CORREGIR**
+  // 6 pasos
   // =====================================================
   async verYEnviarDocumentos(
     caseName = 'CP_GESCLSERDOM_007', idDeal) {
@@ -609,6 +611,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_007: Ver detalle del proceso
+  // 4 pasos
   // =====================================================
   async verDetalleProceso(
     caseName = 'CP_GESCLSERDOM_007', idDeal) {
@@ -686,6 +689,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_008: Suspensión del cliente
+  // 9 pasos
   // =====================================================
   async suspenderCliente(
     caseName = 'CP_GESCLSERDOM_008', idDeal) {
@@ -853,6 +857,7 @@ export default class GestionClientesServiciosPage {
   }
   // =====================================================
   // CP_GESCLSERDOM_009: Reconexión del cliente
+  // 10 pasos
   // =====================================================
   async reconectarCliente(caseName = 'CP_GESCLSERDOM_009', idDeal) {
     const driver = this.driver;
@@ -978,6 +983,7 @@ export default class GestionClientesServiciosPage {
   }
   // =====================================================
   // CP_GESCLSERDOM_010: Cambio de plan del cliente (confirmar)
+  // 10 pasos
   // =====================================================
   async cambioPlanCliente(caseName = 'CP_GESCLSERDOM_010', idDeal) {
     const driver = this.driver;
@@ -1140,6 +1146,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)
+  // 8 pasos
   // =====================================================
   async cambioPlanClienteCancelar(
     caseName = 'CP_GESCLSERDOM_010_CANCELAR',
