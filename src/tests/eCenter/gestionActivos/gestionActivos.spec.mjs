@@ -11,6 +11,7 @@ import GestionActivosPage from '../../../pages/eCenter/gestionActivos/gestionAct
 let driver;
 let loginPage;
 let gestionActivosPage;
+let serialONT;
 
 describe('Pruebas de Gestión de Activos', function () {
   this.timeout(180000); // 3 min
@@ -57,17 +58,10 @@ describe('Pruebas de Gestión de Activos', function () {
     await gestionActivosPage.filtraOnt();
   });
 
-  it('CP_GESTION_ACTIVOS_003: Actualización de estado de la ONT de FAILED a LOST', async () => {
-    await gestionActivosPage.ActualizarOnt();
+  it('CP_GESACT_003: Actualización de estado de la ONT de FAILED a LOST', async () => {
+    serialONT = await gestionActivosPage.ActualizarOntyFiltro();
   });
 
-  it('CP_GESACT_004: Filtrar ONT actualizada previamente a LOST', async () => {
-    // Se asume que el serial fue guardado en una variable de entorno o fixture
-    const serial = process.env.FACTORY_SERIAL || 'SERIAL_DE_PRUEBA';
-    await gestionActivosPage.filtrarOntLost(serial);
-
-    // ✅ Expect: verificar que el serial de prueba no sea vacío
-    expect(serial).to.be.a('string').and.not.empty;
-  });
+   
 });
 
