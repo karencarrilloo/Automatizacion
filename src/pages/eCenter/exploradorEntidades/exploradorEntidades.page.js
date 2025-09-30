@@ -103,55 +103,118 @@ export default class ExploradorEntidadesPage {
     }
   }
 
-  // =======================
-  // CP_EXPENT_003 – Crear nuevo registro de entidad
-  // =======================
-  async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
-    const driver = this.driver;
+ // =======================
+// CP_EXPENT_003 – Crear nuevo registro de entidad
+// =======================
+async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
+  const driver = this.driver;
 
-    try {
-      // Paso 1: Esperar contenedor correcto
-      const contenedor = await driver.wait(
-        until.elementLocated(By.id('container-grid-crud')),
-        20000
-      );
-      await driver.wait(until.elementIsVisible(contenedor), 20000);
+  try {
+    // === Paso 1: Clic en la primera tarjeta ===
+    const contenedor = await driver.wait(
+      until.elementLocated(By.id('container-grid-crud')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(contenedor), 20000);
 
-      // Paso 2: Buscar tarjetas dentro de este contenedor
-      const tarjetas = await driver.findElements(
-        By.xpath('//*[@id="container-grid-crud"]//div[starts-with(@id,"device-")]')
-      );
+    const tarjetas = await driver.findElements(
+      By.xpath('//*[@id="container-grid-crud"]//div[starts-with(@id,"device-")]')
+    );
 
-      if (tarjetas.length === 0) {
-        throw new Error("No se encontraron tarjetas dentro de #container-grid-crud.");
-      }
-
-      // Paso 3: Clic en la primera tarjeta
-      const primeraTarjeta = tarjetas[0];
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", primeraTarjeta);
-      await driver.wait(until.elementIsVisible(primeraTarjeta), 30000);
-      await primeraTarjeta.click();
-      await driver.sleep(2000);
-
-      console.log("✅ CP_EXPENT_003 Paso 1: Primera tarjeta de entidad seleccionada.");
-
-      // // Paso 4: Validación de que se abre la vista de la entidad
-      // const vistaEntidad = await driver.wait(
-      //   until.elementLocated(By.css('.legend-application')),
-      //   20000
-      // );
-      // if (!(await vistaEntidad.isDisplayed())) {
-      //   throw new Error("La vista de la entidad no se abrió tras hacer clic en la tarjeta.");
-      // }
-      // console.log("✅ CP_EXPENT_003 Validación: Vista de entidad cargada.");
-
-    } catch (error) {
-      console.error(`❌ Error en ${caseName}: ${error.message}`);
-      throw error;
+    if (tarjetas.length === 0) {
+      throw new Error("No se encontraron tarjetas dentro de #container-grid-crud.");
     }
-  }
+
+    const primeraTarjeta = tarjetas[0];
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", primeraTarjeta);
+    await driver.wait(until.elementIsVisible(primeraTarjeta), 30000);
+    await primeraTarjeta.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 1: Primera tarjeta seleccionada.");
+
+    // === Paso 2: Clic en botón "Nuevo registro de entidad" ===
+    const btnNuevo = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="btn-open-crud-new"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(btnNuevo), 20000);
+    await driver.wait(until.elementIsEnabled(btnNuevo), 20000);
+
+    await btnNuevo.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 2: Botón 'Nuevo registro de entidad' clickeado.");
+
+    // === Paso 3: Diligenciar campo SERIALCELSIA con 1048XXXX ===
+    const campoSerial = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-SERIALCELSIA"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(campoSerial), 20000);
+
+    // Generar serial aleatorio con prefijo 1048
+    const randomPart = Math.floor(1000 + Math.random() * 9000); // 4 dígitos aleatorios
+    const serial = `1048${randomPart}`;
+
+    await campoSerial.clear();
+    await campoSerial.sendKeys(serial);
+    await driver.sleep(1000);
+
+    console.log(`✅ CP_EXPENT_003 Paso 3: Campo SERIALCELSIA diligenciado con valor ${serial}.`);
+
+    // === Paso 4: Diligenciar campo FACTORYSERIAL con 485724435AXXXXXX ===
+    const campoFactorySerial = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-FACTORYSERIAL"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(campoFactorySerial), 20000);
+
+    const randomFactory = Math.floor(100000 + Math.random() * 900000); // 6 dígitos aleatorios
+    const factorySerial = `485724435A${randomFactory}`;
+
+    await campoFactorySerial.clear();
+    await campoFactorySerial.sendKeys(factorySerial);
+    await driver.sleep(1000);
+
+    console.log(`✅ CP_EXPENT_003 Paso 4: Campo FACTORYSERIAL diligenciado con valor ${factorySerial}.`);
 
 
+    // === Paso 5: Clic en botón Categoría ===
+    const btnCategoria = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-picklist-CATEGORY"]/div[1]/span[2]/button')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(btnCategoria), 20000);
+    await driver.wait(until.elementIsEnabled(btnCategoria), 20000);
 
+    await btnCategoria.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 5: Botón 'Categoría' clickeado.");
+
+    // === Paso 6: Seleccionar registro ONT ===
+    const registroONT = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="row-21"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(registroONT), 20000);
+    await driver.wait(until.elementIsEnabled(registroONT), 20000);
+
+    await registroONT.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 6: Registro 'ONT' seleccionado.");
+
+
+  } catch (error) {
+    console.error(`❌ Error en ${caseName}: ${error.message}`);
+    throw error;
+
+  
+}
+
+
+}
 
 }
