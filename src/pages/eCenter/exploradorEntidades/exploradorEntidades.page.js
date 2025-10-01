@@ -206,6 +206,97 @@ async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
 
     console.log("✅ CP_EXPENT_003 Paso 6: Registro 'ONT' seleccionado.");
 
+    // === Paso 7: Clic en botón Seleccionar (confirmar categoría) ===
+    const btnSeleccionar = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-CATEGORY"]/div')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(btnSeleccionar), 20000);
+    await driver.wait(until.elementIsEnabled(btnSeleccionar), 20000);
+
+    await btnSeleccionar.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 7: Botón 'Seleccionar' clickeado (categoría confirmada).");
+
+    // === Paso 8: Diligenciar campo IP con una dirección IPv4 aleatoria ===
+    const campoIP = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-IP"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(campoIP), 20000);
+
+    // Generar dirección IPv4 aleatoria (ej. 192.168.45.123)
+    const oct1 = Math.floor(Math.random() * 256);
+    const oct2 = Math.floor(Math.random() * 256);
+    const oct3 = Math.floor(Math.random() * 256);
+    const oct4 = Math.floor(Math.random() * 256);
+    const ip = `${oct1}.${oct2}.${oct3}.${oct4}`;
+
+    await campoIP.clear();
+    await campoIP.sendKeys(ip);
+    await driver.sleep(1000);
+
+    console.log(`✅ CP_EXPENT_003 Paso 8: Campo IP diligenciado con valor ${ip}.`);
+
+    // === Paso 9: Diligenciar campo MAC con serial aleatoria ===
+    const campoMAC = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-MAC"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(campoMAC), 20000);
+
+    // Generar MAC aleatoria (ej. AB:1F:93:4C:20:D7)
+    const randomHex = () =>
+      ('0' + Math.floor(Math.random() * 256).toString(16)).slice(-2).toUpperCase();
+    const mac = `${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}`;
+
+    await campoMAC.clear();
+    await campoMAC.sendKeys(mac);
+    await driver.sleep(1000);
+
+    console.log(`✅ CP_EXPENT_003 Paso 9: Campo MAC diligenciado con valor ${mac}.`);
+
+    // === Paso 10: Diligenciar campo Nombre con "HUAWEI_TEST" ===
+    const campoNombre = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(campoNombre), 20000);
+
+    await campoNombre.clear();
+    await campoNombre.sendKeys("HUAWEI_TEST");
+    await driver.sleep(1000);
+
+    console.log("✅ CP_EXPENT_003 Paso 10: Campo Nombre diligenciado con valor 'HUAWEI_TEST'.");
+
+    // === Paso 11: Clic en botón del campo "Modelo" ===
+    const btnModelo = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-picklist-MODEL"]/div[1]/span[2]/button')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(btnModelo), 20000);
+    await driver.wait(until.elementIsEnabled(btnModelo), 20000);
+
+    await btnModelo.click();
+    await driver.sleep(2000);
+
+    console.log("✅ CP_EXPENT_003 Paso 11: Botón 'Modelo' clickeado.");
+
+    // === Paso 12: Digitar en la barra de búsqueda del modal "EG8145V5" y presionar Enter ===
+    const barraBusqueda = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(barraBusqueda), 20000);
+
+    await barraBusqueda.clear();
+    await barraBusqueda.sendKeys("EG8145V5");
+    await barraBusqueda.sendKeys("\n"); // Simula Enter
+    await driver.sleep(3000); // Esperar que se refresquen los resultados
+
+    console.log("✅ CP_EXPENT_003 Paso 12: Se buscó 'EG8145V5' en la barra de búsqueda del modal de Modelo.");
+
 
   } catch (error) {
     console.error(`❌ Error en ${caseName}: ${error.message}`);
