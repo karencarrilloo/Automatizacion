@@ -283,19 +283,110 @@ async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
 
     console.log("✅ CP_EXPENT_003 Paso 11: Botón 'Modelo' clickeado.");
 
-    // === Paso 12: Digitar en la barra de búsqueda del modal "EG8145V5" y presionar Enter ===
-    const barraBusqueda = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+// === Paso 12: digitar "EG8145V5" en la barra de búsqueda DEL MODAL ===
+try {
+  const modalModelo = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-MODEL"]/div/div')),
+    20000
+  );
+  await driver.wait(until.elementIsVisible(modalModelo), 20000);
+  console.log("✅ Modal 'Modelo' visible.");
+
+  // Intentar ubicar la barra de búsqueda DENTRO del modal (varios fallback)
+  let barraBusqueda = null;
+
+  // 1) Buscar input con id dentro del modal
+  try {
+    barraBusqueda = await modalModelo.findElement(
+      By.xpath('.//input[@id="crud-search-bar" or contains(@id,"crud-search") or contains(@placeholder,"Búsqueda") or contains(@placeholder,"Buscar")]')
+    );
+  } catch (e) {
+    // ignora, probaremos otros selectores
+  }
+
+  // 2) Si no lo encontramos por xpath, intentar por selectores CSS dentro del modal
+  if (!barraBusqueda) {
+    const selects = [
+      'input#crud-search-bar',
+      'input[type="search"]',
+      'input[placeholder*="Búsqueda"]',
+      'input[placeholder*="Buscar"]',
+      'input[class*="search"]',
+      'input' // último recurso: primer input dentro del modal
+    ];
+    for (const s of selects) {
+      const elems = await modalModelo.findElements(By.css(s));
+      if (elems.length > 0) {
+        barraBusqueda = elems[0];
+        break;
+      }
+    }
+  }
+
+  // 3) Fallback global (solo si no se encontró dentro del modal)
+  if (!barraBusqueda) {
+    console.warn("⚠️ No se encontró la barra de búsqueda dentro del modal; intentando locator global '#crud-search-bar'.");
+    const globalElems = await driver.findElements(By.xpath('//*[@id="crud-search-bar"]'));
+    if (globalElems.length > 0) barraBusqueda = globalElems[0];
+  }
+
+  if (!barraBusqueda) {
+    throw new Error("No se pudo localizar la barra de búsqueda del modal de Modelo.");
+  }
+
+  // Asegurar visibilidad y escribir el término
+  await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", barraBusqueda);
+  await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+  await barraBusqueda.clear();
+  await barraBusqueda.sendKeys("EG8145V5");
+  await barraBusqueda.sendKeys("\n"); // Enter
+  await driver.sleep(2500);
+
+  console.log("✅ Búsqueda 'EG8145V5' realizada en la barra del modal (se usó la barra dentro del modal).");
+} catch (error) {
+  console.error(`❌ Error buscando 'EG8145V5' en el modal de Modelo: ${error.message}`);
+  throw error;
+}
+
+// === Paso 13: Seleccionar el registro encontrado (EG8145V5) ===
+const registroModelo = await driver.wait(
+  until.elementLocated(By.xpath('//*[@id="row-12"]')),
+  20000
+);
+await driver.wait(until.elementIsVisible(registroModelo), 20000);
+await driver.wait(until.elementIsEnabled(registroModelo), 20000);
+
+await registroModelo.click();
+await driver.sleep(2000);
+
+console.log("✅ CP_EXPENT_003 Paso 13: Registro 'EG8145V5' seleccionado en el modal de Modelo.");
+
+// === Paso 14: Clic en botón Seleccionar (confirmar modelo) ===
+    const btnSeleccionarModel = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-MODEL"]/div')),
       20000
     );
-    await driver.wait(until.elementIsVisible(barraBusqueda), 20000);
+    await driver.wait(until.elementIsVisible(btnSeleccionarModel), 20000);
+    await driver.wait(until.elementIsEnabled(btnSeleccionarModel), 20000);
 
-    await barraBusqueda.clear();
-    await barraBusqueda.sendKeys("EG8145V5");
-    await barraBusqueda.sendKeys("\n"); // Simula Enter
-    await driver.sleep(3000); // Esperar que se refresquen los resultados
+    await btnSeleccionarModel.click();
+    await driver.sleep(2000);
 
-    console.log("✅ CP_EXPENT_003 Paso 12: Se buscó 'EG8145V5' en la barra de búsqueda del modal de Modelo.");
+    console.log("✅ CP_EXPENT_003 Paso 9: Botón 'Seleccionar' clickeado (modelo confirmado).");
+
+        // === Paso 15: Diligenciar campo Descripción (mismo valor que Nombre) ===
+    const inputDescripcion = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
+      20000
+    );
+    await driver.wait(until.elementIsVisible(inputDescripcion), 20000);
+    await driver.wait(until.elementIsEnabled(inputDescripcion), 20000);
+
+    await inputDescripcion.clear();
+    await inputDescripcion.sendKeys(nombreEquipo); // usamos el mismo valor del campo Nombre
+
+    console.log("✅ CP_EXPENT_003 Paso 15: Campo 'Descripción' diligenciado con el mismo valor que 'Nombre'.");
+
 
 
   } catch (error) {
