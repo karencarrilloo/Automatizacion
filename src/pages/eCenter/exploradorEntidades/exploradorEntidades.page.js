@@ -103,300 +103,410 @@ export default class ExploradorEntidadesPage {
     }
   }
 
- // =======================
-// CP_EXPENT_003 – Crear nuevo registro de entidad
-// =======================
-async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
-  const driver = this.driver;
+  // =======================
+  // CP_EXPENT_003 – Crear nuevo registro de entidad
+  // =======================
+  async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
+    const driver = this.driver;
 
-  try {
-    // === Paso 1: Clic en la primera tarjeta ===
-    const contenedor = await driver.wait(
-      until.elementLocated(By.id('container-grid-crud')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(contenedor), 20000);
+    try {
+      // === Paso 1: Clic en la primera tarjeta ===
+      const contenedor = await driver.wait(
+        until.elementLocated(By.id('container-grid-crud')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(contenedor), 20000);
 
-    const tarjetas = await driver.findElements(
-      By.xpath('//*[@id="container-grid-crud"]//div[starts-with(@id,"device-")]')
-    );
+      const tarjetas = await driver.findElements(
+        By.xpath('//*[@id="container-grid-crud"]//div[starts-with(@id,"device-")]')
+      );
 
-    if (tarjetas.length === 0) {
-      throw new Error("No se encontraron tarjetas dentro de #container-grid-crud.");
-    }
-
-    const primeraTarjeta = tarjetas[0];
-    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", primeraTarjeta);
-    await driver.wait(until.elementIsVisible(primeraTarjeta), 30000);
-    await primeraTarjeta.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 1: Primera tarjeta seleccionada.");
-
-    // === Paso 2: Clic en botón "Nuevo registro de entidad" ===
-    const btnNuevo = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="btn-open-crud-new"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(btnNuevo), 20000);
-    await driver.wait(until.elementIsEnabled(btnNuevo), 20000);
-
-    await btnNuevo.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 2: Botón 'Nuevo registro de entidad' clickeado.");
-
-    // === Paso 3: Diligenciar campo SERIALCELSIA con 1048XXXX ===
-    const campoSerial = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-SERIALCELSIA"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(campoSerial), 20000);
-
-    // Generar serial aleatorio con prefijo 1048
-    const randomPart = Math.floor(1000 + Math.random() * 9000); // 4 dígitos aleatorios
-    const serial = `1048${randomPart}`;
-
-    await campoSerial.clear();
-    await campoSerial.sendKeys(serial);
-    await driver.sleep(1000);
-
-    console.log(`✅ CP_EXPENT_003 Paso 3: Campo SERIALCELSIA diligenciado con valor ${serial}.`);
-
-    // === Paso 4: Diligenciar campo FACTORYSERIAL con 485724435AXXXXXX ===
-    const campoFactorySerial = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-FACTORYSERIAL"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(campoFactorySerial), 20000);
-
-    const randomFactory = Math.floor(100000 + Math.random() * 900000); // 6 dígitos aleatorios
-    const factorySerial = `485724435A${randomFactory}`;
-
-    await campoFactorySerial.clear();
-    await campoFactorySerial.sendKeys(factorySerial);
-    await driver.sleep(1000);
-
-    console.log(`✅ CP_EXPENT_003 Paso 4: Campo FACTORYSERIAL diligenciado con valor ${factorySerial}.`);
-
-
-    // === Paso 5: Clic en botón Categoría ===
-    const btnCategoria = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="widget-picklist-CATEGORY"]/div[1]/span[2]/button')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(btnCategoria), 20000);
-    await driver.wait(until.elementIsEnabled(btnCategoria), 20000);
-
-    await btnCategoria.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 5: Botón 'Categoría' clickeado.");
-
-    // === Paso 6: Seleccionar registro ONT ===
-    const registroONT = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="row-21"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(registroONT), 20000);
-    await driver.wait(until.elementIsEnabled(registroONT), 20000);
-
-    await registroONT.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 6: Registro 'ONT' seleccionado.");
-
-    // === Paso 7: Clic en botón Seleccionar (confirmar categoría) ===
-    const btnSeleccionar = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-CATEGORY"]/div')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(btnSeleccionar), 20000);
-    await driver.wait(until.elementIsEnabled(btnSeleccionar), 20000);
-
-    await btnSeleccionar.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 7: Botón 'Seleccionar' clickeado (categoría confirmada).");
-
-    // === Paso 8: Diligenciar campo IP con una dirección IPv4 aleatoria ===
-    const campoIP = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-IP"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(campoIP), 20000);
-
-    // Generar dirección IPv4 aleatoria (ej. 192.168.45.123)
-    const oct1 = Math.floor(Math.random() * 256);
-    const oct2 = Math.floor(Math.random() * 256);
-    const oct3 = Math.floor(Math.random() * 256);
-    const oct4 = Math.floor(Math.random() * 256);
-    const ip = `${oct1}.${oct2}.${oct3}.${oct4}`;
-
-    await campoIP.clear();
-    await campoIP.sendKeys(ip);
-    await driver.sleep(1000);
-
-    console.log(`✅ CP_EXPENT_003 Paso 8: Campo IP diligenciado con valor ${ip}.`);
-
-    // === Paso 9: Diligenciar campo MAC con serial aleatoria ===
-    const campoMAC = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-MAC"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(campoMAC), 20000);
-
-    // Generar MAC aleatoria (ej. AB:1F:93:4C:20:D7)
-    const randomHex = () =>
-      ('0' + Math.floor(Math.random() * 256).toString(16)).slice(-2).toUpperCase();
-    const mac = `${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}`;
-
-    await campoMAC.clear();
-    await campoMAC.sendKeys(mac);
-    await driver.sleep(1000);
-
-    console.log(`✅ CP_EXPENT_003 Paso 9: Campo MAC diligenciado con valor ${mac}.`);
-
-    // === Paso 10: Diligenciar campo Nombre con "HUAWEI_TEST" ===
-    const campoNombre = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(campoNombre), 20000);
-
-    await campoNombre.clear();
-    await campoNombre.sendKeys("HUAWEI_TEST");
-    await driver.sleep(1000);
-
-    console.log("✅ CP_EXPENT_003 Paso 10: Campo Nombre diligenciado con valor 'HUAWEI_TEST'.");
-
-    // === Paso 11: Clic en botón del campo "Modelo" ===
-    const btnModelo = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="widget-picklist-MODEL"]/div[1]/span[2]/button')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(btnModelo), 20000);
-    await driver.wait(until.elementIsEnabled(btnModelo), 20000);
-
-    await btnModelo.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 11: Botón 'Modelo' clickeado.");
-
-// === Paso 12: digitar "EG8145V5" en la barra de búsqueda DEL MODAL ===
-try {
-  const modalModelo = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-MODEL"]/div/div')),
-    20000
-  );
-  await driver.wait(until.elementIsVisible(modalModelo), 20000);
-  console.log("✅ Modal 'Modelo' visible.");
-
-  // Intentar ubicar la barra de búsqueda DENTRO del modal (varios fallback)
-  let barraBusqueda = null;
-
-  // 1) Buscar input con id dentro del modal
-  try {
-    barraBusqueda = await modalModelo.findElement(
-      By.xpath('.//input[@id="crud-search-bar" or contains(@id,"crud-search") or contains(@placeholder,"Búsqueda") or contains(@placeholder,"Buscar")]')
-    );
-  } catch (e) {
-    // ignora, probaremos otros selectores
-  }
-
-  // 2) Si no lo encontramos por xpath, intentar por selectores CSS dentro del modal
-  if (!barraBusqueda) {
-    const selects = [
-      'input#crud-search-bar',
-      'input[type="search"]',
-      'input[placeholder*="Búsqueda"]',
-      'input[placeholder*="Buscar"]',
-      'input[class*="search"]',
-      'input' // último recurso: primer input dentro del modal
-    ];
-    for (const s of selects) {
-      const elems = await modalModelo.findElements(By.css(s));
-      if (elems.length > 0) {
-        barraBusqueda = elems[0];
-        break;
+      if (tarjetas.length === 0) {
+        throw new Error("No se encontraron tarjetas dentro de #container-grid-crud.");
       }
+
+      const primeraTarjeta = tarjetas[0];
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", primeraTarjeta);
+      await driver.wait(until.elementIsVisible(primeraTarjeta), 30000);
+      await primeraTarjeta.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 1: Primera tarjeta seleccionada.");
+
+      // === Paso 2: Clic en botón "Nuevo registro de entidad" ===
+      const btnNuevo = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-open-crud-new"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnNuevo), 20000);
+      await driver.wait(until.elementIsEnabled(btnNuevo), 20000);
+
+      await btnNuevo.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 2: Botón 'Nuevo registro de entidad' clickeado.");
+
+      // === Paso 3: Diligenciar campo SERIALCELSIA con 1048XXXX ===
+      const campoSerial = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-SERIALCELSIA"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoSerial), 20000);
+
+      // Generar serial aleatorio con prefijo 1048
+      const randomPart = Math.floor(1000 + Math.random() * 9000); // 4 dígitos aleatorios
+      const serial = `1048${randomPart}`;
+
+      await campoSerial.clear();
+      await campoSerial.sendKeys(serial);
+      await driver.sleep(1000);
+
+      console.log(`✅ CP_EXPENT_003 Paso 3: Campo SERIALCELSIA diligenciado con valor ${serial}.`);
+
+      // === Paso 4: Diligenciar campo FACTORYSERIAL con 485724435AXXXXXX ===
+      const campoFactorySerial = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-FACTORYSERIAL"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoFactorySerial), 20000);
+
+      const randomFactory = Math.floor(100000 + Math.random() * 900000); // 6 dígitos aleatorios
+      const factorySerial = `485724435A${randomFactory}`;
+
+      await campoFactorySerial.clear();
+      await campoFactorySerial.sendKeys(factorySerial);
+      await driver.sleep(1000);
+
+      console.log(`✅ CP_EXPENT_003 Paso 4: Campo FACTORYSERIAL diligenciado con valor ${factorySerial}.`);
+
+
+      // === Paso 5: Clic en botón Categoría ===
+      const btnCategoria = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-picklist-CATEGORY"]/div[1]/span[2]/button')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnCategoria), 20000);
+      await driver.wait(until.elementIsEnabled(btnCategoria), 20000);
+
+      await btnCategoria.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 5: Botón 'Categoría' clickeado.");
+
+      // === Paso 6: Seleccionar registro ONT ===
+      const registroONT = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="row-21"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(registroONT), 20000);
+      await driver.wait(until.elementIsEnabled(registroONT), 20000);
+
+      await registroONT.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 6: Registro 'ONT' seleccionado.");
+
+      // === Paso 7: Clic en botón Seleccionar (confirmar categoría) ===
+      const btnSeleccionar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-CATEGORY"]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnSeleccionar), 20000);
+      await driver.wait(until.elementIsEnabled(btnSeleccionar), 20000);
+
+      await btnSeleccionar.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 7: Botón 'Seleccionar' clickeado (categoría confirmada).");
+
+      // === Paso 8: Diligenciar campo IP con una dirección IPv4 aleatoria ===
+      const campoIP = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-IP"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoIP), 20000);
+
+      // Generar dirección IPv4 aleatoria (ej. 192.168.45.123)
+      const oct1 = Math.floor(Math.random() * 256);
+      const oct2 = Math.floor(Math.random() * 256);
+      const oct3 = Math.floor(Math.random() * 256);
+      const oct4 = Math.floor(Math.random() * 256);
+      const ip = `${oct1}.${oct2}.${oct3}.${oct4}`;
+
+      await campoIP.clear();
+      await campoIP.sendKeys(ip);
+      await driver.sleep(1000);
+
+      console.log(`✅ CP_EXPENT_003 Paso 8: Campo IP diligenciado con valor ${ip}.`);
+
+      // === Paso 9: Diligenciar campo MAC con serial aleatoria ===
+      const campoMAC = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-MAC"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoMAC), 20000);
+
+      // Generar MAC aleatoria (ej. AB:1F:93:4C:20:D7)
+      const randomHex = () =>
+        ('0' + Math.floor(Math.random() * 256).toString(16)).slice(-2).toUpperCase();
+      const mac = `${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}:${randomHex()}`;
+
+      await campoMAC.clear();
+      await campoMAC.sendKeys(mac);
+      await driver.sleep(1000);
+
+      console.log(`✅ CP_EXPENT_003 Paso 9: Campo MAC diligenciado con valor ${mac}.`);
+
+      // === Paso 10: Diligenciar campo Nombre con "HUAWEI_TEST" ===
+      const campoNombre = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoNombre), 20000);
+
+      await campoNombre.clear();
+      await campoNombre.sendKeys("HUAWEI_TEST");
+      await driver.sleep(1000);
+
+      console.log("✅ CP_EXPENT_003 Paso 10: Campo Nombre diligenciado con valor 'HUAWEI_TEST'.");
+
+      // === Paso 11: Clic en botón del campo "Modelo" ===
+      const btnModelo = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-picklist-MODEL"]/div[1]/span[2]/button')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnModelo), 20000);
+      await driver.wait(until.elementIsEnabled(btnModelo), 20000);
+
+      await btnModelo.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 11: Botón 'Modelo' clickeado.");
+
+      // === Paso 12: digitar "EG8145V5" en la barra de búsqueda DEL MODAL ===
+      try {
+        const modalModelo = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-MODEL"]/div/div')),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(modalModelo), 20000);
+        console.log("✅ Modal 'Modelo' visible.");
+
+        // Intentar ubicar la barra de búsqueda DENTRO del modal (varios fallback)
+        let barraBusqueda = null;
+
+        // 1) Buscar input con id dentro del modal
+        try {
+          barraBusqueda = await modalModelo.findElement(
+            By.xpath('.//input[@id="crud-search-bar" or contains(@id,"crud-search") or contains(@placeholder,"Búsqueda") or contains(@placeholder,"Buscar")]')
+          );
+        } catch (e) {
+          // ignora, probaremos otros selectores
+        }
+
+        // 2) Si no lo encontramos por xpath, intentar por selectores CSS dentro del modal
+        if (!barraBusqueda) {
+          const selects = [
+            'input#crud-search-bar',
+            'input[type="search"]',
+            'input[placeholder*="Búsqueda"]',
+            'input[placeholder*="Buscar"]',
+            'input[class*="search"]',
+            'input' // último recurso: primer input dentro del modal
+          ];
+          for (const s of selects) {
+            const elems = await modalModelo.findElements(By.css(s));
+            if (elems.length > 0) {
+              barraBusqueda = elems[0];
+              break;
+            }
+          }
+        }
+
+        // 3) Fallback global (solo si no se encontró dentro del modal)
+        if (!barraBusqueda) {
+          console.warn("⚠️ No se encontró la barra de búsqueda dentro del modal; intentando locator global '#crud-search-bar'.");
+          const globalElems = await driver.findElements(By.xpath('//*[@id="crud-search-bar"]'));
+          if (globalElems.length > 0) barraBusqueda = globalElems[0];
+        }
+
+        if (!barraBusqueda) {
+          throw new Error("No se pudo localizar la barra de búsqueda del modal de Modelo.");
+        }
+
+        // Asegurar visibilidad y escribir el término
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", barraBusqueda);
+        await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+        await barraBusqueda.clear();
+        await barraBusqueda.sendKeys("EG8145V5");
+        await barraBusqueda.sendKeys("\n"); // Enter
+        await driver.sleep(2500);
+
+        console.log("✅ Búsqueda 'EG8145V5' realizada en la barra del modal (se usó la barra dentro del modal).");
+      } catch (error) {
+        console.error(`❌ Error buscando 'EG8145V5' en el modal de Modelo: ${error.message}`);
+        throw error;
+      }
+
+      // === Paso 13: Seleccionar el registro encontrado (EG8145V5) ===
+      const registroModelo = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="row-12"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(registroModelo), 20000);
+      await driver.wait(until.elementIsEnabled(registroModelo), 20000);
+
+      await registroModelo.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 13: Registro 'EG8145V5' seleccionado en el modal de Modelo.");
+
+      // === Paso 14: Clic en botón Seleccionar (confirmar modelo) ===
+      const btnSeleccionarModel = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-MODEL"]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnSeleccionarModel), 20000);
+      await driver.wait(until.elementIsEnabled(btnSeleccionarModel), 20000);
+
+      await btnSeleccionarModel.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 14: Botón 'Seleccionar' clickeado (modelo confirmado).");
+
+
+      // === Paso 14: Diligenciar campo Descripción con "HUAWEI_TEST" ===
+      const campoDescripcion = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(campoDescripcion), 20000);
+
+      await campoDescripcion.clear();
+      await campoDescripcion.sendKeys("HUAWEI_TEST");
+      await driver.sleep(1000);
+
+      console.log("✅ CP_EXPENT_003 Paso 14: Campo Descripción diligenciado con valor 'ONT HUAWEI_TEST'.");
+
+      // === Paso 15: Clic en botón del campo "Icono" ===
+      const btnIcono = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-picklisticon-ICON"]/div[1]/span[2]/button')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnIcono), 20000);
+      await driver.wait(until.elementIsEnabled(btnIcono), 20000);
+
+      await btnIcono.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 15: Botón 'Icono' clickeado.");
+
+
+      // === Paso 16: Seleccionar el ícono ONT en el modal ===
+      const iconoONT = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklisticon-ICON"]/div/div/div[2]/div/ul/li[19]')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(iconoONT), 20000);
+      await driver.wait(until.elementIsEnabled(iconoONT), 20000);
+
+      await iconoONT.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 16: Ícono ONT seleccionado en el modal de íconos.");
+
+
+      // === Paso 17: Clic en botón "Seleccionar" del modal de ícono ===
+      const btnSeleccionarIcono = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-ICON"]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnSeleccionarIcono), 20000);
+      await driver.wait(until.elementIsEnabled(btnSeleccionarIcono), 20000);
+
+      await btnSeleccionarIcono.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 17: Botón 'Seleccionar' clickeado en el modal de ícono.");
+
+
+      // === Paso 18: Clic en botón del campo "Localidad" ===
+      const btnLocalidad = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-picklocation-LOCATION"]/div[1]/span/button')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnLocalidad), 20000);
+      await driver.wait(until.elementIsEnabled(btnLocalidad), 20000);
+
+      await btnLocalidad.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 18: Botón 'Localidad' clickeado.");
+
+
+
+      // === Paso 19: Clic en botón "Seleccionar" del modal de Localidad ===
+      const btnSeleccionarLocalidad = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btSelect"]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnSeleccionarLocalidad), 20000);
+      await driver.wait(until.elementIsEnabled(btnSeleccionarLocalidad), 20000);
+
+      await btnSeleccionarLocalidad.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 19: Botón 'Seleccionar' clickeado en el modal de Localidad.");
+
+
+
+      // === Paso 20: Clic en la flecha "Siguiente" en el formulario de creación de entidad ===
+      const btnSiguiente = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-crud-generic"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnSiguiente), 20000);
+      await driver.wait(until.elementIsEnabled(btnSiguiente), 20000);
+
+      await btnSiguiente.click();
+      await driver.sleep(2000);
+
+      console.log("✅ CP_EXPENT_003 Paso 20: Flecha 'Siguiente' clickeada en el formulario de entidad.");
+
+
+      // === Paso 21: Clic en botón "Crear" y esperar finalización del progreso ===
+      const btnCrear = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-Ok"]/div')),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnCrear), 20000);
+      await driver.wait(until.elementIsEnabled(btnCrear), 20000);
+
+      await btnCrear.click();
+      console.log("✅ CP_EXPENT_003 Paso 21: Botón 'Crear' clickeado.");
+
+      // Esperar a que aparezca el progress (overlay)
+      const progress = await driver.wait(
+        until.elementLocated(By.xpath('//div[contains(@class,"container-loading-iptotal")]')),
+        10000
+      );
+      console.log("⏳ CP_EXPENT_003 Paso 21: Proceso de creación iniciado, esperando que finalice...");
+
+      // Esperar a que desaparezca el progress (hasta 90s)
+      await driver.wait(until.stalenessOf(progress), 90000);
+      console.log("✅ CP_EXPENT_003 Paso 21: Proceso de creación finalizado.");
+
+
+
+
+    } catch (error) {
+      console.error(`❌ Error en ${caseName}: ${error.message}`);
+      throw error;
+
+
     }
+
+
   }
-
-  // 3) Fallback global (solo si no se encontró dentro del modal)
-  if (!barraBusqueda) {
-    console.warn("⚠️ No se encontró la barra de búsqueda dentro del modal; intentando locator global '#crud-search-bar'.");
-    const globalElems = await driver.findElements(By.xpath('//*[@id="crud-search-bar"]'));
-    if (globalElems.length > 0) barraBusqueda = globalElems[0];
-  }
-
-  if (!barraBusqueda) {
-    throw new Error("No se pudo localizar la barra de búsqueda del modal de Modelo.");
-  }
-
-  // Asegurar visibilidad y escribir el término
-  await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", barraBusqueda);
-  await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
-  await barraBusqueda.clear();
-  await barraBusqueda.sendKeys("EG8145V5");
-  await barraBusqueda.sendKeys("\n"); // Enter
-  await driver.sleep(2500);
-
-  console.log("✅ Búsqueda 'EG8145V5' realizada en la barra del modal (se usó la barra dentro del modal).");
-} catch (error) {
-  console.error(`❌ Error buscando 'EG8145V5' en el modal de Modelo: ${error.message}`);
-  throw error;
-}
-
-// === Paso 13: Seleccionar el registro encontrado (EG8145V5) ===
-const registroModelo = await driver.wait(
-  until.elementLocated(By.xpath('//*[@id="row-12"]')),
-  20000
-);
-await driver.wait(until.elementIsVisible(registroModelo), 20000);
-await driver.wait(until.elementIsEnabled(registroModelo), 20000);
-
-await registroModelo.click();
-await driver.sleep(2000);
-
-console.log("✅ CP_EXPENT_003 Paso 13: Registro 'EG8145V5' seleccionado en el modal de Modelo.");
-
-// === Paso 14: Clic en botón Seleccionar (confirmar modelo) ===
-    const btnSeleccionarModel = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-MODEL"]/div')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(btnSeleccionarModel), 20000);
-    await driver.wait(until.elementIsEnabled(btnSeleccionarModel), 20000);
-
-    await btnSeleccionarModel.click();
-    await driver.sleep(2000);
-
-    console.log("✅ CP_EXPENT_003 Paso 9: Botón 'Seleccionar' clickeado (modelo confirmado).");
-
-        // === Paso 15: Diligenciar campo Descripción (mismo valor que Nombre) ===
-    const inputDescripcion = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
-      20000
-    );
-    await driver.wait(until.elementIsVisible(inputDescripcion), 20000);
-    await driver.wait(until.elementIsEnabled(inputDescripcion), 20000);
-
-    await inputDescripcion.clear();
-    await inputDescripcion.sendKeys(nombreEquipo); // usamos el mismo valor del campo Nombre
-
-    console.log("✅ CP_EXPENT_003 Paso 15: Campo 'Descripción' diligenciado con el mismo valor que 'Nombre'.");
-
-
-
-  } catch (error) {
-    console.error(`❌ Error en ${caseName}: ${error.message}`);
-    throw error;
-
-  
-}
-
-
-}
 
 }
