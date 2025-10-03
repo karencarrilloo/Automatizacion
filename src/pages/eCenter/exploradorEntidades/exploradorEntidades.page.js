@@ -483,7 +483,7 @@ export default class ExploradorEntidadesPage {
       await driver.wait(until.elementIsEnabled(btnCrear), 20000);
 
       await btnCrear.click();
-      await driver.sleep(5000);
+      
       console.log("✅ CP_EXPENT_003 Paso 21: Botón 'Crear' clickeado.");
 
       // Esperar a que aparezca el progress correcto
@@ -503,6 +503,8 @@ export default class ExploradorEntidadesPage {
           return true;
         }
       }, 120000);
+
+      await driver.sleep(10000);
 
       console.log("✅ CP_EXPENT_003 Paso 21: Proceso de creación finalizado.");
 
