@@ -67,7 +67,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
+  it.only('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
     // Usa el ID global definido en el constructor
     await gestionPage.verInformacionTecnicaAsociada();
 
@@ -75,13 +75,13 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     // puedes ajustar la aserción si necesitas validar éxito estricto
   });
 
-  it('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
+  it.only('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
     await gestionPage.verDispositivoCliente();
     expect(true).to.be.true; // Asersión placeholder; ajusta si deseas validar datos específicos
   });

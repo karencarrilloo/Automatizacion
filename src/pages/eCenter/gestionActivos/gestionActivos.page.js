@@ -82,7 +82,7 @@ export default class GestionActivosPage {
       await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", entidadBtn);
       await driver.sleep(5000);
-     //// console.log("✅ Paso 4: Botón 'Seleccionar entidad' presionado.");
+     //console.log("✅ Paso 4: Botón 'Seleccionar entidad' presionado.");
 
       // === Paso 2: Seleccionar la fila que contiene el texto "elemento secundario" ===
       {
@@ -109,7 +109,7 @@ export default class GestionActivosPage {
         }
 
         if (!encontrado) throw new Error("No se encontró ninguna opción que contenga 'elemento secundario'.");
-       // console.log("✅ Paso 5: Se seleccionó 'elemento secundario'.");
+       console.log("✅ Paso 5: Se seleccionó 'elemento secundario'.");
       }
 
       // === Paso 3: Clic en botón "Siguiente" ===
@@ -121,7 +121,7 @@ export default class GestionActivosPage {
         await driver.wait(async () => (await botonSeleccionar.getAttribute('disabled')) === null, 10000);
         await botonSeleccionar.click();
         await driver.sleep(3000);
-       // console.log("✅ Paso 6: Botón 'Siguiente' presionado después de 'elemento secundario'.");
+       console.log("✅ Paso 6: Botón 'Siguiente' presionado después de 'elemento secundario'.");
       }
 
       // === Paso 4: Seleccionar "ont" ===
@@ -149,7 +149,7 @@ export default class GestionActivosPage {
         }
 
         if (!encontrado) throw new Error("No se encontró ninguna opción que contenga 'ont'.");
-       // console.log("✅ Paso 7: Se seleccionó 'ont'.");
+       console.log("✅ Paso 7: Se seleccionó 'ont'.");
       }
 
       // === Paso 5: Clic en botón "Siguiente" ===
@@ -161,7 +161,7 @@ export default class GestionActivosPage {
         await driver.wait(async () => (await botonSeleccionar.getAttribute('disabled')) === null, 10000);
         await botonSeleccionar.click();
         await driver.sleep(3000);
-       // console.log("✅ Paso 8: Botón 'Siguiente' presionado después de 'ont'.");
+       console.log("✅ Paso 8: Botón 'Siguiente' presionado después de 'ont'.");
       }
 
       // === Paso 6: Seleccionar fila con ID 9 "FAILED" ===
@@ -181,7 +181,7 @@ export default class GestionActivosPage {
         await driver.sleep(300);
         await filaFailed.click();
         await driver.sleep(1000);
-       // console.log("✅ Paso 9: Fila con ID 9 (FAILED) seleccionada correctamente.");
+       console.log("✅ Paso 9: Fila con ID 9 (FAILED) seleccionada correctamente.");
       }
 
       // === Paso 7: Clic en botón "FINALIZAR" ===
@@ -198,7 +198,7 @@ export default class GestionActivosPage {
         await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", botonFinalizar);
         await driver.sleep(300);
         await botonFinalizar.click();
-       // console.log("✅ Paso 10: clic en 'FINALIZAR' realizado.");
+       console.log("✅ Paso 10: clic en 'FINALIZAR' realizado.");
 
         // Espera dinámica por barra de progreso
         try {
@@ -207,9 +207,9 @@ export default class GestionActivosPage {
             8000
           );
           await driver.wait(until.stalenessOf(progressBar), 15000);
-         // console.log("✅ Espera dinámica: Progress finalizó correctamente.");
+         console.log("✅ Espera dinámica: Progress finalizó correctamente.");
         } catch {
-         // console.log("⚠️ No se detectó barra de progreso o ya había desaparecido.");
+         console.log("⚠️ No se detectó barra de progreso o ya había desaparecido.");
         }
       }
 
@@ -255,7 +255,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         const celdas = await primeraFila.findElements(By.css('td'));
         const factorySerialSeleccionado = await celdas[2].getText(); // Ajusta el índice si FACTORYSERIAL no está en la 3ra columna
 
-       // console.log(`📌 FACTORYSERIAL capturado: ${factorySerialSeleccionado}`);
+       console.log(`📌 FACTORYSERIAL capturado: ${factorySerialSeleccionado}`);
 
         // Guardar en una variable global/contextual si la necesitas en otros pasos
         this.factorySerialSeleccionado = factorySerialSeleccionado;
@@ -264,7 +264,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await primeraFila.click();
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 11: Primer registro dinámico seleccionado y FACTORYSERIAL capturado.");
+       console.log("✅ Paso 11: Primer registro dinámico seleccionado y FACTORYSERIAL capturado.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 11: (selección dinámica de primer registro): ${error.message}`);
       }
@@ -287,7 +287,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await driver.sleep(2000);
 
 
-       // console.log("✅ Paso 12: Botón 'Actualizar estado operativo' presionado correctamente.");
+       console.log("✅ Paso 12: Botón 'Actualizar estado operativo' presionado correctamente.");
 
       } catch (error) {
         throw new Error(`❌ Error en Paso 12: (clic en botón 'Actualizar estado operativo'): ${error.message}`);
@@ -311,7 +311,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await selectEstado.click();
         await driver.sleep(2000);
 
-       // console.log("✅ Paso 13: Select de estado operativo desplegado correctamente.");
+       console.log("✅ Paso 13: Select de estado operativo desplegado correctamente.");
 
       } catch (error) {
         throw new Error(`❌ Error en Paso 13: (clic en select de estado operativo): ${error.message}`);
@@ -335,7 +335,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         // Esperar un momento para que el valor se refleje
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 14: Opción 'LOST' seleccionada correctamente.");
+       console.log("✅ Paso 14: Opción 'LOST' seleccionada correctamente.");
 
       } catch (error) {
         throw new Error(`❌ Error en Paso 14: (selección de opción 'LOST'): ${error.message}`);
@@ -357,7 +357,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await textareaComentario.sendKeys("test automatización");
         await driver.sleep(2000);
 
-       // console.log("✅ Paso 15: Comentario ingresado correctamente.");
+       console.log("✅ Paso 15: Comentario ingresado correctamente.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 15: (ingreso de comentario): ${error.message}`);
       }
@@ -384,7 +384,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         );
         await driver.wait(until.elementIsNotVisible(modal), 18000); // Esperar hasta que no sea visible
 
-       // console.log("✅ Paso 16:: Botón 'Guardar' presionado y modal cerrado correctamente.");
+       console.log("✅ Paso 16:: Botón 'Guardar' presionado y modal cerrado correctamente.");
       } catch (error) {
         throw new Error(`❌ Paso 16: (clic en botón 'Guardar'): ${error.message}`);
       }
@@ -420,7 +420,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await btnSeleccionarEntidad.click();
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 17: Botón 'Seleccionar entidad' presionado correctamente.");
+       console.log("✅ Paso 17: Botón 'Seleccionar entidad' presionado correctamente.");
       } catch (error) {
         throw new Error(`❌ Paso 17:  (clic en 'Seleccionar entidad'): ${error.message}`);
       }
@@ -453,7 +453,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
           throw new Error("No se encontró ninguna opción que contenga 'elemento secundario'.");
         }
 
-       // console.log("✅ Paso 18: Se seleccionó 'elemento secundario'.");
+       console.log("✅ Paso 18: Se seleccionó 'elemento secundario'.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 18:  (selección de 'elemento secundario'): ${error.message}`);
       }
@@ -470,7 +470,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         }, 10000);
         await botonSeleccionar.click();
         await driver.sleep(3000);
-       // console.log("✅ Paso 19: Botón 'Siguiente' presionado después de 'elemento secundario'.");
+       console.log("✅ Paso 19: Botón 'Siguiente' presionado después de 'elemento secundario'.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 19: (clic en 'Siguiente' después de 'elemento secundario'): ${error.message}`);
       }
@@ -503,7 +503,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
           throw new Error("No se encontró ninguna opción que contenga 'ont'.");
         }
 
-       // console.log("✅ Paso 20: Se seleccionó 'ont'.");
+       console.log("✅ Paso 20: Se seleccionó 'ont'.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 20: (selección de 'ont'): ${error.message}`);
       }
@@ -520,7 +520,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         }, 10000);
         await botonSeleccionar.click();
         await driver.sleep(3000);
-       // console.log("✅ Paso 21: Botón 'Siguiente' presionado después de 'ont'.");
+       console.log("✅ Paso 21: Botón 'Siguiente' presionado después de 'ont'.");
       } catch (error) {
         throw new Error(`❌ Paso 21: (clic en 'Siguiente' después de 'ont'): ${error.message}`);
       }
@@ -548,7 +548,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await filaLost.click();
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 22: Fila con ID 10 (LOST) seleccionada correctamente.");
+       console.log("✅ Paso 22: Fila con ID 10 (LOST) seleccionada correctamente.");
 
       } catch (error) {
         throw new Error(`❌ Error Paso 22: (selección de fila 'LOST'): ${error.message}`);
@@ -576,7 +576,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await driver.sleep(300);
         await botonFinalizar.click();
 
-       // console.log("✅ Paso 23: : clic en 'FINALIZAR' realizado.");
+       console.log("✅ Paso 23: : clic en 'FINALIZAR' realizado.");
 
         // === Espera dinámica tras clic en "FINALIZAR" ===
         // Asumimos que aparece un progress bar o spinner que luego desaparece
@@ -593,7 +593,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
             15000
           );
 
-         // console.log("✅ Espera dinámica: Progress finalizó correctamente.");
+         console.log("✅ Espera dinámica: Progress finalizó correctamente.");
         } catch (waitError) {
           // console.warn("⚠️ Advertencia: No se detectó barra de progreso o ya había desaparecido.");
         }
@@ -628,7 +628,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await botonMostrarFiltro.click();
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 24: Se hizo clic en el botón 'Mostrar filtro' correctamente.");
+       console.log("✅ Paso 24: Se hizo clic en el botón 'Mostrar filtro' correctamente.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 24: (clic en 'Mostrar filtro'): ${error.message}`);
       }
@@ -654,7 +654,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await selectCampo.click();
         await driver.sleep(1000);
 
-       // console.log("✅ Paso 24: Botón <select> presionado.");
+       console.log("✅ Paso 24: Botón <select> presionado.");
       } catch (error) {
         throw new Error(`❌ Error en Paso 24: (clic en <select>): ${error.message}`);
       }
@@ -680,7 +680,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await selectCampo.sendKeys("FACTORYSERIAL");
         await driver.sleep(2000); // Esperar el render
 
-       // console.log("✅ Paso 25: Opción 'FACTORYSERIAL' seleccionada correctamente.");
+       console.log("✅ Paso 25: Opción 'FACTORYSERIAL' seleccionada correctamente.");
       } catch (error) {
         throw new Error(`❌ error en Paso 25: (selección de opción 'FACTORYSERIAL'): ${error.message}`);
       }
@@ -712,7 +712,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         await campoTexto.sendKeys(serialCapturado);
         await driver.sleep(3000);
 
-       // console.log(`✅ Paso 26: Se digitó el serial capturado "${serialCapturado}" correctamente.`);
+       console.log(`✅ Paso 26: Se digitó el serial capturado "${serialCapturado}" correctamente.`);
       } catch (error) {
         throw new Error(`❌ Error Paso 26: (diligenciar serial ONT capturado): ${error.message}`);
       }
@@ -753,7 +753,7 @@ async ActualizarOntyFiltro(caseName = 'CP_GESACT_003') {
         // Pequeña espera extra por seguridad antes de continuar
         await driver.sleep(4000);
 
-       // console.log("✅ Paso 27 Botón 'Aplicar filtro' presionado y espera dinámica completada.");
+       console.log("✅ Paso 27 Botón 'Aplicar filtro' presionado y espera dinámica completada.");
 
     } catch (error) {
       throw new Error(`❌ Error en CP_GESACT_004: ${error.message}`);
