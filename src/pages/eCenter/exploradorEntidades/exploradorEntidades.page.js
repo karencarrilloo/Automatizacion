@@ -483,19 +483,28 @@ export default class ExploradorEntidadesPage {
       await driver.wait(until.elementIsEnabled(btnCrear), 20000);
 
       await btnCrear.click();
+      await driver.sleep(5000);
       console.log("✅ CP_EXPENT_003 Paso 21: Botón 'Crear' clickeado.");
 
-      // Esperar a que aparezca el progress (overlay)
+      // Esperar a que aparezca el progress correcto
       const progress = await driver.wait(
-        until.elementLocated(By.xpath('//div[contains(@class,"container-loading-iptotal")]')),
+        until.elementLocated(By.xpath('//*[@id="progress-form-carrousel-progress"]')),
         10000
       );
+      
       console.log("⏳ CP_EXPENT_003 Paso 21: Proceso de creación iniciado, esperando que finalice...");
 
-      // Esperar a que desaparezca el progress (hasta 90s)
-      await driver.wait(until.stalenessOf(progress), 90000);
-      console.log("✅ CP_EXPENT_003 Paso 21: Proceso de creación finalizado.");
+      // Esperar hasta que deje de estar visible (máx. 120s)
+      await driver.wait(async () => {
+        try {
+          return !(await progress.isDisplayed());
+        } catch (e) {
+          // Si el progress desapareció del DOM, también es válido
+          return true;
+        }
+      }, 120000);
 
+      console.log("✅ CP_EXPENT_003 Paso 21: Proceso de creación finalizado.");
 
 
 
