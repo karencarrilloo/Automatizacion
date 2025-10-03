@@ -50,12 +50,12 @@ describe('Prueba de Explorador de Entidades', function () {
     expect(await container.isDisplayed()).to.be.true;
   });
 
-  it('CP_EXPENT_002: Selección de elemento secundario', async () => {
+  it('CP_EXPENT_002: Selección de elemento secundario(ONT)', async () => {
     await exploradorPage.seleccionarElementoSecundario();
 
   });
 
-  it('CP_EXPENT_003: Crear nuevo registro de entidad', async () => {
+  it('CP_EXPENT_003: Crear nuevo registro(ONT)', async () => {
   await exploradorPage.crearNuevoRegistroEntidad();
 });
 
