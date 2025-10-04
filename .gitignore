@@ -30,6 +30,7 @@ screenshots/
 videos/
 artifacts/
 errors/
+errores/
 
 # Archivos de sistema
 .DS_Store

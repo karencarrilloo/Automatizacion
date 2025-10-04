@@ -619,8 +619,9 @@ export default class AutodiagnosticoPage {
       throw new Error(`❌ Error en Paso 31 (clic en botón 'Cancelar'): ${error.message}`);
     }
   }
-
-  // === CP_AUTO_007: Función DMZ ===
+   // =======================
+  // CP_AUTO_007: Función DMZ
+  // =======================
   async funcionDMZ() {
     const driver = this.driver;
 
@@ -741,9 +742,10 @@ export default class AutodiagnosticoPage {
       throw new Error(`❌ Error en Paso 37 (clic en botón 'Cancelar'): ${error.message}`);
     }
   }
+   // =======================
+  // CP_AUTO_008: Función IPv4 Port Mapping
+  // =======================
 
-  // === CP_AUTO_008: Función IPv4 Port Mapping ===
-// 📌 Función: IPv4 Port Mapping
 async funcionIPv4PortMapping() {
     const driver = this.driver;
 
@@ -935,7 +937,10 @@ async funcionIPv4PortMapping() {
         throw new Error(`❌ Error en Paso 44: (clic en botón 'Cancelar'): ${error.message}`);
     }
   }
-    // 📌 Función: Reserva DHCP
+
+    // =======================
+  // CP_AUTO_009: Reserva DHCP
+  // =======================
 async funcionReservaDHCP() {
     const driver = this.driver;
 
@@ -1089,6 +1094,167 @@ async funcionReservaDHCP() {
         throw new Error(`❌ Error en Paso 50: (clic en botón Cancelar): ${error.message}`);
     }
 }
+
+ // =======================
+  // CP_AUTO_010: Dispositivos conectados
+  // =======================
+
+  // 📌 Función: Dispositivos Conectados
+async funcionDispositivosConectados() {
+    const driver = this.driver;
+
+    // === Paso 51: Clic en botón "Opciones" ===
+    try {
+        const btnOpciones = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+            10000
+        );
+
+        await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+        await driver.wait(until.elementIsEnabled(btnOpciones), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOpciones);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", btnOpciones);
+
+        await driver.sleep(3000);
+        console.log("✅ Paso 51: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 51 (clic en botón 'Opciones'): ${error.message}`);
+    }
+
+    // === Paso 52: Opción "Dispositivos Conectados" ===
+    try {
+        const opcionDispositivos = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="1208"]')),
+            15000
+        );
+
+        await driver.wait(until.elementIsVisible(opcionDispositivos), 5000);
+        await driver.wait(until.elementIsEnabled(opcionDispositivos), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDispositivos);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", opcionDispositivos);
+
+        // Loader opcional
+        const loaderXPath = '//*[@id="progress-id-progress-DEVICES"]';
+        try {
+            const loader = await driver.wait(until.elementLocated(By.xpath(loaderXPath)), 5000);
+            await driver.wait(until.stalenessOf(loader), 15000);
+        } catch {
+            console.log("ℹ️ No se detectó loader visible, continuando...");
+        }
+
+        console.log("✅ Paso 52: Opción 'Dispositivos Conectados' seleccionada correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 52: (clic en 'Dispositivos Conectados'): ${error.message}`);
+    }
+
+    // === Paso 53: Clic en flecha desplegable del primer dispositivo ===
+    try {
+        const flechaDispositivo = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div[2]')),
+            15000
+        );
+
+        await driver.wait(until.elementIsVisible(flechaDispositivo), 5000);
+        await driver.wait(until.elementIsEnabled(flechaDispositivo), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", flechaDispositivo);
+        await driver.sleep(300);
+        await flechaDispositivo.click();
+        await driver.sleep(1500);
+
+        console.log("✅ Paso 53: Flecha del primer dispositivo desplegada correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 53 (clic en flecha primer dispositivo): ${error.message}`);
+    }
+
+    // === Paso 54: Clic en flecha desplegable del segundo dispositivo ===
+    try {
+        const flechaSegundoDispositivo = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[2]/div[1]/div')),
+            15000
+        );
+
+        await driver.wait(until.elementIsVisible(flechaSegundoDispositivo), 5000);
+        await driver.wait(until.elementIsEnabled(flechaSegundoDispositivo), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", flechaSegundoDispositivo);
+        await driver.sleep(300);
+        await flechaSegundoDispositivo.click();
+        await driver.sleep(1500);
+
+        console.log("✅ Paso 54: Flecha del segundo dispositivo desplegada correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 54 (clic en flecha segundo dispositivo): ${error.message}`);
+    }
+
+    // === Paso 55: Clic en botón "Recargar/Refrescar" ===
+    try {
+        const botonRecargar = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[1]/div/span')),
+            15000
+        );
+
+        await driver.wait(until.elementIsVisible(botonRecargar), 5000);
+        await driver.wait(until.elementIsEnabled(botonRecargar), 5000);
+
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonRecargar);
+        await driver.sleep(300);
+        await botonRecargar.click();
+        await driver.sleep(500);
+
+        console.log("✅ Paso 55: Botón 'Recargar/Refrescar' clicado correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 55 (clic en botón Recargar/Refrescar): ${error.message}`);
+    }
+
+    // === Paso 56: Cerrar modal "Dispositivos Conectados" ===
+    try {
+        // Esperar overlay si aparece
+        const overlayXPath = '//*[@id="progress-progress_resultSelfDiagnosis"]';
+        try {
+            const overlay = await driver.wait(until.elementLocated(By.xpath(overlayXPath)), 5000);
+            await driver.wait(until.elementIsNotVisible(overlay), 15000);
+            console.log("ℹ️ Overlay oculto.");
+        } catch {
+            console.log("ℹ️ No se detectó overlay visible.");
+        }
+
+        // Header del modal
+        const modalHeader = await driver.wait(
+            until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[1]')),
+            15000
+        );
+
+        // Botón cerrar
+        const btnCerrar = await modalHeader.findElement(By.css('button.close'));
+        await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+
+        await driver.executeScript('arguments[0].click();', btnCerrar);
+        console.log("ℹ️ Click forzado en botón Cerrar.");
+        await driver.sleep(1000);
+
+        // Validar que el modal se cierre
+        const modalContainer = await driver.findElement(
+            By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]')
+        );
+        await driver.wait(async () => {
+            const display = await modalContainer.getCssValue('display');
+            const hidden = await modalContainer.getAttribute('aria-hidden');
+            return display === 'none' || hidden === 'true';
+        }, 15000);
+
+        console.log("✅ Paso 56: Modal 'Dispositivos Conectados' cerrado correctamente.");
+    } catch (error) {
+        throw new Error(`❌ Error en Paso 56 (cerrar modal Dispositivos Conectados): ${error.message}`);
+    }
+}
+
+
+
 
 }
 

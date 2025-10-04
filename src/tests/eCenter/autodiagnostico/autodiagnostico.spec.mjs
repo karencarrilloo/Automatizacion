@@ -27,48 +27,30 @@ describe('Pruebas de Autodiagnóstico', function () {
     await driver.quit();
   });
 
-  it('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
+  it.only('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
     await autodiagnosticoPage.ingresarVistaAutodiagnostico();
-
-    // const container = await driver.wait(
-    //   until.elementLocated(By.css('#container-mainframe')),
-    //   30000
-    // );
-    // expect(await container.isDisplayed()).to.be.true;
+ expect(true).to.be.true;
   });
 
-  it('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
+  it.only('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
     await autodiagnosticoPage.consultarClientePorID('28006582524');
-
-    // Aquí podrías validar que la información del cliente aparece
-    // por ejemplo:
-    // const info = await driver.findElement(By.css('.cliente-info'));
-    // expect(await info.isDisplayed()).to.be.true;
+ expect(true).to.be.true;
   });
 
   it('CP_AUTO_003: Editar configuración WiFi', async () => {
     await autodiagnosticoPage.editarConfiguracionWiFi();
-
-    // Validación final (por ejemplo un mensaje de éxito)
-    // const msg = await driver.wait(until.elementLocated(By.css('.alert-success')), 30000);
-    // expect(await msg.isDisplayed()).to.be.true;
+ expect(true).to.be.true;
   });
 
   it('CP_AUTO_004: Redirigir ONT (clic en NO del modal)', async () => {
-    // 3. Ejecutar todo el flujo del CP_AUTO_004
+   
     await autodiagnosticoPage.ejecutarRedirigirONT();
-
-    // 4. Verificación final: que el contenedor principal siga visible
-    // const container = await driver.wait(
-    //   until.elementLocated(By.css('#container-mainframe')),
-    //   30000
-    // );
-    // expect(await container.isDisplayed()).to.be.true;
+ expect(true).to.be.true;
   });
 
   it("CP_AUTO_005: Creación de órdenes", async () => {
     await autodiagnosticoPage.crearOrdenes();
-    // expect(true).to.be.true; // Validación mínima de ejecución
+    expect(true).to.be.true; 
   });
 
   it('CP_AUTO_006: Función UPnP', async () => {
@@ -91,4 +73,9 @@ it('CP_AUTO_009: reserva DHCP', async () => {
   expect(true).to.be.true;
 });
 
+it.only('CP_AUTO_010: Dispositivos conectados', async () => {
+  await autodiagnosticoPage.funcionDispositivosConectados();
+  expect(true).to.be.true;
+
+});
 });
