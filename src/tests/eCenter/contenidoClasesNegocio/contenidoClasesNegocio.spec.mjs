@@ -33,7 +33,7 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
       .setLoggingPrefs(prefs)
       .build();
 
-    loginPage    = new LoginPage(driver);
+    loginPage = new LoginPage(driver);
     contenidoPage = new ContenidoClasesNegocioPage(driver);
 
     // Login inicial
@@ -90,12 +90,18 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
     await contenidoPage.validarPaginador();
     expect(true).to.be.true; // validación mínima
   });
-  
+
   it("CP_CONTCLANEG_009: Validar funcionamiento del paginador en la vista(Entidad planes comerciales)", async () => {
     await contenidoPage.realizarFiltro();
     expect(true).to.be.true; // validación mínima
 
   });
 
-});
+  it("CP_CONTCLANEG_010: Validar funcionalidad carga masiva de objetos", async () => {
+    await contenidoPage.validarCargaMasivaObjetos();
+    expect(true).to.be.true; // Validación mínima
+
+  });
+
+  });
 
