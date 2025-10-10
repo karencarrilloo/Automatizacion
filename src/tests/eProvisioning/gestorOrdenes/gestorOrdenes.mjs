@@ -25,4 +25,14 @@ describe('Prueba de Gestor de Órdenes', function () {
     await gestorPage.ingresarGestorOrdenes();
     expect(true).to.be.true;
   });
+
+  it('Pasos dentro de ORDEN - VENTA E INSTALACION"', async () => {
+    await gestorPage.ordenVentaEInstalacion();
+    expect(true).to.be.true;
+  });
+
+  it('Pasos dentro de ORDEN - MANTENIMIENTO"', async () => {
+    await gestorPage.ordenMantenimiento();
+    expect(true).to.be.true;
+  });
 });
