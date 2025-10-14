@@ -11,66 +11,51 @@ export default class GestorOrdenesPage {
     this.driver = driver;
   }
 
+  // === CP_GESTOR_001 - Ingreso al Gestor de Órdenes ===
   async ingresarGestorOrdenes() {
     const driver = this.driver;
 
     try {
-      // === Paso 1: Clic en módulo eProvisioning ===
       const eProvisioningBtn = await driver.wait(
-        until.elementLocated(
-          By.xpath("//div[@id='21' and contains(@class, 'item-module')]")
-        ),
+        until.elementLocated(By.xpath("//div[@id='21' and contains(@class, 'item-module')]")),
         10000
       );
       await driver.executeScript("arguments[0].click();", eProvisioningBtn);
       await driver.sleep(1000);
 
-      // === Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
         until.elementLocated(By.css('.container-applications')),
         10000
       );
-      await driver.executeScript(
-        "arguments[0].scrollTop = arguments[0].scrollHeight;",
-        scrollContainer
-      );
+      await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", scrollContainer);
       await driver.sleep(1000);
 
-      // === Paso 3: Clic en "Gestor de Órdenes" (id 5524) ===
       const targetApp = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="5524"]')),
         10000
       );
-      await driver.executeScript(
-        "arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",
-        targetApp
-      );
+      await driver.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", targetApp);
       await driver.wait(until.elementIsVisible(targetApp), 10000);
       await driver.wait(until.elementIsEnabled(targetApp), 10000);
-      await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", targetApp);
       await driver.sleep(5000);
 
       console.log("✅ Ingreso exitoso a la vista 'Gestor de Órdenes'.");
-
     } catch (error) {
       console.error("❌ Error en Gestor de Órdenes:", error.message);
       const screenshot = await driver.takeScreenshot();
       const carpetaErrores = path.resolve(__dirname, '../errores');
       if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
-      const filePath = path.join(
-        carpetaErrores,
-        `error_gestorOrdenes_${Date.now()}.png`
-      );
+      const filePath = path.join(carpetaErrores, `error_gestorOrdenes_${Date.now()}.png`);
       fs.writeFileSync(filePath, screenshot, 'base64');
       throw error;
     }
   }
 
+  // === CP_GESTOR_002 - Orden Venta e Instalación ===
   async ordenVentaEInstalacion() {
-  const driver = await new Builder().forBrowser('chrome').build();
-
-  try {
+    const driver = this.driver;
+try {
     // --- FILTROS ---
     await driver.findElement(By.xpath("//div[@id='widget-button-btn-add-filter']/div")).click();
 
@@ -197,10 +182,11 @@ export default class GestorOrdenesPage {
 }
 
 
-async ordenMantenimiento(driver) {
-  const driver = await new Builder().forBrowser('chrome').build();
+  // === CP_GESTOR_003 - Orden Mantenimiento ===
+  async ordenMantenimiento() {
+    const driver = this.driver;
 
-  try {
+    try {
   // 🔹 Filtro inicial por tipo de orden
   await driver.findElement(By.xpath("//div[@id='widget-button-btn-add-filter']/div")).click();
   await driver.findElement(By.name("qb_80898_rule_0_filter")).click();
