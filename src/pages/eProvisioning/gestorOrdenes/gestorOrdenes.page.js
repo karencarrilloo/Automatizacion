@@ -11,7 +11,7 @@ export default class GestorOrdenesPage {
     this.driver = driver;
   }
 
-  // === CP_GESTOR_001 - Ingreso al Gestor de Órdenes ===
+  // === CP_GESORD_001 - Ingreso al Gestor de Órdenes ===
   async ingresarGestorOrdenes() {
     const driver = this.driver;
 
@@ -52,7 +52,7 @@ export default class GestorOrdenesPage {
     }
   }
 
-  // === CP_GESTOR_002 - Orden Venta e Instalación ===
+  // === CP_GESORD_002 - Orden Venta e Instalación ===
   async ordenVentaEInstalacion() {
     const driver = this.driver;
 try {
@@ -182,7 +182,7 @@ try {
 }
 
 
-  // === CP_GESTOR_003 - Orden Mantenimiento ===
+  // === CP_GESORD_003 - Orden Mantenimiento ===
   async ordenMantenimiento() {
     const driver = this.driver;
 

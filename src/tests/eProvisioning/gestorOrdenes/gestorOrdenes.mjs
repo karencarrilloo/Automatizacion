@@ -49,17 +49,17 @@ describe('Pruebas de Gestor de Órdenes', function () {
   });
 
   // === Caso de prueba 1: Ingreso a la vista Gestor de Órdenes ===
-  it('Debería abrir la vista "Gestor de Órdenes"', async () => {
+  it('CP_GESORD_001: Debería abrir la vista "Gestor de Órdenes"', async () => {
     await gestorOrdenesPage.ingresarGestorOrdenes();
     expect(true).to.be.true;
   });
 
-  it('Pasos dentro de ORDEN - VENTA E INSTALACION"', async () => {
+  it('CP_GESORD_002: Pasos dentro de ORDEN - VENTA E INSTALACION"', async () => {
     await gestorOrdenesPage.ordenVentaEInstalacion();
     expect(true).to.be.true;
   });
 
-  it('Pasos dentro de ORDEN - MANTENIMIENTO"', async () => {
+  it('CP_GESORD_003: Pasos dentro de ORDEN - MANTENIMIENTO"', async () => {
     await gestorOrdenesPage.ordenMantenimiento();
     expect(true).to.be.true;
   });
