@@ -1,4 +1,4 @@
-import { By, until } from 'selenium-webdriver';
+import { By, until, Key } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +10,9 @@ export default class ExploradorEntidadesPage {
   constructor(driver) {
     this.driver = driver;
   }
-
+  // =======================
+  // CP_EXPENT_001 – Ingreso a la vista Explorador de Entidades
+  // =======================
   async ingresarVistaExploradorEntidades() {
     const driver = this.driver;
 
@@ -104,7 +106,7 @@ export default class ExploradorEntidadesPage {
   }
 
   // =======================
-  // CP_EXPENT_003 – Crear nuevo registro de entidad
+  // CP_EXPENT_003 – Crear nuevo registro de entidad(ONT)
   // =======================
   async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
     const driver = this.driver;
@@ -483,7 +485,7 @@ export default class ExploradorEntidadesPage {
       await driver.wait(until.elementIsEnabled(btnCrear), 20000);
 
       await btnCrear.click();
-      
+
       console.log("✅ CP_EXPENT_003 Paso 21: Botón 'Crear' clickeado.");
 
       // Esperar a que aparezca el progress correcto
@@ -491,7 +493,7 @@ export default class ExploradorEntidadesPage {
         until.elementLocated(By.xpath('//*[@id="progress-form-carrousel-progress"]')),
         10000
       );
-      
+
       console.log("⏳ CP_EXPENT_003 Paso 21: Proceso de creación iniciado, esperando que finalice...");
 
       // Esperar hasta que deje de estar visible (máx. 120s)
@@ -514,10 +516,100 @@ export default class ExploradorEntidadesPage {
       console.error(`❌ Error en ${caseName}: ${error.message}`);
       throw error;
 
+    }
 
+  }
+  // === CP_EXPENT_004 – Editar registro de entidad (ONT) ===
+  async editarEntidad() {
+    const driver = this.driver;
+
+    // === Paso 1: Buscar la entidad "HUAWEI_TEST" ===
+    try {
+      const barraBusqueda = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", barraBusqueda);
+      await driver.sleep(300);
+
+      // Limpiar campo y escribir texto
+      await barraBusqueda.clear();
+      await barraBusqueda.sendKeys("HUAWEI_TEST");
+      await driver.sleep(500);
+
+      // Presionar ENTER para ejecutar la búsqueda
+      await barraBusqueda.sendKeys('\n');
+      await driver.sleep(3000); // espera resultados
+
+      console.log("✅ CP_EXPENT_004 Paso 1: Búsqueda de 'HUAWEI_TEST' ejecutada correctamente.");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 1 (búsqueda en barra): ${error.message}`);
+    }
+
+    // === Paso 2: Seleccionar el registro del resultado de búsqueda (card dinámico tipo device) ===
+    try {
+      // Esperar que el contenedor principal esté visible
+      const contenedorResultados = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-grid-crud"]')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(contenedorResultados), 10000);
+
+      // Esperar el primer card disponible
+      const card = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-grid-crud"]//*[starts-with(@id, "device-")]')),
+        10000
+      );
+
+      // Scroll hasta el card
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", card);
+      await driver.sleep(800);
+
+      // Clic preciso en el centro del elemento (forzar evento UI real)
+      await driver.actions({ bridge: true })
+        .move({ origin: card })
+        .pause(200)
+        .click()
+        .perform();
+
+      await driver.sleep(1500);
+
+      // Validar que el card haya sido marcado como activo
+      const className = await card.getAttribute("class");
+      if (!className.includes("active")) {
+        throw new Error("❌ El elemento no fue marcado como seleccionado (no tiene clase 'active').");
+      }
+
+      console.log("✅ CP_EXPENT_004 Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 2 (seleccionar registro): ${error.message}`);
     }
 
 
-  }
+    // === Paso 3: Clic en el botón "Editar" ===
+    try {
+      const botonEditar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-open-crud-edit"]')),
+        10000
+      );
 
+      await driver.wait(until.elementIsVisible(botonEditar), 10000);
+      await driver.wait(until.elementIsEnabled(botonEditar), 10000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonEditar);
+      await driver.sleep(300);
+
+      // Hacer clic mediante JavaScript (evita overlays o intercepciones)
+      await driver.executeScript("arguments[0].click();", botonEditar);
+      await driver.sleep(3000);
+
+      console.log("✅ CP_EXPENT_004 Paso 3: Botón 'Editar' clickeado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 3 (clic en botón Editar): ${error.message}`);
+    }
+  }
 }
+
+
