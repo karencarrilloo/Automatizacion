@@ -609,7 +609,81 @@ export default class ExploradorEntidadesPage {
     } catch (error) {
       throw new Error(`❌ CP_EXPENT_004 Error en Paso 3 (clic en botón Editar): ${error.message}`);
     }
+
+    // === CP_EXPENT_004 Paso 4: Clic en la flecha "Siguiente" en el modal de edición ===
+try {
+  // Esperar a que el modal de edición esté visible
+  const modalEdicion = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div')),
+    15000
+  );
+  await driver.wait(until.elementIsVisible(modalEdicion), 10000);
+
+  // Localizar la flecha "Siguiente" dentro del modal
+  const flechaSiguiente = await driver.wait(
+    until.elementLocated(
+      By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div')
+    ),
+    10000
+  );
+
+  // Asegurarse de que sea visible y habilitada antes de interactuar
+  await driver.wait(until.elementIsVisible(flechaSiguiente), 10000);
+  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", flechaSiguiente);
+  await driver.sleep(500);
+
+  // Clic preciso en el centro de la flecha (para evitar overlays)
+  await driver.actions({ bridge: true })
+    .move({ origin: flechaSiguiente })
+    .pause(200)
+    .click()
+    .perform();
+
+  await driver.sleep(1500); // Espera por transición de pestaña o animación
+  console.log("✅ CP_EXPENT_004 Paso 4: Flecha 'Siguiente' clickeada correctamente.");
+} catch (error) {
+  throw new Error(`❌ CP_EXPENT_004 Error en Paso 4 (clic en flecha 'Siguiente'): ${error.message}`);
+}
+
+// === CP_EXPENT_004 Paso 5: Editar campos "Nombre" y "Descripción" ===
+try {
+  // Esperar el campo de Nombre
+  const campoNombre = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
+    15000
+  );
+  await driver.wait(until.elementIsVisible(campoNombre), 10000);
+  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoNombre);
+  await driver.sleep(500);
+
+  // Limpiar y diligenciar el nuevo nombre
+  await campoNombre.clear();
+  await campoNombre.sendKeys('HUAWEI_TEST_EDIT');
+  console.log("✅ Campo 'Nombre' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
+
+  // Esperar el campo de Descripción
+  const campoDescripcion = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
+    15000
+  );
+  await driver.wait(until.elementIsVisible(campoDescripcion), 10000);
+  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoDescripcion);
+  await driver.sleep(500);
+
+  // Limpiar y diligenciar la nueva descripción
+  await campoDescripcion.clear();
+  await campoDescripcion.sendKeys('HUAWEI_TEST_EDIT');
+  console.log("✅ Campo 'Descripción' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
+
+  await driver.sleep(1000);
+} catch (error) {
+  throw new Error(`❌ CP_EXPENT_004 Error en Paso 5 (editar campos 'Nombre' y 'Descripción'): ${error.message}`);
+}
+
+
   }
+
+  
 }
 
 
