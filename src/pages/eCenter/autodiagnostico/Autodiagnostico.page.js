@@ -260,10 +260,7 @@ export default class AutodiagnosticoPage {
    * ===========================
    * CP_AUTO_004 – Redirigir ONT
    * ===========================
-   * Flujo completo:
-   *   1. Clic en botón “Opciones”
-   *   2. Clic en opción “Redirigir ONT”
-   *   3. Clic en el botón "NO" del modal de confirmación
+   * 
    */
   async ejecutarRedirigirONT(caseName = 'CP_AUTO_004') {
     const driver = this.driver;
@@ -350,7 +347,7 @@ export default class AutodiagnosticoPage {
   async crearOrdenes(caseName = "CP_AUTO_005") {
     const driver = this.driver;
 
-    // === Paso 20: Clic en botón "Opciones" ===
+    // === Paso 1: Clic en botón "Opciones" ===
     try {
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -363,12 +360,12 @@ export default class AutodiagnosticoPage {
       await btnOpciones.click();
       await driver.sleep(3000);
 
-      console.log("✅ Paso 20: Botón 'Opciones' presionado correctamente.");
+      console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 20 (clic en botón 'Opciones'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // === Paso 21: Clic en opción "Creación de órdenes" ===
+    // === Paso 2: Clic en opción "Creación de órdenes" ===
     try {
       const opcionCreacion = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="1202"]')),
@@ -396,12 +393,12 @@ export default class AutodiagnosticoPage {
         console.log("ℹ️ No se detectó loader tras seleccionar 'Creación de órdenes'.");
       }
 
-      console.log("✅ Paso 21: Opción 'Creación de órdenes' seleccionada correctamente.");
+      console.log("✅ Paso 2: Opción 'Creación de órdenes' seleccionada correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 21 (clic en opción 'Creación de órdenes'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 2 (clic en opción 'Creación de órdenes'): ${error.message}`);
     }
 
-    // === Paso 22: Clic en el select "Tipo de orden" ===
+    // === Paso 3: Clic en el select "Tipo de orden" ===
     try {
       const selectTipoOrden = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="input-select-selectType"]')),
@@ -414,12 +411,12 @@ export default class AutodiagnosticoPage {
       await selectTipoOrden.click();
       await driver.sleep(3000);
 
-      console.log("✅ Paso 22: Clic en el select 'Tipo de orden' realizado correctamente.");
+      console.log("✅ Paso 3: Clic en el select 'Tipo de orden' realizado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 22 (clic en select 'Tipo de orden'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 3 (clic en select 'Tipo de orden'): ${error.message}`);
     }
 
-    // === Paso 23: Seleccionar opción "Orden de mantenimiento" ===
+    // === Paso 4: Seleccionar opción "Orden de mantenimiento" ===
     try {
       const opcionMantenimiento = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="input-select-selectType"]/option[2]')),
@@ -432,12 +429,12 @@ export default class AutodiagnosticoPage {
       `, opcionMantenimiento);
       await driver.sleep(1000);
 
-      console.log(`✅ Paso 23: Opción '${textoOpcion}' seleccionada en 'Tipo de orden'.`);
+      console.log(`✅ Paso 4: Opción '${textoOpcion}' seleccionada en 'Tipo de orden'.`);
     } catch (error) {
-      throw new Error(`❌ Error en Paso 23 (selección opción 'Orden de mantenimiento'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 4 (selección opción 'Orden de mantenimiento'): ${error.message}`);
     }
 
-    // === Paso 24: Clic en el select "Posible falla" ===
+    // === Paso 5: Clic en el select "Posible falla" ===
     try {
       const selectPosibleFalla = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="input-select-selectTypeDiagnosis"]')),
@@ -450,12 +447,12 @@ export default class AutodiagnosticoPage {
       await selectPosibleFalla.click();
       await driver.sleep(1000);
 
-      console.log("✅ Paso 24: Clic en el select 'Posible falla' realizado correctamente.");
+      console.log("✅ Paso 5: Clic en el select 'Posible falla' realizado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 24 (clic en select 'Posible falla'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 5 (clic en select 'Posible falla'): ${error.message}`);
     }
 
-    // === Paso 25: Seleccionar opción aleatoria en "Posible falla" ===
+    // === Paso 6: Seleccionar opción aleatoria en "Posible falla" ===
     try {
       const selectElement = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="input-select-selectTypeDiagnosis"]')),
@@ -482,12 +479,12 @@ export default class AutodiagnosticoPage {
       `, opcionSeleccionada);
       await driver.sleep(1000);
 
-      console.log(`✅ Paso 25: Opción '${textoSeleccionado}' seleccionada en 'Posible falla'.`);
+      console.log(`✅ Paso 6: Opción '${textoSeleccionado}' seleccionada en 'Posible falla'.`);
     } catch (error) {
-      throw new Error(`❌ Error en Paso 25 (selección de opción en 'Posible falla'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 6 (selección de opción en 'Posible falla'): ${error.message}`);
     }
 
-    // === Paso 26: Diligenciar campo "Observaciones" ===
+    // === Paso 7: Diligenciar campo "Observaciones" ===
     try {
       const observacionesInput = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-textareafield-observations"]/textarea')),
@@ -499,12 +496,12 @@ export default class AutodiagnosticoPage {
       await observacionesInput.sendKeys("test creacion ordenes");
       await driver.sleep(3000);
 
-      console.log("✅ Paso 26: Campo 'Observaciones' diligenciado correctamente.");
+      console.log("✅ Paso 7: Campo 'Observaciones' diligenciado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 26 (diligenciar campo 'Observaciones'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 7 (diligenciar campo 'Observaciones'): ${error.message}`);
     }
 
-    // === Paso 27: Clic en botón "Generar orden" ===
+    // === Paso 8: Clic en botón "Generar orden" ===
     try {
       const btnGenerarOrden = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-create-order"]/div')),
@@ -517,12 +514,12 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].click();", btnGenerarOrden);
       await driver.sleep(2000);
 
-      console.log("✅ Paso 27: Botón 'Generar orden' presionado correctamente.");
+      console.log("✅ Paso 8: Botón 'Generar orden' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 27 (clic en botón 'Generar orden'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 8 (clic en botón 'Generar orden'): ${error.message}`);
     }
 
-    // === Paso 28: Clic en botón "Sí" del modal de confirmación ===
+    // === Paso 9: Clic en botón "Sí" del modal de confirmación ===
     try {
       const btnConfirmYes = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
@@ -535,9 +532,9 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].click();", btnConfirmYes);
       await driver.sleep(10000);
 
-      console.log("✅ Paso 28: Botón 'Sí' de confirmación presionado correctamente.");
+      console.log("✅ Paso 9: Botón 'Sí' de confirmación presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 28 (clic en botón 'Sí'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 9 (clic en botón 'Sí'): ${error.message}`);
     }
   }
 
@@ -548,7 +545,7 @@ export default class AutodiagnosticoPage {
   async funcionUPnP() {
     const driver = this.driver;
 
-    // Paso 29: Botón Opciones
+    // Paso 1: Clic en botón "Opciones"
     try {
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -560,12 +557,12 @@ export default class AutodiagnosticoPage {
       await driver.sleep(500);
       await btnOpciones.click();
       await driver.sleep(3000);
-      console.log("✅ Paso 29: Botón 'Opciones' presionado correctamente.");
+      console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 29 (clic en botón 'Opciones'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // Paso 30: Opción UPnP
+    // Paso 2: Clic en opción "funcion UPnP"
     try {
       const opcionUPnP = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="1203"]')),
@@ -576,7 +573,7 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionUPnP);
       await driver.sleep(300);
       await driver.executeScript("arguments[0].click();", opcionUPnP);
-      console.log("✅ Paso 30: Opción 'Función UPnP' seleccionada correctamente.");
+      console.log("✅ Paso 2: Opción 'Función UPnP' seleccionada correctamente.");
 
       // Progress opcional
       try {
@@ -592,7 +589,7 @@ export default class AutodiagnosticoPage {
       throw new Error(`❌ Error en Paso 30 (clic en opción 'Función UPnP'): ${error.message}`);
     }
 
-    // Paso 31: Botón Cancelar
+    // Paso 3: Clic en Botón Cancelar
     try {
       const btnCancelar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')),
@@ -603,7 +600,7 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCancelar);
       await driver.sleep(300);
       await driver.executeScript("arguments[0].click();", btnCancelar);
-      console.log("✅ Paso 31: Botón 'Cancelar' clickeado correctamente.");
+      console.log("✅ Paso 3: Botón 'Cancelar' clickeado correctamente.");
 
       try {
         const modalXpath = '//*[@id="widget-dialog-open-dialog"]';
@@ -625,7 +622,7 @@ export default class AutodiagnosticoPage {
   async funcionDMZ() {
     const driver = this.driver;
 
-    // Paso 32: Botón Opciones
+    // Paso 1: Clic en Botón Opciones
     try {
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -637,12 +634,12 @@ export default class AutodiagnosticoPage {
       await driver.sleep(500);
       await btnOpciones.click();
       await driver.sleep(3000);
-      console.log("✅ Paso 32: Botón 'Opciones' presionado correctamente.");
+      console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 32 (clic en botón 'Opciones'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // Paso 33: Opción DMZ
+    // Paso 2: Clic en Opción DMZ
     try {
       const opcionDMZ = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="1204"]/div')),
@@ -653,7 +650,7 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionDMZ);
       await driver.sleep(300);
       await driver.executeScript("arguments[0].click();", opcionDMZ);
-      console.log("✅ Paso 33: Opción 'Función DMZ' seleccionada correctamente.");
+      console.log("✅ Paso 2: Opción 'Función DMZ' seleccionada correctamente.");
 
       try {
         const loaderXpath = '//*[@id="progress-id-progress-DMZ"]';
@@ -667,7 +664,7 @@ export default class AutodiagnosticoPage {
       throw new Error(`❌ Error en Paso 33 (clic en opción 'Función DMZ'): ${error.message}`);
     }
 
-    // Paso 34: Habilitar DMZ
+    // Paso 3: Clic casilla Habilitar DMZ
     try {
       const labelHabilitarDMZ = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-checkbox-checklist-1"]/label')),
@@ -679,12 +676,12 @@ export default class AutodiagnosticoPage {
       await driver.sleep(300);
       await driver.executeScript("arguments[0].click();", labelHabilitarDMZ);
       await driver.sleep(1000);
-      console.log("✅ Paso 34: Casilla 'Habilitar DMZ' marcada correctamente.");
+      console.log("✅ Paso 3: Casilla 'Habilitar DMZ' marcada correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 34 (marcar casilla 'Habilitar DMZ'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 3 (marcar casilla 'Habilitar DMZ'): ${error.message}`);
     }
 
-    // Paso 35: IP aleatoria
+    // Paso 4: Diligenciar IP aleatoria
     try {
       const randomIPv4 = Array.from({ length: 4 }, () => Math.floor(Math.random() * 254) + 1).join('.');
       const ipField = await driver.wait(
@@ -696,9 +693,9 @@ export default class AutodiagnosticoPage {
       await ipField.clear();
       await ipField.sendKeys(randomIPv4);
       await driver.sleep(1000);
-      console.log(`✅ Paso 35: Dirección IPv4 '${randomIPv4}' diligenciada correctamente.`);
+      console.log(`✅ Paso 4: Dirección IPv4 '${randomIPv4}' diligenciada correctamente.`);
     } catch (error) {
-      throw new Error(`❌ Error en Paso 35 (diligenciar dirección IPv4): ${error.message}`);
+      throw new Error(`❌ Error en Paso 4 (diligenciar dirección IPv4): ${error.message}`);
     }
 
     // Paso 36: Botón Refrescar

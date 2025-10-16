@@ -611,79 +611,275 @@ export default class ExploradorEntidadesPage {
     }
 
     // === CP_EXPENT_004 Paso 4: Clic en la flecha "Siguiente" en el modal de edición ===
+    try {
+      // Esperar a que el modal de edición esté visible
+      const modalEdicion = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalEdicion), 10000);
+
+      // Localizar la flecha "Siguiente" dentro del modal
+      const flechaSiguiente = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div')
+        ),
+        10000
+      );
+
+      // Asegurarse de que sea visible y habilitada antes de interactuar
+      await driver.wait(until.elementIsVisible(flechaSiguiente), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", flechaSiguiente);
+      await driver.sleep(500);
+
+      // Clic preciso en el centro de la flecha (para evitar overlays)
+      await driver.actions({ bridge: true })
+        .move({ origin: flechaSiguiente })
+        .pause(200)
+        .click()
+        .perform();
+
+      await driver.sleep(1500); // Espera por transición de pestaña o animación
+      console.log("✅ CP_EXPENT_004 Paso 4: Flecha 'Siguiente' clickeada correctamente.");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 4 (clic en flecha 'Siguiente'): ${error.message}`);
+    }
+
+    // === CP_EXPENT_004 Paso 5: Editar campos "Nombre" y "Descripción" ===
+    try {
+      // Esperar el campo de Nombre
+      const campoNombre = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(campoNombre), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoNombre);
+      await driver.sleep(500);
+
+      // Limpiar y diligenciar el nuevo nombre
+      await campoNombre.clear();
+      await campoNombre.sendKeys('HUAWEI_TEST_EDIT');
+      console.log("✅ Campo 'Nombre' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
+
+      // Esperar el campo de Descripción
+      const campoDescripcion = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(campoDescripcion), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoDescripcion);
+      await driver.sleep(500);
+
+      // Limpiar y diligenciar la nueva descripción
+      await campoDescripcion.clear();
+      await campoDescripcion.sendKeys('HUAWEI_TEST_EDIT');
+      console.log("✅ Campo 'Descripción' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
+
+      await driver.sleep(1000);
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 5 (editar campos 'Nombre' y 'Descripción'): ${error.message}`);
+    }
+
+    // === CP_EXPENT_004 Paso 6: Clic en el botón "Siguiente" dentro del modal de edición ===
+    try {
+      // Esperar que el botón siguiente esté presente en el DOM
+      const botonSiguiente = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div/div[2]/div/div/div[2]/div[2]/div[2]/div')),
+        15000
+      );
+
+      // Verificar visibilidad y que esté habilitado
+      await driver.wait(until.elementIsVisible(botonSiguiente), 10000);
+      await driver.wait(until.elementIsEnabled(botonSiguiente), 10000);
+
+      // Scroll y clic usando JS para evitar overlays o intercepciones
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSiguiente);
+      await driver.sleep(500);
+      await driver.executeScript("arguments[0].click();", botonSiguiente);
+
+      console.log("✅ CP_EXPENT_004 Paso 6: Botón 'Siguiente' clickeado correctamente dentro del modal de edición.");
+      await driver.sleep(3000); // Pequeña espera tras la acción
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 6 (clic en botón 'Siguiente' dentro del modal de edición): ${error.message}`);
+    }
+
+    // === CP_EXPENT_004 Paso 7: Clic en el botón "Editar" y esperar finalización del progreso ===
+    try {
+      // Esperar a que el botón "Editar" esté visible y habilitado
+      const btnEditar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-Ok"]/div')),
+        20000
+      );
+
+      await driver.wait(until.elementIsVisible(btnEditar), 20000);
+      await driver.wait(until.elementIsEnabled(btnEditar), 20000);
+
+      // Clic en el botón "Editar"
+      await btnEditar.click();
+      console.log("✅ CP_EXPENT_004 Paso 7: Botón 'Editar' clickeado correctamente.");
+
+      // Esperar que aparezca el progress del formulario
+      const progress = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="progress-form-carrousel-progress"]')),
+        10000
+      );
+
+      console.log("⏳ CP_EXPENT_004 Paso 7: Proceso de edición iniciado, esperando finalización...");
+
+      // Esperar hasta que el progress desaparezca (máximo 120 segundos)
+      await driver.wait(async () => {
+        try {
+          return !(await progress.isDisplayed());
+        } catch (e) {
+          // Si ya no existe en el DOM, consideramos que terminó
+          return true;
+        }
+      }, 120000);
+
+      // Esperar unos segundos adicionales por estabilidad
+      await driver.sleep(8000);
+
+      console.log("✅ CP_EXPENT_004 Paso 7: Proceso de edición finalizado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_004 Error en Paso 7 (clic en botón 'Editar' y esperar progreso): ${error.message}`);
+    }
+
+  }
+
+  // === CP_EXPENT_005 – Eliminar registro de entidad (ONT) === 
+  async eliminarEntidad() {
+    const driver = this.driver;
+
+    // === Paso 1: Buscar la entidad "HUAWEI_TEST_EDIT" ===
+    try {
+      const barraBusqueda = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(barraBusqueda), 10000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", barraBusqueda);
+      await driver.sleep(300);
+
+      // Limpiar campo y escribir texto
+      await barraBusqueda.clear();
+      await barraBusqueda.sendKeys("HUAWEI_TEST_EDIT");
+      await driver.sleep(500);
+
+      // Presionar ENTER para ejecutar la búsqueda
+      await barraBusqueda.sendKeys('\n');
+      await driver.sleep(3000); // Esperar resultados de búsqueda
+
+      console.log("✅ CP_EXPENT_005 Paso 1: Búsqueda de 'HUAWEI_TEST_EDIT' ejecutada correctamente.");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_005 Error en Paso 1 (búsqueda en barra): ${error.message}`);
+    }
+
+    // === Paso 2: Seleccionar el registro del resultado de búsqueda (card dinámico tipo device) ===
+    try {
+      // Esperar que el contenedor principal esté visible
+      const contenedorResultados = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-grid-crud"]')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(contenedorResultados), 10000);
+
+      // Esperar el primer card disponible
+      const card = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="container-grid-crud"]//*[starts-with(@id, "device-")]')),
+        10000
+      );
+
+      // Scroll hasta el card
+      await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", card);
+      await driver.sleep(800);
+
+      // Clic preciso en el centro del elemento (forzar evento UI real)
+      await driver.actions({ bridge: true })
+        .move({ origin: card })
+        .pause(200)
+        .click()
+        .perform();
+
+      await driver.sleep(1500);
+
+      // Validar que el card haya sido marcado como activo
+      const className = await card.getAttribute("class");
+      if (!className.includes("active")) {
+        throw new Error("❌ El elemento no fue marcado como seleccionado (no tiene clase 'active').");
+      }
+
+      console.log("✅ CP_EXPENT_005 Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
+    } catch (error) {
+      throw new Error(`❌ CP_EXPENT_005 Error en Paso 2 (seleccionar registro): ${error.message}`);
+    }
+
+    // === Paso 3: Clic en el botón "Eliminar" ===
+  try {
+    const botonEliminar = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="btn-open-crud-delete"]')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(botonEliminar), 10000);
+    await driver.wait(until.elementIsEnabled(botonEliminar), 10000);
+
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonEliminar);
+    await driver.sleep(500);
+
+    await driver.executeScript("arguments[0].click();", botonEliminar);
+    await driver.sleep(3000);
+
+    console.log("✅ CP_EXPENT_005 Paso 3: Botón 'Eliminar' clickeado correctamente.");
+  } catch (error) {
+    throw new Error(`❌ CP_EXPENT_005 Error en Paso 3 (clic en botón Eliminar): ${error.message}`);
+  }
+
+  // === Paso 4: Clic en el checkbox "Eliminar todas las dependencias" ===
+  try {
+    const checkboxDependencias = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="ul-tree-ROOT-1_1_check"]')),
+      15000
+    );
+
+    await driver.wait(until.elementIsVisible(checkboxDependencias), 10000);
+    await driver.wait(until.elementIsEnabled(checkboxDependencias), 10000);
+
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", checkboxDependencias);
+    await driver.sleep(500);
+
+    await driver.executeScript("arguments[0].click();", checkboxDependencias);
+    await driver.sleep(1000);
+
+    console.log("✅ CP_EXPENT_005 Paso 4: Checkbox 'Eliminar todas las dependencias' marcado correctamente.");
+  } catch (error) {
+    throw new Error(`❌ CP_EXPENT_005 Error en Paso 4 (clic en checkbox 'Eliminar todas las dependencias'): ${error.message}`);
+  }
+
+  // === Paso 5: Clic en el botón "Eliminar" del modal de confirmación ===
 try {
-  // Esperar a que el modal de edición esté visible
-  const modalEdicion = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div')),
+  const botonConfirmarEliminar = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="widget-button-btn-delete"]/div')),
     15000
   );
-  await driver.wait(until.elementIsVisible(modalEdicion), 10000);
 
-  // Localizar la flecha "Siguiente" dentro del modal
-  const flechaSiguiente = await driver.wait(
-    until.elementLocated(
-      By.xpath('//*[@id="widget-dialog-crud-generic-edit"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div')
-    ),
-    10000
-  );
+  await driver.wait(until.elementIsVisible(botonConfirmarEliminar), 10000);
+  await driver.wait(until.elementIsEnabled(botonConfirmarEliminar), 10000);
 
-  // Asegurarse de que sea visible y habilitada antes de interactuar
-  await driver.wait(until.elementIsVisible(flechaSiguiente), 10000);
-  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", flechaSiguiente);
+  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonConfirmarEliminar);
   await driver.sleep(500);
 
-  // Clic preciso en el centro de la flecha (para evitar overlays)
-  await driver.actions({ bridge: true })
-    .move({ origin: flechaSiguiente })
-    .pause(200)
-    .click()
-    .perform();
+  await driver.executeScript("arguments[0].click();", botonConfirmarEliminar);
+  await driver.sleep(3000);
 
-  await driver.sleep(1500); // Espera por transición de pestaña o animación
-  console.log("✅ CP_EXPENT_004 Paso 4: Flecha 'Siguiente' clickeada correctamente.");
+  console.log("✅ CP_EXPENT_005 Paso 5: Botón 'Eliminar' clickeado correctamente.");
 } catch (error) {
-  throw new Error(`❌ CP_EXPENT_004 Error en Paso 4 (clic en flecha 'Siguiente'): ${error.message}`);
+  throw new Error(`❌ CP_EXPENT_005 Error en Paso 5 (clic en botón 'Eliminar'): ${error.message}`);
 }
-
-// === CP_EXPENT_004 Paso 5: Editar campos "Nombre" y "Descripción" ===
-try {
-  // Esperar el campo de Nombre
-  const campoNombre = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="textfield-NAME"]')),
-    15000
-  );
-  await driver.wait(until.elementIsVisible(campoNombre), 10000);
-  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoNombre);
-  await driver.sleep(500);
-
-  // Limpiar y diligenciar el nuevo nombre
-  await campoNombre.clear();
-  await campoNombre.sendKeys('HUAWEI_TEST_EDIT');
-  console.log("✅ Campo 'Nombre' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
-
-  // Esperar el campo de Descripción
-  const campoDescripcion = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="textfield-DESCRIPTION"]')),
-    15000
-  );
-  await driver.wait(until.elementIsVisible(campoDescripcion), 10000);
-  await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", campoDescripcion);
-  await driver.sleep(500);
-
-  // Limpiar y diligenciar la nueva descripción
-  await campoDescripcion.clear();
-  await campoDescripcion.sendKeys('HUAWEI_TEST_EDIT');
-  console.log("✅ Campo 'Descripción' editado correctamente con valor 'HUAWEI_TEST_EDIT'.");
-
-  await driver.sleep(1000);
-} catch (error) {
-  throw new Error(`❌ CP_EXPENT_004 Error en Paso 5 (editar campos 'Nombre' y 'Descripción'): ${error.message}`);
-}
-
 
   }
 
   
+
 }
 
 

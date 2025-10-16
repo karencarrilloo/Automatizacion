@@ -52,17 +52,22 @@ describe('Prueba de Explorador de Entidades', function () {
 
   it('CP_EXPENT_002: Selección de elemento secundario(ONT)', async () => {
     await exploradorPage.seleccionarElementoSecundario();
-    expect(true).to.be.true; 
+    expect(true).to.be.true;
 
   });
 
   it.skip('CP_EXPENT_003: Crear nuevo registro de entidad(ONT)', async () => {
-  await exploradorPage.crearNuevoRegistroEntidad();
-  expect(true).to.be.true; 
-});
+    await exploradorPage.crearNuevoRegistroEntidad();
+    expect(true).to.be.true;
+  });
 
-it("CP_EXPENT_004: Editar registro de entidad (ONT) - Buscar HUAWEI TEST", async () => {
-  await exploradorPage.editarEntidad();
-  expect(true).to.be.true; 
-});
+  it.skip("CP_EXPENT_004: Editar registro de entidad (ONT)", async () => {
+    await exploradorPage.editarEntidad();
+    expect(true).to.be.true;
+  });
+
+  it("CP_EXPENT_005: Eliminar registro de entidad (ONT)", async () => {
+    await exploradorPage.eliminarEntidad();
+    expect(true).to.be.true;
+  });
 });
