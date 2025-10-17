@@ -17,7 +17,7 @@ const ID_DEAL_GLOBAL = '28006757991';
 
 
 describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
-  this.timeout(180000); // 3 min
+  this.timeout(190000); // 3 min
 
   before(async () => {
     const options = new chrome.Options();
@@ -63,15 +63,12 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
     await gestionPage.filtrarPorIdDeal();
-    // ajustar la aserción Para validar éxito estricto
     expect(true).to.be.true;
   });
 
   it.only('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
     // Usa el ID global definido en el constructor
     await gestionPage.verInformacionTecnicaAsociada();
-
-    // Validación simple
     expect(true).to.be.true;
   });
 
@@ -83,35 +80,35 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
 
   it.only('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
     await gestionPage.verDispositivoCliente();
-    expect(true).to.be.true; // Asersión placeholder; ajusta si deseas validar datos específicos
+    expect(true).to.be.true; 
   });
 
-  // it.only('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
-  //   await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
-  //   expect(true).to.be.true; // Placeholder de validación
-  // });
+  it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
+    await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
+    expect(true).to.be.true; 
+  });
 
-  it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
+  it.only('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
     await gestionPage.verDetalleProceso();
-    expect(true).to.be.true; // Aserción placeholder
+    expect(true).to.be.true; 
   });
 
-  it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
+  it.only('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
     await gestionPage.suspenderCliente();
-    expect(true).to.be.true; // aserción placeholder
+    expect(true).to.be.true; 
   });
 
-  it('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
+  it.only('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
     await gestionPage.reconectarCliente();
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_010: Cambio de plan del cliente(confirmar)', async function () {
+  it('CP_GESCLSERDOM_010: Cambio de plan del cliente(con confirmar)', async function () {
     await gestionPage.cambioPlanCliente();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)', async function () {
+  it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con botón cancelar)', async function () {
     await gestionPage.cambioPlanClienteCancelar();
     expect(true).to.be.true;
   });

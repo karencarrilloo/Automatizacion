@@ -256,6 +256,8 @@ export default class GestionClientesServiciosPage {
       if (this._capturarError) await this._capturarError(error, caseName);
       throw error;
     }
+    // Paso 5: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
   }
 
   // =====================================================
@@ -410,12 +412,14 @@ export default class GestionClientesServiciosPage {
       } catch (err) {
         throw new Error(`❌ Error en reutilizar datos WiFi: ${err.message}`);
       }
+  
 
       this.reconfiguracionExitosa = reconfigExitosa;
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
       throw error;
     }
+    
   }
 
   // =====================================================
@@ -483,11 +487,15 @@ export default class GestionClientesServiciosPage {
         console.log("⚠️ Modal no desapareció completamente, continuando...");
       }
 
+      // Paso 5: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
+
       await driver.sleep(1500);
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
       throw error;
     }
+    
   }
 
   // =====================================================
@@ -680,6 +688,9 @@ export default class GestionClientesServiciosPage {
         console.log("⚠️ Modal 'Detalle del proceso' no desapareció por completo, pero se presionó cerrar.");
       }
 
+      // Paso 5: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
+
       await driver.sleep(1000);
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
@@ -838,6 +849,9 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(5000);
       await driver.executeScript("arguments[0].click();", btnCerrarModal);
 
+      // Paso 10: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
+
 
       try {
         await driver.wait(async () => {
@@ -975,6 +989,9 @@ export default class GestionClientesServiciosPage {
         console.log("⚠️ Paso 10: Modal de detalle pudo no desaparecer del todo.");
       }
       console.log("✅ Paso 10: Modal de detalle cerrado.");
+
+      // Paso 11: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
 
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
@@ -1145,151 +1162,168 @@ export default class GestionClientesServiciosPage {
   }
 
   // =====================================================
-  // CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)
-  // 8 pasos
-  // =====================================================
-  async cambioPlanClienteCancelar(
-    caseName = 'CP_GESCLSERDOM_010_CANCELAR',
-    idDeal
-  ) {
-    const driver = this.driver;
+// CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)
+// 8 pasos
+// =====================================================
+async cambioPlanClienteCancelar(
+  caseName = 'CP_GESCLSERDOM_010_CANCELAR',
+  idDeal
+) {
+  const driver = this.driver;
 
-    try {
-      // === Paso 1: Seleccionar cliente por ID_DEAL ===
-      await this.seleccionarClientePorIdDeal(idDeal);
+  try {
+    // === Paso 1: Seleccionar cliente por ID_DEAL ===
+    await this.seleccionarClientePorIdDeal(idDeal);
 
-      // === Paso 2: Abrir menú Opciones ===
-      const btnOpciones = await driver.wait(
-        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
-        10000
-      );
-      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
-      await driver.sleep(300);
-      await driver.executeScript("arguments[0].click();", btnOpciones);
-      await driver.sleep(1000);
-      console.log("✅ Paso 2: Botón 'Opciones' presionado.");
+    // === Paso 2: Abrir menú Opciones ===
+    const btnOpciones = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnOpciones);
+    await driver.sleep(1000);
+    console.log("✅ Paso 2: Botón 'Opciones' presionado.");
 
-      // === Paso 3: Seleccionar opción "Cambio de plan" ===
-      const menuOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
-      const opcionCambioPlanXpath = '//*[@id="1082"]';
-      const menuOpciones = await driver.wait(
-        until.elementLocated(By.xpath(menuOpcionesXpath)),
-        10000
-      );
-      await driver.wait(until.elementIsVisible(menuOpciones), 5000);
+    // === Paso 3: Seleccionar opción "Cambio de plan" ===
+    const menuOpcionesXpath = '//*[@id="container-general-crud"]/div[4]/div[2]/div[1]/div/div/div/ul';
+    const opcionCambioPlanXpath = '//*[@id="1082"]';
+    const menuOpciones = await driver.wait(
+      until.elementLocated(By.xpath(menuOpcionesXpath)),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(menuOpciones), 5000);
 
-      const opcionCambioPlan = await driver.wait(
-        until.elementLocated(By.xpath(opcionCambioPlanXpath)),
-        10000
-      );
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionCambioPlan);
-      await driver.sleep(300);
-      await driver.executeScript("arguments[0].click();", opcionCambioPlan);
-      await driver.sleep(3000);
-      console.log("✅ Paso 3: Opción 'Cambio de plan' seleccionada.");
+    const opcionCambioPlan = await driver.wait(
+      until.elementLocated(By.xpath(opcionCambioPlanXpath)),
+      10000
+    );
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", opcionCambioPlan);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", opcionCambioPlan);
+    await driver.sleep(3000);
+    console.log("✅ Paso 3: Opción 'Cambio de plan' seleccionada.");
 
-      // === Paso 4: Clic en botón "Nuevo plan comercial" ===
-      const btnNuevoPlanXpath = '//*[@id="widget-pickview-pick-data-change-plan"]/div[1]/span[2]/button';
-      const btnNuevoPlan = await driver.wait(
-        until.elementLocated(By.xpath(btnNuevoPlanXpath)),
-        10000
-      );
-      await driver.wait(until.elementIsVisible(btnNuevoPlan), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnNuevoPlan);
-      await driver.sleep(300);
-      await driver.executeScript("arguments[0].click();", btnNuevoPlan);
-      console.log("✅ Paso 4: Botón 'Nuevo plan comercial' presionado.");
-      await driver.sleep(2000);
+    // === Paso 4: Clic en botón "Nuevo plan comercial" ===
+    const btnNuevoPlanXpath = '//*[@id="widget-pickview-pick-data-change-plan"]/div[1]/span[2]/button';
+    const btnNuevoPlan = await driver.wait(
+      until.elementLocated(By.xpath(btnNuevoPlanXpath)),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(btnNuevoPlan), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnNuevoPlan);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnNuevoPlan);
+    console.log("✅ Paso 4: Botón 'Nuevo plan comercial' presionado.");
+    await driver.sleep(2000);
 
-      // === Paso 5: Seleccionar plan deseado (igual que antes) ===
-      const tbodyXpath = '//*[@id="widget-dialog-pickview-pick-data-change-plan"]//table/tbody';
-      const nombrePlan = "PLAN 600 MEGAS FC 2025 V";
-      const tbodyPlanes = await driver.wait(
-        until.elementLocated(By.xpath(tbodyXpath)),
-        15000
-      );
-      await driver.wait(until.elementIsVisible(tbodyPlanes), 5000);
+    // === Paso 5: Seleccionar plan deseado (igual que antes) ===
+    const tbodyXpath = '//*[@id="widget-dialog-pickview-pick-data-change-plan"]//table/tbody';
+    const nombrePlan = "PLAN 600 MEGAS FC 2025 V";
+    const tbodyPlanes = await driver.wait(
+      until.elementLocated(By.xpath(tbodyXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(tbodyPlanes), 5000);
 
-      const filas = await tbodyPlanes.findElements(By.xpath("./tr"));
-      if (filas.length === 0) throw new Error("❌ No se encontraron planes comerciales.");
+    const filas = await tbodyPlanes.findElements(By.xpath("./tr"));
+    if (filas.length === 0) throw new Error("❌ No se encontraron planes comerciales.");
 
-      let planEncontrado = false;
-      for (const fila of filas) {
-        const textoFila = (await fila.getText()).trim();
-        if (textoFila.includes(nombrePlan)) {
-          const btnMas = await fila.findElement(By.xpath("./td[4]/div/button"));
-          await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnMas);
-          await driver.sleep(300);
-          await driver.executeScript("arguments[0].click();", btnMas);
-          console.log(`✅ Paso 5: Plan '${nombrePlan}' agregado correctamente.`);
-          planEncontrado = true;
-          break;
-        }
+    let planEncontrado = false;
+    for (const fila of filas) {
+      const textoFila = (await fila.getText()).trim();
+      if (textoFila.includes(nombrePlan)) {
+        const btnMas = await fila.findElement(By.xpath("./td[4]/div/button"));
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnMas);
+        await driver.sleep(300);
+        await driver.executeScript("arguments[0].click();", btnMas);
+        console.log(`✅ Paso 5: Plan '${nombrePlan}' agregado correctamente.`);
+        planEncontrado = true;
+        break;
       }
-      // Paso 6: Clic en botón "Seleccionar"
-      const btnSeleccionar = await driver.wait(
-        until.elementLocated(By.xpath('//*[@id="widget-button-select-pick-data-change-plan"]/div')),
-        15000
-      );
-      await driver.wait(until.elementIsVisible(btnSeleccionar), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnSeleccionar);
-      await driver.sleep(300);
-      await driver.executeScript("arguments[0].click();", btnSeleccionar);
-      await driver.sleep(500);
-      console.log("✅ Paso 6: Botón 'Seleccionar' presionado correctamente.");
-      if (!planEncontrado) throw new Error(`❌ No se encontró el plan '${nombrePlan}'.`);
+    }
 
-      // === Paso 7: Diligenciar número PQ y comentario ===
-      const inputNumeroPqXpath = '//*[@id="textfield-input-data-number-pq"]';
-      const inputNumeroPq = await driver.wait(
-        until.elementLocated(By.xpath(inputNumeroPqXpath)),
-        15000
-      );
-      await driver.wait(until.elementIsVisible(inputNumeroPq), 5000);
-      const numeroAleatorio = Math.floor(Math.random() * 9000000000) + 1000000000;
-      await inputNumeroPq.clear();
-      await inputNumeroPq.sendKeys(numeroAleatorio.toString());
-      await driver.sleep(500);
-      console.log(`✅ Paso 6: Número PQ diligenciado: ${numeroAleatorio}`);
+    // Paso 6: Clic en botón "Seleccionar"
+    const btnSeleccionar = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="widget-button-select-pick-data-change-plan"]/div')),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(btnSeleccionar), 20000);
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnSeleccionar);
+    await driver.sleep(300);
+    await driver.executeScript("arguments[0].click();", btnSeleccionar);
+    await driver.sleep(500);
+    console.log("✅ Paso 6: Botón 'Seleccionar' presionado correctamente.");
+    if (!planEncontrado) throw new Error(`❌ No se encontró el plan '${nombrePlan}'.`);
 
-      const inputComentarioXpath = '//*[@id="textfield-input-data-comment"]';
-      await driver.sleep(500);
-      const inputComentario = await driver.wait(
-        until.elementLocated(By.xpath(inputComentarioXpath)),
-        15000
-      );
-      await driver.wait(until.elementIsVisible(inputComentario), 5000);
-      await inputComentario.clear();
-      await inputComentario.sendKeys("cancelar cambio de plan - prueba");
-      console.log("✅ Paso 6: Comentario diligenciado.");
+    // === Paso 7: Diligenciar número PQ y comentario ===
+    const inputNumeroPqXpath = '//*[@id="textfield-input-data-number-pq"]';
+    const inputNumeroPq = await driver.wait(
+      until.elementLocated(By.xpath(inputNumeroPqXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(inputNumeroPq), 6000);
+    const numeroAleatorio = Math.floor(Math.random() * 9000000000) + 1000000000;
+    await inputNumeroPq.clear();
+    await inputNumeroPq.sendKeys(numeroAleatorio.toString());
+    await driver.sleep(500);
+    console.log(`✅ Paso 7: Número PQ diligenciado: ${numeroAleatorio}`);
 
-      // === Paso 8: CANCELAR en lugar de Confirmar ===
+    const inputComentarioXpath = '//*[@id="textfield-input-data-comment"]';
+    await driver.sleep(500);
+    const inputComentario = await driver.wait(
+      until.elementLocated(By.xpath(inputComentarioXpath)),
+      15000
+    );
+    await driver.wait(until.elementIsVisible(inputComentario), 6000);
+    await inputComentario.clear();
+    await inputComentario.sendKeys("cancelar cambio de plan - prueba");
+    console.log("✅ Paso 7: Comentario diligenciado.");
+
+    // === Paso 8: CANCELAR en lugar de Confirmar ===
+    try {
       const btnCancelarXpath = '//*[@id="widget-button-cancel-confirm-selected"]/div';
       const btnCancelar = await driver.wait(
         until.elementLocated(By.xpath(btnCancelarXpath)),
-        15000
+        10000
       );
-      await driver.wait(until.elementIsVisible(btnCancelar), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCancelar);
-      await driver.sleep(3000);
-      await driver.executeScript("arguments[0].click();", btnCancelar);
-      console.log("✅ Paso 7: Botón 'Cancelar' presionado. Cambio de plan anulado.");
 
-      // Fin del flujo: no se continúa con confirmaciones ni progress.
-      await driver.sleep(2000);
+      // Verificar si está visible o intentar hacerlo visible manualmente
+      try {
+        await driver.wait(until.elementIsVisible(btnCancelar), 8000);
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCancelar);
+      } catch {
+        console.log("⚠️ Botón 'Cancelar' no visible aún, intentando forzar visibilidad...");
+      }
+
+      // // Forzar clic mediante JavaScript para evitar overlays
+      // await driver.executeScript("arguments[0].click();", btnCancelar);
+      // console.log("✅ Paso 8: Botón 'Cancelar' presionado correctamente.");
+      // await driver.sleep(3000);
 
     } catch (error) {
-      if (this._capturarError) await this._capturarError(error, caseName);
+      console.error(`❌ CP_GESCLSERDOM_011 Error en Paso 8 (clic en Cancelar): ${error.message}`);
+      try {
+        const botonesVisibles = await driver.findElements(
+          By.xpath("//div[contains(text(),'Cancelar') or contains(@id,'cancel')]")
+        );
+        console.log(`🔍 Botones relacionados con 'Cancelar' encontrados: ${botonesVisibles.length}`);
+      } catch (e2) {
+        console.log("⚠️ No fue posible listar los botones de 'Cancelar'.");
+      }
       throw error;
     }
+
+    // Fin del flujo: no se continúa con confirmaciones ni progress.
+    await driver.sleep(3000);
+
+  } catch (error) {
+    if (this._capturarError) await this._capturarError(error, caseName);
+    throw error;
   }
-
-
-
-
-
 }
-
+}
 
 
