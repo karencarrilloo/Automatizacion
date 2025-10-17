@@ -750,7 +750,7 @@ export default class ExploradorEntidadesPage {
   async eliminarEntidad() {
     const driver = this.driver;
 
-    // === Paso 1: Buscar la entidad "HUAWEI_TEST_EDIT" ===
+    // === Paso 1: Buscar la entidad "HUAWEI_TEST" ===
     try {
       const barraBusqueda = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
@@ -763,7 +763,7 @@ export default class ExploradorEntidadesPage {
 
       // Limpiar campo y escribir texto
       await barraBusqueda.clear();
-      await barraBusqueda.sendKeys("HUAWEI_TEST_EDIT");
+      await barraBusqueda.sendKeys("HUAWEI_TEST");
       await driver.sleep(500);
 
       // Presionar ENTER para ejecutar la búsqueda
@@ -876,24 +876,23 @@ try {
   throw new Error(`❌ CP_EXPENT_005 Error en Paso 5 (clic en botón 'Eliminar'): ${error.message}`);
 }
 
-// === Paso 6: Clic en botón "Sí" del modal de confirmación y esperar finalización del progreso ===
+// === Paso 6: Confirmar eliminación y esperar finalización del progreso ===
 try {
-  const btnConfirmar = await driver.wait(
+  // Esperar el botón de confirmación
+  const btnConfirmarEliminar = await driver.wait(
     until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
     20000
   );
+  await driver.wait(until.elementIsVisible(btnConfirmarEliminar), 20000);
+  await driver.wait(until.elementIsEnabled(btnConfirmarEliminar), 20000);
 
-  await driver.wait(until.elementIsVisible(btnConfirmar), 20000);
-  await driver.wait(until.elementIsEnabled(btnConfirmar), 20000);
+  await btnConfirmarEliminar.click();
+  console.log("✅ CP_EXPENT_005 Paso 6: Botón 'Sí' clickeado correctamente.");
 
-  await btnConfirmar.click();
-
-  console.log("✅ CP_EXPENT_005 Paso 6: Botón 'Sí' clickeado.");
-
-  // Esperar a que aparezca el progress correcto
+  // Esperar a que aparezca el progress correcto de eliminación
   const progress = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="progress-form-carrousel-progress"]')),
-    10000
+    until.elementLocated(By.xpath('//*[@id="progress-crud-progress-delete-element"]/div')),
+    20000
   );
 
   console.log("⏳ CP_EXPENT_005 Paso 6: Proceso de eliminación iniciado, esperando que finalice...");
@@ -908,9 +907,8 @@ try {
     }
   }, 120000);
 
-  await driver.sleep(10000);
-
-  console.log("✅ CP_EXPENT_005 Paso 6: Proceso de eliminación finalizado.");
+  await driver.sleep(15000); // Espera adicional por estabilidad
+  console.log("✅ CP_EXPENT_005 Paso 6: Proceso de eliminación finalizado correctamente.");
 } catch (error) {
   console.error(`❌ CP_EXPENT_005 Error en Paso 6 (confirmación de eliminación): ${error.message}`);
   throw error;

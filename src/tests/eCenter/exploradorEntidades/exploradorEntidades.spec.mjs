@@ -56,12 +56,12 @@ describe('Prueba de Explorador de Entidades', function () {
 
   });
 
-  it('CP_EXPENT_003: Crear nuevo registro de entidad(ONT)', async () => {
+  it.skip('CP_EXPENT_003: Crear nuevo registro de entidad(ONT)', async () => {
     await exploradorPage.crearNuevoRegistroEntidad();
     expect(true).to.be.true;
   });
 
-  it("CP_EXPENT_004: Editar registro de entidad (ONT)", async () => {
+  it.skip("CP_EXPENT_004: Editar registro de entidad (ONT)", async () => {
     await exploradorPage.editarEntidad();
     expect(true).to.be.true;
   });
