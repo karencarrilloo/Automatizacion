@@ -698,7 +698,7 @@ export default class AutodiagnosticoPage {
       throw new Error(`❌ Error en Paso 4 (diligenciar dirección IPv4): ${error.message}`);
     }
 
-    // Paso 36: Botón Refrescar
+    // Paso 5: Clic en Botón Refrescar
     try {
       const btnRefrescar = await driver.wait(
         until.elementLocated(
@@ -711,12 +711,12 @@ export default class AutodiagnosticoPage {
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescar);
       await driver.sleep(300);
       await btnRefrescar.click();
-      console.log("✅ Paso 36: Botón 'Refrescar' clicado correctamente.");
+      console.log("✅ Paso 5: Botón 'Refrescar' clicado correctamente.");
     } catch (error) {
-      throw new Error(`❌ Error en Paso 36 (clic en botón 'Refrescar'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 5 (clic en botón 'Refrescar'): ${error.message}`);
     }
 
-    // Paso 37: Botón Cancelar
+    // Paso 6: Clic en Botón Cancelar
     try {
       const btnCancelar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')),
@@ -731,12 +731,12 @@ export default class AutodiagnosticoPage {
       try {
         const modalElem = await driver.findElement(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div'));
         await driver.wait(until.stalenessOf(modalElem), 10000);
-        console.log("✅ Paso 37: Botón 'Cancelar' clicado y modal cerrado.");
+        console.log("✅ Paso 6: Botón 'Cancelar' clicado y modal cerrado.");
       } catch {
-        console.log("⚠️ Paso 37: El modal pudo cerrarse sin esperar staleness.");
+        console.log("⚠️ Paso 6: El modal pudo cerrarse sin esperar staleness.");
       }
     } catch (error) {
-      throw new Error(`❌ Error en Paso 37 (clic en botón 'Cancelar'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 6 (clic en botón 'Cancelar'): ${error.message}`);
     }
   }
    // =======================
@@ -746,7 +746,7 @@ export default class AutodiagnosticoPage {
 async funcionIPv4PortMapping() {
     const driver = this.driver;
 
-    // === Paso 38: Botón "Opciones" ===
+    // === Paso 1: Botón "Opciones" ===
     try {
         const modalXpath = '//*[@id="widget-dialog-open-dialog-603378-undefined"]';
         try {
@@ -776,12 +776,12 @@ async funcionIPv4PortMapping() {
         await driver.executeScript("arguments[0].click();", btnOpciones);
         await driver.sleep(2000);
 
-        console.log("✅ Paso 38: Botón 'Opciones' presionado correctamente.");
+        console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 38 (clic en botón 'Opciones'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // === Paso 39: Opción "IPv4 Port Mapping" ===
+    // === Paso 2: Opción "IPv4 Port Mapping" ===
     try {
         const opcionIPv4PortMapping = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="1205"]')),
@@ -803,12 +803,12 @@ async funcionIPv4PortMapping() {
             console.log("ℹ️ No se encontró loader para 'IPv4 Port Mapping', continuando…");
         }
 
-        console.log("✅ Paso 39: Opción 'IPv4 Port Mapping' seleccionada correctamente.");
+        console.log("✅ Paso 2: Opción 'IPv4 Port Mapping' seleccionada correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 39: (clic en opción 'IPv4 Port Mapping'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 2: (clic en opción 'IPv4 Port Mapping'): ${error.message}`);
     }
 
-    // === Paso 40: Clic en el campo "Protocolo" ===
+    // === Paso 3: Clic en el campo "Protocolo" ===
     try {
         const selectProtocolo = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="input-select-select-3"]')),
@@ -823,12 +823,12 @@ async funcionIPv4PortMapping() {
         await selectProtocolo.click();
         await driver.sleep(1000);
 
-        console.log("✅ Paso 40: Clic en el campo 'Protocolo' realizado correctamente.");
+        console.log("✅ Paso 3: Clic en el campo 'Protocolo' realizado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 40: (clic en campo 'Protocolo'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 3: (clic en campo 'Protocolo'): ${error.message}`);
     }
 
-    // === Paso 41: Seleccionar opción aleatoria en "Protocolo" ===
+    // === Paso 4: Seleccionar opción aleatoria en "Protocolo" ===
     try {
         const selectProtocolo = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="input-select-select-3"]')),
@@ -858,12 +858,12 @@ async funcionIPv4PortMapping() {
         `, opcionSeleccionada);
 
         await driver.sleep(1500);
-        console.log(`✅ Paso 41: Opción '${textoSeleccionado}' seleccionada correctamente en el select 'Protocolo'.`);
+        console.log(`✅ Paso 4: Opción '${textoSeleccionado}' seleccionada correctamente en el select 'Protocolo'.`);
     } catch (error) {
-        throw new Error(`❌ Error en Paso 41: (selección aleatoria en select 'Protocolo'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 4: (selección aleatoria en select 'Protocolo'): ${error.message}`);
     }
 
-    // === Paso 42: Diligenciar campo "Dirección IP" con una IPv4 aleatoria ===
+    // === Paso 5: Diligenciar campo "Dirección IP" con una IPv4 aleatoria ===
     try {
         function generarIPv4() {
             const octeto = () => Math.floor(Math.random() * 254) + 1;
@@ -882,12 +882,12 @@ async funcionIPv4PortMapping() {
         await campoIP.clear();
         await campoIP.sendKeys(ipAleatoria);
 
-        console.log(`✅ Paso 42: Dirección IP '${ipAleatoria}' diligenciada correctamente.`);
+        console.log(`✅ Paso 5: Dirección IP '${ipAleatoria}' diligenciada correctamente.`);
     } catch (error) {
-        throw new Error(`❌ Error en Paso 42: (diligenciar Dirección IP aleatoria): ${error.message}`);
+        throw new Error(`❌ Error en Paso 5: (diligenciar Dirección IP aleatoria): ${error.message}`);
     }
 
-    // === Paso 43: Clic en botón "Refrescar" ===
+    // === Paso 6: Clic en botón "Refrescar" ===
     try {
         const btnRefrescar = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div/div[2]/div[1]/div')),
@@ -902,12 +902,12 @@ async funcionIPv4PortMapping() {
         await driver.executeScript("arguments[0].click();", btnRefrescar);
         await driver.sleep(1000);
 
-        console.log("✅ Paso 43: Botón 'Refrescar' presionado correctamente.");
+        console.log("✅ Paso 6: Botón 'Refrescar' presionado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 43: (clic en botón 'Refrescar'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 6: (clic en botón 'Refrescar'): ${error.message}`);
     }
 
-    // === Paso 44: Clic en botón "Cancelar" ===
+    // === Paso 7: Clic en botón "Cancelar" ===
     try {
         const btnCancelar = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')),
@@ -929,9 +929,9 @@ async funcionIPv4PortMapping() {
             console.log("ℹ️ El modal ya estaba cerrado o no se encontró para esperar su cierre.");
         }
 
-        console.log("✅ Paso 44: Botón 'Cancelar' presionado y modal cerrado correctamente.");
+        console.log("✅ Paso 7: Botón 'Cancelar' presionado y modal cerrado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 44: (clic en botón 'Cancelar'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 7: (clic en botón 'Cancelar'): ${error.message}`);
     }
   }
 
@@ -941,7 +941,7 @@ async funcionIPv4PortMapping() {
 async funcionReservaDHCP() {
     const driver = this.driver;
 
-    // === Paso 45: Clic en botón "Opciones" ===
+    // === Paso 1: Clic en botón "Opciones" ===
     try {
         const btnOpciones = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -956,12 +956,12 @@ async funcionReservaDHCP() {
         await driver.executeScript("arguments[0].click();", btnOpciones);
 
         await driver.sleep(3000);
-        console.log("✅ Paso 45: Botón 'Opciones' presionado correctamente.");
+        console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 45 (clic en botón 'Opciones'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // === Paso 46: Opción "Reserva DHCP" ===
+    // === Paso 2: Clic en Opción "Reserva DHCP" ===
     try {
         const opcionReservaDHCP = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="1206"]')),
@@ -985,12 +985,12 @@ async funcionReservaDHCP() {
             console.log("ℹ️ No se detectó loader, continuando...");
         }
 
-        console.log("✅ Paso 46: Opción 'Reserva DHCP' seleccionada correctamente.");
+        console.log("✅ Paso 2: Opción 'Reserva DHCP' seleccionada correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 46: (clic en opción 'Reserva DHCP'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 2: (clic en opción 'Reserva DHCP'): ${error.message}`);
     }
 
-    // === Paso 47: Diligenciar MAC aleatoria ===
+    // === Paso 3: Diligenciar MAC aleatoria ===
     try {
         const randomMAC = Array.from({ length: 6 }, () =>
             Math.floor(Math.random() * 256).toString(16).padStart(2, "0")
@@ -1007,12 +1007,12 @@ async funcionReservaDHCP() {
         await macField.clear();
         await macField.sendKeys(randomMAC);
 
-        console.log(`✅ Paso 47: Dirección MAC ingresada correctamente: ${randomMAC}`);
+        console.log(`✅ Paso 3: Dirección MAC ingresada correctamente: ${randomMAC}`);
     } catch (error) {
-        throw new Error(`❌ Error en Paso 47: (diligenciar dirección MAC): ${error.message}`);
+        throw new Error(`❌ Error en Paso 3: (diligenciar dirección MAC): ${error.message}`);
     }
 
-    // === Paso 48: Diligenciar IPv4 aleatoria ===
+    // === Paso 4: Diligenciar IPv4 aleatoria ===
     try {
         const randomIPv4 = Array.from({ length: 4 }, () =>
             Math.floor(Math.random() * 254) + 1
@@ -1029,12 +1029,12 @@ async funcionReservaDHCP() {
         await ipField.clear();
         await ipField.sendKeys(randomIPv4);
 
-        console.log(`✅ Paso 48: Dirección IPv4 ingresada correctamente: ${randomIPv4}`);
+        console.log(`✅ Paso 4: Dirección IPv4 ingresada correctamente: ${randomIPv4}`);
     } catch (error) {
-        throw new Error(`❌ Error en Paso 48: (diligenciar dirección IPv4): ${error.message}`);
+        throw new Error(`❌ Error en Paso 4: (diligenciar dirección IPv4): ${error.message}`);
     }
 
-    // === Paso 49: Clic en botón "Refrescar" ===
+    // === Paso 5: Clic en botón "Refrescar" ===
     try {
         const refreshBtn = await driver.wait(
             until.elementLocated(
@@ -1058,12 +1058,12 @@ async funcionReservaDHCP() {
             console.log("ℹ️ No se detectó loader de progreso, continuando...");
         }
 
-        console.log("✅ Paso 49: Botón 'Refrescar' presionado correctamente.");
+        console.log("✅ Paso 5: Botón 'Refrescar' presionado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 49: (clic en botón Refrescar): ${error.message}`);
+        throw new Error(`❌ Error en Paso 5: (clic en botón Refrescar): ${error.message}`);
     }
 
-    // === Paso 50: Clic en botón "Cancelar" ===
+    // === Paso 6: Clic en botón "Cancelar" ===
     try {
         const cancelBtn = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-button-cancel-open-dialog"]/div')),
@@ -1086,9 +1086,9 @@ async funcionReservaDHCP() {
             console.log("ℹ️ No se encontró modal activo tras el clic, continuando...");
         }
 
-        console.log("✅ Paso 50: Botón 'Cancelar' presionado y modal cerrado correctamente.");
+        console.log("✅ Paso 6: Botón 'Cancelar' presionado y modal cerrado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 50: (clic en botón Cancelar): ${error.message}`);
+        throw new Error(`❌ Error en Paso 6: (clic en botón Cancelar): ${error.message}`);
     }
 }
 
@@ -1100,7 +1100,7 @@ async funcionReservaDHCP() {
 async funcionDispositivosConectados() {
     const driver = this.driver;
 
-    // === Paso 51: Clic en botón "Opciones" ===
+    // === Paso 1: Clic en botón "Opciones" ===
     try {
         const btnOpciones = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -1115,12 +1115,12 @@ async funcionDispositivosConectados() {
         await driver.executeScript("arguments[0].click();", btnOpciones);
 
         await driver.sleep(3000);
-        console.log("✅ Paso 51: Botón 'Opciones' presionado correctamente.");
+        console.log("✅ Paso 1: Botón 'Opciones' presionado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 51 (clic en botón 'Opciones'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 1 (clic en botón 'Opciones'): ${error.message}`);
     }
 
-    // === Paso 52: Opción "Dispositivos Conectados" ===
+    // === Paso 2: Opción "Dispositivos Conectados" ===
     try {
         const opcionDispositivos = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="1208"]')),
@@ -1143,12 +1143,12 @@ async funcionDispositivosConectados() {
             console.log("ℹ️ No se detectó loader visible, continuando...");
         }
 
-        console.log("✅ Paso 52: Opción 'Dispositivos Conectados' seleccionada correctamente.");
+        console.log("✅ Paso 2: Opción 'Dispositivos Conectados' seleccionada correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 52: (clic en 'Dispositivos Conectados'): ${error.message}`);
+        throw new Error(`❌ Error en Paso 2: (clic en 'Dispositivos Conectados'): ${error.message}`);
     }
 
-    // === Paso 53: Clic en flecha desplegable del primer dispositivo ===
+    // === Paso 3: Clic en flecha desplegable del primer dispositivo ===
     try {
         const flechaDispositivo = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[1]/div[1]/div[2]')),
@@ -1163,12 +1163,12 @@ async funcionDispositivosConectados() {
         await flechaDispositivo.click();
         await driver.sleep(1500);
 
-        console.log("✅ Paso 53: Flecha del primer dispositivo desplegada correctamente.");
+        console.log("✅ Paso 3: Flecha del primer dispositivo desplegada correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 53 (clic en flecha primer dispositivo): ${error.message}`);
+        throw new Error(`❌ Error en Paso 3 (clic en flecha primer dispositivo): ${error.message}`);
     }
 
-    // === Paso 54: Clic en flecha desplegable del segundo dispositivo ===
+    // === Paso 4: Clic en flecha desplegable del segundo dispositivo ===
     try {
         const flechaSegundoDispositivo = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[2]/div[2]/div[1]/div')),
@@ -1183,12 +1183,12 @@ async funcionDispositivosConectados() {
         await flechaSegundoDispositivo.click();
         await driver.sleep(1500);
 
-        console.log("✅ Paso 54: Flecha del segundo dispositivo desplegada correctamente.");
+        console.log("✅ Paso 4: Flecha del segundo dispositivo desplegada correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 54 (clic en flecha segundo dispositivo): ${error.message}`);
+        throw new Error(`❌ Error en Paso 4 (clic en flecha segundo dispositivo): ${error.message}`);
     }
 
-    // === Paso 55: Clic en botón "Recargar/Refrescar" ===
+    // === Paso 5: Clic en botón "Recargar/Refrescar" ===
     try {
         const botonRecargar = await driver.wait(
             until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-603378-undefined"]/div/div/div[2]/div/div/div[1]/div/span')),
@@ -1203,12 +1203,12 @@ async funcionDispositivosConectados() {
         await botonRecargar.click();
         await driver.sleep(500);
 
-        console.log("✅ Paso 55: Botón 'Recargar/Refrescar' clicado correctamente.");
+        console.log("✅ Paso 5: Botón 'Recargar/Refrescar' clicado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 55 (clic en botón Recargar/Refrescar): ${error.message}`);
+        throw new Error(`❌ Error en Paso 5 (clic en botón Recargar/Refrescar): ${error.message}`);
     }
 
-    // === Paso 56: Cerrar modal "Dispositivos Conectados" ===
+    // === Paso 6: Cerrar modal "Dispositivos Conectados" ===
     try {
         // Esperar overlay si aparece
         const overlayXPath = '//*[@id="progress-progress_resultSelfDiagnosis"]';
@@ -1244,9 +1244,9 @@ async funcionDispositivosConectados() {
             return display === 'none' || hidden === 'true';
         }, 15000);
 
-        console.log("✅ Paso 56: Modal 'Dispositivos Conectados' cerrado correctamente.");
+        console.log("✅ Paso 6: Modal 'Dispositivos Conectados' cerrado correctamente.");
     } catch (error) {
-        throw new Error(`❌ Error en Paso 56 (cerrar modal Dispositivos Conectados): ${error.message}`);
+        throw new Error(`❌ Error en Paso 6 (cerrar modal Dispositivos Conectados): ${error.message}`);
     }
 }
 
