@@ -10,27 +10,42 @@ Este proyecto realiza automatización de pruebas sobre una aplicación web(emala
 
 ```
 automatizacion-celsia/
-├─ config/        # Configuración general del proyecto
-├─ data/          # Archivos de datos para pruebas
-├─ database/      # Conexión y utilidades para la base de datos
-├─ diagrams/      # Diagramas de flujo o documentación visual
-├─ drivers/       # Drivers necesarios para la automatización
-├─ errores/       # Capturas de error
-├─ node_modules/  # Dependencias del proyecto
-├─ pages/         # Page Objects (ESM modules)
-│   ├─ login.page.js
-│   └─ ...otros archivos.page.js
-├─ report/        # Reportes de ejecución de pruebas
-├─ tests/         # Pruebas automatizadas
-│   ├─ login.mjs
-│   └─ ...otros archivos.mjs
-├─ utils/         # Utilidades y helpers
-├─ .env           # Variables de entorno
-├─ .env.example   # Ejemplo de configuración de variables
-├─ .gitignore     # Archivos ignorados por git
-├─ package.json   # Configuración del proyecto
-├─ package-lock.json # Control de versiones de dependencias
-└─ README.md      # Instrucciones de uso
+├── config/                      # Configuración general del proyecto
+├── data/                        # Archivos de datos para pruebas
+├── database/                    # Conexión y utilidades para base de datos
+├── diagrams/                    # Diagramas de flujo o documentación visual
+├── drivers/                     # Drivers necesarios para la automatización
+├── errors/                      # Capturas y manejo de errores
+├── node_modules/                # Dependencias del proyecto
+├── src/                         # Carpeta principal del código fuente
+│   ├── eCenter/                 # Módulo eCenter
+│   │   └── ...vistas.page.js    # Vistas del módulo eCenter
+│   ├── eContract/               # Módulo eContract
+│   │   └── ...vistas.page.js
+│   ├── eProvisioning/           # Módulo eProvisioning
+│   │   └── ...vistas.page.js
+│   ├── eWorkForce/              # Módulo eWorkForce
+│   │   └── ...vistas.page.js
+│   ├── login/                   # Módulo de autenticación/login
+│   │   └── login.page.js
+│   ├── autodiagnostico/         # Módulo de autodiagnóstico
+│   │   └── Autodiagnostico.page.js
+│   ├── visorInformacionTecnicaRed/
+│   │   └── ...vistas.page.js    # Caso de uso Visor de Información Técnica Red
+│   └── tests/                   # Pruebas automatizadas organizadas por módulo
+│       ├── eCenter/             # Pruebas del módulo eCenter
+│       ├── eContract/           # Pruebas del módulo eContract
+│       ├── eProvisioning/       # Pruebas del módulo eProvisioning
+│       ├── eWorkForce/          # Pruebas del módulo eWorkForce
+│       └── login/               # Pruebas del módulo de autenticación
+├── utils/                       # Utilidades y helpers
+├── .env                         # Variables de entorno
+├── .env.example                 # Ejemplo de configuración de variables
+├── .gitignore                   # Archivos ignorados por git
+├── package.json                 # Configuración del proyecto y scripts
+├── package-lock.json            # Control de versiones de dependencias
+└── README.md                    # Instrucciones de uso del proyecto
+
 
 ```
 
