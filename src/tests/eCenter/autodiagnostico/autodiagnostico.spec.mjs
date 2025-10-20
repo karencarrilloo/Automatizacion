@@ -27,12 +27,12 @@ describe('Pruebas de Autodiagnóstico', function () {
     await driver.quit();
   });
 
-  it.only('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
+  it('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
     await autodiagnosticoPage.ingresarVistaAutodiagnostico();
  expect(true).to.be.true;
   });
 
-  it.only('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
+  it('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
     await autodiagnosticoPage.consultarClientePorID('28006582524');
  expect(true).to.be.true;
   });
@@ -73,7 +73,7 @@ it('CP_AUTO_009: reserva DHCP', async () => {
   expect(true).to.be.true;
 });
 
-it.only('CP_AUTO_010: Dispositivos conectados', async () => {
+it('CP_AUTO_010: Dispositivos conectados', async () => {
   await autodiagnosticoPage.funcionDispositivosConectados();
   expect(true).to.be.true;
 

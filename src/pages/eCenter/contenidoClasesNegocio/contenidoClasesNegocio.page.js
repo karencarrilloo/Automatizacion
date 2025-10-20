@@ -65,7 +65,7 @@ export default class ContenidoClasesNegocioPage {
   }
 
   //  ==================================
-  //  CP_CONTCLANEG_002 – Ingreso a vista
+  //  CP_CONTCLANEG_002 – Seleccionar una entidad (Modelos)
   //  ==================================
 
   // === CP_CONTCLANEG_002: Seleccionar una entidad (Modelos) ===
