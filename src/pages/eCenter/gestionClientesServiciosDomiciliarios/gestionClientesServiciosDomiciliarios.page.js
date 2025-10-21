@@ -204,7 +204,7 @@ export default class GestionClientesServiciosPage {
   }
   // ==========================================
   // CP_GESCLSERDOM_003: Ver información técnica asociada
-  // 4 pasos
+  // 5 pasos
   // ==========================================
   async verInformacionTecnicaAsociada(caseName = 'CP_GESCLSERDOM_003', idDeal) {
     const driver = this.driver;
@@ -879,7 +879,7 @@ export default class GestionClientesServiciosPage {
       // === Paso 1: Seleccionar cliente por ID_DEAL ===
       await this.seleccionarClientePorIdDeal(idDeal);
 
-      // === Paso 2: Abrir menú Opciones ===
+      // === Paso 2: Clic en Opciones. ===
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
         60000
@@ -1009,7 +1009,7 @@ export default class GestionClientesServiciosPage {
       // === Paso 1: Seleccionar cliente por ID_DEAL ===
       await this.seleccionarClientePorIdDeal(idDeal);
 
-      // === Paso 2: Abrir menú Opciones ===
+      // === Paso 2: Clic en Opciones. ===
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
         10000
@@ -1162,11 +1162,11 @@ export default class GestionClientesServiciosPage {
   }
 
   // =====================================================
-// CP_GESCLSERDOM_011: Cambio de plan del cliente (con CANCELAR)
+// CP_GESCLSERDOM_011: Cambio de plan del cliente (dando clic en CANCELAR)
 // 8 pasos
 // =====================================================
 async cambioPlanClienteCancelar(
-  caseName = 'CP_GESCLSERDOM_010_CANCELAR',
+  caseName = 'CP_GESCLSERDOM_011',
   idDeal
 ) {
   const driver = this.driver;
@@ -1175,7 +1175,7 @@ async cambioPlanClienteCancelar(
     // === Paso 1: Seleccionar cliente por ID_DEAL ===
     await this.seleccionarClientePorIdDeal(idDeal);
 
-    // === Paso 2: Abrir menú Opciones ===
+    // === Paso 2: Clic en Opciones. ===
     const btnOpciones = await driver.wait(
       until.elementLocated(By.xpath('//*[@id="btn-options"]')),
       10000
@@ -1219,7 +1219,7 @@ async cambioPlanClienteCancelar(
     console.log("✅ Paso 4: Botón 'Nuevo plan comercial' presionado.");
     await driver.sleep(2000);
 
-    // === Paso 5: Seleccionar plan deseado (igual que antes) ===
+    // === Paso 5: Seleccionar plan deseado  ===
     const tbodyXpath = '//*[@id="widget-dialog-pickview-pick-data-change-plan"]//table/tbody';
     const nombrePlan = "PLAN 600 MEGAS FC 2025 V";
     const tbodyPlanes = await driver.wait(

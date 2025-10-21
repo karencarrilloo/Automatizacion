@@ -14,6 +14,7 @@ export default class VisorInformacionTecnicaRedPage {
   /**
    * ====================================
    * CP_NFTECRED_001 – Ingreso a la vista
+   * 3 pasos
    * ====================================
    * 
    */
@@ -28,7 +29,7 @@ export default class VisorInformacionTecnicaRedPage {
       );
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
-      console.log("✅ [CP_VISOR_INFO_TECNICA_001] Paso 1: Módulo eCenter presionado.");
+      console.log("✅ Paso 1: Módulo eCenter presionado.");
 
       // === Paso 2: Scroll en el contenedor de aplicaciones ===
       const scrollContainer = await driver.wait(
@@ -40,7 +41,7 @@ export default class VisorInformacionTecnicaRedPage {
         scrollContainer
       );
       await driver.sleep(1000);
-      console.log("✅ [CP_VISOR_INFO_TECNICA_001] Paso 2: Scroll en contenedor de aplicaciones.");
+      console.log("✅ Paso 2: Scroll en contenedor de aplicaciones.");
 
       // === Paso 3: Clic en "Visor de información técnica de red" ===
       const visorInfoTecnica = await driver.wait(
@@ -58,29 +59,23 @@ export default class VisorInformacionTecnicaRedPage {
       await driver.sleep(500);
       await visorInfoTecnica.click();
       await driver.sleep(3000);
-      console.log("✅ [CP_VISOR_INFO_TECNICA_001] Paso 3: Vista 'Visor de información técnica de red' abierta.");
+      console.log("✅ Paso 3: Vista 'Visor de información técnica de red' abierta.");
 
     } catch (error) {
-      console.error(`❌ [CP_VISOR_INFO_TECNICA_001] Error: ${error.message}`);
-
-      // // Captura de pantalla en caso de fallo
-      // const screenshot = await driver.takeScreenshot();
-      // const errorsRoot = path.resolve(__dirname, '../../../../errors', 'visorInformacionTecnicaRed', caseName);
-      // fs.mkdirSync(errorsRoot, { recursive: true });
-      // const filePath = path.join(errorsRoot, `error_${Date.now()}.png`);
-      // fs.writeFileSync(filePath, screenshot, 'base64');
+      console.error(`❌ Error: ${error.message}`);
       throw error;
     }
   }
 
   // =====================================================
 // CP_INFTECRED_002: Filtro de búsqueda
+// 11 pasos
 // =====================================================
 async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
   const driver = this.driver;
 
   try {
-    // === Paso 4: Clic en el botón "Mostrar filtro" ===
+    // === Paso 1: Clic en el botón "Mostrar filtro" ===
     const botonMostrarFiltro = await driver.wait(
       until.elementLocated(By.id("widget-button-btn-show-filter")),
       10000
@@ -91,9 +86,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(500);
     await botonMostrarFiltro.click();
     await driver.sleep(1000);
-    console.log("✅ Paso 4: Clic en el botón 'Mostrar filtro' ejecutado correctamente.");
+    console.log("✅ Paso 1: Clic en el botón 'Mostrar filtro' ejecutado correctamente.");
 
-    // === Paso 5: Clic en el <select> para mostrar opciones del filtro ===
+    // === Paso 2: Clic en el <select> para mostrar opciones del filtro ===
     const grupoFiltro = await driver.wait(until.elementLocated(By.css('.rules-group-container')), 10000);
     const contenedorFiltro = await grupoFiltro.findElement(By.css('.rule-filter-container'));
     const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
@@ -104,16 +99,16 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await selectFiltro.click();
     await driver.sleep(1500);
 
-    // === Paso 6: Seleccionar "CENTRO POBLADO" ===
+    // === Paso 3: Seleccionar "CENTRO POBLADO" ===
     const selectCampo = await grupoFiltro.findElement(By.css('select'));
     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
     await selectCampo.click();
     await driver.sleep(500);
     await selectCampo.sendKeys("CENTRO POBLADO");
     await driver.sleep(2000);
-    console.log("✅ Paso 6: Filtro 'CENTRO POBLADO' seleccionado.");
+    console.log("✅ Paso 3: Filtro 'CENTRO POBLADO' seleccionado.");
 
-    // === Paso 7: Escribir “PALMIRA” en el campo de texto ===
+    // === Paso 4: Escribir “PALMIRA” en el campo de texto ===
     const textareaCampo = await driver.wait(until.elementLocated(By.css('textarea.form-control')), 10000);
     await driver.wait(until.elementIsVisible(textareaCampo), 5000);
     await textareaCampo.click();
@@ -121,9 +116,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await textareaCampo.clear();
     await textareaCampo.sendKeys("PALMIRA");
     await driver.sleep(1000);
-    console.log("✅ Paso 7: Campo de texto diligenciado con 'PALMIRA'.");
+    console.log("✅ Paso 4: Campo de texto diligenciado con 'PALMIRA'.");
 
-    // === Paso 8: Clic en “Aplicar filtros” ===
+    // === Paso 5: Clic en “Aplicar filtros” ===
     const botonAplicarFiltro = await driver.wait(
       until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
       10000
@@ -133,9 +128,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(500);
     await botonAplicarFiltro.click();
     await driver.sleep(3000);
-    console.log("✅ Paso 8: Clic en 'Aplicar filtro' realizado.");
+    console.log("✅ Paso 5: Clic en 'Aplicar filtro' realizado.");
 
-    // === Paso 9: Clic nuevamente en “Mostrar filtro” ===
+    // === Paso 6: Clic nuevamente en “Mostrar filtro” ===
     const botonMostrarFiltro2 = await driver.wait(
       until.elementLocated(By.id("widget-button-btn-show-filter")),
       10000
@@ -146,9 +141,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(500);
     await botonMostrarFiltro2.click();
     await driver.sleep(1000);
-    console.log("✅ Paso 9: Botón 'Mostrar filtro' clickeado nuevamente.");
+    console.log("✅ Paso 6: Botón 'Mostrar filtro' clickeado nuevamente.");
 
-    // === Paso 10: Clic en el botón "+ Add rule" ===
+    // === Paso 7: Clic en el botón "+ Add rule" ===
     const botonAddRule = await driver.wait(
       until.elementLocated(By.xpath('//button[@data-add="rule"]')),
       10000
@@ -159,9 +154,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(500);
     await botonAddRule.click();
     await driver.sleep(2000);
-    console.log("✅ Paso 10: Botón '+ Add rule' presionado.");
+    console.log("✅ Paso 7: Botón '+ Add rule' presionado.");
 
-    // === Paso 11: Clic en select del segundo filtro ===
+    // === Paso 8: Clic en select del segundo filtro ===
     const grupoFiltro2 = await driver.wait(until.elementLocated(By.css('.rules-group-container')), 10000);
     const contenedorFiltro2 = await grupoFiltro2.findElement(By.css('.rule-filter-container'));
     const selectFiltro2 = await contenedorFiltro2.findElement(By.css('select'));
@@ -171,9 +166,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(500);
     await selectFiltro2.click();
     await driver.sleep(1500);
-    console.log("✅ Paso 11: Select del segundo filtro abierto.");
+    console.log("✅ Paso 8: Select del segundo filtro abierto.");
 
-    // === Paso 12: Seleccionar “NAP SERIAL CELSIA” ===
+    // === Paso 9: Seleccionar “NAP SERIAL CELSIA” ===
     const contenedoresFiltro = await driver.wait(
       until.elementsLocated(By.css('.rule-container')),
       10000
@@ -195,9 +190,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
       }
     }
     await driver.sleep(1000);
-    console.log("✅ Paso 12: 'NAP SERIAL CELSIA' seleccionado.");
+    console.log("✅ Paso 9: 'NAP SERIAL CELSIA' seleccionado.");
 
-    // === Paso 13: Diligenciar campo “3241009” ===
+    // === Paso 10: Diligenciar campo “3241009” ===
     const segundoFiltroBlock = await driver.wait(
       until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
       10000
@@ -207,9 +202,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await textarea.clear();
     await textarea.sendKeys("3241009");
     await driver.sleep(1000);
-    console.log("✅ Paso 13: Valor '3241009' diligenciado.");
+    console.log("✅ Paso 10: Valor '3241009' diligenciado.");
 
-    // === Paso 14: Clic en “Aplicar filtro” nuevamente ===
+    // === Paso 11: Clic en “Aplicar filtro” nuevamente ===
     const botonAplicarFiltro2 = await driver.wait(
       until.elementLocated(By.xpath('//*[@id="widget-button-btn-set-filter"]/div')),
       10000
@@ -219,7 +214,7 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(300);
     await botonAplicarFiltro2.click();
     await driver.sleep(5000);
-    console.log("✅ Paso 14: Filtro aplicado correctamente.");
+    console.log("✅ Paso 11: Filtro aplicado correctamente.");
 
   } catch (error) {
     if (this._capturarError) await this._capturarError(error, caseName);
@@ -229,30 +224,31 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
 
 // =====================================================
 // CP_INFTECRED_003: Ver dispositivos
+// 3 pasos
 // =====================================================
 async verDispositivos(caseName = 'CP_INFTECRED_003') {
   const driver = this.driver;
 
   try {
-    // === Paso 15: Seleccionar registro por Serial ONT (con Actions) ===
-    const serial = "48575443702166A5";
+    // === Paso 1: Seleccionar registro ===
+    const serial = "48575443702166A5"; // se selecciona por ont
 
-    // 1. Localizar la celda que contiene el serial
+    // Localizar la celda que contiene el serial
     const tdSerial = await driver.wait(
       until.elementLocated(By.xpath(`//td[contains(normalize-space(.), '${serial}')]`)),
       10000
     );
 
-    // 2. Asegurar visibilidad
+    // Asegurar visibilidad
     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", tdSerial);
     await driver.wait(until.elementIsVisible(tdSerial), 5000);
 
-    // 3. Usar Actions para hacer clic real
+    // Usar Actions para hacer clic real
     const actions = driver.actions({ async: true });
     await actions.move({ origin: tdSerial }).click().perform();
     await driver.sleep(1000);
 
-    // 4. Subir al tr padre y validar que tiene la clase 'active'
+    // Subir al tr padre y validar que tiene la clase 'active'
     const trElemento = await tdSerial.findElement(By.xpath("./ancestor::tr"));
     await driver.wait(async () => {
       const clase = await trElemento.getAttribute("class");
@@ -261,19 +257,19 @@ async verDispositivos(caseName = 'CP_INFTECRED_003') {
 
     console.log(`✅ Paso 15: Registro con Serial ONT '${serial}' seleccionado correctamente y marcado como activo.`);
 
-    // === Paso 16: Clic en el botón "Ver dispositivos" ===
+    // === Paso 2: Clic en el botón "Ver dispositivos" ===
     const btnVerDispositivosXpath = '//*[@id="widget-button-btn-view-amplifiers"]/div';
 
-    // 1. Esperar a que el botón esté presente
+    // Esperar a que el botón esté presente
     const btnVerDispositivos = await driver.wait(
       until.elementLocated(By.xpath(btnVerDispositivosXpath)),
       10000
     );
 
-    // 2. Asegurarse de que esté visible
+    // Asegurarse de que esté visible
     await driver.wait(until.elementIsVisible(btnVerDispositivos), 5000);
 
-    // 3. Scroll y clic (con fallback a JS)
+    //  Scroll y clic (con fallback a JS)
     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnVerDispositivos);
     await driver.sleep(300);
 
@@ -286,25 +282,25 @@ async verDispositivos(caseName = 'CP_INFTECRED_003') {
     await driver.sleep(2000);
     console.log("✅ Paso 16: Botón 'Ver dispositivos' presionado correctamente.");
 
-    // === Paso 17: Cerrar modal "Ver dispositivos" ===
+    // === Paso 3: Cerrar modal "Ver dispositivos" ===
     const modalXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div';
     const btnCerrarXpath = '//*[@id="widget-dialog-dialog-view-amplifiers"]/div/div/div[1]/button';
 
-    // 1. Esperar a que el modal esté visible
+    // Esperar a que el modal esté visible
     const modal = await driver.wait(
       until.elementLocated(By.xpath(modalXpath)),
       10000
     );
     await driver.wait(until.elementIsVisible(modal), 5000);
 
-    // 2. Localizar el botón de cerrar
+    // Localizar el botón de cerrar
     const btnCerrar = await driver.wait(
       until.elementLocated(By.xpath(btnCerrarXpath)),
       10000
     );
     await driver.wait(until.elementIsVisible(btnCerrar), 5000);
 
-    // 3. Scroll y clic (fallback a JS)
+    // Scroll y clic (fallback a JS)
     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
     await driver.sleep(300);
 
@@ -315,7 +311,7 @@ async verDispositivos(caseName = 'CP_INFTECRED_003') {
     }
     await driver.sleep(2000);
 
-    // 4. Esperar que el modal ya no sea visible
+    // Esperar que el modal ya no sea visible
     await driver.wait(async () => {
       const isDisplayed = await modal.isDisplayed().catch(() => false);
       return !isDisplayed;
@@ -331,13 +327,13 @@ async verDispositivos(caseName = 'CP_INFTECRED_003') {
 
 // =====================================================
 // CP_INFTECRED_004: Editar estado
-// Pasos 18 a 23
+// 6 Pasos 
 // =====================================================
 async editarEstado(caseName = 'CP_INFTECRED_004') {
   const driver = this.driver;
 
   try {
-    // === Paso 18: Clic en el botón "Editar estado" ===
+    // === Paso 1: Clic en el botón "Editar estado" ===
     const btnEditarEstadoXpath = '//*[@id="widget-button-btn-edit-status"]/div';
 
     const btnEditarEstado = await driver.wait(
@@ -358,9 +354,9 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
       await driver.sleep(3000);
     }
 
-    console.log("✅ Paso 18: Botón 'Editar estado' clickeado correctamente.");
+    console.log("✅ Paso 1: Botón 'Editar estado' clickeado correctamente.");
 
-    // === Paso 19: Abrir el menú desplegable de "Estado" ===
+    // === Paso 2: Abrir el menú desplegable de "Estado" ===
     const selectEstadoXpath = '//*[@id="input-select-select-status-order"]';
     const selectEstado = await driver.wait(
       until.elementLocated(By.xpath(selectEstadoXpath)),
@@ -375,9 +371,9 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
     await selectEstado.click();
     await driver.sleep(1000);
 
-    console.log("✅ Paso 19: Menú desplegable 'Estado de orden' abierto correctamente.");
+    console.log("✅ Paso 2: Menú desplegable 'Estado de orden' abierto correctamente.");
 
-    // === Paso 20: Seleccionar opción "Suspendido" ===
+    // === Paso 3: Seleccionar opción "Suspendido" ===
     const opcionSuspendidoXpath = '//*[@id="input-select-select-status-order"]/option[4]';
     const selectXpath = '//*[@id="input-select-select-status-order"]';
 
@@ -394,9 +390,9 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
     await driver.executeScript("arguments[0].blur();", selectElement);
     await driver.sleep(800);
 
-    console.log("✅ Paso 20: Opción 'Suspendido' seleccionada y desplegable cerrado.");
+    console.log("✅ Paso 3: Opción 'Suspendido' seleccionada y desplegable cerrado.");
 
-    // === Paso 21: Guardar cambios (clic en "Editar estado" → Guardar) ===
+    // === Paso 4: Guardar cambios (clic en "Editar estado" → Guardar) ===
     const btnGuardarXpath = '//*[@id="widget-button-btn-edit-status-save"]/div';
     const btnGuardar = await driver.wait(
       until.elementLocated(By.xpath(btnGuardarXpath)),
@@ -409,9 +405,9 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
     await driver.executeScript("arguments[0].click();", btnGuardar);
     await driver.sleep(3000);
 
-    console.log("✅ Paso 21: Botón 'Editar estado (guardar)' presionado correctamente.");
+    console.log("✅ Paso 4: Botón 'Editar estado (guardar)' presionado correctamente.");
 
-    // === Paso 22: Clic nuevamente en el botón "Editar estado" ===
+    // === Paso 5: Clic nuevamente en el botón "Editar estado" ===
     const btnEditarEstado2 = await driver.wait(
       until.elementLocated(By.xpath(btnEditarEstadoXpath)),
       10000
@@ -430,9 +426,9 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
       await driver.sleep(3000);
     }
 
-    console.log("✅ Paso 22: Botón 'Editar estado' (segundo clic) ejecutado correctamente.");
+    console.log("✅ Paso 5: Botón 'Editar estado' (segundo clic) ejecutado correctamente.");
 
-    // === Paso 23: Guardar cambios (volver a estado Activo) ===
+    // === Paso 6: Guardar cambios (volver a estado Activo) ===
     const btnGuardar2 = await driver.wait(
       until.elementLocated(By.xpath(btnGuardarXpath)),
       10000
@@ -444,13 +440,18 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
     await driver.executeScript("arguments[0].click();", btnGuardar2);
     await driver.sleep(3000);
 
-    console.log("✅ Paso 23: Estado restaurado correctamente (Activo).");
+    console.log("✅ Paso 6: Estado restaurado correctamente (Activo).");
 
   } catch (error) {
     if (this._capturarError) await this._capturarError(error, caseName);
     throw error;
   }
 }
+
+// =====================================================
+// CP_INFTECRED_005: Editar
+// **FALTA POR REALIZAR**
+// =====================================================
 
   
   

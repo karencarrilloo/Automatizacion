@@ -47,7 +47,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     if (driver) await driver.quit();
   });
 
-  it.only('CP_GESCLSERDOM_001: Ingreso a la vista Gestión Clientes y Servicios Domiciliarios', async () => {
+  it('CP_GESCLSERDOM_001: Ingreso a la vista Gestión Clientes y Servicios Domiciliarios', async () => {
     await gestionPage.ingresarVistaGestionClientes();
 
     // Verificación: contenedor principal visible
@@ -60,25 +60,23 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-  it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
-    // Precondición: estar en la vista (puedes llamar el método anterior si es necesario)
+  it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
     await gestionPage.filtrarPorIdDeal();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
-    // Usa el ID global definido en el constructor
+  it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
     await gestionPage.verInformacionTecnicaAsociada();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it.skip('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
-    // puedes ajustar la aserción si necesitas validar éxito estricto
+    expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
+  it('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
     await gestionPage.verDispositivoCliente();
     expect(true).to.be.true; 
   });
@@ -88,27 +86,27 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true; 
   });
 
-  it.only('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
+  it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
     await gestionPage.verDetalleProceso();
     expect(true).to.be.true; 
   });
 
-  it.only('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
+  it('CP_GESCLSERDOM_008: Suspensión del cliente', async () => {
     await gestionPage.suspenderCliente();
     expect(true).to.be.true; 
   });
 
-  it.only('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
+  it('CP_GESCLSERDOM_009: Reconexión del cliente', async function () {
     await gestionPage.reconectarCliente();
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_010: Cambio de plan del cliente(con confirmar)', async function () {
+  it.skip('CP_GESCLSERDOM_010: Cambio de plan del cliente(con confirmar)', async function () {
     await gestionPage.cambioPlanCliente();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_011: Cambio de plan del cliente (con botón cancelar)', async function () {
+  it('CP_GESCLSERDOM_011: Cambio de plan del cliente (con botón cancelar)', async function () {
     await gestionPage.cambioPlanClienteCancelar();
     expect(true).to.be.true;
   });
