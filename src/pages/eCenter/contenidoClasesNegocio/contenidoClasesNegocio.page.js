@@ -829,7 +829,7 @@ export default class ContenidoClasesNegocioPage {
   async refrescarVista() {
     const driver = this.driver;
 
-    // Paso 1: Clic en la barra de búsqueda
+    // Paso 1: Clic en el boton refrescar
     try {
       const btnRefrescar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="crud-refresh-btn"]')),
