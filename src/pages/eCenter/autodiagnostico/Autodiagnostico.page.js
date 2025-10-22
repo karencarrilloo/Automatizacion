@@ -77,7 +77,7 @@ export default class AutodiagnosticoPage {
       await d.executeScript("arguments[0].click();", botonID);
       await d.sleep(2000);
 
-      // Paso 2: ingresar número
+      // Paso 2: Ingresar número ID DEAL válido
       const inputID = await d.wait(
         until.elementLocated(By.xpath('//*[@id="textfield-input-consult-customer"]')),
         10000
@@ -117,12 +117,12 @@ export default class AutodiagnosticoPage {
   async editarConfiguracionWiFi() {
     const d = this.driver;
     try {
-      // Paso 1: opciones
+      // Paso 1: Clic en el boton OPCIONES
       const btnOpciones = await d.wait(until.elementLocated(By.xpath('//*[@id="btn-options"]')), 15000);
       await d.executeScript("arguments[0].click();", btnOpciones);
       await d.sleep(2000);
 
-      // Paso 2: Configuración WiFi
+      // Paso 2: Clic en opción "Configuración WiFi"
       const opcionWifi = await d.wait(until.elementLocated(By.xpath('//*[@id="1200"]/div')), 15000);
       await d.executeScript("arguments[0].click();", opcionWifi);
 
@@ -539,7 +539,7 @@ export default class AutodiagnosticoPage {
   }
 
   // =======================
-  // CP_AUTO_006 – Funcion UPnP
+  // CP_AUTO_006 – funcion UPnP(opcion click boton cancelar)
   // =======================
 
   async funcionUPnP() {
@@ -617,7 +617,7 @@ export default class AutodiagnosticoPage {
     }
   }
    // =======================
-  // CP_AUTO_007: Función DMZ
+  // CP_AUTO_007: funcion DMZ(opcion click boton cancelar)
   // =======================
   async funcionDMZ() {
     const driver = this.driver;
@@ -740,7 +740,7 @@ export default class AutodiagnosticoPage {
     }
   }
    // =======================
-  // CP_AUTO_008: Función IPv4 Port Mapping
+  // CP_AUTO_008: ipv4 port Mapping(opcion click boton cancelar)
   // =======================
 
 async funcionIPv4PortMapping() {
@@ -936,7 +936,7 @@ async funcionIPv4PortMapping() {
   }
 
     // =======================
-  // CP_AUTO_009: Reserva DHCP
+  // CP_AUTO_009: reserva DHCP(opcion click boton cancelar)
   // =======================
 async funcionReservaDHCP() {
     const driver = this.driver;

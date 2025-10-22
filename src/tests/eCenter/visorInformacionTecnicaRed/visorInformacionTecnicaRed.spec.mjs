@@ -73,6 +73,18 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
     expect(true).to.be.true;
   });
 
+  it('CP_INFTECRED_005: Editar cliente', async () => {
+    await visorInfoPage.editarCliente();
+
+    expect(true).to.be.true;
+  });
+
+  it('CP_INFTECRED_006: Refrescar vista', async () => {
+    await visorInfoPage.refrescarTabla();
+
+    expect(true).to.be.true;
+  });
+
 
 });
 

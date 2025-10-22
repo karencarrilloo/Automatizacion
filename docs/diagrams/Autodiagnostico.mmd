@@ -1,21 +1,73 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll en contenedor de aplicaciones]
-    C --> D[Clic en módulo 'Autodiagnóstico']
+    %% ==========================
+    %% VISTA AUTODIAGNÓSTICO
+    %% ==========================
 
-    D --> E[Clic en botón 'ID DEAL']
-    E --> F[Ingresar número ID DEAL válido]
-    F --> G[Clic en botón 'Consultar cliente']
+    subgraph CP_AUTO_001 [Ingreso al módulo]
+        A1[Inicio] --> A2[Abrir eCenter]
+        A2 --> A3[Seleccionar módulo Autodiagnóstico]
+    end
 
-    G --> H[Clic en botón 'Opciones']
-    H --> I[Seleccionar 'Configuración WiFi']
+    subgraph CP_AUTO_002 [Consulta cliente por ID DEAL]
+        B1[Clic en botón ID DEAL] --> B2[Ingresar número válido]
+        B2 --> B3[Clic en Consultar cliente]
+    end
 
-    I --> J[Seleccionar campo 'Nombre de red']
-    J --> K[Digitar 'test_automatización']
-    K --> L[Clic en select 'CANAL']
-    L --> M[Seleccionar opción 'Auto']
+    subgraph CP_AUTO_003 [Validación de cliente]
+        C1[Visualizar datos del cliente] --> C2[Verificar estado ACTIVO]
+        C2 --> C3[Clic en botón Opciones]
+    end
 
-    M --> N[Fin]
+    subgraph CP_AUTO_004 [Ver información técnica]
+        D1[Seleccionar 'Ver información técnica asociada'] --> D2[Cerrar modal información técnica]
+    end
 
-    %% classDef seleccion fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
-    %% class E,F,G,H,I,L,M seleccion
+    subgraph CP_AUTO_005 [Reconfiguración del servicio]
+        E1[Clic en botón Opciones] --> E2[Seleccionar 'Reconfiguración']
+        E2 --> E3[Clic en botón 'Reconfigurar']
+        E3 --> E4[Confirmar 'Sí' en modal]
+    end
+
+    subgraph CP_AUTO_006 [Configuración WiFi]
+        F1[Clic en botón Opciones] --> F2[Seleccionar 'Configuración WiFi']
+        F2 --> F3[Editar nombre de red]
+        F3 --> F4[Seleccionar canal 'Auto']
+    end
+
+    subgraph CP_AUTO_007 [Diagnóstico de red]
+        G1[Clic en pestaña Diagnóstico] --> G2[Ejecutar test de conexión]
+        G2 --> G3[Ver resultados de ping y latencia]
+    end
+
+    subgraph CP_AUTO_008 [Reinicio de dispositivo]
+        H1[Clic en botón Reiniciar ONT] --> H2[Confirmar reinicio]
+        H2 --> H3[Esperar mensaje de éxito]
+    end
+
+    subgraph CP_AUTO_009 [Validación post-reinicio]
+        I1[Consultar nuevamente cliente] --> I2[Verificar reconexión exitosa]
+    end
+
+    subgraph CP_AUTO_010 [Cierre del proceso]
+        J1[Registrar observaciones] --> J2[Cerrar módulo]
+        J2 --> J3[Fin]
+    end
+
+    %% ==========================
+    %% CONEXIONES ENTRE CASOS
+    %% ==========================
+    A3 --> B1
+    B3 --> C1
+    C3 --> D1
+    D2 --> E1
+    E4 --> F1
+    F4 --> G1
+    G3 --> H1
+    H3 --> I1
+    I2 --> J1
+
+    %% ==========================
+    %% ESTILOS
+    %% ==========================
+    classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+    class A2,A3,B1,B2,B3,C3,D1,E1,E2,E3,F1,F2,F3,G1,H1,H2,I1,J1 acciones

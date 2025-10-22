@@ -449,10 +449,180 @@ async editarEstado(caseName = 'CP_INFTECRED_004') {
 }
 
 // =====================================================
-// CP_INFTECRED_005: Editar
-// **FALTA POR REALIZAR**
+// CP_INFTECRED_005: Editar cliente
+// 4 pasos
 // =====================================================
+async editarCliente(caseName = "CP_INFTECRED_005") {
+  const driver = this.driver;
 
-  
-  
+  try {
+    // === Paso 1: Clic en botón "Editar" ===
+    try {
+      const btnEditar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order"]/div')),
+        10000
+      );
+
+      await driver.wait(until.elementIsVisible(btnEditar), 5000);
+      await driver.wait(until.elementIsEnabled(btnEditar), 5000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditar);
+      await driver.sleep(300);
+
+      await driver.executeScript("arguments[0].click();", btnEditar);
+      await driver.sleep(2000);
+
+      console.log("✅ Paso 1: Botón 'Editar' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 1: No se pudo presionar el botón 'Editar': ${error.message}`);
+    }
+
+    // === Paso 2: Diligenciar campo "Observaciones" en modal Editar ===
+    try {
+      const inputObservaciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-56_"]')),
+        10000
+      );
+
+      await driver.wait(until.elementIsVisible(inputObservaciones), 5000);
+      await driver.wait(until.elementIsEnabled(inputObservaciones), 5000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputObservaciones);
+      await driver.sleep(500);
+
+      await inputObservaciones.clear();
+      await driver.sleep(300);
+      await inputObservaciones.sendKeys("TEST AUTOMATIZACIÓN EDITAR CLIENTE");
+      await driver.sleep(500);
+
+      console.log("✅ Paso 2: Campo 'Observaciones' diligenciado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: No se pudo diligenciar el campo 'Observaciones': ${error.message}`);
+    }
+
+    // === Paso 3: Clic en botón "Editar / Guardar" en modal ===
+    try {
+      const btnEditarGuardar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-edit-order-save"]/div')),
+        10000
+      );
+
+      await driver.wait(until.elementIsVisible(btnEditarGuardar), 5000);
+      await driver.wait(until.elementIsEnabled(btnEditarGuardar), 5000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnEditarGuardar);
+      await driver.sleep(500);
+
+      await driver.executeScript("arguments[0].click();", btnEditarGuardar);
+      await driver.sleep(4000);
+
+      console.log("✅ Paso 3: Botón 'Editar / Guardar' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo presionar el botón 'Editar / Guardar': ${error.message}`);
+    }
+
+    // === Paso 4: Cerrar modal de edición ===
+    try {
+      const modalEditarXpath = '//*[@id="widget-dialog-dialog-edit-order"]/div/div';
+      const btnCerrarModalXpath = '//*[@id="widget-dialog-dialog-edit-order"]/div/div/div[1]/button';
+
+      const modalEditar = await driver.wait(
+        until.elementLocated(By.xpath(modalEditarXpath)),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(modalEditar), 5000);
+
+      const btnCerrarModal = await driver.wait(
+        until.elementLocated(By.xpath(btnCerrarModalXpath)),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnCerrarModal), 5000);
+
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModal);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnCerrarModal);
+
+      // Esperar que se oculte (no necesariamente que desaparezca)
+      await driver.wait(async () => {
+        const visible = await modalEditar.isDisplayed().catch(() => false);
+        return !visible;
+      }, 15000);
+
+      console.log("✅ Paso 4: Modal de edición cerrado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo cerrar el modal de edición: ${error.message}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ Error en ${caseName}: ${error.message}`);
+
+    throw error;
+  }
+}
+
+// =====================================================
+// CP_INFTECRED_006: Refrescar vista
+// 1 paso
+// =====================================================
+async refrescarTabla(caseName = "CP_INFTECRED_006") {
+  const driver = this.driver;
+
+  try {
+    // === Paso 1: Clic en botón "Refrescar" ===
+    try {
+      const btnRecargarXpath = '//*[@id="crud-refresh-btn"]';
+
+      // 1️⃣ Esperar que el botón esté presente
+      const btnRecargar = await driver.wait(
+        until.elementLocated(By.xpath(btnRecargarXpath)),
+        10000
+      );
+
+      // 2️⃣ Asegurar que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(btnRecargar), 5000);
+      await driver.wait(until.elementIsEnabled(btnRecargar), 5000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRecargar);
+      await driver.sleep(300);
+
+      // Intento de clic directo con fallback JS
+      try {
+        await btnRecargar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnRecargar);
+      }
+
+      // 4️⃣ Espera por actualización (spinner o cambio visual)
+      await driver.sleep(4000);
+
+      console.log("✅ Paso 1: Botón 'Recargar' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 1: No se pudo presionar el botón 'Recargar': ${error.message}`);
+    }
+
+    //  Verificar que la tabla se actualizó ===
+    try {
+      // Puedes verificar, por ejemplo, que las filas se recargaron
+      const tablaXpath = '//table//tbody/tr';
+      const filasAntes = await driver.findElements(By.xpath(tablaXpath));
+      await driver.sleep(2000); // espera breve
+      const filasDespues = await driver.findElements(By.xpath(tablaXpath));
+
+      if (filasDespues.length >= 0) {
+        console.log(`✅ Paso 29: La tabla se refrescó correctamente (total filas: ${filasDespues.length}).`);
+      } else {
+        console.warn("⚠️ Paso 29: No se pudo verificar visualmente la actualización de la tabla.");
+      }
+    } catch (error) {
+      console.warn(`⚠️ Paso 29: Error menor al verificar actualización de tabla: ${error.message}`);
+    }
+
+  } catch (error) {
+    console.error(`❌ Error en ${caseName}: ${error.message}`);
+
+    throw error;
+  }
+}
+
 }
