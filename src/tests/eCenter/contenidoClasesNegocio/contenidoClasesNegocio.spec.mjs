@@ -58,48 +58,47 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
 
   it("CP_CONTCLANEG_002: Seleccionar una entidad (Modelos)", async () => {
     await contenidoPage.seleccionarEntidadModelos();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_003: Crear un modelo", async () => {
     await contenidoPage.crearModelo();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_004: Editar modelo", async () => {
     await contenidoPage.editarModelo();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_005: Eliminar el modelo", async () => {
     await contenidoPage.eliminarModelo();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_006: Refrescar vista", async () => {
     await contenidoPage.refrescarVista();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_007: generar reporte xls", async () => {
     await contenidoPage.generarReporte();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
   it("CP_CONTCLANEG_008: Validar funcionamiento del paginador en la vista(Entidad planes comerciales)", async () => {
     await contenidoPage.validarPaginador();
-    expect(true).to.be.true; // validación mínima
+    expect(true).to.be.true; 
   });
 
-  it("CP_CONTCLANEG_009: Validar funcionamiento del paginador en la vista(Entidad planes comerciales)", async () => {
+  it("CP_CONTCLANEG_009: Filtrar (entidad valores de planes)", async () => {
     await contenidoPage.realizarFiltro();
-    expect(true).to.be.true; // validación mínima
-
+    expect(true).to.be.true; 
   });
 
-  it("CP_CONTCLANEG_010: Validar funcionalidad carga masiva de objetos", async () => {
+  it("CP_CONTCLANEG_010: Validar funcionalidad carga masiva de objetos, opcion descargar plantilla (entidad valores de planes)", async () => {
     await contenidoPage.validarCargaMasivaObjetos();
-    expect(true).to.be.true; // Validación mínima
+    expect(true).to.be.true; 
 
   });
 

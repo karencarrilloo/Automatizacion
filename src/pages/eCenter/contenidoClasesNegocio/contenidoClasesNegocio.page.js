@@ -28,7 +28,7 @@ export default class ContenidoClasesNegocioPage {
       );
       await driver.executeScript("arguments[0].click();", eCenterBtn);
       await driver.sleep(1000);
-      console.log("✅ [CP_CONTENIDO_001] Paso 1: Clic en módulo eCenter.");
+      console.log("✅ Paso 1: Clic en módulo eCenter.");
 
       // Paso 2: Scroll en el contenedor de aplicaciones
       const scrollContainer = await driver.wait(
@@ -40,7 +40,7 @@ export default class ContenidoClasesNegocioPage {
         scrollContainer
       );
       await driver.sleep(1000);
-      console.log("✅ [CP_CONTENIDO_001] Paso 2: Scroll en contenedor de aplicaciones.");
+      console.log("✅ Paso 2: Scroll en contenedor de aplicaciones.");
 
       // Paso 3: Clic en "Contenido clases de negocio"
       const contenidoBtn = await driver.wait(
@@ -55,10 +55,10 @@ export default class ContenidoClasesNegocioPage {
       await driver.sleep(1000);
       await driver.executeScript("arguments[0].click();", contenidoBtn);
       await driver.sleep(5000);
-      console.log("✅ [CP_CONTENIDO_001] Paso 3: Vista 'Contenido clases de negocio' abierta.");
+      console.log("✅ Paso 3: Vista 'Contenido clases de negocio' abierta.");
 
     } catch (error) {
-      console.error(`❌ [CP_CONTENIDO_001] Error: ${error.message}`);
+      console.error(`❌ Error: ${error.message}`);
 
       throw error;
     }
@@ -66,6 +66,7 @@ export default class ContenidoClasesNegocioPage {
 
   //  ==================================
   //  CP_CONTCLANEG_002 – Seleccionar una entidad (Modelos)
+  //  3 pasos
   //  ==================================
 
   // === CP_CONTCLANEG_002: Seleccionar una entidad (Modelos) ===
@@ -155,8 +156,10 @@ export default class ContenidoClasesNegocioPage {
     await driver.sleep(5000);
   }
 
-
-  // === CP_CONTCLANEG_003: Crear un modelo ===
+  //  ==================================
+  // CP_CONTCLANEG_003: Crear un modelo ===
+  // 14 pasos
+  //  ==================================
   async crearModelo() {
     const driver = this.driver;
 
@@ -465,8 +468,11 @@ export default class ContenidoClasesNegocioPage {
       throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 14 (clic en Guardar): ${error.message}`);
     }
   }
-
+  //  ==================================
   // === CP_CONTCLANEG_004: Editar modelo ===
+  // 14 pasos
+  // ==================================
+
   async editarModelo() {
     const driver = this.driver;
 
@@ -930,7 +936,7 @@ export default class ContenidoClasesNegocioPage {
   // === CP_CONTCLANEG_008 - Validar funcionamiento del paginador en la vista(Entidad planes comerciales)
   async validarPaginador() {
     const driver = this.driver;
-    // CP_CONTCLANEG_008 Paso 1: Clic en botón que abre el modal de entidades ===
+    // Paso 1: Clic en botón que abre el modal de entidades ===
     try {
       const botonModalEntidades = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-picklist-listId"]/div[1]/span/button')),
@@ -1292,8 +1298,10 @@ export default class ContenidoClasesNegocioPage {
       throw new Error(`❌ CP_CONTCLANEG_008 Paso 7 (clic en botón 'Primera página'): ${error.message}`);
     }
   }
-
-  // === CP_CONTCLANEG_009 - Validar funcionamiento del paginador en la vista(Entidad planes comerciales)
+  //  ==================================
+  // === CP_CONTCLANEG_009 - Filtrar (entidad valores de planes)
+  // 14 pasos
+  //  ==================================
   async realizarFiltro() {
     const driver = this.driver;
     // Paso 1: Seleccionar el primer registro de la tabla y capturar datos ===
@@ -1333,13 +1341,13 @@ export default class ContenidoClasesNegocioPage {
       await primeraFila.click();
       await driver.sleep(1000);
 
-      console.log("✅ CP_FILTRAR_002 Paso 1: Primer registro dinámico seleccionado correctamente.");
+      console.log("✅ Paso 1: Primer registro dinámico seleccionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_FILTRAR_002 Paso 1 (selección dinámica de primer registro): ${error.message}`);
+      throw new Error(`❌ Paso 1 (selección dinámica de primer registro): ${error.message}`);
     }
 
 
-    // === CP_CONTCLANEG_009 Paso 2: Clic en botón "Filtrar" ===
+    // === Paso 2: Clic en botón "Filtrar" ===
     try {
       const btnFiltrar = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="crud-filter-btn"]')),
@@ -1365,12 +1373,12 @@ export default class ContenidoClasesNegocioPage {
         console.warn("⚠️ No se detectó barra de progreso después de filtrar, continuando...");
       }
 
-      console.log("✅ CP_FILTRAR_001 Paso 1: Botón 'Filtrar' presionado y espera dinámica completada.");
+      console.log("✅ Paso 2: Botón 'Filtrar' presionado y espera dinámica completada.");
     } catch (error) {
-      throw new Error(`❌ CP_FILTRAR_001 Paso 1 (clic en botón 'Filtrar'): ${error.message}`);
+      throw new Error(`❌ Paso 2 (clic en botón 'Filtrar'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 3: Llenar modal con datos capturados ===
+    // === Paso 3: Llenar modal con datos capturados ===
     try {
       // Campo IDENTIFICADOR
       const inputIdentificador = await driver.findElement(By.xpath('//input[@placeholder="Identificador"]'));
@@ -1393,12 +1401,12 @@ export default class ContenidoClasesNegocioPage {
       await inputValor.sendKeys(this.valor);
       await driver.sleep(5000);
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 3: Modal diligenciado correctamente con los datos capturados.");
+      console.log("✅ Paso 3: Modal diligenciado correctamente con los datos capturados.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 3: ${error.message}`);
+      throw new Error(`❌ Paso 3: ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 4 Clic en botón "SOCIALSTRATUMID" ===
+    // === Paso 4 Clic en botón "SOCIALSTRATUMID" ===
     try {
       const btnSocialStratum = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-picklist-socialstratumid"]/div[1]/span/button')),
@@ -1414,12 +1422,12 @@ export default class ContenidoClasesNegocioPage {
       await btnSocialStratum.click();
 
       await driver.sleep(2000);
-      console.log("✅ CP_CONTCLANEG_009 Paso 4: Botón 'SOCIALSTRATUMID' presionado correctamente.");
+      console.log("✅ Paso 4: Botón 'SOCIALSTRATUMID' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 4 (clic en botón 'SOCIALSTRATUMID'): ${error.message}`);
+      throw new Error(`❌ Paso 4 (clic en botón 'SOCIALSTRATUMID'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 5: Seleccionar el primer registro de la tabla ===
+    // === Paso 5: Seleccionar el primer registro de la tabla ===
     try {
       // Esperar a que el tbody del modal esté presente
       const cuerpoTablaModal = await driver.wait(
@@ -1451,12 +1459,12 @@ export default class ContenidoClasesNegocioPage {
 
       await driver.sleep(800);
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 5: Primer registro del modal seleccionado correctamente.");
+      console.log("✅ Paso 5: Primer registro del modal seleccionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 5 (selección primer registro modal): ${error.message}`);
+      throw new Error(`❌ Paso 5 (selección primer registro modal): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 6: Clic en botón "Seleccionar" del modal ===
+    // === Paso 6: Clic en botón "Seleccionar" del modal ===
     try {
       const botonSeleccionarModal = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-socialstratumid"]/div')),
@@ -1484,12 +1492,12 @@ export default class ContenidoClasesNegocioPage {
         console.warn("⚠️ No se detectó cierre de modal, se continúa.");
       }
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 6: Botón 'Seleccionar' del modal presionado correctamente.");
+      console.log("✅ Paso 6: Botón 'Seleccionar' del modal presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 6: (clic en botón 'Seleccionar'): ${error.message}`);
+      throw new Error(`❌ Paso 6: (clic en botón 'Seleccionar'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 7: Clic en botón "MUNICIPALITYID" ===
+    // === Paso 7: Clic en botón "MUNICIPALITYID" ===
     try {
       const btnMunicipality = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-picklist-municipalityid"]/div[1]/span/button')),
@@ -1505,12 +1513,12 @@ export default class ContenidoClasesNegocioPage {
       await btnMunicipality.click();
 
       await driver.sleep(2000);
-      console.log("✅ CP_CONTCLANEG_009 Paso 7: Botón 'MUNICIPALITYID' presionado correctamente.");
+      console.log("✅ Paso 7: Botón 'MUNICIPALITYID' presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 7 (clic en botón 'MUNICIPALITYID'): ${error.message}`);
+      throw new Error(`❌ Paso 7 (clic en botón 'MUNICIPALITYID'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 8: Buscar "ESPINAL" en la barra de búsqueda del modal MUNICIPALITYID ===
+    // === Paso 8: Buscar "ESPINAL" en la barra de búsqueda del modal MUNICIPALITYID ===
     try {
       const barraBusquedaModal = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-municipalityid"]//input[@id="crud-search-bar"]')),
@@ -1528,13 +1536,13 @@ export default class ContenidoClasesNegocioPage {
       await barraBusquedaModal.sendKeys('ESPINAL', Key.RETURN);
       await driver.sleep(2000);
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 8: Palabra 'ESPINAL' escrita en el modal y búsqueda ejecutada.");
+      console.log("✅ Paso 8: Palabra 'ESPINAL' escrita en el modal y búsqueda ejecutada.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 8: (buscar 'ESPINAL' en modal): ${error.message}`);
+      throw new Error(`❌ Paso 8: (buscar 'ESPINAL' en modal): ${error.message}`);
     }
 
 
-    // === CP_CONTCLANEG_009 Paso 9: Seleccionar resultado de búsqueda en modal MUNICIPALITYID ===
+    // === Paso 9: Seleccionar resultado de búsqueda en modal MUNICIPALITYID ===
     try {
       const filaMunicipio = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="row-974"]')),
@@ -1548,14 +1556,14 @@ export default class ContenidoClasesNegocioPage {
       await filaMunicipio.click();
       await driver.sleep(1000);
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 9: Registro de MUNICIPALITYID seleccionado correctamente.");
+      console.log("✅ Paso 9: Registro de MUNICIPALITYID seleccionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 9 (selección de resultado en modal MUNICIPALITYID): ${error.message}`);
+      throw new Error(`❌ Paso 9 (selección de resultado en modal MUNICIPALITYID): ${error.message}`);
     }
 
 
 
-    // === CP_CONTCLANEG_009 Paso 10: Clic en botón "Seleccionar" del modal MUNICIPALITYID ===
+    // === Paso 10: Clic en botón "Seleccionar" del modal MUNICIPALITYID ===
     try {
       const botonSeleccionarMunicipio = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btSelect-municipalityid"]/div')),
@@ -1578,12 +1586,12 @@ export default class ContenidoClasesNegocioPage {
         console.warn("⚠️ No se detectó cierre del modal de MUNICIPALITYID, se continúa.");
       }
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 10: Botón 'Seleccionar' en modal MUNICIPALITYID presionado correctamente.");
+      console.log("✅ Paso 10: Botón 'Seleccionar' en modal MUNICIPALITYID presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 10: (clic en botón 'Seleccionar' en modal MUNICIPALITYID): ${error.message}`);
+      throw new Error(`❌ Paso 10: (clic en botón 'Seleccionar' en modal MUNICIPALITYID): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 11: Scroll hasta el final y clic en botón "ID PLAN COMERCIAL" ===
+    // === Paso 11: Scroll hasta el final y clic en botón "ID PLAN COMERCIAL" ===
     try {
       // 1️⃣ Localizar el modal-body
       const modalBody = await driver.wait(
@@ -1610,12 +1618,12 @@ export default class ContenidoClasesNegocioPage {
       await btnIdPlanComercial.click();
 
       await driver.sleep(2000); // esperar que se abra el modal
-      console.log("✅ CP_CONTCLANEG_009 Paso 11: Scroll abajo y clic en botón 'ID PLAN COMERCIAL' realizado correctamente.");
+      console.log("✅ Paso 11: Scroll abajo y clic en botón 'ID PLAN COMERCIAL' realizado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 11 (scroll y clic en botón 'ID PLAN COMERCIAL'): ${error.message}`);
+      throw new Error(`❌ Paso 11 (scroll y clic en botón 'ID PLAN COMERCIAL'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 12: Seleccionar el primer registro del modal "ID PLAN COMERCIAL" ===
+    // === Paso 12: Seleccionar el primer registro del modal "ID PLAN COMERCIAL" ===
     try {
       // 1️⃣ Esperar a que se muestre el modal-body del picklist
       const modalBodyPlanComercial = await driver.wait(
@@ -1648,12 +1656,12 @@ export default class ContenidoClasesNegocioPage {
       await primeraFilaPlanComercial.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 12: Primer registro del modal 'ID PLAN COMERCIAL' seleccionado correctamente.");
+      console.log("✅ Paso 12: Primer registro del modal 'ID PLAN COMERCIAL' seleccionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 12: (selección primer registro modal 'ID PLAN COMERCIAL'): ${error.message}`);
+      throw new Error(`❌ Paso 12: (selección primer registro modal 'ID PLAN COMERCIAL'): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 13: Clic en botón "Seleccionar" del modal ID PLAN COMERCIAL ===
+    // ===  Paso 13: Clic en botón "Seleccionar" del modal ID PLAN COMERCIAL ===
     try {
       // 1️⃣ Esperar a que esté visible el modal-body para confirmar que el modal está abierto
       const modalBodyPlanComercial = await driver.wait(
@@ -1686,12 +1694,12 @@ export default class ContenidoClasesNegocioPage {
         console.warn("⚠️ No se detectó cierre del modal, continuando...");
       }
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 13: Botón 'Seleccionar' del modal ID PLAN COMERCIAL presionado correctamente.");
+      console.log("✅ Paso 13: Botón 'Seleccionar' del modal ID PLAN COMERCIAL presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_009 Paso 13: (clic en botón 'Seleccionar' modal ID PLAN COMERCIAL): ${error.message}`);
+      throw new Error(`❌ Paso 13: (clic en botón 'Seleccionar' modal ID PLAN COMERCIAL): ${error.message}`);
     }
 
-    // === CP_CONTCLANEG_009 Paso 14: Clic en botón "Filtrar" del modal cls_commercialplanvalue ===
+    // === Paso 14: Clic en botón "Filtrar" del modal cls_commercialplanvalue ===
     try {
       // 1️⃣ Esperar que el modal esté abierto (modal-content visible)
       const modalContentFiltrar = await driver.wait(
@@ -1721,14 +1729,17 @@ export default class ContenidoClasesNegocioPage {
         console.warn("⚠️ No se detectó cierre del modal, continuando...");
       }
 
-      console.log("✅ CP_CONTCLANEG_009 Paso 14: Botón 'Filtrar' en modal cls_commercialplanvalue presionado correctamente.");
+      console.log("✅ Paso 14: Botón 'Filtrar' en modal cls_commercialplanvalue presionado correctamente.");
     } catch (error) {
-      throw new Error(`❌  CP_CONTCLANEG_009 Paso 14: (clic en botón 'Filtrar' modal cls_commercialplanvalue): ${error.message}`);
+      throw new Error(`❌ Paso 14: (clic en botón 'Filtrar' modal cls_commercialplanvalue): ${error.message}`);
     }
 
   }
+  //  ==================================
+  //  === CP_CONTCLANEG_010: Validar funcionalidad carga masiva de objetos, opcion descargar plantilla (entidad valores de planes) ===
+  //  3 pasos
+  //  ==================================
 
-  // === CP_CONTCLANEG_010: Validar funcionalidad carga masiva de objetos ===
   async validarCargaMasivaObjetos() {
     const driver = this.driver;
 

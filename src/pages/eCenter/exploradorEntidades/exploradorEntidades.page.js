@@ -12,6 +12,7 @@ export default class ExploradorEntidadesPage {
   }
   // =======================
   // CP_EXPENT_001 – Ingreso a la vista Explorador de Entidades
+  // 3 pasos
   // =======================
   async ingresarVistaExploradorEntidades() {
     const driver = this.driver;
@@ -58,6 +59,7 @@ export default class ExploradorEntidadesPage {
   }
   // =======================
   // CP_EXPENT_002 – Selección de elemento secundario y tarjeta ONT
+  // 2 pasos
   // =======================
   async seleccionarElementoSecundario(caseName = 'CP_EXPENT_002') {
     const driver = this.driver;
@@ -87,18 +89,6 @@ export default class ExploradorEntidadesPage {
       await driver.sleep(10000);
       console.log("✅ CP_EXPENT_002 Paso 2: Tarjeta ONT seleccionada.");
 
-      // // === Validación mínima después del clic ===
-      // const contenedor = await driver.wait(
-      //   until.elementLocated(By.xpath('//*[@id="container-entity"]')),
-      //   10000
-      // );
-      // if (!(await contenedor.isDisplayed())) {
-      //   throw new Error("El contenedor de entidad no se muestra tras seleccionar la tarjeta ONT.");
-      // }
-      // console.log("✅ CP_EXPENT_002 Validación: Contenedor visible tras seleccionar ONT.");
-
-
-
     } catch (error) {
       console.error(`❌ Error en ${caseName}: ${error.message}`);
       throw error;
@@ -107,6 +97,7 @@ export default class ExploradorEntidadesPage {
 
   // =======================
   // CP_EXPENT_003 – Crear nuevo registro de entidad(ONT)
+  // 21 pasos
   // =======================
   async crearNuevoRegistroEntidad(caseName = 'CP_EXPENT_003') {
     const driver = this.driver;
@@ -133,7 +124,7 @@ export default class ExploradorEntidadesPage {
       await primeraTarjeta.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 1: Primera tarjeta seleccionada.");
+      console.log("✅ Paso 1: Primera tarjeta seleccionada.");
 
       // === Paso 2: Clic en botón "Nuevo registro de entidad" ===
       const btnNuevo = await driver.wait(
@@ -146,7 +137,7 @@ export default class ExploradorEntidadesPage {
       await btnNuevo.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 2: Botón 'Nuevo registro de entidad' clickeado.");
+      console.log("✅ Paso 2: Botón 'Nuevo registro de entidad' clickeado.");
 
       // === Paso 3: Diligenciar campo SERIALCELSIA con 1048XXXX ===
       const campoSerial = await driver.wait(
@@ -163,7 +154,7 @@ export default class ExploradorEntidadesPage {
       await campoSerial.sendKeys(serial);
       await driver.sleep(1000);
 
-      console.log(`✅ CP_EXPENT_003 Paso 3: Campo SERIALCELSIA diligenciado con valor ${serial}.`);
+      console.log(`✅ Paso 3: Campo SERIALCELSIA diligenciado con valor ${serial}.`);
 
       // === Paso 4: Diligenciar campo FACTORYSERIAL con 485724435AXXXXXX ===
       const campoFactorySerial = await driver.wait(
@@ -179,7 +170,7 @@ export default class ExploradorEntidadesPage {
       await campoFactorySerial.sendKeys(factorySerial);
       await driver.sleep(1000);
 
-      console.log(`✅ CP_EXPENT_003 Paso 4: Campo FACTORYSERIAL diligenciado con valor ${factorySerial}.`);
+      console.log(`✅ Paso 4: Campo FACTORYSERIAL diligenciado con valor ${factorySerial}.`);
 
 
       // === Paso 5: Clic en botón Categoría ===
@@ -193,7 +184,7 @@ export default class ExploradorEntidadesPage {
       await btnCategoria.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 5: Botón 'Categoría' clickeado.");
+      console.log("✅ Paso 5: Botón 'Categoría' clickeado.");
 
       // === Paso 6: Seleccionar registro ONT ===
       const registroONT = await driver.wait(
@@ -206,7 +197,7 @@ export default class ExploradorEntidadesPage {
       await registroONT.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 6: Registro 'ONT' seleccionado.");
+      console.log("✅ Paso 6: Registro 'ONT' seleccionado.");
 
       // === Paso 7: Clic en botón Seleccionar (confirmar categoría) ===
       const btnSeleccionar = await driver.wait(
@@ -219,7 +210,7 @@ export default class ExploradorEntidadesPage {
       await btnSeleccionar.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 7: Botón 'Seleccionar' clickeado (categoría confirmada).");
+      console.log("✅ Paso 7: Botón 'Seleccionar' clickeado (categoría confirmada).");
 
       // === Paso 8: Diligenciar campo IP con una dirección IPv4 aleatoria ===
       const campoIP = await driver.wait(
@@ -239,7 +230,7 @@ export default class ExploradorEntidadesPage {
       await campoIP.sendKeys(ip);
       await driver.sleep(1000);
 
-      console.log(`✅ CP_EXPENT_003 Paso 8: Campo IP diligenciado con valor ${ip}.`);
+      console.log(`✅ Paso 8: Campo IP diligenciado con valor ${ip}.`);
 
       // === Paso 9: Diligenciar campo MAC con serial aleatoria ===
       const campoMAC = await driver.wait(
@@ -257,7 +248,7 @@ export default class ExploradorEntidadesPage {
       await campoMAC.sendKeys(mac);
       await driver.sleep(1000);
 
-      console.log(`✅ CP_EXPENT_003 Paso 9: Campo MAC diligenciado con valor ${mac}.`);
+      console.log(`✅ Paso 9: Campo MAC diligenciado con valor ${mac}.`);
 
       // === Paso 10: Diligenciar campo Nombre con "HUAWEI_TEST" ===
       const campoNombre = await driver.wait(
@@ -270,7 +261,7 @@ export default class ExploradorEntidadesPage {
       await campoNombre.sendKeys("HUAWEI_TEST");
       await driver.sleep(1000);
 
-      console.log("✅ CP_EXPENT_003 Paso 10: Campo Nombre diligenciado con valor 'HUAWEI_TEST'.");
+      console.log("✅ Paso 10: Campo Nombre diligenciado con valor 'HUAWEI_TEST'.");
 
       // === Paso 11: Clic en botón del campo "Modelo" ===
       const btnModelo = await driver.wait(
@@ -283,7 +274,7 @@ export default class ExploradorEntidadesPage {
       await btnModelo.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 11: Botón 'Modelo' clickeado.");
+      console.log("✅ Paso 11: Botón 'Modelo' clickeado.");
 
       // === Paso 12: digitar "EG8145V5" en la barra de búsqueda DEL MODAL ===
       try {
@@ -344,9 +335,9 @@ export default class ExploradorEntidadesPage {
         await barraBusqueda.sendKeys("\n"); // Enter
         await driver.sleep(2500);
 
-        console.log("✅ Búsqueda 'EG8145V5' realizada en la barra del modal (se usó la barra dentro del modal).");
+        console.log("✅ Paso 12: Búsqueda 'EG8145V5' realizada en la barra del modal (se usó la barra dentro del modal).");
       } catch (error) {
-        console.error(`❌ Error buscando 'EG8145V5' en el modal de Modelo: ${error.message}`);
+        console.error(`❌ Error Paso 12: buscando 'EG8145V5' en el modal de Modelo: ${error.message}`);
         throw error;
       }
 
@@ -361,7 +352,7 @@ export default class ExploradorEntidadesPage {
       await registroModelo.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 13: Registro 'EG8145V5' seleccionado en el modal de Modelo.");
+      console.log("✅ Paso 13: Registro 'EG8145V5' seleccionado en el modal de Modelo.");
 
       // === Paso 14: Clic en botón Seleccionar (confirmar modelo) ===
       const btnSeleccionarModel = await driver.wait(
@@ -374,7 +365,7 @@ export default class ExploradorEntidadesPage {
       await btnSeleccionarModel.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 14: Botón 'Seleccionar' clickeado (modelo confirmado).");
+      console.log("✅ Paso 14: Botón 'Seleccionar' clickeado (modelo confirmado).");
 
 
       // === Paso 14: Diligenciar campo Descripción con "HUAWEI_TEST" ===
@@ -388,7 +379,7 @@ export default class ExploradorEntidadesPage {
       await campoDescripcion.sendKeys("HUAWEI_TEST");
       await driver.sleep(1000);
 
-      console.log("✅ CP_EXPENT_003 Paso 14: Campo Descripción diligenciado con valor 'ONT HUAWEI_TEST'.");
+      console.log("✅ Paso 14: Campo Descripción diligenciado con valor 'ONT HUAWEI_TEST'.");
 
       // === Paso 15: Clic en botón del campo "Icono" ===
       const btnIcono = await driver.wait(
@@ -401,7 +392,7 @@ export default class ExploradorEntidadesPage {
       await btnIcono.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 15: Botón 'Icono' clickeado.");
+      console.log("✅ Paso 15: Botón 'Icono' clickeado.");
 
 
       // === Paso 16: Seleccionar el ícono ONT en el modal ===
@@ -415,7 +406,7 @@ export default class ExploradorEntidadesPage {
       await iconoONT.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 16: Ícono ONT seleccionado en el modal de íconos.");
+      console.log("✅ Paso 16: Ícono ONT seleccionado en el modal de íconos.");
 
 
       // === Paso 17: Clic en botón "Seleccionar" del modal de ícono ===
@@ -429,7 +420,7 @@ export default class ExploradorEntidadesPage {
       await btnSeleccionarIcono.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 17: Botón 'Seleccionar' clickeado en el modal de ícono.");
+      console.log("✅ Paso 17: Botón 'Seleccionar' clickeado en el modal de ícono.");
 
 
       // === Paso 18: Clic en botón del campo "Localidad" ===
@@ -443,7 +434,7 @@ export default class ExploradorEntidadesPage {
       await btnLocalidad.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 18: Botón 'Localidad' clickeado.");
+      console.log("✅ Paso 18: Botón 'Localidad' clickeado.");
 
 
 
@@ -458,7 +449,7 @@ export default class ExploradorEntidadesPage {
       await btnSeleccionarLocalidad.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 19: Botón 'Seleccionar' clickeado en el modal de Localidad.");
+      console.log("✅ Paso 19: Botón 'Seleccionar' clickeado en el modal de Localidad.");
 
 
 
@@ -473,7 +464,7 @@ export default class ExploradorEntidadesPage {
       await btnSiguiente.click();
       await driver.sleep(2000);
 
-      console.log("✅ CP_EXPENT_003 Paso 20: Flecha 'Siguiente' clickeada en el formulario de entidad.");
+      console.log("✅ Paso 20: Flecha 'Siguiente' clickeada en el formulario de entidad.");
 
 
       // === Paso 21: Clic en botón "Crear" y esperar finalización del progreso ===
@@ -486,7 +477,7 @@ export default class ExploradorEntidadesPage {
 
       await btnCrear.click();
 
-      console.log("✅ CP_EXPENT_003 Paso 21: Botón 'Crear' clickeado.");
+      console.log("✅ Paso 21: Botón 'Crear' clickeado.");
 
       // Esperar a que aparezca el progress correcto
       const progress = await driver.wait(
@@ -494,7 +485,7 @@ export default class ExploradorEntidadesPage {
         10000
       );
 
-      console.log("⏳ CP_EXPENT_003 Paso 21: Proceso de creación iniciado, esperando que finalice...");
+      console.log("⏳ Paso 21: Proceso de creación iniciado, esperando que finalice...");
 
       // Esperar hasta que deje de estar visible (máx. 120s)
       await driver.wait(async () => {
@@ -508,7 +499,7 @@ export default class ExploradorEntidadesPage {
 
       await driver.sleep(10000);
 
-      console.log("✅ CP_EXPENT_003 Paso 21: Proceso de creación finalizado.");
+      console.log("✅ Paso 21: Proceso de creación finalizado.");
 
 
 
@@ -519,7 +510,10 @@ export default class ExploradorEntidadesPage {
     }
 
   }
+  //  ==================================
   // === CP_EXPENT_004 – Editar registro de entidad (ONT) ===
+  // 7 pasos
+  //  ==================================
   async editarEntidad() {
     const driver = this.driver;
 
@@ -543,9 +537,9 @@ export default class ExploradorEntidadesPage {
       await barraBusqueda.sendKeys('\n');
       await driver.sleep(3000); // espera resultados
 
-      console.log("✅ CP_EXPENT_004 Paso 1: Búsqueda de 'HUAWEI_TEST' ejecutada correctamente.");
+      console.log("✅ Paso 1: Búsqueda de 'HUAWEI_TEST' ejecutada correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 1 (búsqueda en barra): ${error.message}`);
+      throw new Error(`❌ Error en Paso 1 (búsqueda en barra): ${error.message}`);
     }
 
     // === Paso 2: Seleccionar el registro del resultado de búsqueda (card dinámico tipo device) ===
@@ -582,9 +576,9 @@ export default class ExploradorEntidadesPage {
         throw new Error("❌ El elemento no fue marcado como seleccionado (no tiene clase 'active').");
       }
 
-      console.log("✅ CP_EXPENT_004 Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
+      console.log("✅ Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 2 (seleccionar registro): ${error.message}`);
+      throw new Error(`❌ Error en Paso 2 (seleccionar registro): ${error.message}`);
     }
 
 
@@ -605,12 +599,12 @@ export default class ExploradorEntidadesPage {
       await driver.executeScript("arguments[0].click();", botonEditar);
       await driver.sleep(3000);
 
-      console.log("✅ CP_EXPENT_004 Paso 3: Botón 'Editar' clickeado correctamente.");
+      console.log("✅ Paso 3: Botón 'Editar' clickeado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 3 (clic en botón Editar): ${error.message}`);
+      throw new Error(`❌ Error en Paso 3 (clic en botón Editar): ${error.message}`);
     }
 
-    // === CP_EXPENT_004 Paso 4: Clic en la flecha "Siguiente" en el modal de edición ===
+    // === Paso 4: Clic en la flecha "Siguiente" en el modal de edición ===
     try {
       // Esperar a que el modal de edición esté visible
       const modalEdicion = await driver.wait(
@@ -640,12 +634,12 @@ export default class ExploradorEntidadesPage {
         .perform();
 
       await driver.sleep(1500); // Espera por transición de pestaña o animación
-      console.log("✅ CP_EXPENT_004 Paso 4: Flecha 'Siguiente' clickeada correctamente.");
+      console.log("✅ Paso 4: Flecha 'Siguiente' clickeada correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 4 (clic en flecha 'Siguiente'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 4 (clic en flecha 'Siguiente'): ${error.message}`);
     }
 
-    // === CP_EXPENT_004 Paso 5: Editar campos "Nombre" y "Descripción" ===
+    // === Paso 5: Editar campos "Nombre" y "Descripción" ===
     try {
       // Esperar el campo de Nombre
       const campoNombre = await driver.wait(
@@ -677,10 +671,10 @@ export default class ExploradorEntidadesPage {
 
       await driver.sleep(1000);
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 5 (editar campos 'Nombre' y 'Descripción'): ${error.message}`);
+      throw new Error(`❌ Error en Paso 5 (editar campos 'Nombre' y 'Descripción'): ${error.message}`);
     }
 
-    // === CP_EXPENT_004 Paso 6: Clic en el botón "Siguiente" dentro del modal de edición ===
+    // === Paso 6: Clic en el botón "Siguiente" dentro del modal de edición ===
     try {
       // Esperar que el botón siguiente esté presente en el DOM
       const botonSiguiente = await driver.wait(
@@ -697,13 +691,13 @@ export default class ExploradorEntidadesPage {
       await driver.sleep(500);
       await driver.executeScript("arguments[0].click();", botonSiguiente);
 
-      console.log("✅ CP_EXPENT_004 Paso 6: Botón 'Siguiente' clickeado correctamente dentro del modal de edición.");
+      console.log("✅ Paso 6: Botón 'Siguiente' clickeado correctamente dentro del modal de edición.");
       await driver.sleep(3000); // Pequeña espera tras la acción
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 6 (clic en botón 'Siguiente' dentro del modal de edición): ${error.message}`);
+      throw new Error(`❌ Error en Paso 6 (clic en botón 'Siguiente' dentro del modal de edición): ${error.message}`);
     }
 
-    // === CP_EXPENT_004 Paso 7: Clic en el botón "Editar" y esperar finalización del progreso ===
+    // === Paso 7: Clic en el botón "Editar" y esperar finalización del progreso ===
     try {
       // Esperar a que el botón "Editar" esté visible y habilitado
       const btnEditar = await driver.wait(
@@ -716,7 +710,7 @@ export default class ExploradorEntidadesPage {
 
       // Clic en el botón "Editar"
       await btnEditar.click();
-      console.log("✅ CP_EXPENT_004 Paso 7: Botón 'Editar' clickeado correctamente.");
+      console.log("✅ Paso 7: Botón 'Editar' clickeado correctamente.");
 
       // Esperar que aparezca el progress del formulario
       const progress = await driver.wait(
@@ -724,7 +718,7 @@ export default class ExploradorEntidadesPage {
         10000
       );
 
-      console.log("⏳ CP_EXPENT_004 Paso 7: Proceso de edición iniciado, esperando finalización...");
+      console.log("⏳ Paso 7: Proceso de edición iniciado, esperando finalización...");
 
       // Esperar hasta que el progress desaparezca (máximo 120 segundos)
       await driver.wait(async () => {
@@ -739,14 +733,16 @@ export default class ExploradorEntidadesPage {
       // Esperar unos segundos adicionales por estabilidad
       await driver.sleep(8000);
 
-      console.log("✅ CP_EXPENT_004 Paso 7: Proceso de edición finalizado correctamente.");
+      console.log("✅ Paso 7: Proceso de edición finalizado correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_004 Error en Paso 7 (clic en botón 'Editar' y esperar progreso): ${error.message}`);
+      throw new Error(`❌ Error en Paso 7 (clic en botón 'Editar' y esperar progreso): ${error.message}`);
     }
 
   }
-
+  //  ==================================
   // === CP_EXPENT_005 – Eliminar registro de entidad (ONT) === 
+  // 6 pasos
+  //  ==================================
   async eliminarEntidad() {
     const driver = this.driver;
 
@@ -770,9 +766,9 @@ export default class ExploradorEntidadesPage {
       await barraBusqueda.sendKeys('\n');
       await driver.sleep(3000); // Esperar resultados de búsqueda
 
-      console.log("✅ CP_EXPENT_005 Paso 1: Búsqueda de 'HUAWEI_TEST_EDIT' ejecutada correctamente.");
+      console.log("✅ Paso 1: Búsqueda de 'HUAWEI_TEST_EDIT' ejecutada correctamente.");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_005 Error en Paso 1 (búsqueda en barra): ${error.message}`);
+      throw new Error(`❌ Error en Paso 1 (búsqueda en barra): ${error.message}`);
     }
 
     // === Paso 2: Seleccionar el registro del resultado de búsqueda (card dinámico tipo device) ===
@@ -809,9 +805,9 @@ export default class ExploradorEntidadesPage {
         throw new Error("❌ El elemento no fue marcado como seleccionado (no tiene clase 'active').");
       }
 
-      console.log("✅ CP_EXPENT_005 Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
+      console.log("✅ Paso 2: Registro seleccionado correctamente (clase 'active' detectada).");
     } catch (error) {
-      throw new Error(`❌ CP_EXPENT_005 Error en Paso 2 (seleccionar registro): ${error.message}`);
+      throw new Error(`❌ Error en Paso 2 (seleccionar registro): ${error.message}`);
     }
 
     // === Paso 3: Clic en el botón "Eliminar" ===
@@ -829,9 +825,9 @@ export default class ExploradorEntidadesPage {
     await driver.executeScript("arguments[0].click();", botonEliminar);
     await driver.sleep(3000);
 
-    console.log("✅ CP_EXPENT_005 Paso 3: Botón 'Eliminar' clickeado correctamente.");
+    console.log("✅ Paso 3: Botón 'Eliminar' clickeado correctamente.");
   } catch (error) {
-    throw new Error(`❌ CP_EXPENT_005 Error en Paso 3 (clic en botón Eliminar): ${error.message}`);
+    throw new Error(`❌ Error en Paso 3 (clic en botón Eliminar): ${error.message}`);
   }
 
   // === Paso 4: Clic en el checkbox "Eliminar todas las dependencias" ===
@@ -850,9 +846,9 @@ export default class ExploradorEntidadesPage {
     await driver.executeScript("arguments[0].click();", checkboxDependencias);
     await driver.sleep(1000);
 
-    console.log("✅ CP_EXPENT_005 Paso 4: Checkbox 'Eliminar todas las dependencias' marcado correctamente.");
+    console.log("✅ Paso 4: Checkbox 'Eliminar todas las dependencias' marcado correctamente.");
   } catch (error) {
-    throw new Error(`❌ CP_EXPENT_005 Error en Paso 4 (clic en checkbox 'Eliminar todas las dependencias'): ${error.message}`);
+    throw new Error(`❌ Error en Paso 4 (clic en checkbox 'Eliminar todas las dependencias'): ${error.message}`);
   }
 
   // === Paso 5: Clic en el botón "Eliminar" del modal de confirmación ===
@@ -871,9 +867,9 @@ try {
   await driver.executeScript("arguments[0].click();", botonConfirmarEliminar);
   await driver.sleep(3000);
 
-  console.log("✅ CP_EXPENT_005 Paso 5: Botón 'Eliminar' clickeado correctamente.");
+  console.log("✅ Paso 5: Botón 'Eliminar' clickeado correctamente.");
 } catch (error) {
-  throw new Error(`❌ CP_EXPENT_005 Error en Paso 5 (clic en botón 'Eliminar'): ${error.message}`);
+  throw new Error(`❌ Error en Paso 5 (clic en botón 'Eliminar'): ${error.message}`);
 }
 
 // === Paso 6: Confirmar eliminación y esperar finalización del progreso ===
@@ -887,7 +883,7 @@ try {
   await driver.wait(until.elementIsEnabled(btnConfirmarEliminar), 20000);
 
   await btnConfirmarEliminar.click();
-  console.log("✅ CP_EXPENT_005 Paso 6: Botón 'Sí' clickeado correctamente.");
+  console.log("✅ Paso 6: Botón 'Sí' clickeado correctamente.");
 
   // Esperar a que aparezca el progress correcto de eliminación
   const progress = await driver.wait(
@@ -895,7 +891,7 @@ try {
     20000
   );
 
-  console.log("⏳ CP_EXPENT_005 Paso 6: Proceso de eliminación iniciado, esperando que finalice...");
+  console.log("⏳ Paso 6: Proceso de eliminación iniciado, esperando que finalice...");
 
   // Esperar hasta que deje de estar visible (máx. 120s)
   await driver.wait(async () => {
@@ -908,9 +904,9 @@ try {
   }, 120000);
 
   await driver.sleep(15000); // Espera adicional por estabilidad
-  console.log("✅ CP_EXPENT_005 Paso 6: Proceso de eliminación finalizado correctamente.");
+  console.log("✅ Paso 6: Proceso de eliminación finalizado correctamente.");
 } catch (error) {
-  console.error(`❌ CP_EXPENT_005 Error en Paso 6 (confirmación de eliminación): ${error.message}`);
+  console.error(`❌ Error en Paso 6 (confirmación de eliminación): ${error.message}`);
   throw error;
 }
   }

@@ -1,37 +1,77 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll en contenedor de aplicaciones]
-    C --> D[Abrir 'Contenido clases de negocio']
-    D --> E[Clic en botón picklist]
-    E --> F[Seleccionar entidad correspondiente a revisar 'Entidad modelos']
-    F --> G[Clic en botón Seleccionar]
-    G --> H[Abrir nuevo registro]
-    H --> I[Seleccionar Fabricante ID 1 - 'HUAWEI']
-    I --> J[Confirmar selección Fabricante]
-    J --> K[Diligenciar Nombre 'TEST CREAR']
-    K --> L[Diligenciar cantidad de slots 1 a 50]
-    L --> M[Seleccionar Tipo ID 21 - 'ELEMENTO TERCIARIO - GADGESTS']
-    M --> N[Confirmar selección Tipo]
-    N --> O[Diligenciar Descripción]
-    O --> P[Seleccionar Ícono]
-    P --> Q[Seleccionar Localidad]
-    Q --> R[Confirmar Localidad]
-    R --> S[Guardar registro]
+    %% ==========================
+    %% MÓDULO: CONTENIDO CLASES DE NEGOCIO
+    %% ==========================
 
-    S --> T[Clic en barra de búsqueda]
-    T --> U[Buscar 'TEST CREAR']
-    U --> V[Seleccionar registro con ID mayor]
-    V --> W[Validar campo Nombre]
+    subgraph CP_CONCLNEG_001 [Ingreso al módulo]
+        A1[Inicio] --> A2[Abrir eCenter]
+        A2 --> A3[Seleccionar módulo Contenido Clases de Negocio]
+    end
 
-    W --> X[Editar registro]
-    X --> Y[Actualizar Fabricante a ID 2 - FIBERHOME]
-    Y --> Z[Actualizar Nombre a 'TEST EDITAR']
-    Z --> AA[Actualizar slots 51 a 100]
-    AA --> AB[Actualizar Tipo a ID 1]
-    AB --> AC[Confirmar Tipo]
-    AC --> AD[Actualizar Descripción]
-    AD --> AE[Guardar edición]
-    AE --> AF[Buscar 'TEST EDITAR']
-    AF --> AG[Seleccionar registro con ID mayor]
-    AG --> AH[Eliminar registro]
-    AH --> AI[Fin]
+    subgraph CP_CONCLNEG_002 [Acceso al picklist de entidades]
+        B1[Clic en botón Picklist] --> B2[Seleccionar entidad 'Entidad modelos']
+        B2 --> B3[Clic en botón Seleccionar]
+    end
+
+    subgraph CP_CONCLNEG_003 [Creación de nuevo registro]
+        C1[Clic en botón Nuevo registro] --> C2[Seleccionar Fabricante HUAWEI]
+        C2 --> C3[Ingresar Nombre 'TEST CREAR']
+        C3 --> C4[Seleccionar Tipo 'ELEMENTO TERCIARIO - GADGETS']
+        C4 --> C5[Ingresar Descripción e Ícono]
+        C5 --> C6[Seleccionar Localidad]
+        C6 --> C7[Guardar registro]
+    end
+
+    subgraph CP_CONCLNEG_004 [Validación de registro creado]
+        D1[Clic en barra de búsqueda] --> D2[Buscar 'TEST CREAR']
+        D2 --> D3[Verificar registro en tabla]
+    end
+
+    subgraph CP_CONCLNEG_005 [Edición de registro existente]
+        E1[Seleccionar registro creado] --> E2[Editar Fabricante FIBERHOME]
+        E2 --> E3[Actualizar Nombre 'TEST EDITAR']
+        E3 --> E4[Actualizar Tipo ID 1]
+        E4 --> E5[Guardar edición]
+    end
+
+    subgraph CP_CONCLNEG_006 [Validación de edición]
+        F1[Buscar 'TEST EDITAR'] --> F2[Verificar actualización en tabla]
+    end
+
+    subgraph CP_CONCLNEG_007 [Prueba de campo Slots]
+        G1[Ingresar número aleatorio entre 1-50] --> G2[Guardar registro]
+    end
+
+    subgraph CP_CONCLNEG_008 [Filtro de registros]
+        H1[Clic en botón Filtro] --> H2[Aplicar filtro por Nombre]
+        H2 --> H3[Verificar resultado filtrado]
+    end
+
+    subgraph CP_CONCLNEG_009 [Eliminación de registro]
+        I1[Seleccionar registro] --> I2[Clic en botón Eliminar]
+        I2 --> I3[Confirmar acción]
+    end
+
+    subgraph CP_CONCLNEG_010 [Cierre del flujo]
+        J1[Refrescar lista de registros] --> J2[Fin del módulo]
+    end
+
+    %% ==========================
+    %% CONEXIONES ENTRE CASOS
+    %% ==========================
+    A3 --> B1
+    B3 --> C1
+    C7 --> D1
+    D3 --> E1
+    E5 --> F1
+    F2 --> G1
+    G2 --> H1
+    H3 --> I1
+    I3 --> J1
+
+    %% ==========================
+    %% ESTILOS
+    %% ==========================
+    %% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+    %% class A2,A3,B1,B2,B3,C1,C2,C3,C4,C5,C6,D1,E1,E2,E3,E4,F1,G1,H1,H2,I1,I2,J1 acciones
+

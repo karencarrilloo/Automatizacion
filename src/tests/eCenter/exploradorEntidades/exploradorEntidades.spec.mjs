@@ -53,7 +53,6 @@ describe('Prueba de Explorador de Entidades', function () {
   it('CP_EXPENT_002: Selección de elemento secundario(ONT)', async () => {
     await exploradorPage.seleccionarElementoSecundario();
     expect(true).to.be.true;
-
   });
 
   it.skip('CP_EXPENT_003: Crear nuevo registro de entidad(ONT)', async () => {
