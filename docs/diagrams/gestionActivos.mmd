@@ -1,33 +1,52 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll en contenedor de aplicaciones]
-    C --> D[Clic en 'Gestión de Activos']
-    
-    D --> E[Clic en 'Seleccionar entidad']
-    E --> F[Seleccionar fila 'elemento secundario']
-    F --> G[Clic en botón 'Siguiente']
-    
-    G --> H[Seleccionar opción 'ont']
-    H --> I[Clic en botón 'Siguiente']
-    
-    I --> J[Seleccionar fila con ID 9 'FAILED']
-    J --> K[Clic en botón 'FINALIZAR']
-    K --> L[Esperar a que desaparezca progress]
-    L --> M[Seleccionar primer registro ONT]
-    
-    M --> N[Clic en 'Actualizar estado operativo']
-    N --> O[Desplegar <select> estado]
-    O --> P[Seleccionar opción 'LOST']
-    P --> Q[Ingresar comentario 'test automatización']
-    Q --> R[Clic en botón 'Guardar']
-    R --> S[Esperar cierre de modal]
-    
-    S --> T[Clic en botón 'Mostrar filtro']
-    T --> U[Clic en <select> de campo]
-    U --> V[Seleccionar campo 'FACTORYSERIAL']
-    V --> W[Ingresar serial aleatorio]
-    W --> X[Clic en botón 'Aplicar filtro']
-    X --> Y[Fin]
+%% ==========================
+%% MÓDULO: GESTIÓN DE ACTIVOS
+%% ==========================
 
-    %% classDef seleccion fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
-    %% class E,F,G,H,I,O,P seleccion
+subgraph CP_GESTACT_001 [Acceso a la vista Gestion de Activos]
+    A1[Inicio] --> A2[Clic en modulo eCenter]
+    A2 --> A3[Scroll en contenedor de aplicaciones]
+    A3 --> A4[Clic en Explorador de entidades]
+end
+
+subgraph CP_GESTACT_002 [Filtrar ONT por estado FAILED]
+    B1[Clic en boton Seleccionar entidad] --> B2[Seleccionar fila con texto elemento secundario]
+    B2 --> B3[Clic en boton Siguiente]
+    B3 --> B4[Seleccionar ont]
+    B4 --> B5[Clic en boton Siguiente]
+    B5 --> B6[Seleccionar fila con ID 9 FAILED]
+    B6 --> B7[Clic en boton Finalizar]
+end
+
+subgraph CP_GESTACT_003 [Actualizar ONT a LOST y validar filtrado por FACTORYSERIAL]
+    C1[Seleccionar primer registro de la tabla] --> C2[Clic en boton Actualizar estado operativo]
+    C2 --> C3[Clic en estado para mostrar lista de opciones]
+    C3 --> C4[Seleccionar opcion LOST en el estado]
+    C4 --> C5[Diligenciar campo comentario con test automatizacion]
+    C5 --> C6[Clic en boton Guardar para actualizar estado ONT]
+    C6 --> C7[Clic en boton Seleccionar entidad]
+    C7 --> C8[Seleccionar fila con texto elemento secundario]
+    C8 --> C9[Clic en boton Siguiente]
+    C9 --> C10[Seleccionar ont]
+    C10 --> C11[Clic en boton Siguiente]
+    C11 --> C12[Seleccionar fila con ID 10 LOST]
+    C12 --> C13[Clic en boton Finalizar]
+    C13 --> C14[Clic en boton Mostrar filtro]
+    C14 --> C15[Clic en estado para mostrar lista de opciones]
+    C15 --> C16[Seleccionar opcion FACTORYSERIAL]
+    C16 --> C17[Diligenciar campo texto con serial ONT previo]
+    C17 --> C18[Clic en boton Aplicar filtro]
+end
+
+%% ==========================
+%% CONEXIONES ENTRE CASOS
+%% ==========================
+A4 --> B1
+B7 --> C1
+
+%% ==========================
+%% ESTILOS
+%% ==========================
+%% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+%% class A2,A3,A4,B1,B2,B3,B4,B5,B6,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C15,C16,C17,C18 acciones
+

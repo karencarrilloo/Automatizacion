@@ -1,30 +1,68 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll contenedor de aplicaciones]
-    C --> D[Clic en 'Explorador de entidades']
-    D --> E[Clic en elemento OLT]
-    E --> F[Clic en botón 'Ver todas']
-    F --> G[Clic en 'Configuración masiva de agente']
-    G --> H[Clic en botón 'Categoría constructiva']
-    H --> I[Seleccionar fila ID 1 indoor]
-    I --> J[Confirmar selección Categoría]
-    J --> K[Clic en campo VLANQINQ]
-    K --> L[Seleccionar VLANQINQ ID 3]
-    L --> M[Confirmar selección VLANQINQ]
-    M --> N[Clic en campo Protocolo de conexión]
-    N --> O[Seleccionar protocolo IPOE ID 1]
-    O --> P[Confirmar selección Protocolo]
-    P --> Q[Clic en campo Categoría]
-    Q --> R[Seleccionar categoría Acceso ID 1]
-    R --> S[Confirmar selección Categoría]
-    S --> T[Diligenciar campo Serial de fábrica]
-    T --> U[Diligenciar campo Cantidad de slots]
-    U --> V[Diligenciar campo Firmware versión]
-    V --> W[Diligenciar campo IP]
-    W --> X[Diligenciar campo Número de soporte]
-    X --> Y[Clic en botón Fecha de instalación]
-    Y --> Z[Confirmar fecha botón ACEPTAR]
-    Z --> AA[Confirmar hora botón ACEPTAR]
-    AA --> AB[Confirmar minutos botón ACEPTAR]
-    AB --> AC[Confirmar segundos botón ACEPTAR]
-    AC --> AD[Fin]
+%% ==========================
+%% MÓDULO: EXPLORADOR DE ENTIDADES
+%% ==========================
+
+subgraph CP_EXPENT_001 [Ingreso a la vista Explorador de entidades]
+    A1[Inicio] --> A2[Clic en modulo eCenter]
+    A2 --> A3[Scroll en contenedor de aplicaciones]
+    A3 --> A4[Clic en Explorador de entidades]
+end
+
+subgraph CP_EXPENT_002 [Seleccion de elemento secundario ONT]
+    B1[Clic en elemento secundario] --> B2[Clic en tarjeta ONT]
+end
+
+subgraph CP_EXPENT_003 [Crear nuevo registro entidad ONT]
+    C1[Clic en primera tarjeta] --> C2[Clic en boton Nuevo registro de entidad]
+    C2 --> C3[Diligenciar campo SERIALCELSIA con 1048XXXX]
+    C3 --> C4[Diligenciar campo FACTORYSERIAL con 4.5724435AXXXXXX]
+    C4 --> C5[Clic en boton Categoria]
+    C5 --> C6[Seleccionar registro ONT]
+    C6 --> C7[Clic en boton Seleccionar para confirmar categoria]
+    C7 --> C8[Diligenciar campo IP con direccion IPv4]
+    C8 --> C9[Diligenciar campo MAC con serial aleatoria]
+    C9 --> C10[Diligenciar campo Nombre HUAWEI_TEST]
+    C10 --> C11[Clic en boton del campo Modelo]
+    C11 --> C12[Digitar EG8145V5 en barra de busqueda del modal]
+    C12 --> C13[Seleccionar registro EG8145V5]
+    C13 --> C14[Diligenciar campo Descripcion HUAWEI_TEST]
+    C14 --> C15[Clic en boton del campo Icono]
+    C15 --> C16[Seleccionar icono ONT en modal]
+    C16 --> C17[Clic en boton Seleccionar del modal de icono]
+    C17 --> C18[Clic en boton del campo Localidad]
+    C18 --> C19[Clic en boton Seleccionar del modal de Localidad]
+    C19 --> C20[Clic en flecha Siguiente en formulario de creacion]
+    C20 --> C21[Clic en boton Crear y esperar finalizacion del progreso]
+end
+
+subgraph CP_EXPENT_004 [Editar registro entidad ONT]
+    D1[Buscar entidad HUAWEI_TEST] --> D2[Seleccionar registro del resultado de busqueda]
+    D2 --> D3[Clic en boton Editar]
+    D3 --> D4[Clic en flecha Siguiente del modal de edicion]
+    D4 --> D5[Editar campos Nombre y Descripcion]
+    D5 --> D6[Clic en boton Siguiente dentro del modal]
+    D6 --> D7[Clic en boton Editar y esperar finalizacion del progreso]
+end
+
+subgraph CP_EXPENT_005 [Eliminar registro entidad ONT]
+    E1[Buscar entidad HUAWEI_TEST_EDIT] --> E2[Seleccionar registro del resultado de busqueda]
+    E2 --> E3[Clic en boton Eliminar]
+    E3 --> E4[Clic en checkbox Eliminar todas las dependencias]
+    E4 --> E5[Clic en boton Eliminar del modal de confirmacion]
+    E5 --> E6[Confirmar eliminacion y esperar finalizacion del progreso]
+end
+
+%% ==========================
+%% CONEXIONES ENTRE CASOS
+%% ==========================
+A4 --> B1
+B2 --> C1
+C21 --> D1
+D7 --> E1
+
+%% ==========================
+%% ESTILOS
+%% ==========================
+%% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+%% class A2,A3,A4,B1,B2,C1,C2,C5,C6,C7,C10,C11,C15,C16,C17,C18,C19,D3,D5,E3,E4,E5 acciones
