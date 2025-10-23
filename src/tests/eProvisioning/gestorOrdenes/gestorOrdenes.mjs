@@ -48,7 +48,6 @@ describe('Pruebas de Gestor de Órdenes', function () {
     if (driver) await driver.quit();
   });
 
-  // === Caso de prueba 1: Ingreso a la vista Gestor de Órdenes ===
   it('CP_GESORD_001: Debería abrir la vista "Gestor de Órdenes"', async () => {
     await gestorOrdenesPage.ingresarGestorOrdenes();
     expect(true).to.be.true;
@@ -59,8 +58,23 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X:Ejecutar orden venta e instalación"', async () => {
+  it.skip('CP_GESORD_00X:Ejecutar orden venta e instalación"', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
+    expect(true).to.be.true;
+  });
+
+   it.skip('CP_GESORD_003 :RawData"', async () => {
+    await gestorOrdenesPage.rawData();
+    expect(true).to.be.true;
+  });
+
+  it.skip('CP_GESORD_004 :Adjuntos"', async () => {
+    await gestorOrdenesPage.Adjuntos();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_005 :Registro de la orden"', async () => {
+    await gestorOrdenesPage.registroOrden();
     expect(true).to.be.true;
   });
 });

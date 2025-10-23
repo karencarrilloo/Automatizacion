@@ -249,12 +249,302 @@ export default class GestorOrdenesPage {
       await driver.sleep(3000);
       console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
 
+      // === Paso 4: Clic en el botón "Número de Serial"===
+      try {
+        const btnNumeroSerialXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div';
+        const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+
+        // Localizar el botón y asegurarse de que esté visible
+        const btnNumeroSerial = await driver.wait(
+          until.elementLocated(By.xpath(btnNumeroSerialXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnNumeroSerial), 10000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNumeroSerial);
+        await driver.sleep(500);
+
+        // Clic en el botón (fallback con JS)
+        try {
+          await btnNumeroSerial.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnNumeroSerial);
+        }
+
+        console.log("✅ Paso 4: Botón 'Número de Serial' presionado correctamente.");
+
+        // === Esperar el progress de ejecución ===
+        const progress = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          20000
+        );
+
+        await driver.wait(until.elementIsVisible(progress), 10000);
+        console.log("⏳ Paso 4: Proceso iniciado, esperando finalización...");
+
+        // Esperar hasta que el progress desaparezca o deje de estar visible (máximo 120s)
+        await driver.wait(async () => {
+          try {
+            return !(await progress.isDisplayed());
+          } catch {
+            // Si ya no está en el DOM, lo consideramos finalizado
+            return true;
+          }
+        }, 120000);
+
+        await driver.sleep(3000); // pequeña espera adicional por estabilidad
+        console.log("✅ Paso 4: Proceso completado correctamente (progress finalizado).");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: Error en clic o espera del progress 'Número de Serial': ${error.message}`);
+      }
+
+      // === Paso 5: Clic en el botón "SIGUIENTE" ===
+      try {
+        const btnSiguienteXpath = '//div[@type="button" and contains(@class,"btn-primary") and normalize-space(text())="SIGUIENTE"]';
+
+        // 1️⃣ Esperar a que el botón aparezca en el DOM
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          20000
+        );
+
+        // 2️⃣ Esperar a que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // 3️⃣ Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(500);
+
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 5: Botón 'SIGUIENTE' presionado correctamente.");
+
+        // 4️⃣ Pequeña espera por navegación o carga posterior
+        await driver.sleep(3000);
+
+        //falta continuar los demás pasos....
+
+
+      } catch (error) {
+        throw new Error(`❌ Paso 5: Error al intentar presionar el botón 'SIGUIENTE': ${error.message}`);
+      }
+
+
+
       console.log(`✅ ${caseName}: Proceso 'ORDEN - VENTA E INSTALACIÓN' ejecutado con éxito.`);
     } catch (error) {
-      console.error(`❌ Error: ${error.message}`);
+      console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
 
       throw error;
     }
   }
 
+  // =====================================================
+  // CP_GESORD_003 – RawData
+  // x pasos
+  // =====================================================
+  async rawData(caseName = "CP_GESORD_00X", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
+    }
+
+    // === Paso 3: Seleccionar opción "RawData" ===
+    try {
+      const opcionRawDataXpath = '//*[@id="1097"]/div';
+
+      // 1️⃣ Esperar a que la opción esté disponible en el DOM
+      const opcionRawData = await driver.wait(
+        until.elementLocated(By.xpath(opcionRawDataXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(opcionRawData), 8000);
+      await driver.wait(until.elementIsEnabled(opcionRawData), 8000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionRawData);
+      await driver.sleep(300);
+
+      try {
+        await opcionRawData.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionRawData);
+      }
+
+      await driver.sleep(2000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'RawData' seleccionada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'RawData': ${error.message}`);
+    }
+
+    //falta continuar los demás pasos....
+
+
+  } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+
+    throw error;
+  }
+
+  // =====================================================
+  // CP_GESORD_004 – Adjuntos
+  // x pasos
+  // =====================================================
+  async Adjuntos(caseName = "CP_GESORD_00X", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
+    }
+
+    // === Paso 3: Seleccionar opción "Adjuntos" ===
+    try {
+      const opcionAdjuntosXpath = '//*[@id="1096"]/div';
+
+
+      // 1️⃣ Esperar a que la opción esté disponible en el DOM
+      const opcionAdjuntos = await driver.wait(
+        until.elementLocated(By.xpath(opcionAdjuntosXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(opcionAdjuntos), 8000);
+      await driver.wait(until.elementIsEnabled(opcionAdjuntos), 8000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionAdjuntos);
+      await driver.sleep(300);
+
+      try {
+        await opcionAdjuntos.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionAdjuntosa);
+      }
+
+      await driver.sleep(2000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'Adjuntos' seleccionada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Adjuntos': ${error.message}`);
+    }
+
+    //falta continuar los demás pasos....
+
+
+  } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+
+    throw error;
+  }
+
+
+  // =====================================================
+  // CP_GESORD_005 – Registro de la orden
+  // x pasos
+  // =====================================================
+  async registroOrden(caseName = "CP_GESORD_00X", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
+    }
+
+    // === Paso 3: Seleccionar opción "registroOrden" ===
+    try {
+      const opcionregistroOrdenXpath = '//*[@id="1095"]/div';
+
+
+      // 1️⃣ Esperar a que la opción esté disponible en el DOM
+      const opcionregistroOrden = await driver.wait(
+        until.elementLocated(By.xpath(opcionregistroOrdenXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(opcionregistroOrden), 9000);
+      await driver.wait(until.elementIsEnabled(opcionregistroOrden), 9000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionregistroOrden);
+      await driver.sleep(300);
+
+      try {
+        await opcionAdjuntos.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionregistroOrden);
+      }
+
+      await driver.sleep(4000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'Adjuntos' seleccionada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Adjuntos': ${error.message}`);
+    }
+
+    //falta continuar los demás pasos....
+
+
+  } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+
+    throw error;
+  }
 }
