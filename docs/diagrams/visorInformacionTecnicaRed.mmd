@@ -1,10 +1,61 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll contenedor de aplicaciones]
-    C --> D[Clic en 'Visor de informacion tecnica de red']
-    D --> E[Clic en botón 'Mostrar filtro']
-    E --> F[Clic en <select> del filtro]
-    F --> G[Seleccionar opción 'CENTRO POBLADO']
-    G --> H[Escribir 'PALMIRA' en campo de texto]
-    H --> I[Clic en botón 'Aplicar filtro']
-    I --> J[Fin]
+%% ==========================
+%% MÓDULO: VISOR INFORMACION TECNICA DE RED
+%% ==========================
+
+subgraph CP_INFTECRED_001 [Acceso al visor de informacion tecnica de red]
+    A1[Inicio] --> A2[Clic en modulo eCenter]
+    A2 --> A3[Scroll en contenedor de aplicaciones]
+    A3 --> A4[Clic en visor de informacion tecnica de red]
+end
+
+subgraph CP_INFTECRED_002 [Aplicar filtros combinados]
+    B1[Clic en boton Mostrar filtro] --> B2[Clic en select para mostrar opciones]
+    B2 --> B3[Seleccionar CENTRO POBLADO]
+    B3 --> B4[Escribir PALMIRA en campo de texto]
+    B4 --> B5[Clic en Aplicar filtros]
+    B5 --> B6[Clic nuevamente en Mostrar filtro]
+    B6 --> B7[Clic en boton Add rule]
+    B7 --> B8[Clic en select del segundo filtro]
+    B8 --> B9[Seleccionar NAP SERIAL CELSIA]
+    B9 --> B10[Diligenciar campo 3241009]
+    B10 --> B11[Clic en Aplicar filtro nuevamente]
+end
+
+subgraph CP_INFTECRED_003 [Visualizar dispositivos]
+    C1[Seleccionar registro] --> C2[Clic en boton Ver dispositivos]
+    C2 --> C3[Cerrar modal Ver dispositivos]
+end
+
+subgraph CP_INFTECRED_004 [Editar estado del registro]
+    D1[Clic en boton Editar estado] --> D2[Abrir menu desplegable de Estado]
+    D2 --> D3[Seleccionar opcion Suspendido]
+    D3 --> D4[Clic en Guardar cambios]
+    D4 --> D5[Clic nuevamente en Editar estado]
+    D5 --> D6[Guardar cambios volver a estado Activo]
+end
+
+subgraph CP_INFTECRED_005 [Editar observaciones]
+    E1[Clic en boton Editar] --> E2[Diligenciar campo Observaciones en modal]
+    E2 --> E3[Clic en boton Guardar en modal]
+    E3 --> E4[Cerrar modal de edicion]
+end
+
+subgraph CP_INFTECRED_006 [Refrescar vista]
+    F1[Clic en boton Refrescar]
+end
+
+%% ==========================
+%% CONEXIONES ENTRE CASOS
+%% ==========================
+A4 --> B1
+B11 --> C1
+C3 --> D1
+D6 --> E1
+E4 --> F1
+
+%% ==========================
+%% ESTILOS
+%% ==========================
+%% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+%% class A2,A3,A4,B1,B2,B5,B6,B7,B8,B9,B10,C2,C3,D1,D2,D3,D4,E1,E2,E3,F1 acciones

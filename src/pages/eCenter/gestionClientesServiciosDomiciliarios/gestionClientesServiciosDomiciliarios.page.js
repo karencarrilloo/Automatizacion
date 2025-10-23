@@ -66,8 +66,6 @@ export default class GestionClientesServiciosPage {
   }
 
 
-
-  
   //  ===============================
   //  CP_GESCLSERDOM_001 – Ingreso a vista
   //  3 pasos
@@ -619,7 +617,7 @@ export default class GestionClientesServiciosPage {
 
   // =====================================================
   // CP_GESCLSERDOM_007: Ver detalle del proceso
-  // 4 pasos
+  // 5 pasos
   // =====================================================
   async verDetalleProceso(
     caseName = 'CP_GESCLSERDOM_007', idDeal) {
@@ -709,7 +707,7 @@ export default class GestionClientesServiciosPage {
       // Paso 1: seleccionar cliente (global o parámetro)
       await this.seleccionarClientePorIdDeal(idDeal);
 
-      // === Paso 2: Abrir menú Opciones ===
+      // === Paso 2: Clic en Opciones. ===
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
         10000
@@ -824,7 +822,7 @@ export default class GestionClientesServiciosPage {
       }
 
 
-      // === Paso 8: Validar modal de detalle del proceso ===
+      // === Validar modal de detalle del proceso ===
       const modalDetalleXpath =
         '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]/div/div';
 
@@ -836,7 +834,7 @@ export default class GestionClientesServiciosPage {
       console.log("✅ Modal de detalle de proceso abierto correctamente.");
 
 
-      // === Paso 9: Cerrar modal de detalle ===
+      // === Paso 8: Cerrar modal de detalle ===
       const btnCerrarModalXpath =
         '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
 
@@ -849,7 +847,7 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(5000);
       await driver.executeScript("arguments[0].click();", btnCerrarModal);
 
-      // Paso 10: deseleccionar cliente 
+      // Paso 9: deseleccionar cliente 
       await this.seleccionarClientePorIdDeal(idDeal);
 
 
@@ -871,7 +869,7 @@ export default class GestionClientesServiciosPage {
   }
   // =====================================================
   // CP_GESCLSERDOM_009: Reconexión del cliente
-  // 10 pasos
+  // 8 pasos
   // =====================================================
   async reconectarCliente(caseName = 'CP_GESCLSERDOM_009', idDeal) {
     const driver = this.driver;
@@ -940,21 +938,21 @@ export default class GestionClientesServiciosPage {
       await driver.executeScript("arguments[0].click();", btnSi);
       console.log("✅ Paso 6: Botón 'Sí' presionado.");
 
-      // === Paso 7: Esperar barra de progreso (si aparece) ===
+      // === Esperar barra de progreso (si aparece) ===
       try {
         const progressXpath = '//*[@class="progress-bar"]';
         const progress = await driver.wait(
           until.elementLocated(By.xpath(progressXpath)),
           3000
         );
-        console.log("⏳ Paso 7: Progress detectado, esperando a que finalice...");
+        console.log("⏳ Progress detectado, esperando a que finalice...");
         await driver.wait(until.stalenessOf(progress), 180000); // hasta 3 min
-        console.log("✅ Paso 7: Progress finalizado.");
+        console.log("✅ Progress finalizado.");
       } catch {
-        console.log("⚠️ Paso 7: No se detectó progress, continuando.");
+        console.log("⚠️ No se detectó progress, continuando.");
       }
 
-      // === Paso 8: Esperar modal de detalle del proceso ===
+      // === Esperar modal de detalle del proceso ===
       const modalDetalleXpath =
         '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]';
       const modalDetalle = await driver.wait(
@@ -962,17 +960,17 @@ export default class GestionClientesServiciosPage {
         180000
       );
       await driver.wait(until.elementIsVisible(modalDetalle), 180000);
-      console.log("✅ Paso 8: Modal de detalle del proceso abierto.");
+      console.log("✅ Modal de detalle del proceso abierto.");
 
-      // === Paso 9: Verificar que exista texto de orden de reconexión ===
+      // === verificar que exista texto de orden de reconexión ===
       const ordenReconexionXpath = "//*[contains(text(),'ORDEN - RECONEXION')]";
       await driver.wait(
         until.elementLocated(By.xpath(ordenReconexionXpath)),
         60000
       );
-      console.log("✅ Paso 9: Orden de reconexión visible.");
+      console.log("✅ Orden de reconexión visible.");
 
-      // === Paso 10: Cerrar modal de detalle ===
+      // === Paso 7: Cerrar modal de detalle ===
       const btnCerrarModalXpath =
         '//div[starts-with(@id,"widget-dialog-open-dialog") and contains(@id,"CustomerManager")]//button[contains(@class,"close")]';
       const btnCerrar = await driver.wait(
@@ -986,11 +984,11 @@ export default class GestionClientesServiciosPage {
       try {
         await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 10000);
       } catch {
-        console.log("⚠️ Paso 10: Modal de detalle pudo no desaparecer del todo.");
+        console.log("⚠️ Paso 7: Modal de detalle pudo no desaparecer del todo.");
       }
-      console.log("✅ Paso 10: Modal de detalle cerrado.");
+      console.log("✅ Paso 7: Modal de detalle cerrado.");
 
-      // Paso 11: deseleccionar cliente 
+      // Paso 8: deseleccionar cliente 
       await this.seleccionarClientePorIdDeal(idDeal);
 
     } catch (error) {
@@ -1297,11 +1295,6 @@ async cambioPlanClienteCancelar(
       } catch {
         console.log("⚠️ Botón 'Cancelar' no visible aún, intentando forzar visibilidad...");
       }
-
-      // // Forzar clic mediante JavaScript para evitar overlays
-      // await driver.executeScript("arguments[0].click();", btnCancelar);
-      // console.log("✅ Paso 8: Botón 'Cancelar' presionado correctamente.");
-      // await driver.sleep(3000);
 
     } catch (error) {
       console.error(`❌ CP_GESCLSERDOM_011 Error en Paso 8 (clic en Cancelar): ${error.message}`);

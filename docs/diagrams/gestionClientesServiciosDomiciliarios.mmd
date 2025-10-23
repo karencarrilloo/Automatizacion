@@ -1,31 +1,118 @@
 flowchart TD
-    A[Inicio] --> B[Clic en módulo eCenter]
-    B --> C[Scroll en contenedor de aplicaciones]
-    C --> D[Clic en 'Gestión sobre clientes y servicios domiciliarios']
+%% ==========================
+%% MÓDULO: GESTION DE CLIENTES Y SERVICIOS DOMICILIARIOS
+%% ==========================
 
-    D --> E[Seleccionar cliente ACTIVO]
-    E --> F[Capturar tipo de cliente]
+subgraph CP_GESCLSERDOM_001 [Acceso al modulo]
+    A1[Inicio] --> A2[Clic en modulo eCenter]
+    A2 --> A3[Scroll en contenedor de aplicaciones]
+    A3 --> A4[Clic en Gestion clientes y servicios domiciliarios]
+end
 
-    F --> G[Clic en botón Opciones]
-    G --> H[Seleccionar 'Ver información técnica asociada']
-    H --> I[Cerrar modal información técnica]
+subgraph CP_GESCLSERDOM_002 [Aplicar filtros por ID_DEAL]
+    B1[Abrir modal de filtros] --> B2[Desplegar select de filtros]
+    B2 --> B3[Seleccionar ID_DEAL]
+    B3 --> B4[Diligenciar campo ID_DEAL]
+    B4 --> B5[Clic en Aplicar filtros]
+end
 
-    I --> J[Clic en botón Opciones]
-    J --> K[Seleccionar 'Reconfiguración']
-    K --> L[Clic en botón 'Reconfigurar']
-    L --> M[Confirmar 'Sí' en modal]
+subgraph CP_GESCLSERDOM_003 [Ver informacion tecnica del cliente]
+    C1[Seleccionar cliente] --> C2[Clic en Opciones]
+    C2 --> C3[Clic en Ver informacion tecnica asociada]
+    C3 --> C4[Cerrar modal]
+    C4 --> C5[Deseleccionar cliente]
+end
 
-    M --> N{¿Cliente AMI?}
-    N -- Sí --> O[Esperar proceso AMI] --> P[Clic en 'Terminar']
-    N -- No --> Q[Clic en botón 'Siguiente'] --> R[Clic en 'Configurar WiFi']
+subgraph CP_GESCLSERDOM_004 [Reconfiguracion del servicio]
+    D1[Seleccionar cliente] --> D2[Clic en Opciones]
+    D2 --> D3[Seleccionar opcion Reconfiguracion]
+    D3 --> D4[Clic en boton Reconfigurar]
+    D4 --> D5[Confirmar con Si en modal]
+    D5 --> D6[Monitorear proceso de reconfiguracion]
+    D6 --> D7[Reutilizar datos WiFi opcional]
+end
 
-    P --> S[Fin]
-    R --> S[Fin]
+subgraph CP_GESCLSERDOM_005 [Ver dispositivos del cliente]
+    E1[Seleccionar cliente] --> E2[Clic en Opciones]
+    E2 --> E3[Seleccionar opcion Ver dispositivos]
+    E3 --> E4[Cerrar modal Ver dispositivos]
+    E4 --> E5[Deseleccionar cliente]
+end
 
-    %% %% Estilo para resaltar pasos de interacción con Opciones
-    %% classDef opciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
-    %% class G,H,I,J,K,L,M opciones
+subgraph CP_GESCLSERDOM_006 [Ver documentos del cliente]
+    F1[Seleccionar cliente] --> F2[Clic en Opciones]
+    F2 --> F3[Seleccionar opcion Ver documentos]
+    F3 --> F4[Acciones sobre Acta de instalacion]
+    F4 --> F5[Acciones sobre Contrato]
+    F5 --> F6[Cerrar modal principal Ver documentos]
+end
 
-    %% %% Estilo para decisiones
-    %% classDef decision fill:#fff3cd,stroke:#f0ad4e,stroke-width:2px;
-    %% class N decision
+subgraph CP_GESCLSERDOM_007 [Detalle del proceso del cliente]
+    G1[Seleccionar cliente] --> G2[Clic en Opciones]
+    G2 --> G3[Seleccionar opcion Detalle del proceso]
+    G3 --> G4[Cerrar modal Detalle del proceso]
+    G4 --> G5[Deseleccionar cliente]
+end
+
+subgraph CP_GESCLSERDOM_008 [Suspension del servicio]
+    H1[Seleccionar cliente] --> H2[Clic en Opciones]
+    H2 --> H3[Seleccionar opcion Suspension]
+    H3 --> H4[Seleccionar motivo Suspension por no pago]
+    H4 --> H5[Diligenciar comentario]
+    H5 --> H6[Confirmar suspension]
+    H6 --> H7[Confirmar con Si]
+    H7 --> H8[Cerrar modal detalle]
+    H8 --> H9[Deseleccionar cliente]
+end
+
+subgraph CP_GESCLSERDOM_009 [Reconexion del servicio]
+    I1[Seleccionar cliente] --> I2[Clic en Opciones]
+    I2 --> I3[Seleccionar opcion Reconexion]
+    I3 --> I4[Diligenciar comentario]
+    I4 --> I5[Confirmar reconexion]
+    I5 --> I6[Confirmar con Si]
+    I6 --> I7[Cerrar modal detalle]
+    I7 --> I8[Deseleccionar cliente]
+end
+
+subgraph CP_GESCLSERDOM_010 [Cambio de plan exitoso]
+    J1[Seleccionar cliente] --> J2[Clic en Opciones]
+    J2 --> J3[Seleccionar opcion Cambio de plan]
+    J3 --> J4[Clic en boton Nuevo plan comercial]
+    J4 --> J5[Seleccionar plan deseado]
+    J5 --> J6[Confirmar seleccion del plan]
+    J6 --> J7[Diligenciar numero PQ 10 digitos]
+    J7 --> J8[Diligenciar comentario]
+    J8 --> J9[Confirmar cambio de plan]
+    J9 --> J10[Cerrar modal Detalle del proceso]
+end
+
+subgraph CP_GESCLSERDOM_011 [Cancelar cambio de plan]
+    K1[Seleccionar cliente por ID_DEAL] --> K2[Clic en Opciones]
+    K2 --> K3[Seleccionar opcion Cambio de plan]
+    K3 --> K4[Clic en boton Nuevo plan comercial]
+    K4 --> K5[Seleccionar plan deseado]
+    K5 --> K6[Clic en boton Seleccionar]
+    K6 --> K7[Diligenciar numero PQ y comentario]
+    K7 --> K8[Clic en boton Cancelar en lugar de Confirmar]
+end
+
+%% ==========================
+%% CONEXIONES ENTRE CASOS
+%% ==========================
+A4 --> B1
+B5 --> C1
+C5 --> D1
+D7 --> E1
+E5 --> F1
+F6 --> G1
+G5 --> H1
+H9 --> I1
+I8 --> J1
+J10 --> K1
+
+%% ==========================
+%% ESTILOS
+%% ==========================
+%% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+%% class A2,A3,A4,B1,B2,B3,B4,B5,C1,C2,C3,D1,D2,D3,D4,E1,E2,E3,F1,F2,F3,G1,G2,H1,H2,H3,I1,I2,I3,J1,J2,J3,K1,K2,K3,K4,K5,K6,K7 acciones
