@@ -1,78 +1,107 @@
 flowchart TD
-    %% ==========================
-    %% MÓDULO: CONTENIDO CLASES DE NEGOCIO
-    %% ==========================
-    %% ****CORREGIR*****
+%% ==========================
+%% MÓDULO: CONTENIDO CLASES DE NEGOCIO
+%% ==========================
 
-    subgraph CP_CONCLNEG_001 [Ingreso al módulo]
-        A1[Inicio] --> A2[Abrir eCenter]
-        A2 --> A3[Seleccionar módulo Contenido Clases de Negocio]
-    end
+subgraph CP_CONCLNEG_001 [Acceso a la vista Contenido Clases de Negocio]
+    A1[Inicio] --> A2[Clic en modulo eCenter]
+    A2 --> A3[Scroll en contenedor de aplicaciones]
+    A3 --> A4[Clic en Contenido clases de negocio]
+end
 
-    subgraph CP_CONCLNEG_002 [Acceso al picklist de entidades]
-        B1[Clic en botón Picklist] --> B2[Seleccionar entidad 'Entidad modelos']
-        B2 --> B3[Clic en botón Seleccionar]
-    end
+subgraph CP_CONCLNEG_002 [Seleccion de entidad Modelos]
+    B1[Clic en boton Picklist] --> B2[Seleccionar entidad con alias Modelos]
+    B2 --> B3[Clic en boton Seleccionar]
+end
 
-    subgraph CP_CONCLNEG_003 [Creación de nuevo registro]
-        C1[Clic en botón Nuevo registro] --> C2[Seleccionar Fabricante HUAWEI]
-        C2 --> C3[Ingresar Nombre 'TEST CREAR']
-        C3 --> C4[Seleccionar Tipo 'ELEMENTO TERCIARIO - GADGETS']
-        C4 --> C5[Ingresar Descripción e Ícono]
-        C5 --> C6[Seleccionar Localidad]
-        C6 --> C7[Guardar registro]
-    end
+subgraph CP_CONCLNEG_003 [Crear nuevo registro]
+    C1[Clic en boton Nuevo] --> C2[Clic en boton campo Fabricante]
+    C2 --> C3[Seleccionar fabricante ID 1 HUAWEI]
+    C3 --> C4[Clic en boton Seleccionar tras elegir fabricante]
+    C4 --> C5[Diligenciar campo Nombre TEST CREAR]
+    C5 --> C6[Diligenciar Cantidad de slots con numero aleatorio]
+    C6 --> C7[Clic en boton campo Tipo]
+    C7 --> C8[Seleccionar tipo ID 21 ELEMENTO TERCIARIO GADGETS]
+    C8 --> C9[Clic en boton Seleccionar del modal Tipo]
+    C9 --> C10[Diligenciar campo Descripcion]
+    C10 --> C11[Diligenciar campo Icono]
+    C11 --> C12[Clic en boton campo Localidad]
+    C12 --> C13[Clic en boton Seleccionar del modal Localidad]
+    C13 --> C14[Clic en boton Guardar]
+end
 
-    subgraph CP_CONCLNEG_004 [Validación de registro creado]
-        D1[Clic en barra de búsqueda] --> D2[Buscar 'TEST CREAR']
-        D2 --> D3[Verificar registro en tabla]
-    end
+subgraph CP_CONCLNEG_004 [Editar registro existente]
+    D1[Clic en barra de busqueda] --> D2[Digitar TEST CREAR y presionar Enter]
+    D2 --> D3[Seleccionar registro con ID mayor]
+    D3 --> D4[Clic en boton Editar]
+    D4 --> D5[Clic en boton campo Fabricante modo edicion]
+    D5 --> D6[Seleccionar fabricante ID 2 FIBERHOME]
+    D6 --> D7[Clic en boton Seleccionar del modal Fabricante]
+    D7 --> D8[Editar campo Nombre TEST EDITAR]
+    D8 --> D9[Editar Cantidad de slots 51 a 100]
+    D9 --> D10[Clic en boton Tipo]
+    D10 --> D11[Seleccionar tipo ID 1 ELEMENTO PRIMARIO ACCESO]
+    D11 --> D12[Clic en Seleccionar del modal Tipo]
+    D12 --> D13[Editar campo Descripcion]
+    D13 --> D14[Clic en boton Guardar formulario edicion]
+end
 
-    subgraph CP_CONCLNEG_005 [Edición de registro existente]
-        E1[Seleccionar registro creado] --> E2[Editar Fabricante FIBERHOME]
-        E2 --> E3[Actualizar Nombre 'TEST EDITAR']
-        E3 --> E4[Actualizar Tipo ID 1]
-        E4 --> E5[Guardar edición]
-    end
+subgraph CP_CONCLNEG_005 [Eliminar registro]
+    E1[Buscar modelo TEST EDITAR] --> E2[Seleccionar registro con mayor ID]
+    E2 --> E3[Clic en boton Eliminar]
+    E3 --> E4[Confirmar eliminacion en modal]
+end
 
-    subgraph CP_CONCLNEG_006 [Validación de edición]
-        F1[Buscar 'TEST EDITAR'] --> F2[Verificar actualización en tabla]
-    end
+subgraph CP_CONCLNEG_006 [Refrescar vista]
+    F1[Clic en boton Refrescar]
+end
 
-    subgraph CP_CONCLNEG_007 [Prueba de campo Slots]
-        G1[Ingresar número aleatorio entre 1-50] --> G2[Guardar registro]
-    end
+subgraph CP_CONCLNEG_007 [Exportar todos los registros]
+    G1[Clic en boton modal de entidades] --> G2[Clic en opcion Exportar todos los registros]
+end
 
-    subgraph CP_CONCLNEG_008 [Filtro de registros]
-        H1[Clic en botón Filtro] --> H2[Aplicar filtro por Nombre]
-        H2 --> H3[Verificar resultado filtrado]
-    end
+subgraph CP_CONCLNEG_008 [Seleccionar entidad Valores de planes]
+    H1[Clic en boton modal de entidades] --> H2[Seleccionar entidad ID 135 Valores de planes]
+    H2 --> H3[Clic en boton Seleccionar]
+    H3 --> H4[Clic en boton Pagina siguiente]
+end
 
-    subgraph CP_CONCLNEG_009 [Eliminación de registro]
-        I1[Seleccionar registro] --> I2[Clic en botón Eliminar]
-        I2 --> I3[Confirmar acción]
-    end
+subgraph CP_CONCLNEG_009 [Filtrar registros por datos capturados]
+    I1[Seleccionar primer registro de la tabla] --> I2[Clic en boton Filtrar]
+    I2 --> I3[Llenar modal con datos capturados]
+    I3 --> I4[Clic en boton SOCIALSTRATUMID]
+    I4 --> I5[Seleccionar primer registro de la tabla]
+    I5 --> I6[Clic en boton Seleccionar del modal]
+    I6 --> I7[Clic en boton MUNICIPALITYID]
+    I7 --> I8[Buscar ESPINAL en barra de busqueda]
+    I8 --> I9[Seleccionar resultado en modal MUNICIPALITYID]
+    I9 --> I10[Clic en boton Seleccionar del modal MUNICIPALITYID]
+    I10 --> I11[Scroll hasta final y clic en boton ID PLAN COMERCIAL]
+    I11 --> I12[Seleccionar primer registro del modal ID PLAN COMERCIAL]
+    I12 --> I13[Clic en boton Seleccionar del modal ID PLAN COMERCIAL]
+    I13 --> I14[Clic en boton Filtrar del modal cls_commercialplanvalue]
+end
 
-    subgraph CP_CONCLNEG_010 [Cierre del flujo]
-        J1[Refrescar lista de registros] --> J2[Fin del módulo]
-    end
+subgraph CP_CONCLNEG_010 [Carga masiva de objetos]
+    J1[Clic en boton Carga masiva de objetos] --> J2[Clic en boton Descargar plantilla]
+    J2 --> J3[Clic en boton Cancelar del modal]
+end
 
-    %% ==========================
-    %% CONEXIONES ENTRE CASOS
-    %% ==========================
-    A3 --> B1
-    B3 --> C1
-    C7 --> D1
-    D3 --> E1
-    E5 --> F1
-    F2 --> G1
-    G2 --> H1
-    H3 --> I1
-    I3 --> J1
+%% ==========================
+%% CONEXIONES ENTRE CASOS
+%% ==========================
+A4 --> B1
+B3 --> C1
+C14 --> D1
+D14 --> E1
+E4 --> F1
+F1 --> G1
+G2 --> H1
+H4 --> I1
+I14 --> J1
 
-    %% ==========================
-    %% ESTILOS
-    %% ==========================
-    %% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
-    %% class A2,A3,B1,B2,B3,C1,C2,C3,C4,C5,C6,D1,E1,E2,E3,E4,F1,G1,H1,H2,I1,I2,J1 acciones
-
+%% ==========================
+%% ESTILOS
+%% ==========================
+%% classDef acciones fill:#e6f7ff,stroke:#1a73e8,stroke-width:2px;
+%% class A2,A3,A4,B1,B2,B3,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,D4,D5,D6,D7,D10,D11,D12,D13,E1,E2,E3,F1,G1,G2,H1,H2,H3,H4,I1,I2,I4,I7,I8,I11,I13,J1,J2,J3 acciones
