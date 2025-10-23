@@ -7,42 +7,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default class GestorOrdenesPage {
-   /**
-  * @param {WebDriver} driver  instancia de selenium
-  * @param {string} defaultIdDeal  ID_DEAL global reutilizable
-  */
-  constructor(driver, defaultIdDeal = '28006757991') {
+  /**
+ * @param {WebDriver} driver  instancia de selenium
+ * @param {string} defaultIdDeal  ID_DEAL global reutilizable
+ */
+  constructor(driver, defaultIdDeal = '28007068553') {
     this.driver = driver;
     this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable
   }
 
-  /**
-   * Selecciona un cliente por ID_DEAL.
-   * Si no se envía `idDeal`, se usa el `defaultIdDeal` del constructor.
-   */
   async seleccionarClientePorIdDeal(idDeal) {
     const driver = this.driver;
-    const idBuscar = idDeal || this.defaultIdDeal; // 👈 Aquí se usa la propiedad global
+    const idBuscar = idDeal || this.defaultIdDeal;
 
-    const gridTbodyXpath =
-      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
+    // === XPaths posibles (Clientes y Órdenes) ===
+    const posiblesGrids = [
+      // Gestión Clientes
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody',
+      // Gestor de Órdenes
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"orderViewerGestor")]//table/tbody',
+    ];
 
-    const cuerpoTabla = await driver.wait(
-      until.elementLocated(By.xpath(gridTbodyXpath)),
-      15000
-    );
-    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
-
-    const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
-    if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
-
-    let filaSeleccionada = null;
-    for (const fila of filas) {
+    let cuerpoTabla = null;
+    for (const gridXpath of posiblesGrids) {
       try {
-        const tdDeal = await fila.findElement(By.xpath('.//*[@id="cuentaCustomer"]'));
-        const texto = (await tdDeal.getText()).trim();
-        if (texto === idBuscar) {        // comparación exacta del ID_DEAL
-          filaSeleccionada = fila;
+        cuerpoTabla = await driver.wait(until.elementLocated(By.xpath(gridXpath)), 5000);
+        if (cuerpoTabla) {
+          console.log(`📋 Grid encontrado: ${gridXpath}`);
           break;
         }
       } catch {
@@ -50,10 +41,29 @@ export default class GestorOrdenesPage {
       }
     }
 
-    if (!filaSeleccionada) {
-      throw new Error(`No se encontró cliente con ID_DEAL "${idBuscar}"`);
+    if (!cuerpoTabla)
+      throw new Error("❌ No se encontró un grid compatible en la vista actual.");
+
+    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+    const filas = await cuerpoTabla.findElements(By.xpath("./tr"));
+
+    if (filas.length === 0)
+      throw new Error("❌ No se encontraron filas en la tabla.");
+
+    let filaSeleccionada = null;
+
+    for (const fila of filas) {
+      const textoFila = (await fila.getText()).trim();
+      if (textoFila.includes(idBuscar)) { // 👈 coincidencia parcial en toda la fila
+        filaSeleccionada = fila;
+        break;
+      }
     }
 
+    if (!filaSeleccionada)
+      throw new Error(`❌ No se encontró cliente con ID_DEAL "${idBuscar}"`);
+
+    // Scroll y clic
     await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
     await driver.sleep(300);
     try {
@@ -61,11 +71,16 @@ export default class GestorOrdenesPage {
     } catch {
       await driver.executeScript('arguments[0].click();', filaSeleccionada);
     }
+
     await driver.sleep(800);
-    console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado.`);
+    console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado correctamente.`);
   }
 
+
+  //  ==================================================
   // === CP_GESORD_001 - Ingreso al Gestor de Órdenes ===
+  // 3 pasos
+  //  ==================================================
   async ingresarGestorOrdenes() {
     const driver = this.driver;
 
@@ -185,94 +200,61 @@ export default class GestorOrdenesPage {
 
   }
 
-
-  // === CP_GESORD_003 - Orden Mantenimiento ===
-  async ordenMantenimiento() {
+  // =====================================================
+  // CP_GESORD_00X – Ejecutar orden venta e instalación
+  // x pasos
+  // =====================================================
+  async ejecutarOrdenVentaInstalacion(caseName = "CP_GESORD_003", idDeal) {
     const driver = this.driver;
 
     try {
-  // 🔹 Filtro inicial por tipo de orden
-  await driver.findElement(By.xpath("//div[@id='widget-button-btn-add-filter']/div")).click();
-  await driver.findElement(By.name("qb_80898_rule_0_filter")).click();
-  await new Select(driver.findElement(By.name("qb_80898_rule_0_filter"))).selectByVisibleText("TIPO DE ORDEN");
-  const tipoOrden = await driver.findElement(By.name("qb_80898_rule_0_value_0"));
-  await tipoOrden.clear();
-  await tipoOrden.sendKeys("ORDEN - MANTENIMIENTO");
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
 
-  // 🔹 Filtro adicional por ID_DEAL
-  await driver.findElement(By.xpath("//div[@id='qb_80898_group_0']/div/div/button")).click();
-  await driver.findElement(By.name("qb_80898_rule_1_filter")).click();
-  await new Select(driver.findElement(By.name("qb_80898_rule_1_filter"))).selectByVisibleText("ID_DEAL");
-  const idDeal = await driver.findElement(By.name("qb_80898_rule_1_value_0"));
-  await idDeal.clear();
-  await idDeal.sendKeys("28006956314");
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
 
-  await driver.findElement(By.xpath("//div[@id='widget-button-btn-apply-filter-element']/div")).click();
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
 
-  // 🔹 Selección de orden y apertura de menú de opciones
-  await driver.findElement(By.xpath("//td[@id='departamento']")).click();
-  await driver.findElement(By.xpath("//td[@id='provisioningOrderId']")).click();
-  await driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='RawData'])[1]/preceding::div[1]")).click();
-  await driver.findElement(By.xpath("//li[@id='1094']/div")).click();
+      // Paso 3: Seleccionar opción "Ejecutar orden" ===
 
-  // 🔹 Ejecución de varias acciones dentro del diálogo
-  const acciones = [
-    "//div[@id='widget-dialog-open-dialog-604172-5524-orderViewerGestor2']/div/div/div[2]/div/div/div/div[2]/div/div/div[3]",
-    "//div[@id='widget-dialog-open-dialog-604172-5524-orderViewerGestor2']/div/div/div[2]/div/div/div/div[2]/div/div/div[2]",
-    "//div[@id='widget-dialog-open-dialog-604172-5524-orderViewerGestor2']/div/div/div[2]/div/div/div/div[2]/div/div/div[4]"
-  ];
+      const opcionEjecutarXpath = '//*[@id="1094"]/div';
 
-  for (const accion of acciones) {
-    await driver.findElement(By.xpath(accion)).click();
-    await driver.findElement(By.xpath("//div[@id='widget-dialog-view-process-child']/div/div/div[2]/div/div/div/div[2]/div[3]/div/div/span")).click();
-    await driver.findElement(By.xpath("//div[@id='widget-dialog-view-process-child']/div/div/div[2]/div/div/div/div[2]/div[3]/div/div[2]/div")).click();
-    await driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='ATRÁS'])[1]/following::div[2]")).click();
+      // Esperar a que la opción esté visible en el menú
+      const opcionEjecutar = await driver.wait(
+        until.elementLocated(By.xpath(opcionEjecutarXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(opcionEjecutar), 5000);
 
-    const obs = await driver.findElement(By.xpath("//div[@id='widget-textareafield-observation']/textarea"));
-    await obs.clear();
-    await obs.sendKeys("test");
-    await driver.findElement(By.xpath("//div[@id='widget-button-btn-save-report']/div")).click();
+      // Desplazar y hacer clic (con fallback a JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionEjecutar);
+      await driver.sleep(500);
+
+      try {
+        await opcionEjecutar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionEjecutar);
+
+      }
+
+      await driver.sleep(3000);
+      console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
+
+      console.log(`✅ ${caseName}: Proceso 'ORDEN - VENTA E INSTALACIÓN' ejecutado con éxito.`);
+    } catch (error) {
+      console.error(`❌ Error: ${error.message}`);
+
+      throw error;
+    }
   }
-
-  // 🔹 Configuración de datos técnicos
-  await driver.findElement(By.id("textfield-SerialONT")).clear();
-  await driver.findElement(By.id("textfield-SerialONT")).sendKeys("485754435A2DBCA6");
-
-  await driver.findElement(By.id("textfield-VelocidadSubida")).clear();
-  await driver.findElement(By.id("textfield-VelocidadSubida")).sendKeys("100");
-
-  await driver.findElement(By.id("textfield-VelocidadBajada")).clear();
-  await driver.findElement(By.id("textfield-VelocidadBajada")).sendKeys("100");
-
-  // 🔹 Configuración de WiFi
-  await driver.findElement(By.xpath("//div[@id='widget-button-btn-configure-wifi-img']/div")).click();
-  await driver.findElement(By.xpath("//div[@id='widget-checkbox-check-step-validation-wifi']/label")).click();
-  await driver.findElement(By.id("textfield-SSID")).clear();
-  await driver.findElement(By.id("textfield-SSID")).sendKeys("qweqw");
-  await driver.findElement(By.id("textfield-PasswordOneSSID")).clear();
-  await driver.findElement(By.id("textfield-PasswordOneSSID")).sendKeys("123123123");
-  await driver.findElement(By.xpath("//div[@id='widget-button-btn-confirm-dialog']/div")).click();
-
-  // 🔹 Potencia NAP
-  const potencia = await driver.findElement(By.id("textfield-PotenciaNAP"));
-  await potencia.clear();
-  await potencia.sendKeys("12");
-
-  // 🔹 Comentarios y cierre
-  await driver.findElement(By.css("#widget-textareafield-Observations > textarea")).sendKeys("test");
-  await driver.findElement(By.css("#widget-textareafield-observation > textarea")).sendKeys("tst");
-
-  // 🔹 Confirmación final
-  await driver.findElement(By.xpath("//div[@id='widget-button-btn-terminar']/div")).click();
-
-    console.log("✅ Proceso 'ORDEN - VENTA E INSTALACION' ejecutado con éxito.");
-  } catch (err) {
-    console.error("❌ Error durante la ejecución:", err);
-  } finally {
-    await driver.quit();
-  }
-  }
-
-//module.exports = { ordenVentaEInstalacion };
 
 }

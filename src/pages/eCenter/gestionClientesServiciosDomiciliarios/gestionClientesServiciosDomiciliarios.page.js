@@ -250,12 +250,14 @@ export default class GestionClientesServiciosPage {
       await driver.executeScript('arguments[0].click();', btnCerrarModal);
       await driver.sleep(2000);
       console.log('✅ Modal cerrado correctamente.');
+      
+      // Paso 5: deseleccionar cliente 
+      await this.seleccionarClientePorIdDeal(idDeal);
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
       throw error;
     }
-    // Paso 5: deseleccionar cliente 
-      await this.seleccionarClientePorIdDeal(idDeal);
+    
   }
 
   // =====================================================
