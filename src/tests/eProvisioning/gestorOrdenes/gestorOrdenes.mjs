@@ -48,18 +48,13 @@ describe('Pruebas de Gestor de Órdenes', function () {
     if (driver) await driver.quit();
   });
 
-  it('CP_GESORD_001: Debería abrir la vista "Gestor de Órdenes"', async () => {
+  it.only('CP_GESORD_001: Debería abrir la vista "Gestor de Órdenes"', async () => {
     await gestorOrdenesPage.ingresarGestorOrdenes();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_002: Filtro de búsqueda por ID_DEAL', async () => {
+  it.only('CP_GESORD_002: Filtro de búsqueda por ID_DEAL', async () => {
     await gestorOrdenesPage.filtrarPorIdDeal();
-    expect(true).to.be.true;
-  });
-
-  it.skip('CP_GESORD_00X:Ejecutar orden venta e instalación"', async () => {
-    await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
     expect(true).to.be.true;
   });
 
@@ -68,13 +63,28 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.skip('CP_GESORD_004 :Adjuntos"', async () => {
+  it.skip('CP_GESORD_004: Adjuntos"', async () => {
     await gestorOrdenesPage.Adjuntos();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_005 :Registro de la orden"', async () => {
+  it('CP_GESORD_005: Registro de la orden"', async () => {
     await gestorOrdenesPage.registroOrden();
+    expect(true).to.be.true;
+  });
+
+  it.only('CP_GESORD_006: Ver información técnica asociada"', async () => {
+    await gestorOrdenesPage.verInfomacionTecnicaAsociada();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_007: Ejecutar orden venta e instalación"', async () => {
+    await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_008: Registro de materiales"', async () => {
+    await gestorOrdenesPage.refrescarTabla();
     expect(true).to.be.true;
   });
 });

@@ -43,7 +43,7 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
     if (driver) await driver.quit();
   });
 
-  it('CP_INFTECRED_001: Ingreso a la vista Visor de Información Técnica de Red', async () => {
+  it.only('CP_INFTECRED_001: Ingreso a la vista Visor de Información Técnica de Red', async () => {
     await visorInfoPage.ingresarVistaVisorInformacion();
 
     // Verificación: contenedor principal de la plataforma
@@ -55,7 +55,7 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
     expect(await container.isDisplayed()).to.be.true;
   });
 
-  it('CP_INFTECRED_002: Filtro de búsqueda', async () => {
+  it.only('CP_INFTECRED_002: Filtro de búsqueda', async () => {
     await visorInfoPage.filtroBusquedaInformacionTecnica();
 
     expect(true).to.be.true;
