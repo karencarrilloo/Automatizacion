@@ -58,33 +58,43 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-   it.skip('CP_GESORD_003 :RawData"', async () => {
+   it('CP_GESORD_003 :RawData', async () => {
     await gestorOrdenesPage.rawData();
     expect(true).to.be.true;
   });
 
-  it.skip('CP_GESORD_004: Adjuntos"', async () => {
+  it('CP_GESORD_004: Adjuntos', async () => {
     await gestorOrdenesPage.Adjuntos();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_005: Registro de la orden"', async () => {
+  it('CP_GESORD_005: Registro de la orden', async () => {
     await gestorOrdenesPage.registroOrden();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_006: Ver información técnica asociada"', async () => {
+  it('CP_GESORD_006: Ver información técnica asociada', async () => {
     await gestorOrdenesPage.verInfomacionTecnicaAsociada();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_007: Ejecutar orden venta e instalación"', async () => {
+  it.only('CP_GESORD_007: Ejecutar orden venta e instalación', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_008: Registro de materiales"', async () => {
-    await gestorOrdenesPage.refrescarTabla();
+  it('CP_GESORD_008: Registro de materiales', async () => {
+    await gestorOrdenesPage.registroMateriales();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_009: Revisar sesiones', async () => {
+    await gestorOrdenesPage.revisarSesiones();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_010: Reabrir orden', async () => {
+    await gestorOrdenesPage.reabrirOrden();
     expect(true).to.be.true;
   });
 });

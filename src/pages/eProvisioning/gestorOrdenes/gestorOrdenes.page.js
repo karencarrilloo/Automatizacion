@@ -364,7 +364,7 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
     }
 
-    // === Paso 3: Seleccionar opción "registroOrden" ===
+    // === Paso 3: Seleccionar opción "Registro de la orden" ===
     try {
       const opcionregistroOrdenXpath = '//*[@id="1095"]/div';
 
@@ -431,7 +431,7 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
     }
 
-    // === Paso 3: Seleccionar opción "registroOrden" ===
+    // === Paso 3: Seleccionar opción "Ver información técnica asociada" ===
     try {
       const opcionverInfomacionTecnicaAsociadaXpath = '//*[@id="1103"]/div';
 
@@ -645,45 +645,183 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
     }
 
-    // === Paso 3: Seleccionar opción "registroOrden" ===
+    // === Paso 3: Seleccionar opción "Registro de materiales" ===
     try {
-      const opcionverInfomacionTecnicaAsociadaXpath = '//*[@id="1103"]/div';
+      const opcionregistroMaterialesXpath = '//*[@id="1093"]/div';
 
 
       // 1️⃣ Esperar a que la opción esté disponible en el DOM
-      const opcionverInfomacionTecnicaAsociada = await driver.wait(
-        until.elementLocated(By.xpath(opcionverInfomacionTecnicaAsociadaXpath)),
+      const opcionregistroMateriales = await driver.wait(
+        until.elementLocated(By.xpath(opcionregistroMaterialesXpath)),
         15000
       );
 
       // 2️⃣ Esperar a que sea visible e interactuable
-      await driver.wait(until.elementIsVisible(opcionverInfomacionTecnicaAsociada), 9000);
-      await driver.wait(until.elementIsEnabled(opcionverInfomacionTecnicaAsociada), 9000);
+      await driver.wait(until.elementIsVisible(opcionregistroMateriales), 9000);
+      await driver.wait(until.elementIsEnabled(opcionregistroMateriales), 9000);
 
       // 3️⃣ Scroll y clic
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionverInfomacionTecnicaAsociada);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionregistroMateriales);
       await driver.sleep(300);
 
       try {
-        await opcionverInfomacionTecnicaAsociada.click();
+        await opcionregistroMateriales.click();
       } catch {
-        await driver.executeScript("arguments[0].click();", opcionverInfomacionTecnicaAsociada);
+        await driver.executeScript("arguments[0].click();", opcionregistroMateriales);
       }
 
-      await driver.sleep(4000); // espera por la apertura del modal o acción
-      console.log("✅ Paso 3: Opción 'Ver información técnica asociada' seleccionada correctamente.");
+      await driver.sleep(9000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'Registro de materiales' seleccionada correctamente.");
 
     } catch (error) {
-      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Ver información técnica asociada': ${error.message}`);
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Registro de materiales': ${error.message}`);
     }
 
     //falta continuar los demás pasos....
 
 
   } catch(error) {
-    console.error(`❌ Error en el caso de prueba CP_GESORD_005: ${error.message}`);
+    console.error(`❌ Error en el caso de prueba CP_GESORD_008: ${error.message}`);
+
+    throw error;
+  }
+
+  // =====================================================
+  // CP_GESORD_009 – Revisar sesiones
+  // x pasos
+  // =====================================================
+  async revisarSesiones(caseName = "CP_GESORD_009", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
+    }
+
+    // === Paso 3: Seleccionar opción "Revisar sesiones" ===
+    try {
+      const opcionrevisarSesionesXpath = '//*[@id="1091"]/div';
+
+
+      // 1️⃣ Esperar a que la opción esté disponible en el DOM
+      const opcionrevisarSesiones = await driver.wait(
+        until.elementLocated(By.xpath(opcionrevisarSesionesXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(opcionrevisarSesiones), 9000);
+      await driver.wait(until.elementIsEnabled(opcionrevisarSesiones), 9000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionrevisarSesiones);
+      await driver.sleep(300);
+
+      try {
+        await opcionrevisarSesiones.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionrevisarSesiones);
+      }
+
+      await driver.sleep(9000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'Revisar sesiones' seleccionada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Revisar sesiones': ${error.message}`);
+    }
+
+    //falta continuar los demás pasos....
+
+
+  } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_009: ${error.message}`);
+
+    throw error;
+  }
+  // =====================================================
+  // CP_GESORD_010 – Reabrir orden
+  // x pasos
+  // =====================================================
+  async reabrirOrden(caseName = "CP_GESORD_010", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 2: Error al intentar presionar el botón 'opciones': ${error.message}`);
+    }
+
+    // === Paso 3: Seleccionar opción "Reabrir orden" ===
+    try {
+      const opcionreabrirOrdenXpath = '//*[@id="1092"]/div';
+
+
+      // 1️⃣ Esperar a que la opción esté disponible en el DOM
+      const opcionreabrirOrden = await driver.wait(
+        until.elementLocated(By.xpath(opcionreabrirOrdenXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(opcionreabrirOrden), 9000);
+      await driver.wait(until.elementIsEnabled(opcionreabrirOrden), 9000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionreabrirOrden);
+      await driver.sleep(300);
+
+      try {
+        await opcionreabrirOrden.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionreabrirOrden);
+      }
+
+      await driver.sleep(9000); // espera por la apertura del modal o acción
+      console.log("✅ Paso 3: Opción 'Reabrir orden' seleccionada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Reabrir orden': ${error.message}`);
+    }
+
+    //falta continuar los demás pasos....
+
+
+  } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_010: ${error.message}`);
 
     throw error;
   }
 }
+
+
+
 
