@@ -78,7 +78,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_007: Ejecutar orden venta e instalación', async () => {
+  it.only('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
     expect(true).to.be.true;
   });

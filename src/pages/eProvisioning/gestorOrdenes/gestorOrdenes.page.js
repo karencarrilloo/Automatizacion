@@ -474,7 +474,7 @@ export default class GestorOrdenesPage {
 
 
   // =====================================================
-  // CP_GESORD_007 – Ejecutar orden venta e instalación
+  // CP_GESORD_007 – Ejecutar orden venta e instalación (cliente simulado)
   // x pasos
   // =====================================================
   async ejecutarOrdenVentaInstalacion(caseName = "CP_GESORD_007", idDeal) {
@@ -600,11 +600,210 @@ export default class GestorOrdenesPage {
         // 4️⃣ Pequeña espera por navegación o carga posterior
         await driver.sleep(3000);
 
-        //falta continuar los demás pasos....
-
-
       } catch (error) {
         throw new Error(`❌ Paso 5: Error al intentar presionar el botón 'SIGUIENTE': ${error.message}`);
+      }
+
+      // === Paso 6: Diligenciar campo "Potencia NAP" con el valor "17" ===
+      try {
+        const inputPotenciaNapXpath = '//*[@id="textfield-PotenciaNAP"]';
+
+        // 1️⃣ Esperar a que el campo esté presente en el DOM
+        const inputPotenciaNap = await driver.wait(
+          until.elementLocated(By.xpath(inputPotenciaNapXpath)),
+          15000
+        );
+
+        // 2️⃣ Esperar que sea visible y editable
+        await driver.wait(until.elementIsVisible(inputPotenciaNap), 8000);
+        await driver.wait(until.elementIsEnabled(inputPotenciaNap), 8000);
+
+        // 3️⃣ Scroll hacia el campo
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputPotenciaNap);
+        await driver.sleep(500);
+
+        // 4️⃣ Limpiar campo y diligenciar con el valor "17"
+        await inputPotenciaNap.clear();
+        await driver.sleep(300);
+        await inputPotenciaNap.sendKeys("17");
+        await driver.sleep(500);
+
+        console.log("✅ Paso 6: Campo 'Potencia NAP' diligenciado correctamente con el valor '17'.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 6: Error al diligenciar el campo 'Potencia NAP': ${error.message}`);
+      }
+
+      // === Paso 7: Clic en el botón "Siguiente" ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step"]/div';
+
+        // 1️⃣ Esperar que el botón esté en el DOM
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          15000
+        );
+
+        // 2️⃣ Asegurar que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(btnSiguiente), 8000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 8000);
+
+        // 3️⃣ Scroll al botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(500);
+
+        // 4️⃣ Clic (con fallback a JavaScript)
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        await driver.sleep(3000); // esperar navegación o carga posterior
+        console.log("✅ Paso 7: Botón 'Siguiente' presionado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 7: Error al presionar el botón 'Siguiente': ${error.message}`);
+      }
+
+      // === Paso 8: Diligenciar campo "Serial ONT" ===
+      try {
+        const inputSerialOntXpath = '//*[@id="textfield-SerialONT"]';
+
+        // 1️⃣ Esperar que el campo esté presente en el DOM
+        const inputSerialOnt = await driver.wait(
+          until.elementLocated(By.xpath(inputSerialOntXpath)),
+          15000
+        );
+
+        // 2️⃣ Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(inputSerialOnt), 8000);
+        await driver.wait(until.elementIsEnabled(inputSerialOnt), 8000);
+
+        // 3️⃣ Scroll y limpieza
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputSerialOnt);
+        await driver.sleep(500);
+        await inputSerialOnt.clear();
+
+        // 4️⃣ Escribir el Serial ONT
+        const serialONT = "485754435A27EBA6";
+        await inputSerialOnt.sendKeys(serialONT);
+        await driver.sleep(500);
+
+        console.log(`✅ Paso 7: Campo 'Serial ONT' diligenciado con valor: ${serialONT}`);
+
+      } catch (error) {
+        throw new Error(`❌ Paso 7: No se pudo diligenciar el campo 'Serial ONT': ${error.message}`);
+      }
+
+      // === Paso 9: Clic en el botón "Siguiente" ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step"]/div';
+
+        // 1️⃣ Esperar que el botón esté en el DOM
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          15000
+        );
+
+        // 2️⃣ Asegurar que esté visible y habilitado
+        await driver.wait(until.elementIsVisible(btnSiguiente), 8000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 8000);
+
+        // 3️⃣ Scroll al botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(500);
+
+        // 4️⃣ Clic (con fallback a JavaScript)
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        await driver.sleep(3000); // esperar navegación o carga posterior
+        console.log("✅ Paso 9: Botón 'Siguiente' presionado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 9: Error al presionar el botón 'Siguiente': ${error.message}`);
+      }
+
+      // === Paso 10: Clic en botón "Aprovisionar" y esperar finalización del proceso ===
+      try {
+        const btnAprovisionarXpath = '//*[@id="widget-button-btn-provisioning-order"]/div';
+        const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]'; // mismo progress que mencionaste antes
+
+        // 1️⃣ Esperar el botón en el DOM
+        const btnAprovisionar = await driver.wait(
+          until.elementLocated(By.xpath(btnAprovisionarXpath)),
+          20000
+        );
+
+        // 2️⃣ Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(btnAprovisionar), 15000);
+        await driver.wait(until.elementIsEnabled(btnAprovisionar), 15000);
+
+        // 3️⃣ Scroll y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnAprovisionar);
+        await driver.sleep(500);
+        await driver.executeScript("arguments[0].click();", btnAprovisionar);
+
+        console.log("✅ Paso 10: Botón 'Aprovisionar' presionado correctamente.");
+
+        // 4️⃣ Esperar que aparezca el progress (inicio del proceso)
+        const progress = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          10000
+        );
+
+        console.log("⏳ Paso 10: Proceso de aprovisionamiento iniciado... esperando que finalice.");
+
+        // 5️⃣ Esperar hasta que desaparezca el progress (máx. 90 segundos)
+        await driver.wait(async () => {
+          try {
+            return !(await progress.isDisplayed());
+          } catch {
+            return true; // si ya no está en el DOM
+          }
+        }, 120000);
+
+        await driver.sleep(15000); // pequeña espera extra tras finalizar
+        console.log("✅ Paso 10: Proceso de aprovisionamiento finalizado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 10: Error durante el aprovisionamiento: ${error.message}`);
+      }
+
+
+      // === Paso 11: Clic en el botón "Siguiente" ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step"]/div';
+
+        // 1️⃣ Esperar que el botón esté presente en el DOM
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          20000
+        );
+
+        // 2️⃣ Esperar que sea visible y habilitado
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // 3️⃣ Scroll y clic (fallback con JS para garantizar ejecución)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(500);
+
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        await driver.sleep(2000);
+        console.log("✅ Paso 11: Botón 'Siguiente' presionado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 11: No se pudo presionar el botón 'Siguiente': ${error.message}`);
       }
 
 
@@ -614,7 +813,49 @@ export default class GestorOrdenesPage {
       console.error(`❌ Error en el caso de prueba CP_GESORD_007: ${error.message}`);
 
       throw error;
+
+
     }
+
+    // === Paso 12: Diligenciar velocidades de subida y bajada ===
+    try {
+      // XPaths de los campos
+      const inputVelocidadSubidaXpath = '//*[@id="textfield-VelocidadSubida"]';
+      const inputVelocidadBajadaXpath = '//*[@id="textfield-VelocidadBajada"]';
+
+      // 1️⃣ Esperar y diligenciar campo "Velocidad Subida"
+      const inputVelocidadSubida = await driver.wait(
+        until.elementLocated(By.xpath(inputVelocidadSubidaXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(inputVelocidadSubida), 5000);
+      await driver.wait(until.elementIsEnabled(inputVelocidadSubida), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", inputVelocidadSubida);
+      await driver.sleep(300);
+      await inputVelocidadSubida.clear();
+      await inputVelocidadSubida.sendKeys("800");
+      console.log("✅ Campo 'Velocidad Subida' diligenciado con 800.");
+
+      // 2️⃣ Esperar y diligenciar campo "Velocidad Bajada"
+      const inputVelocidadBajada = await driver.wait(
+        until.elementLocated(By.xpath(inputVelocidadBajadaXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(inputVelocidadBajada), 5000);
+      await driver.wait(until.elementIsEnabled(inputVelocidadBajada), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", inputVelocidadBajada);
+      await driver.sleep(300);
+      await inputVelocidadBajada.clear();
+      await inputVelocidadBajada.sendKeys("800");
+      console.log("✅ Campo 'Velocidad Bajada' diligenciado con 800.");
+
+      // 3️⃣ Pausa corta para asegurar render
+      await driver.sleep(1000);
+
+    } catch (error) {
+      throw new Error(`❌ Paso 12: Error al diligenciar velocidades: ${error.message}`);
+    }
+
 
   }
 
