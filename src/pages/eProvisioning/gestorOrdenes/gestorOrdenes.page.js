@@ -259,7 +259,102 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'RawData': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Hacer scroll hacia abajo dentro del contenedor RawData ===
+    try {
+      const contenedorScrollableXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[2]/div[1]';
+
+      // 1️⃣ Esperar a que el contenedor exista y sea visible
+      const contenedorScrollable = await driver.wait(
+        until.elementLocated(By.xpath(contenedorScrollableXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(contenedorScrollable), 8000);
+
+      // 2️⃣ Realizar scroll progresivo hacia abajo dentro del elemento
+      await driver.executeScript(`
+    const element = arguments[0];
+    element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
+  `, contenedorScrollable);
+
+      // 3️⃣ Pausa para asegurar que el scroll se complete
+      await driver.sleep(2000);
+
+      console.log("✅ Paso 4: Scroll hacia abajo ejecutado correctamente en el contenedor RawData.");
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo realizar scroll hacia abajo en el contenedor RawData: ${error.message}`);
+    }
+
+    // === Paso 5: Clic en el botón "Copiar" ===
+    try {
+      const btnCopiarXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[1]';
+      const spanCopiarXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[1]/span';
+
+      // 1️⃣ Esperar a que el botón (div) esté presente y visible
+      const btnCopiar = await driver.wait(
+        until.elementLocated(By.xpath(btnCopiarXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnCopiar), 8000);
+
+      // 2️⃣ Scroll al botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCopiar);
+      await driver.sleep(500);
+
+      // 3️⃣ Intentar clic normal, con fallback a JS
+      try {
+        await btnCopiar.click();
+      } catch {
+        const spanCopiar = await driver.findElement(By.xpath(spanCopiarXpath));
+        await driver.executeScript("arguments[0].click();", spanCopiar);
+      }
+
+      await driver.sleep(1500);
+
+      console.log("✅ Paso 5: Botón 'Copiar' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Copiar': ${error.message}`);
+    }
+
+    // === Paso 6: Clic en el botón "Cerrar" ===
+    try {
+      const btnCerrarXpath = '//*[@id="widget-button-cancel-confirm-selected"]/div';
+
+      // 1️⃣ Esperar que el botón exista en el DOM
+      const btnCerrar = await driver.wait(
+        until.elementLocated(By.xpath(btnCerrarXpath)),
+        15000
+      );
+
+      // 2️⃣ Asegurar visibilidad e interacción
+      await driver.wait(until.elementIsVisible(btnCerrar), 8000);
+      await driver.wait(until.elementIsEnabled(btnCerrar), 8000);
+
+      // 3️⃣ Scroll al botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+      await driver.sleep(500);
+
+      // 4️⃣ Intentar clic normal y fallback con JS
+      try {
+        await btnCerrar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCerrar);
+      }
+
+      // 5️⃣ Esperar cierre del modal (máx 10s)
+      await driver.sleep(2000);
+      await driver.wait(async () => {
+        try {
+          return !(await btnCerrar.isDisplayed());
+        } catch {
+          return true; // si el botón desapareció del DOM, modal cerrado
+        }
+      }, 10000);
+
+      console.log("✅ Paso 6: Botón 'Cerrar' presionado y modal cerrado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 6: No se pudo presionar el botón 'Cerrar': ${error.message}`);
+    }
+
 
 
   } catch(error) {
@@ -327,7 +422,37 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Adjuntos': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Clic en el botón "Refrescar" dentro del modal Adjuntos ===
+try {
+  // Localizar el modal de Adjuntos
+  const modalAdjuntos = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
+    15000
+  );
+  await driver.wait(until.elementIsVisible(modalAdjuntos), 10000);
+
+  // Buscar el botón "Refrescar" dentro del modal
+  const btnRefrescarModal = await modalAdjuntos.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
+  await driver.wait(until.elementIsVisible(btnRefrescarModal), 10000);
+
+  // Hacer scroll hacia el botón y hacer clic
+  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescarModal);
+  await driver.sleep(500);
+
+  try {
+    await btnRefrescarModal.click();
+  } catch {
+    await driver.executeScript("arguments[0].click();", btnRefrescarModal);
+  }
+
+  console.log("✅ Paso 4: Botón 'Refrescar' dentro del modal de Adjuntos presionado correctamente.");
+  await driver.sleep(4000); // Espera mientras recarga la tabla
+
+} catch (error) {
+  throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal de Adjuntos: ${error.message}`);
+}
+
+
 
 
   } catch(error) {
@@ -335,6 +460,8 @@ export default class GestorOrdenesPage {
 
     throw error;
   }
+
+
 
 
   // =====================================================
@@ -1079,59 +1206,59 @@ export default class GestorOrdenesPage {
     } catch (error) {
       throw new Error(`❌ Paso 17: Error al ejecutar el paso 'Completar': ${error.message}`);
     }
-  
 
-  // === Paso 18: Clic en botón "Sí" en el modal de confirmación ===
-try {
-  const btnConfirmYesXpath = '//*[@id="widget-button-btConfirmYes"]/div';
-  const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
 
-  // 1️⃣ Esperar el botón del modal
-  const btnConfirmYes = await driver.wait(
-    until.elementLocated(By.xpath(btnConfirmYesXpath)),
-    15000
-  );
+    // === Paso 18: Clic en botón "Sí" en el modal de confirmación ===
+    try {
+      const btnConfirmYesXpath = '//*[@id="widget-button-btConfirmYes"]/div';
+      const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
 
-  // 2️⃣ Esperar a que sea visible e interactuable
-  await driver.wait(until.elementIsVisible(btnConfirmYes), 8000);
-  await driver.wait(until.elementIsEnabled(btnConfirmYes), 8000);
+      // 1️⃣ Esperar el botón del modal
+      const btnConfirmYes = await driver.wait(
+        until.elementLocated(By.xpath(btnConfirmYesXpath)),
+        15000
+      );
 
-  // 3️⃣ Scroll y clic (con fallback por JS)
-  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmYes);
-  await driver.sleep(300);
-  try {
-    await btnConfirmYes.click();
-  } catch {
-    await driver.executeScript("arguments[0].click();", btnConfirmYes);
-  }
-  console.log("✅ Paso 18: Botón 'Sí' del modal presionado correctamente.");
+      // 2️⃣ Esperar a que sea visible e interactuable
+      await driver.wait(until.elementIsVisible(btnConfirmYes), 8000);
+      await driver.wait(until.elementIsEnabled(btnConfirmYes), 8000);
 
-  // 4️⃣ Esperar progress si aparece (máx 60s)
-  try {
-    const progress = await driver.wait(
-      until.elementLocated(By.xpath(progressXpath)),
-      8000
-    );
-    await driver.wait(until.elementIsVisible(progress), 5000);
-    console.log("⏳ Procesando confirmación...");
-
-    // Esperar a que el progress desaparezca
-    await driver.wait(async () => {
+      // 3️⃣ Scroll y clic (con fallback por JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmYes);
+      await driver.sleep(300);
       try {
-        return !(await progress.isDisplayed());
+        await btnConfirmYes.click();
       } catch {
-        return true;
+        await driver.executeScript("arguments[0].click();", btnConfirmYes);
       }
-    }, 60000);
-    console.log("✅ Confirmación finalizada correctamente (progress cerrado).");
-  } catch {
-    console.log("⚠️ No se detectó progress, continuando normalmente...");
-  }
+      console.log("✅ Paso 18: Botón 'Sí' del modal presionado correctamente.");
 
-  await driver.sleep(2000);
-} catch (error) {
-  throw new Error(`❌ Paso 18: No se pudo confirmar la acción en el modal 'Sí': ${error.message}`);
-}
+      // 4️⃣ Esperar progress si aparece (máx 60s)
+      try {
+        const progress = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          8000
+        );
+        await driver.wait(until.elementIsVisible(progress), 5000);
+        console.log("⏳ Procesando confirmación...");
+
+        // Esperar a que el progress desaparezca
+        await driver.wait(async () => {
+          try {
+            return !(await progress.isDisplayed());
+          } catch {
+            return true;
+          }
+        }, 60000);
+        console.log("✅ Confirmación finalizada correctamente (progress cerrado).");
+      } catch {
+        console.log("⚠️ No se detectó progress, continuando normalmente...");
+      }
+
+      await driver.sleep(2000);
+    } catch (error) {
+      throw new Error(`❌ Paso 18: No se pudo confirmar la acción en el modal 'Sí': ${error.message}`);
+    }
   }
 
   // =====================================================
