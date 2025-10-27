@@ -857,6 +857,281 @@ export default class GestorOrdenesPage {
     }
 
 
+    // === Paso 13: Clic en el botón "Siguiente" ===
+    try {
+      const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step"]/div';
+
+      // 1️⃣ Esperar que el botón esté presente en el DOM
+      const btnSiguiente = await driver.wait(
+        until.elementLocated(By.xpath(btnSiguienteXpath)),
+        20000
+      );
+
+      // 2️⃣ Esperar que sea visible y habilitado
+      await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+      await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+      // 3️⃣ Scroll y clic (fallback con JS para garantizar ejecución)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+      await driver.sleep(500);
+
+      try {
+        await btnSiguiente.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnSiguiente);
+      }
+
+      await driver.sleep(2000);
+      console.log("✅ Paso 13: Botón 'Siguiente' presionado correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 13: No se pudo presionar el botón 'Siguiente': ${error.message}`);
+    }
+
+    // === Paso 14: Clic en el botón "Configurar WiFi" ===
+    try {
+      const btnConfigurarWifiXpath = '//*[@id="widget-button-btn-configure-wifi-img"]/div';
+
+      // 1️⃣ Esperar que el botón exista en el DOM
+      const btnConfigurarWifi = await driver.wait(
+        until.elementLocated(By.xpath(btnConfigurarWifiXpath)),
+        20000
+      );
+
+      // 2️⃣ Esperar que sea visible y habilitado
+      await driver.wait(until.elementIsVisible(btnConfigurarWifi), 5000);
+      await driver.wait(until.elementIsEnabled(btnConfigurarWifi), 5000);
+
+      // 3️⃣ Scroll hasta el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnConfigurarWifi);
+      await driver.sleep(500);
+
+      // 4️⃣ Intentar clic normal, si falla usar JS
+      try {
+        await btnConfigurarWifi.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnConfigurarWifi);
+      }
+
+      // 5️⃣ Pausa para permitir que cargue el modal de configuración WiFi
+      await driver.sleep(3000);
+
+      console.log("✅ Paso 14: Botón 'Configurar WiFi' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 14: No se pudo presionar el botón 'Configurar WiFi': ${error.message}`);
+    }
+
+    // === Paso 15: Configurar WiFi ===
+    try {
+      // 1️⃣ Clic en el check "Compartir contraseña"
+      const checkCompartirXpath = '//*[@id="widget-checkbox-check-step-validation-wifi"]/label';
+      const checkCompartir = await driver.wait(
+        until.elementLocated(By.xpath(checkCompartirXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(checkCompartir), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", checkCompartir);
+      await driver.sleep(500);
+
+      try {
+        await checkCompartir.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", checkCompartir);
+      }
+      console.log("✅ Check 'Compartir contraseña' marcado correctamente.");
+      await driver.sleep(800);
+
+      // 2️⃣ Diligenciar campo SSID 2.4 GHz
+      const inputSsidXpath = '//*[@id="textfield-SSID"]';
+      const inputSsid = await driver.wait(
+        until.elementLocated(By.xpath(inputSsidXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(inputSsid), 5000);
+      await inputSsid.clear();
+      await driver.sleep(300);
+      await inputSsid.sendKeys("test wifi");
+      console.log("✅ Campo 'SSID 2.4 GHz' diligenciado correctamente.");
+      await driver.sleep(500);
+
+      // 3️⃣ Diligenciar campo Contraseña SSID 2.4 GHz
+      const inputPasswordXpath = '//*[@id="textfield-PasswordOneSSID"]';
+      const inputPassword = await driver.wait(
+        until.elementLocated(By.xpath(inputPasswordXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(inputPassword), 5000);
+      await inputPassword.clear();
+      await driver.sleep(300);
+      await inputPassword.sendKeys("wifiTest123");
+      console.log("✅ Campo 'Contraseña SSID 2.4 GHz' diligenciado correctamente.");
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 15: Configuración WiFi completada con éxito.");
+    } catch (error) {
+      throw new Error(`❌ Paso 15: Error al configurar WiFi: ${error.message}`);
+    }
+
+    // === Paso 16: Clic en botón "Confirmar" y esperar proceso ===
+    try {
+      const btnConfirmarXpath = '//*[@id="widget-button-btn-confirm-dialog"]/div';
+      const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+
+      // 1️⃣ Esperar el botón "Confirmar"
+      const btnConfirmar = await driver.wait(
+        until.elementLocated(By.xpath(btnConfirmarXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnConfirmar), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnConfirmar);
+      await driver.sleep(500);
+
+      // 2️⃣ Clic en el botón
+      try {
+        await btnConfirmar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnConfirmar);
+      }
+      console.log("✅ Paso 16: Botón 'Confirmar' presionado correctamente.");
+
+      // 3️⃣ Esperar aparición del progress (máx 10s)
+      let progressVisible = false;
+      try {
+        const progress = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(progress), 5000);
+        progressVisible = true;
+        console.log("⏳ Proceso iniciado... esperando que finalice.");
+      } catch {
+        console.log("⚠️ Progress no visible, continuando con espera general...");
+      }
+
+      // 4️⃣ Si apareció, esperar hasta que desaparezca (máx 60s)
+      if (progressVisible) {
+        const progress = await driver.findElement(By.xpath(progressXpath));
+        await driver.wait(async () => {
+          try {
+            return !(await progress.isDisplayed());
+          } catch {
+            return true; // progress desapareció del DOM
+          }
+        }, 60000);
+      }
+
+      await driver.sleep(2000);
+      console.log("✅ Paso 16: Proceso posterior a Confirmar completado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 16: Error al confirmar configuración WiFi: ${error.message}`);
+    }
+
+    // === Paso 17: Clic en botón "Completar" y esperar proceso ===
+    try {
+      const btnCompletarXpath = '//*[@id="widget-button-complet-process"]/div';
+      const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+
+      // 1️⃣ Esperar el botón "Completar"
+      const btnCompletar = await driver.wait(
+        until.elementLocated(By.xpath(btnCompletarXpath)),
+        20000
+      );
+      await driver.wait(until.elementIsVisible(btnCompletar), 10000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCompletar);
+      await driver.sleep(500);
+
+      // 2️⃣ Clic con fallback
+      try {
+        await btnCompletar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCompletar);
+      }
+      console.log("✅ Paso 17: Botón 'Completar' presionado correctamente.");
+
+      // 3️⃣ Esperar la aparición del progress (máx 10s)
+      let progressVisible = false;
+      try {
+        const progress = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(progress), 5000);
+        progressVisible = true;
+        console.log("⏳ Proceso de 'Completar' iniciado... esperando que finalice.");
+      } catch {
+        console.log("⚠️ Progress no visible, continuando con espera general...");
+      }
+
+      // 4️⃣ Esperar a que el progress desaparezca (máx 60s)
+      if (progressVisible) {
+        const progress = await driver.findElement(By.xpath(progressXpath));
+        await driver.wait(async () => {
+          try {
+            return !(await progress.isDisplayed());
+          } catch {
+            return true; // desapareció del DOM
+          }
+        }, 60000);
+      }
+
+      await driver.sleep(2000);
+      console.log("✅ Paso 17: Proceso 'Completar' finalizado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 17: Error al ejecutar el paso 'Completar': ${error.message}`);
+    }
+  
+
+  // === Paso 18: Clic en botón "Sí" en el modal de confirmación ===
+try {
+  const btnConfirmYesXpath = '//*[@id="widget-button-btConfirmYes"]/div';
+  const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+
+  // 1️⃣ Esperar el botón del modal
+  const btnConfirmYes = await driver.wait(
+    until.elementLocated(By.xpath(btnConfirmYesXpath)),
+    15000
+  );
+
+  // 2️⃣ Esperar a que sea visible e interactuable
+  await driver.wait(until.elementIsVisible(btnConfirmYes), 8000);
+  await driver.wait(until.elementIsEnabled(btnConfirmYes), 8000);
+
+  // 3️⃣ Scroll y clic (con fallback por JS)
+  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmYes);
+  await driver.sleep(300);
+  try {
+    await btnConfirmYes.click();
+  } catch {
+    await driver.executeScript("arguments[0].click();", btnConfirmYes);
+  }
+  console.log("✅ Paso 18: Botón 'Sí' del modal presionado correctamente.");
+
+  // 4️⃣ Esperar progress si aparece (máx 60s)
+  try {
+    const progress = await driver.wait(
+      until.elementLocated(By.xpath(progressXpath)),
+      8000
+    );
+    await driver.wait(until.elementIsVisible(progress), 5000);
+    console.log("⏳ Procesando confirmación...");
+
+    // Esperar a que el progress desaparezca
+    await driver.wait(async () => {
+      try {
+        return !(await progress.isDisplayed());
+      } catch {
+        return true;
+      }
+    }, 60000);
+    console.log("✅ Confirmación finalizada correctamente (progress cerrado).");
+  } catch {
+    console.log("⚠️ No se detectó progress, continuando normalmente...");
+  }
+
+  await driver.sleep(2000);
+} catch (error) {
+  throw new Error(`❌ Paso 18: No se pudo confirmar la acción en el modal 'Sí': ${error.message}`);
+}
   }
 
   // =====================================================
