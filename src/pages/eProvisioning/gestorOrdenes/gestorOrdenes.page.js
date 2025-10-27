@@ -423,35 +423,67 @@ export default class GestorOrdenesPage {
     }
 
     // === Paso 4: Clic en el botón "Refrescar" dentro del modal Adjuntos ===
-try {
-  // Localizar el modal de Adjuntos
-  const modalAdjuntos = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
-    15000
-  );
-  await driver.wait(until.elementIsVisible(modalAdjuntos), 10000);
+    try {
+      // Localizar el modal de Adjuntos
+      const modalAdjuntos = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalAdjuntos), 10000);
 
-  // Buscar el botón "Refrescar" dentro del modal
-  const btnRefrescarModal = await modalAdjuntos.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
-  await driver.wait(until.elementIsVisible(btnRefrescarModal), 10000);
+      // Buscar el botón "Refrescar" dentro del modal
+      const btnRefrescarModal = await modalAdjuntos.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
+      await driver.wait(until.elementIsVisible(btnRefrescarModal), 10000);
 
-  // Hacer scroll hacia el botón y hacer clic
-  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescarModal);
-  await driver.sleep(500);
+      // Hacer scroll hacia el botón y hacer clic
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescarModal);
+      await driver.sleep(500);
 
-  try {
-    await btnRefrescarModal.click();
-  } catch {
-    await driver.executeScript("arguments[0].click();", btnRefrescarModal);
-  }
+      try {
+        await btnRefrescarModal.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnRefrescarModal);
+      }
 
-  console.log("✅ Paso 4: Botón 'Refrescar' dentro del modal de Adjuntos presionado correctamente.");
-  await driver.sleep(4000); // Espera mientras recarga la tabla
+      console.log("✅ Paso 4: Botón 'Refrescar' dentro del modal de Adjuntos presionado correctamente.");
+      await driver.sleep(4000); // Espera mientras recarga la tabla
 
-} catch (error) {
-  throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal de Adjuntos: ${error.message}`);
-}
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal de Adjuntos: ${error.message}`);
+    }
 
+    // === Paso 5: Clic en el botón "Cerrar" dentro del modal Adjuntos ===
+    try {
+      const btnCerrarModal = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-cancel-confirm-selected"]/div')),
+        15000
+      );
+
+      await driver.wait(until.elementIsVisible(btnCerrarModal), 8000);
+      await driver.wait(until.elementIsEnabled(btnCerrarModal), 8000);
+
+      // Scroll hasta el botón y clic forzado si es necesario
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrarModal);
+      await driver.sleep(400);
+
+      try {
+        await btnCerrarModal.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCerrarModal);
+      }
+
+      // Esperar que el modal desaparezca o se oculte
+      try {
+        await driver.wait(until.stalenessOf(btnCerrarModal), 10000);
+      } catch {
+        console.log("⚠️ El modal puede seguir visible, pero el botón 'Cerrar' fue clickeado.");
+      }
+
+      console.log("✅ Paso 5: Botón 'Cerrar' dentro del modal Adjuntos presionado correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Cerrar' dentro del modal Adjuntos: ${error.message}`);
+    }
 
 
 
@@ -460,8 +492,6 @@ try {
 
     throw error;
   }
-
-
 
 
   // =====================================================
@@ -523,7 +553,69 @@ try {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Registro de la orden': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Clic en la pestaña "Bitácora" ===
+    try {
+      const tabBitacoraXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/ul/li[2]';
+
+      // Esperar que la pestaña exista en el DOM
+      const tabBitacora = await driver.wait(
+        until.elementLocated(By.xpath(tabBitacoraXpath)),
+        15000
+      );
+
+      // Esperar que sea visible y habilitada
+      await driver.wait(until.elementIsVisible(tabBitacora), 8000);
+      await driver.wait(until.elementIsEnabled(tabBitacora), 8000);
+
+      // Hacer scroll al elemento
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", tabBitacora);
+      await driver.sleep(400);
+
+      // Intentar clic normal, y si falla usar clic por JavaScript
+      try {
+        await tabBitacora.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", tabBitacora);
+      }
+
+      await driver.sleep(3000); // breve espera para que se cargue el contenido de la pestaña
+      console.log("✅ Paso 4: Pestaña 'Bitácora' clickeada correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo dar clic en la pestaña 'Bitácora': ${error.message}`);
+    }
+
+    // === Paso 5: Clic en el botón "Actualizar" dentro del modal 'Registro de la orden' ===
+try {
+  // Localizar el modal de Registro de la orden
+  const modalRegistroOrden = await driver.wait(
+    until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
+    15000
+  );
+  await driver.wait(until.elementIsVisible(modalRegistroOrden), 10000);
+
+  // Buscar el botón "Actualizar" dentro del modal
+  const btnActualizarModal = await modalRegistroOrden.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
+  await driver.wait(until.elementIsVisible(btnActualizarModal), 10000);
+
+  // Hacer scroll hacia el botón y hacer clic
+  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnActualizarModal);
+  await driver.sleep(500);
+
+  try {
+    await btnActualizarModal.click();
+  } catch {
+    await driver.executeScript("arguments[0].click();", btnActualizarModal);
+  }
+
+  console.log("✅ Paso 5: Botón 'Actualizar' dentro del modal 'Registro de la orden' presionado correctamente.");
+  await driver.sleep(4000); // Espera por recarga de datos
+
+} catch (error) {
+  throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Actualizar' dentro del modal 'Registro de la orden': ${error.message}`);
+}
+
+
 
 
   } catch(error) {
