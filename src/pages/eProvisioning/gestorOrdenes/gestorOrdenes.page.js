@@ -586,36 +586,85 @@ export default class GestorOrdenesPage {
     }
 
     // === Paso 5: Clic en el botón "Actualizar" dentro del modal 'Registro de la orden' ===
-try {
-  // Localizar el modal de Registro de la orden
-  const modalRegistroOrden = await driver.wait(
-    until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
-    15000
-  );
-  await driver.wait(until.elementIsVisible(modalRegistroOrden), 10000);
+    try {
+      // 1️⃣ Localizar el modal principal de "Registro de la orden"
+      const modalRegistroOrden = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
+        ),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalRegistroOrden), 10000);
 
-  // Buscar el botón "Actualizar" dentro del modal
-  const btnActualizarModal = await modalRegistroOrden.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
-  await driver.wait(until.elementIsVisible(btnActualizarModal), 10000);
+      // 2️⃣ Localizar el contenedor del CRUD dentro del modal
+      const contenedorCrud = await modalRegistroOrden.findElement(
+        By.xpath('.//*[@id="crud-crud-binnacle"]/div/div[1]')
+      );
+      await driver.wait(until.elementIsVisible(contenedorCrud), 5000);
 
-  // Hacer scroll hacia el botón y hacer clic
-  await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnActualizarModal);
-  await driver.sleep(500);
+      // 3️⃣ Localizar el botón "Refrescar" dentro del contenedor
+      const btnActualizar = await contenedorCrud.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
+      await driver.wait(until.elementIsVisible(btnActualizar), 5000);
+      await driver.wait(until.elementIsEnabled(btnActualizar), 5000);
 
-  try {
-    await btnActualizarModal.click();
-  } catch {
-    await driver.executeScript("arguments[0].click();", btnActualizarModal);
-  }
+      // 4️⃣ Scroll hacia el botón y clic (con fallback a JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnActualizar);
+      await driver.sleep(400);
+      try {
+        await btnActualizar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnActualizar);
+      }
 
-  console.log("✅ Paso 5: Botón 'Actualizar' dentro del modal 'Registro de la orden' presionado correctamente.");
-  await driver.sleep(4000); // Espera por recarga de datos
+      console.log("✅ Paso 5: Botón 'Actualizar' dentro del modal 'Registro de la orden' presionado correctamente.");
+      await driver.sleep(4000); // Espera de cortesía mientras recarga la tabla
 
-} catch (error) {
-  throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Actualizar' dentro del modal 'Registro de la orden': ${error.message}`);
-}
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 5: No se pudo presionar el botón 'Actualizar' dentro del modal 'Registro de la orden': ${error.message}`
+      );
+    }
 
+    // === Paso 6: Clic en el botón "Cerrar" dentro del modal "Registro de la orden" ===
+    try {
+      // 1️⃣ Localizar el modal principal (Registro de la orden)
+      const modalRegistroOrden = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
+        ),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalRegistroOrden), 8000);
 
+      // 2️⃣ Localizar el botón "Cerrar"
+      const btnCerrar = await modalRegistroOrden.findElement(
+        By.xpath('.//*[@id="widget-button-cancel-confirm-selected"]/div')
+      );
+      await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+
+      // 3️⃣ Scroll y clic (con fallback por seguridad)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+      await driver.sleep(400);
+      try {
+        await btnCerrar.click();
+        await driver.sleep(2000);
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCerrar);
+      }
+
+      // 4️⃣ Esperar a que el modal se oculte o cierre completamente
+      await driver.wait(async () => {
+        const visible = await modalRegistroOrden.isDisplayed().catch(() => false);
+        return !visible;
+      }, 10000);
+
+      console.log("✅ Paso 6: Modal 'Registro de la orden' cerrado correctamente.");
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 6: No se pudo cerrar el modal 'Registro de la orden': ${error.message}`
+      );
+    }
 
 
   } catch(error) {
@@ -675,14 +724,52 @@ try {
         await driver.executeScript("arguments[0].click();", opcionverInfomacionTecnicaAsociada);
       }
 
-      await driver.sleep(4000); // espera por la apertura del modal o acción
+      await driver.sleep(5000); // espera por la apertura del modal o acción
       console.log("✅ Paso 3: Opción 'Ver información técnica asociada' seleccionada correctamente.");
 
     } catch (error) {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Ver información técnica asociada': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Clic en el botón "Cerrar" dentro del modal "Ver información técnica asociada" ===
+    try {
+      // 1️⃣ Localizar el modal activo de "Ver información técnica"
+      const modalInfoTecnica = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
+        ),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalInfoTecnica), 8000);
+
+      // 2️⃣ Localizar el botón "Cerrar" dentro del modal
+      const btnCerrar = await modalInfoTecnica.findElement(
+        By.xpath('.//*[@id="widget-button-cancel-confirm-selected"]/div')
+      );
+      await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+
+      // 3️⃣ Hacer scroll y clic (con fallback JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+      await driver.sleep(400);
+      try {
+        await btnCerrar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCerrar);
+      }
+
+      // 4️⃣ Esperar que el modal se oculte
+      await driver.wait(async () => {
+        const visible = await modalInfoTecnica.isDisplayed().catch(() => false);
+        return !visible;
+      }, 10000);
+
+      console.log("✅ Paso 4: Modal 'Ver información técnica asociada' cerrado correctamente.");
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 4: No se pudo cerrar el modal 'Ver información técnica asociada': ${error.message}`
+      );
+    }
 
 
   } catch(error) {
