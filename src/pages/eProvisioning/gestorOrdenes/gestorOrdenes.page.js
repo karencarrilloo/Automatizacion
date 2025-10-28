@@ -182,16 +182,43 @@ export default class GestorOrdenesPage {
       await driver.sleep(1500);
       console.log(`✅ Filtro por ID_DEAL "${idBuscar}" diligenciado.`);
 
-      // === Paso 5: Clic en "Aplicar filtros" ===
-      const botonAplicarFiltro = await driver.wait(
-        until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
-        10000
-      );
-      await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
-      await driver.sleep(500);
-      await botonAplicarFiltro.click();
-      await driver.sleep(3000);
+      // === Paso X: Clic en el botón "+ Agregar regla" ===
+  
+        // Buscar el botón por atributo genérico
+        const botonAddRule = await driver.wait(
+          until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+          15000
+        );
+
+        // Asegurar que el botón sea visible y esté habilitado
+        await driver.wait(until.elementIsVisible(botonAddRule), 8000);
+        await driver.wait(until.elementIsEnabled(botonAddRule), 8000);
+
+        // Desplazar hasta el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+        await driver.sleep(500);
+
+        // Intentar clic directo, con fallback a JS
+        try {
+          await botonAddRule.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", botonAddRule);
+        }
+
+        console.log("✅ Paso X: Botón '+ Agregar regla' presionado correctamente.");
+        await driver.sleep(2000); // Espera para que aparezca la nueva regla
+        
+
+      // // === Paso 5: Clic en "Aplicar filtros" ===
+      // const botonAplicarFiltro = await driver.wait(
+      //   until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
+      //   10000
+      // );
+      // await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+      // await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+      // await driver.sleep(500);
+      // await botonAplicarFiltro.click();
+      // await driver.sleep(3000);
 
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
