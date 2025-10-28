@@ -1567,7 +1567,269 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Revisar sesiones': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Clic en el botón "Refrescar" dentro del modal "Revisar sesiones" ===
+    try {
+      // 1️⃣ Localizar el modal principal de "Revisar sesiones"
+      const modalRevisarSesiones = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
+        ),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(modalRevisarSesiones), 8000);
+
+      // 2️⃣ Buscar el botón de refrescar dentro del modal, con varios posibles niveles de jerarquía
+      const posiblesRutas = [
+        './/*[@id="crud-refresh-btn"]/i',
+        './/*[@id="crud-refresh-btn"]',
+        './/*[@id="crud-sessions-order"]/div/div[1]/div/div[2]',
+        './/*[@id="crud-sessions-order"]/div/div[1]/div/div[2]/i'
+      ];
+
+      let btnRefrescar = null;
+      for (const ruta of posiblesRutas) {
+        try {
+          btnRefrescar = await modalRevisarSesiones.findElement(By.xpath(ruta));
+          if (btnRefrescar) break;
+        } catch {
+          continue;
+        }
+      }
+
+      if (!btnRefrescar)
+        throw new Error("No se encontró el botón 'Refrescar' dentro del modal 'Revisar sesiones'.");
+
+      // 3️⃣ Esperar visibilidad y hacer clic
+      await driver.wait(until.elementIsVisible(btnRefrescar), 6000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescar);
+      await driver.sleep(400);
+
+      try {
+        await btnRefrescar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnRefrescar);
+      }
+
+      // 4️⃣ Espera breve por recarga de datos
+      await driver.sleep(4000);
+
+      console.log("✅ Paso 4: Botón 'Refrescar' dentro del modal 'Revisar sesiones' presionado correctamente.");
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal 'Revisar sesiones': ${error.message}`
+      );
+    }
+
+    // === Paso 5: Clic en el botón "Reiniciar orden" ===
+    try {
+      const btnReiniciarOrdenXpath = '//*[@id="widget-button-btn-copy-raw-data"]/div';
+
+      // 1️⃣ Esperar que el botón esté presente en el DOM
+      const btnReiniciarOrden = await driver.wait(
+        until.elementLocated(By.xpath(btnReiniciarOrdenXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar que sea visible y esté habilitado
+      await driver.wait(until.elementIsVisible(btnReiniciarOrden), 8000);
+      await driver.wait(until.elementIsEnabled(btnReiniciarOrden), 8000);
+
+      // 3️⃣ Scroll al botón y clic (con fallback)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnReiniciarOrden);
+      await driver.sleep(400);
+
+      try {
+        await btnReiniciarOrden.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnReiniciarOrden);
+      }
+
+      // 4️⃣ Esperar unos segundos por la ejecución del reinicio
+      await driver.sleep(4000);
+
+      console.log("✅ Paso 5: Botón 'Reiniciar orden' presionado correctamente.");
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 5: No se pudo presionar el botón 'Reiniciar orden': ${error.message}`
+      );
+    }
+
+
+    // === Paso 6: Clic en el botón "Sí" en el modal de confirmación (con espera del progress) ===
+    try {
+      const btnConfirmarSiXpath = '//*[@id="widget-button-btConfirmYes"]/div';
+      const progressXpath = '//*[contains(@id,"progress")]'; // detecta cualquier progress visible
+
+      // 1️⃣ Esperar a que el botón esté presente y visible
+      const btnConfirmarSi = await driver.wait(
+        until.elementLocated(By.xpath(btnConfirmarSiXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnConfirmarSi), 8000);
+      await driver.wait(until.elementIsEnabled(btnConfirmarSi), 8000);
+
+      // 2️⃣ Hacer scroll y clic con fallback a JS
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnConfirmarSi);
+      await driver.sleep(300);
+      try {
+        await btnConfirmarSi.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnConfirmarSi);
+      }
+
+      console.log("✅ Paso 6: Botón 'Sí' en el modal de confirmación presionado correctamente.");
+      await driver.sleep(1000);
+
+      // 3️⃣ Esperar a que aparezca el progress
+      try {
+        console.log("⏳ Esperando a que aparezca el progress...");
+        const progressElem = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(progressElem), 10000);
+        console.log("⚙️ Progress detectado. Esperando a que finalice...");
+
+        // 4️⃣ Esperar hasta que desaparezca o deje de estar visible (máx. 60 s)
+        await driver.wait(async () => {
+          const elems = await driver.findElements(By.xpath(progressXpath));
+          if (elems.length === 0) return true;
+          const visible = await elems[0].isDisplayed().catch(() => false);
+          return !visible;
+        }, 60000);
+
+        console.log("✅ Proceso completado. El progress ha desaparecido.");
+      } catch {
+        console.log("ℹ️ No se detectó progress visible tras confirmar, posible proceso rápido.");
+      }
+
+      await driver.sleep(1500);
+    } catch (error) {
+      throw new Error(`❌ Paso 6: Error al confirmar y esperar el progreso: ${error.message}`);
+    }
+
+
+    // === Paso 7: Clic en el botón "Desbloquear gestión" ===
+    try {
+      const btnDesbloquearXpath = '//*[@id="widget-button-btn-unlock-raw-data"]/div';
+
+      // 1️⃣ Esperar que el botón exista y esté visible
+      const btnDesbloquear = await driver.wait(
+        until.elementLocated(By.xpath(btnDesbloquearXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnDesbloquear), 8000);
+      await driver.wait(until.elementIsEnabled(btnDesbloquear), 8000);
+
+      // 2️⃣ Scroll y clic (con fallback JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnDesbloquear);
+      await driver.sleep(500);
+
+      try {
+        await btnDesbloquear.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnDesbloquear);
+      }
+
+      console.log("✅ Paso 7: Botón 'Desbloquear gestión' presionado correctamente.");
+      await driver.sleep(4000); // pequeña espera por acción posterior
+
+    } catch (error) {
+      throw new Error(`❌ Paso 7: No se pudo presionar el botón 'Desbloquear gestión': ${error.message}`);
+    }
+
+
+    // === Paso 8: Clic en "Sí" en el modal de confirmación ===
+    try {
+      const btnConfirmarYesXpath = '//*[@id="widget-button-btConfirmYes"]/div';
+      const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]'; // progress visible durante ejecución
+
+      // 1️⃣ Esperar a que el botón "Sí" esté presente
+      const btnConfirmarYes = await driver.wait(
+        until.elementLocated(By.xpath(btnConfirmarYesXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(btnConfirmarYes), 8000);
+
+      // 2️⃣ Scroll y clic (con fallback JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnConfirmarYes);
+      await driver.sleep(500);
+      try {
+        await btnConfirmarYes.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnConfirmarYes);
+      }
+
+      console.log("✅ Paso 8: Botón 'Sí' en el modal presionado correctamente. Esperando proceso...");
+
+      // 3️⃣ Esperar que aparezca el progress (inicio del proceso)
+      try {
+        const progressElement = await driver.wait(
+          until.elementLocated(By.xpath(progressXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(progressElement), 10000);
+      } catch {
+        console.log("⚠️ El progress no apareció visualmente, continuando...");
+      }
+
+      // 4️⃣ Esperar que el progress desaparezca (fin del proceso)
+      try {
+        await driver.wait(async () => {
+          const progress = await driver.findElements(By.xpath(progressXpath));
+          if (progress.length === 0) return true;
+          const visible = await progress[0].isDisplayed().catch(() => false);
+          return !visible;
+        }, 60000); // hasta 1 minuto máximo
+        console.log("✅ Proceso completado: progress finalizado.");
+      } catch {
+        console.log("⚠️ El progress no desapareció completamente tras 60s, continuando...");
+      }
+
+      await driver.sleep(1000);
+
+    } catch (error) {
+      throw new Error(`❌ Paso 8: No se pudo confirmar el modal con 'Sí' o falló el proceso: ${error.message}`);
+    }
+
+
+    // === Paso 9: Clic en el botón "Cerrar" ===
+    try {
+      const btnCerrarXpath = '//*[@id="widget-button-close-detail-process"]/div';
+
+      // 1️⃣ Esperar que el botón exista en el DOM
+      const btnCerrar = await driver.wait(
+        until.elementLocated(By.xpath(btnCerrarXpath)),
+        15000
+      );
+
+      // 2️⃣ Asegurar visibilidad y que esté habilitado
+      await driver.wait(until.elementIsVisible(btnCerrar), 8000);
+      await driver.wait(until.elementIsEnabled(btnCerrar), 8000);
+
+      // 3️⃣ Scroll hacia el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
+      await driver.sleep(500);
+
+      // 4️⃣ Intentar clic directo, fallback a JS si es necesario
+      try {
+        await btnCerrar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnCerrar);
+      }
+
+      console.log("✅ Paso 9: Botón 'Cerrar' presionado correctamente.");
+
+      // 5️⃣ Esperar brevemente para permitir el cierre del modal o proceso
+      await driver.sleep(3000);
+
+    } catch (error) {
+      throw new Error(`❌ Paso 9: No se pudo presionar el botón 'Cerrar': ${error.message}`);
+    }
+
+
 
 
   } catch(error) {

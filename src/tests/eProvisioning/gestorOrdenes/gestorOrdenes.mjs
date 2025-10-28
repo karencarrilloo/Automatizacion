@@ -88,12 +88,12 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_009: Revisar sesiones', async () => {
+  it('CP_GESORD_009: Revisar sesiones', async () => {
     await gestorOrdenesPage.revisarSesiones();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_010: Reabrir orden', async () => {
+  it.only('CP_GESORD_010: Reabrir orden', async () => {
     await gestorOrdenesPage.reabrirOrden();
     expect(true).to.be.true;
   });
