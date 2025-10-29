@@ -53,8 +53,13 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_002: Filtro de búsqueda por ID_DEAL y tipo de orden ORDEN - VENTA E INSTALACION', async () => {
+  it.only('CP_GESORD_002: Primer Filtro de búsqueda por ID_DEAL', async () => {
     await gestorOrdenesPage.filtrarPorIdDeal();
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_00X: Segundo filtro de búsqueda por TIPO DE ORDEN', async () => {
+    await gestorOrdenesPage.filtrarPorTipoOrden();
     expect(true).to.be.true;
   });
 
@@ -80,6 +85,11 @@ describe('Pruebas de Gestor de Órdenes', function () {
 
   it('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion();
+    expect(true).to.be.true;
+  });
+
+  it.only('CP_GESORD_008: Ejecutar orden mantenimiento (cliente simulado)', async () => {
+    await gestorOrdenesPage.ejecutarOrdenMantenimiento();
     expect(true).to.be.true;
   });
 

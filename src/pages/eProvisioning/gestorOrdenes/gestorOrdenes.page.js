@@ -119,7 +119,7 @@ export default class GestorOrdenesPage {
   }
 
   //  ==================================================
-  //  CP_GESORD_002 – Filtro de búsqueda cliente por ID_DEAL
+  //  CP_GESORD_002 – Primer Filtro de búsqueda por ID_DEAL
   //  5 pasos
   //  ==================================================
 
@@ -182,138 +182,128 @@ export default class GestorOrdenesPage {
       await driver.sleep(1500);
       console.log(`✅ Filtro por ID_DEAL "${idBuscar}" diligenciado.`);
 
-      // === Paso X: Clic en el botón "+ Agregar regla" ===
 
-      // Buscar el botón por atributo genérico
-      const botonAddRule = await driver.wait(
-        until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+      // === Paso 5: Clic en "Aplicar filtros" ===
+      const botonAplicarFiltro = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+      await driver.sleep(500);
+      await botonAplicarFiltro.click();
+      await driver.sleep(3000);
+      console.log("✅ Paso 5: boton en Aplicar filtros. clickeado");
+
+    } catch (error) {
+      if (this._capturarError) await this._capturarError(error, caseName);
+      throw error;
+    }
+
+  }
+
+  //  ==================================================
+  //  CP_GESORD_00X – Segundo filtro de búsqueda cliente por TIPO DE ORDEN
+  //  x pasos
+  //  ==================================================
+  async filtrarPorTipoOrden(caseName = 'CP_GESORD_00X', idDeal) {
+    const driver = this.driver;
+    // 👇 Usa el ID global si no se envía argumento
+    const idBuscar = idDeal || this.defaultIdDeal;
+
+    try {
+
+      const padreXpath = '//*[@id="widget-button-btn-add-filter"]';
+      const hijoXpath = './div';
+
+      // === Paso 1: Volver a abrir modal de filtros  ===
+      const divPadre2 = await driver.wait(until.elementLocated(By.xpath(padreXpath)), 10000);
+      await driver.wait(until.elementIsVisible(divPadre2), 5000);
+      const divHijo2 = await divPadre2.findElement(By.xpath(hijoXpath));
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", divHijo2);
+      await driver.executeScript("arguments[0].click();", divHijo2);
+      await driver.sleep(5000);
+
+      const modalFiltros2 = await driver.wait(
+        until.elementLocated(By.xpath('//*[starts-with(@id,"qb_")]')),
         15000
       );
+      await driver.wait(until.elementIsVisible(modalFiltros2), 5000);
+      console.log("✅ Paso 1: Modal de filtros reabierto correctamente.");
 
-      // Asegurar que el botón sea visible y esté habilitado
-      await driver.wait(until.elementIsVisible(botonAddRule), 8000);
-      await driver.wait(until.elementIsEnabled(botonAddRule), 8000);
+      // === Paso 2: Clic en el botón "+ Add rule" ===
+    const botonAddRule = await driver.wait(
+      until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+      10000
+    );
+    await driver.wait(until.elementIsVisible(botonAddRule), 5000);
+    await driver.wait(until.elementIsEnabled(botonAddRule), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+    await driver.sleep(500);
+    await botonAddRule.click();
+    await driver.sleep(2000);
+    console.log("✅ Paso 2: Botón '+ Add rule' presionado.");
 
-      // Desplazar hasta el botón
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
-      await driver.sleep(500);
+    // === Paso 3: Clic en select del segundo filtro ===
+    const grupoFiltro2 = await driver.wait(until.elementLocated(By.css('.rules-group-container')), 10000);
+    const contenedorFiltro2 = await grupoFiltro2.findElement(By.css('.rule-filter-container'));
+    const selectFiltro2 = await contenedorFiltro2.findElement(By.css('select'));
+    await driver.wait(until.elementIsVisible(selectFiltro2), 5000);
+    await driver.wait(until.elementIsEnabled(selectFiltro2), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro2);
+    await driver.sleep(500);
+    await selectFiltro2.click();
+    await driver.sleep(1500);
+    console.log("✅ Paso 3: Select del segundo filtro abierto.");
 
-      // Intentar clic directo, con fallback a JS
-      try {
-        await botonAddRule.click();
-      } catch {
-        await driver.executeScript("arguments[0].click();", botonAddRule);
+    // === Paso 4: Seleccionar “TIPO DE ORDEN” ===
+    const contenedoresFiltro = await driver.wait(
+      until.elementsLocated(By.css('.rule-container')),
+      10000
+    );
+    const segundoFiltro = contenedoresFiltro[1];
+    const selectCampo2 = await segundoFiltro.findElement(By.css('.rule-filter-container select'));
+    await driver.wait(until.elementIsVisible(selectCampo2), 5000);
+    await driver.wait(until.elementIsEnabled(selectCampo2), 5000);
+    await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo2);
+    await selectCampo2.click();
+    await driver.sleep(500);
+
+    const opciones = await selectCampo2.findElements(By.css('option'));
+    for (const opcion of opciones) {
+      const texto = (await opcion.getText()).trim().toUpperCase();
+      if (texto === "TIPO DE ORDEN") {
+        await opcion.click();
+        break;
       }
+    }
+    await driver.sleep(1000);
+    console.log("✅ Paso 4: 'TIPO DE ORDEN' seleccionado.");
 
-      console.log("✅ Paso X: Botón '+ Agregar regla' presionado correctamente.");
-      await driver.sleep(2000); // Espera para que aparezca la nueva regla
+    // === Paso 5: Diligenciar campo “ORDEN - VENTA E INSTALACION” ===
+    const segundoFiltroBlock = await driver.wait(
+      until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
+      10000
+    );
+    const textarea = await segundoFiltroBlock.findElement(By.css('textarea'));
+    await driver.wait(until.elementIsVisible(textarea), 5000);
+    await textarea.clear();
+    await textarea.sendKeys("ORDEN - VENTA E INSTALACION");
+    await driver.sleep(1000);
+    console.log("✅ Paso 5: Valor 'ORDEN - VENTA E INSTALACION' diligenciado.");
 
-      // === Paso X-2: Seleccionar "TIPO DE ORDEN" ===
-      const grupoFiltroTipoOrden = await driver.wait(
-        until.elementLocated(By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_1")]')),
-        15000
+    // === Paso 6: Clic en "Aplicar filtros" ===
+      const botonAplicarFiltro = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
+        10000
       );
-
-      // Buscar el select de campo dentro del grupo
-      const selectTipoOrden = await grupoFiltroTipoOrden.findElement(By.css('select'));
-      await driver.wait(until.elementIsVisible(selectTipoOrden), 5000);
-      await driver.wait(until.elementIsEnabled(selectTipoOrden), 5000);
-
-      // Scroll y selección de opción
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectTipoOrden);
-      await selectTipoOrden.click();
+      await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
       await driver.sleep(500);
-      await selectTipoOrden.sendKeys("TIPO DE ORDEN");
-      await driver.sleep(1500);
-
-      console.log("✅ Paso X-2: Campo 'TIPO DE ORDEN' seleccionado correctamente.");
-
-      // === Paso X-3: Habilitar y diligenciar el campo "TIPO DE ORDEN" ===
-      try {
-        console.log("⏳ Paso X-3: Buscando grupo 'TIPO DE ORDEN'...");
-
-        // 1️⃣ Buscar todos los grupos de regla visibles
-        const grupos = await driver.findElements(
-          By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_")]')
-        );
-        if (grupos.length === 0) throw new Error("No se encontraron reglas en el modal.");
-
-        let grupoTipoOrden = null;
-
-        for (const g of grupos) {
-          try {
-            const selectCampo = await g.findElement(By.css('select'));
-            const opciones = await selectCampo.findElements(By.css('option'));
-            for (const op of opciones) {
-              const texto = (await op.getText()).trim().toUpperCase();
-              if (texto.includes("TIPO DE ORDEN")) {
-                grupoTipoOrden = g;
-                break;
-              }
-            }
-            if (grupoTipoOrden) break;
-          } catch { }
-        }
-
-        // Si no encontró el grupo, usar el segundo grupo como fallback
-        if (!grupoTipoOrden) {
-          if (grupos.length >= 2) {
-            grupoTipoOrden = grupos[1];
-            console.log("⚠️ No se identificó el grupo por texto, usando el segundo grupo como fallback.");
-          } else {
-            throw new Error("No se pudo identificar el grupo 'TIPO DE ORDEN'.");
-          }
-        }
-
-        // 2️⃣ Buscar el select del operador dentro del grupo
-        const selectOperador = await grupoTipoOrden.findElement(By.css("select.rule-operator-container"));
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", selectOperador);
-        await driver.wait(until.elementIsVisible(selectOperador), 5000);
-
-        // 🔄 Forzar evento change para habilitar el campo
-        await driver.executeScript(`
-    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
-  `, selectOperador);
-        await driver.sleep(1000);
-
-        // 3️⃣ Esperar que el textarea se muestre y habilite
-        console.log("⏳ Esperando que el campo de texto se habilite...");
-        let textareaTipoOrden;
-        await driver.wait(async () => {
-          try {
-            textareaTipoOrden = await grupoTipoOrden.findElement(By.css('textarea.form-control'));
-            return await textareaTipoOrden.isDisplayed();
-          } catch {
-            return false;
-          }
-        }, 20000, "El campo de texto para 'TIPO DE ORDEN' no se habilitó a tiempo.");
-
-        // 4️⃣ Diligenciar el campo
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", textareaTipoOrden);
-        await driver.sleep(300);
-        await textareaTipoOrden.click();
-        await driver.sleep(300);
-        await textareaTipoOrden.clear();
-        await textareaTipoOrden.sendKeys("ORDEN - VENTA E INSTALACION");
-        await driver.sleep(1500);
-
-        console.log("✅ Paso X-3: Campo 'TIPO DE ORDEN' diligenciado correctamente.");
-
-      } catch (error) {
-        throw new Error(`❌ Paso X-3: No se pudo diligenciar el campo 'TIPO DE ORDEN': ${error.message}`);
-      }
-
-
-      // // === Paso 5: Clic en "Aplicar filtros" ===
-      // const botonAplicarFiltro = await driver.wait(
-      //   until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
-      //   10000
-      // );
-      // await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
-      // await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
-      // await driver.sleep(500);
-      // await botonAplicarFiltro.click();
-      // await driver.sleep(3000);
+      await botonAplicarFiltro.click();
+      await driver.sleep(3000);
+      console.log("✅ Paso 6: boton en Aplicar filtros. clickeado");
+      
 
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
@@ -1234,16 +1224,8 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 11: No se pudo presionar el botón 'Siguiente': ${error.message}`);
       }
 
-
-
       console.log(`✅ ${caseName}: Proceso 'ORDEN - VENTA E INSTALACIÓN' ejecutado con éxito.`);
-    } catch (error) {
-      console.error(`❌ Error en el caso de prueba CP_GESORD_007: ${error.message}`);
-
-      throw error;
-
-
-    }
+   
 
     // === Paso 12: Diligenciar velocidades de subida y bajada ===
     try {
@@ -1560,7 +1542,68 @@ export default class GestorOrdenesPage {
     } catch (error) {
       throw new Error(`❌ Paso 18: No se pudo confirmar la acción en el modal 'Sí': ${error.message}`);
     }
+  
+ } catch (error) {
+      console.error(`❌ Error en el caso de prueba CP_GESORD_007: ${error.message}`);
+
+      throw error;
+    }
   }
+  // =====================================================
+  // CP_GESORD_00X – Ejecutar orden de mantenimiento (cliente simulado)
+  // x pasos
+  // =====================================================
+  async ejecutarOrdenMantenimiento(caseName = "CP_GESORD_00X", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+
+      // Paso 3: Seleccionar opción "Ejecutar orden" ===
+
+      const opcionEjecutarXpath = '//*[@id="1094"]/div';
+
+      // Esperar a que la opción esté visible en el menú
+      const opcionEjecutar = await driver.wait(
+        until.elementLocated(By.xpath(opcionEjecutarXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(opcionEjecutar), 5000);
+
+      // Desplazar y hacer clic (con fallback a JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionEjecutar);
+      await driver.sleep(500);
+
+      try {
+        await opcionEjecutar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionEjecutar);
+
+      }
+
+      await driver.sleep(3000);
+      console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
+
+       } catch(error) {
+    console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+
+    throw error;
+  }
+}
 
   // =====================================================
   // CP_GESORD_008 – Registro de materiales
