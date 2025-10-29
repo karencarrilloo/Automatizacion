@@ -183,31 +183,126 @@ export default class GestorOrdenesPage {
       console.log(`✅ Filtro por ID_DEAL "${idBuscar}" diligenciado.`);
 
       // === Paso X: Clic en el botón "+ Agregar regla" ===
-  
-        // Buscar el botón por atributo genérico
-        const botonAddRule = await driver.wait(
-          until.elementLocated(By.xpath('//button[@data-add="rule"]')),
-          15000
+
+      // Buscar el botón por atributo genérico
+      const botonAddRule = await driver.wait(
+        until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+        15000
+      );
+
+      // Asegurar que el botón sea visible y esté habilitado
+      await driver.wait(until.elementIsVisible(botonAddRule), 8000);
+      await driver.wait(until.elementIsEnabled(botonAddRule), 8000);
+
+      // Desplazar hasta el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+      await driver.sleep(500);
+
+      // Intentar clic directo, con fallback a JS
+      try {
+        await botonAddRule.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", botonAddRule);
+      }
+
+      console.log("✅ Paso X: Botón '+ Agregar regla' presionado correctamente.");
+      await driver.sleep(2000); // Espera para que aparezca la nueva regla
+
+      // === Paso X-2: Seleccionar "TIPO DE ORDEN" ===
+      const grupoFiltroTipoOrden = await driver.wait(
+        until.elementLocated(By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_1")]')),
+        15000
+      );
+
+      // Buscar el select de campo dentro del grupo
+      const selectTipoOrden = await grupoFiltroTipoOrden.findElement(By.css('select'));
+      await driver.wait(until.elementIsVisible(selectTipoOrden), 5000);
+      await driver.wait(until.elementIsEnabled(selectTipoOrden), 5000);
+
+      // Scroll y selección de opción
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectTipoOrden);
+      await selectTipoOrden.click();
+      await driver.sleep(500);
+      await selectTipoOrden.sendKeys("TIPO DE ORDEN");
+      await driver.sleep(1500);
+
+      console.log("✅ Paso X-2: Campo 'TIPO DE ORDEN' seleccionado correctamente.");
+
+      // === Paso X-3: Habilitar y diligenciar el campo "TIPO DE ORDEN" ===
+      try {
+        console.log("⏳ Paso X-3: Buscando grupo 'TIPO DE ORDEN'...");
+
+        // 1️⃣ Buscar todos los grupos de regla visibles
+        const grupos = await driver.findElements(
+          By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_")]')
         );
+        if (grupos.length === 0) throw new Error("No se encontraron reglas en el modal.");
 
-        // Asegurar que el botón sea visible y esté habilitado
-        await driver.wait(until.elementIsVisible(botonAddRule), 8000);
-        await driver.wait(until.elementIsEnabled(botonAddRule), 8000);
+        let grupoTipoOrden = null;
 
-        // Desplazar hasta el botón
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
-        await driver.sleep(500);
-
-        // Intentar clic directo, con fallback a JS
-        try {
-          await botonAddRule.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", botonAddRule);
+        for (const g of grupos) {
+          try {
+            const selectCampo = await g.findElement(By.css('select'));
+            const opciones = await selectCampo.findElements(By.css('option'));
+            for (const op of opciones) {
+              const texto = (await op.getText()).trim().toUpperCase();
+              if (texto.includes("TIPO DE ORDEN")) {
+                grupoTipoOrden = g;
+                break;
+              }
+            }
+            if (grupoTipoOrden) break;
+          } catch { }
         }
 
-        console.log("✅ Paso X: Botón '+ Agregar regla' presionado correctamente.");
-        await driver.sleep(2000); // Espera para que aparezca la nueva regla
-        
+        // Si no encontró el grupo, usar el segundo grupo como fallback
+        if (!grupoTipoOrden) {
+          if (grupos.length >= 2) {
+            grupoTipoOrden = grupos[1];
+            console.log("⚠️ No se identificó el grupo por texto, usando el segundo grupo como fallback.");
+          } else {
+            throw new Error("No se pudo identificar el grupo 'TIPO DE ORDEN'.");
+          }
+        }
+
+        // 2️⃣ Buscar el select del operador dentro del grupo
+        const selectOperador = await grupoTipoOrden.findElement(By.css("select.rule-operator-container"));
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", selectOperador);
+        await driver.wait(until.elementIsVisible(selectOperador), 5000);
+
+        // 🔄 Forzar evento change para habilitar el campo
+        await driver.executeScript(`
+    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+  `, selectOperador);
+        await driver.sleep(1000);
+
+        // 3️⃣ Esperar que el textarea se muestre y habilite
+        console.log("⏳ Esperando que el campo de texto se habilite...");
+        let textareaTipoOrden;
+        await driver.wait(async () => {
+          try {
+            textareaTipoOrden = await grupoTipoOrden.findElement(By.css('textarea.form-control'));
+            return await textareaTipoOrden.isDisplayed();
+          } catch {
+            return false;
+          }
+        }, 20000, "El campo de texto para 'TIPO DE ORDEN' no se habilitó a tiempo.");
+
+        // 4️⃣ Diligenciar el campo
+        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", textareaTipoOrden);
+        await driver.sleep(300);
+        await textareaTipoOrden.click();
+        await driver.sleep(300);
+        await textareaTipoOrden.clear();
+        await textareaTipoOrden.sendKeys("ORDEN - VENTA E INSTALACION");
+        await driver.sleep(1500);
+
+        console.log("✅ Paso X-3: Campo 'TIPO DE ORDEN' diligenciado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso X-3: No se pudo diligenciar el campo 'TIPO DE ORDEN': ${error.message}`);
+      }
+
 
       // // === Paso 5: Clic en "Aplicar filtros" ===
       // const botonAplicarFiltro = await driver.wait(
