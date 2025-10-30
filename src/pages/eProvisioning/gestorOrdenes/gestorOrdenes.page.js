@@ -9,11 +9,13 @@ const __dirname = path.dirname(__filename);
 export default class GestorOrdenesPage {
   /**
  * @param {WebDriver} driver  instancia de selenium
- * @param {string} defaultIdDeal  ID_DEAL global reutilizable
+ * @param {string} defaultIdDeal ID_DEAL global reutilizable
+ * @param {string} defaultIdOrden ID ORDEN global reutilizable
  */
-  constructor(driver, defaultIdDeal = '28007068553') {
+  constructor(driver, defaultIdDeal = '28007068553', defaultIdOrden = '572369' ) {
     this.driver = driver;
     this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable
+    this.defaultIdOrden = defaultIdOrden;
   }
 
   async seleccionarClientePorIdDeal(idDeal) {
@@ -74,6 +76,66 @@ export default class GestorOrdenesPage {
 
     await driver.sleep(800);
     console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado correctamente.`);
+  }
+
+  async seleccionarClientePorIdOrden(idOrden) {
+    const driver = this.driver;
+    const idBuscar = idOrden || this.defaultIdOrden;
+
+    // === XPaths posibles (Clientes y Órdenes) ===
+    const posiblesGrids = [
+      // Gestión Clientes
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody',
+      // Gestor de Órdenes
+      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"orderViewerGestor")]//table/tbody',
+    ];
+
+    let cuerpoTabla = null;
+    for (const gridXpath of posiblesGrids) {
+      try {
+        cuerpoTabla = await driver.wait(until.elementLocated(By.xpath(gridXpath)), 5000);
+        if (cuerpoTabla) {
+          console.log(`📋 Grid encontrado: ${gridXpath}`);
+          break;
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    if (!cuerpoTabla)
+      throw new Error("❌ No se encontró un grid compatible en la vista actual.");
+
+    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
+    const filas = await cuerpoTabla.findElements(By.xpath("./tr"));
+
+    if (filas.length === 0)
+      throw new Error("❌ No se encontraron filas en la tabla.");
+
+    let filaSeleccionada = null;
+
+    for (const fila of filas) {
+      const textoFila = (await fila.getText()).trim();
+      if (textoFila.includes(idBuscar)) { // 👈 coincidencia parcial en toda la fila
+        filaSeleccionada = fila;
+        break;
+      }
+    }
+
+    if (!filaSeleccionada)
+      throw new Error(`❌ No se encontró cliente con ID ORDEN "${idBuscar}"`);
+
+    // Scroll y clic
+    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
+    await driver.sleep(300);
+    try {
+      await filaSeleccionada.click();
+    } catch {
+      await driver.executeScript('arguments[0].click();', filaSeleccionada);
+    }
+
+    await driver.sleep(800);
+    console.log(`✅ Cliente con ID ORDEN "${idBuscar}" seleccionado correctamente.`);
   }
 
 
@@ -203,96 +265,71 @@ export default class GestorOrdenesPage {
   }
 
   //  ==================================================
-  //  CP_GESORD_00X – Segundo filtro de búsqueda cliente por TIPO DE ORDEN
-  //  x pasos
+  //  CP_GESORD_00X – Primer Filtro de búsqueda por ID ORDEN
+  //  5 pasos
   //  ==================================================
-  async filtrarPorTipoOrden(caseName = 'CP_GESORD_00X', idDeal) {
+
+  async filtrarPorIdOrden(caseName = 'CP_GESORD_002', idOrden) {
     const driver = this.driver;
     // 👇 Usa el ID global si no se envía argumento
-    const idBuscar = idDeal || this.defaultIdDeal;
+    const idBuscar = idOrden || this.defaultIdOrden;
 
     try {
-
+      // === Paso 1: Abrir modal de filtros ===
       const padreXpath = '//*[@id="widget-button-btn-add-filter"]';
       const hijoXpath = './div';
 
-      // === Paso 1: Volver a abrir modal de filtros  ===
-      const divPadre2 = await driver.wait(until.elementLocated(By.xpath(padreXpath)), 10000);
-      await driver.wait(until.elementIsVisible(divPadre2), 5000);
-      const divHijo2 = await divPadre2.findElement(By.xpath(hijoXpath));
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", divHijo2);
-      await driver.executeScript("arguments[0].click();", divHijo2);
+      const divPadre = await driver.wait(until.elementLocated(By.xpath(padreXpath)), 10000);
+      await driver.wait(until.elementIsVisible(divPadre), 5000);
+      const divHijo = await divPadre.findElement(By.xpath(hijoXpath));
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", divHijo);
+      await driver.executeScript("arguments[0].click();", divHijo);
       await driver.sleep(5000);
 
-      const modalFiltros2 = await driver.wait(
+      const modalFiltros = await driver.wait(
         until.elementLocated(By.xpath('//*[starts-with(@id,"qb_")]')),
         15000
       );
-      await driver.wait(until.elementIsVisible(modalFiltros2), 5000);
-      console.log("✅ Paso 1: Modal de filtros reabierto correctamente.");
+      await driver.wait(until.elementIsVisible(modalFiltros), 5000);
 
-      // === Paso 2: Clic en el botón "+ Add rule" ===
-      const botonAddRule = await driver.wait(
-        until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+      // === Paso 2: Desplegar select de filtros ===
+      const grupoFiltro = await driver.wait(
+        until.elementLocated(By.xpath('//*[starts-with(@id,"qb_") and contains(@id,"_rule_0")]')),
         10000
       );
-      await driver.wait(until.elementIsVisible(botonAddRule), 5000);
-      await driver.wait(until.elementIsEnabled(botonAddRule), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
-      await driver.sleep(500);
-      await botonAddRule.click();
+      const contenedorFiltro = await grupoFiltro.findElement(By.css('.rule-filter-container'));
+      const selectFiltro = await contenedorFiltro.findElement(By.css('select'));
+      await driver.wait(until.elementIsVisible(selectFiltro), 5000);
+      await driver.wait(until.elementIsEnabled(selectFiltro), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro);
+      await selectFiltro.click();
       await driver.sleep(2000);
-      console.log("✅ Paso 2: Botón '+ Add rule' presionado.");
+      //console.log("✅ Select de filtros desplegado.");
 
-      // === Paso 3: Clic en select del segundo filtro ===
-      const grupoFiltro2 = await driver.wait(until.elementLocated(By.css('.rules-group-container')), 10000);
-      const contenedorFiltro2 = await grupoFiltro2.findElement(By.css('.rule-filter-container'));
-      const selectFiltro2 = await contenedorFiltro2.findElement(By.css('select'));
-      await driver.wait(until.elementIsVisible(selectFiltro2), 5000);
-      await driver.wait(until.elementIsEnabled(selectFiltro2), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro2);
+      // === Paso 3: Seleccionar "ID ORDEN" ===
+      const selectCampo = await grupoFiltro.findElement(By.css('select'));
+      await driver.wait(until.elementIsVisible(selectCampo), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
+      await selectCampo.click();
       await driver.sleep(500);
-      await selectFiltro2.click();
+      await selectCampo.sendKeys("ID ORDEN");
+      await driver.sleep(2000);
+
+      // === Paso 4: Diligenciar el campo de ID ORDEN ===
+      const textareaCampo = await driver.wait(
+        until.elementLocated(By.css('textarea.form-control')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(textareaCampo), 5000);
+      await textareaCampo.click();
+      await driver.sleep(300);
+      await textareaCampo.clear();
+      await textareaCampo.sendKeys(idBuscar);   // 👈 Aquí se usa el ID global
       await driver.sleep(1500);
-      console.log("✅ Paso 3: Select del segundo filtro abierto.");
+      console.log(`✅ Filtro por ID ORDEN "${idBuscar}" diligenciado.`);
 
-      // === Paso 4: Seleccionar “TIPO DE ORDEN” ===
-      const contenedoresFiltro = await driver.wait(
-        until.elementsLocated(By.css('.rule-container')),
-        10000
-      );
-      const segundoFiltro = contenedoresFiltro[1];
-      const selectCampo2 = await segundoFiltro.findElement(By.css('.rule-filter-container select'));
-      await driver.wait(until.elementIsVisible(selectCampo2), 5000);
-      await driver.wait(until.elementIsEnabled(selectCampo2), 5000);
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo2);
-      await selectCampo2.click();
-      await driver.sleep(500);
 
-      const opciones = await selectCampo2.findElements(By.css('option'));
-      for (const opcion of opciones) {
-        const texto = (await opcion.getText()).trim().toUpperCase();
-        if (texto === "TIPO DE ORDEN") {
-          await opcion.click();
-          break;
-        }
-      }
-      await driver.sleep(1000);
-      console.log("✅ Paso 4: 'TIPO DE ORDEN' seleccionado.");
-
-      // === Paso 5: Diligenciar campo “ORDEN - VENTA E INSTALACION” ===
-      const segundoFiltroBlock = await driver.wait(
-        until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
-        10000
-      );
-      const textarea = await segundoFiltroBlock.findElement(By.css('textarea'));
-      await driver.wait(until.elementIsVisible(textarea), 5000);
-      await textarea.clear();
-      await textarea.sendKeys("ORDEN - VENTA E INSTALACION");
-      await driver.sleep(1000);
-      console.log("✅ Paso 5: Valor 'ORDEN - VENTA E INSTALACION' diligenciado.");
-
-      // === Paso 6: Clic en "Aplicar filtros" ===
+      // === Paso 5: Clic en "Aplicar filtros" ===
       const botonAplicarFiltro = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
         10000
@@ -302,8 +339,7 @@ export default class GestorOrdenesPage {
       await driver.sleep(500);
       await botonAplicarFiltro.click();
       await driver.sleep(3000);
-      console.log("✅ Paso 6: boton en Aplicar filtros. clickeado");
-
+      console.log("✅ Paso 5: boton en Aplicar filtros. clickeado");
 
     } catch (error) {
       if (this._capturarError) await this._capturarError(error, caseName);
@@ -312,16 +348,126 @@ export default class GestorOrdenesPage {
 
   }
 
+  //  ==================================================
+  //  CP_GESORD_00X – Segundo filtro de búsqueda cliente por TIPO DE ORDEN
+  //  x pasos
+  //  ==================================================
+  // async filtrarPorTipoOrden(caseName = 'CP_GESORD_00X', idDeal) {
+  //   const driver = this.driver;
+  //   // 👇 Usa el ID global si no se envía argumento
+  //   const idBuscar = idDeal || this.defaultIdDeal;
+
+  //   try {
+
+  //     const padreXpath = '//*[@id="widget-button-btn-add-filter"]';
+  //     const hijoXpath = './div';
+
+  //     // === Paso 1: Volver a abrir modal de filtros  ===
+  //     const divPadre2 = await driver.wait(until.elementLocated(By.xpath(padreXpath)), 10000);
+  //     await driver.wait(until.elementIsVisible(divPadre2), 5000);
+  //     const divHijo2 = await divPadre2.findElement(By.xpath(hijoXpath));
+  //     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", divHijo2);
+  //     await driver.executeScript("arguments[0].click();", divHijo2);
+  //     await driver.sleep(5000);
+
+  //     const modalFiltros2 = await driver.wait(
+  //       until.elementLocated(By.xpath('//*[starts-with(@id,"qb_")]')),
+  //       15000
+  //     );
+  //     await driver.wait(until.elementIsVisible(modalFiltros2), 5000);
+  //     console.log("✅ Paso 1: Modal de filtros reabierto correctamente.");
+
+  //     // === Paso 2: Clic en el botón "+ Add rule" ===
+  //     const botonAddRule = await driver.wait(
+  //       until.elementLocated(By.xpath('//button[@data-add="rule"]')),
+  //       10000
+  //     );
+  //     await driver.wait(until.elementIsVisible(botonAddRule), 5000);
+  //     await driver.wait(until.elementIsEnabled(botonAddRule), 5000);
+  //     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAddRule);
+  //     await driver.sleep(500);
+  //     await botonAddRule.click();
+  //     await driver.sleep(2000);
+  //     console.log("✅ Paso 2: Botón '+ Add rule' presionado.");
+
+  //     // === Paso 3: Clic en select del segundo filtro ===
+  //     const grupoFiltro2 = await driver.wait(until.elementLocated(By.css('.rules-group-container')), 10000);
+  //     const contenedorFiltro2 = await grupoFiltro2.findElement(By.css('.rule-filter-container'));
+  //     const selectFiltro2 = await contenedorFiltro2.findElement(By.css('select'));
+  //     await driver.wait(until.elementIsVisible(selectFiltro2), 5000);
+  //     await driver.wait(until.elementIsEnabled(selectFiltro2), 5000);
+  //     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectFiltro2);
+  //     await driver.sleep(500);
+  //     await selectFiltro2.click();
+  //     await driver.sleep(1500);
+  //     console.log("✅ Paso 3: Select del segundo filtro abierto.");
+
+  //     // === Paso 4: Seleccionar “TIPO DE ORDEN” ===
+  //     const contenedoresFiltro = await driver.wait(
+  //       until.elementsLocated(By.css('.rule-container')),
+  //       10000
+  //     );
+  //     const segundoFiltro = contenedoresFiltro[1];
+  //     const selectCampo2 = await segundoFiltro.findElement(By.css('.rule-filter-container select'));
+  //     await driver.wait(until.elementIsVisible(selectCampo2), 5000);
+  //     await driver.wait(until.elementIsEnabled(selectCampo2), 5000);
+  //     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo2);
+  //     await selectCampo2.click();
+  //     await driver.sleep(500);
+
+  //     const opciones = await selectCampo2.findElements(By.css('option'));
+  //     for (const opcion of opciones) {
+  //       const texto = (await opcion.getText()).trim().toUpperCase();
+  //       if (texto === "TIPO DE ORDEN") {
+  //         await opcion.click();
+  //         break;
+  //       }
+  //     }
+  //     await driver.sleep(1000);
+  //     console.log("✅ Paso 4: 'TIPO DE ORDEN' seleccionado.");
+
+  //     // === Paso 5: Diligenciar campo “ORDEN - VENTA E INSTALACION” ===
+  //     const segundoFiltroBlock = await driver.wait(
+  //       until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
+  //       10000
+  //     );
+  //     const textarea = await segundoFiltroBlock.findElement(By.css('textarea'));
+  //     await driver.wait(until.elementIsVisible(textarea), 5000);
+  //     await textarea.clear();
+  //     await textarea.sendKeys("ORDEN - VENTA E INSTALACION");
+  //     await driver.sleep(1000);
+  //     console.log("✅ Paso 5: Valor 'ORDEN - VENTA E INSTALACION' diligenciado.");
+
+  //     // === Paso 6: Clic en "Aplicar filtros" ===
+  //     const botonAplicarFiltro = await driver.wait(
+  //       until.elementLocated(By.xpath('//*[@id="widget-button-btn-apply-filter-element"]/div')),
+  //       10000
+  //     );
+  //     await driver.wait(until.elementIsVisible(botonAplicarFiltro), 5000);
+  //     await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonAplicarFiltro);
+  //     await driver.sleep(500);
+  //     await botonAplicarFiltro.click();
+  //     await driver.sleep(3000);
+  //     console.log("✅ Paso 6: boton en Aplicar filtros. clickeado");
+
+
+  //   } catch (error) {
+  //     if (this._capturarError) await this._capturarError(error, caseName);
+  //     throw error;
+  //   }
+
+  // }
+
   // =====================================================
   // CP_GESORD_003 – RawData
   // x pasos
   // =====================================================
-  async rawData(caseName = "CP_GESORD_00X", idDeal) {
+  async rawData(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -478,12 +624,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_004 – Adjuntos
   // x pasos
   // =====================================================
-  async Adjuntos(caseName = "CP_GESORD_00X", idDeal) {
+  async Adjuntos(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -608,12 +754,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_005 – Registro de la orden
   // x pasos
   // =====================================================
-  async registroOrden(caseName = "CP_GESORD_005", idDeal) {
+  async registroOrden(caseName = "CP_GESORD_005", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -786,12 +932,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_006 – Ver información técnica asociada
   // x pasos
   // =====================================================
-  async verInfomacionTecnicaAsociada(caseName = "CP_GESORD_006", idDeal) {
+  async verInfomacionTecnicaAsociada(caseName = "CP_GESORD_006", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -893,12 +1039,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_007 – Ejecutar orden venta e instalación (cliente simulado)
   // x pasos
   // =====================================================
-  async ejecutarOrdenVentaInstalacion(caseName = "CP_GESORD_007", idDeal) {
+  async ejecutarOrdenVentaInstalacion(caseName = "CP_GESORD_007", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -1551,12 +1697,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad fisica
   // x pasos
   // =====================================================
-  async ejecutarOrdenMantenimientoFisico(caseName = "CP_GESORD_00X", idDeal) {
+  async ejecutarOrdenMantenimientoFisico(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -1919,12 +2065,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica **PENDIENTE**
   // x pasos
   // =====================================================
-  async ejecutarOrdenMantenimientoLogico(caseName = "CP_GESORD_00X", idDeal) {
+  async ejecutarOrdenMantenimientoLogico(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2004,12 +2150,12 @@ export default class GestorOrdenesPage {
   // x pasos
   // =====================================================
    
-  async ejecutarOrdenTerminacion(caseName = "CP_GESORD_00X", idDeal) {
+  async ejecutarOrdenTerminacion(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2089,12 +2235,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_008 – Registro de materiales
   // x pasos
   // =====================================================
-  async registroMateriales(caseName = "CP_GESORD_008", idDeal) {
+  async registroMateriales(caseName = "CP_GESORD_008", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2157,12 +2303,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_009 – Revisar sesiones
   // x pasos
   // =====================================================
-  async revisarSesiones(caseName = "CP_GESORD_009", idDeal) {
+  async revisarSesiones(caseName = "CP_GESORD_009", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2484,12 +2630,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_010 – Reabrir orden
   // x pasos
   // =====================================================
-  async reabrirOrden(caseName = "CP_GESORD_010", idDeal) {
+  async reabrirOrden(caseName = "CP_GESORD_010", idOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
