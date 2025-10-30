@@ -1775,6 +1775,135 @@ export default class GestorOrdenesPage {
       }
 
 
+      // === Paso 10: Clic en el botón "Siguiente" en el modal de mantenimiento ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-complet-process"]/div';
+
+        // 1️⃣ Esperar a que el botón exista y sea visible
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // 2️⃣ Scroll al botón y clic (fallback por si hay overlays)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(300);
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 10: Botón 'Siguiente' presionado correctamente.");
+
+        // // 3️⃣ Esperar posible progress posterior
+        // try {
+        //   const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+        //   const progress = await driver.wait(
+        //     until.elementLocated(By.xpath(progressXpath)),
+        //     5000
+        //   );
+        //   await driver.wait(until.elementIsVisible(progress), 10000);
+        //   console.log("⏳ Esperando a que finalice el proceso de mantenimiento...");
+        //   await driver.wait(until.stalenessOf(progress), 5000);
+        // } catch {
+        //   console.log("⚠️ No se detectó progress visible después de presionar 'Siguiente'.");
+        // }
+
+        // await driver.sleep(2000);
+        // console.log("✅ Paso 10: Proceso 'Siguiente' completado correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 10: No se pudo presionar el botón 'Siguiente' en el modal de mantenimiento: ${error.message}`);
+      }
+
+      // === Paso 11: Seleccionar opción "FALLA EN EQUIPOS DEL CLIENTE" ===
+      try {
+        const opcionFallaXpath = '//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div/div/div/div[2]/div[8]';
+
+        // 1️⃣ Esperar que la opción exista en el DOM
+        const opcionFalla = await driver.wait(
+          until.elementLocated(By.xpath(opcionFallaXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(opcionFalla), 5000);
+
+        // 2️⃣ Hacer scroll para que el elemento esté centrado
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionFalla);
+        await driver.sleep(2000);
+
+        // 3️⃣ Intentar clic directo y con fallback JS
+        try {
+          await opcionFalla.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", opcionFalla);
+        }
+
+        await driver.sleep(1000);
+        console.log("✅ Paso 11: Opción 'FALLA EN EQUIPOS DEL CLIENTE' seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 11: No se pudo seleccionar la opción 'FALLA EN EQUIPOS DEL CLIENTE': ${error.message}`);
+      }
+
+      // === Paso 12: Clic en el botón "Completar" ===
+      try {
+        const btnCompletarXpath = '//*[@id="widget-button-complet-process"]/div';
+        const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+
+        // 1️⃣ Esperar que el botón exista y sea visible
+        const btnCompletar = await driver.wait(
+          until.elementLocated(By.xpath(btnCompletarXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnCompletar), 10000);
+        await driver.wait(until.elementIsEnabled(btnCompletar), 10000);
+
+        // 2️⃣ Scroll hasta el botón
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCompletar);
+        await driver.sleep(500);
+
+        // 3️⃣ Clic directo con fallback JS
+        try {
+          await btnCompletar.click();
+          await driver.sleep(5000);
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnCompletar);
+          await driver.sleep(5000);
+        }
+
+        console.log("✅ Paso 12: Botón 'Completar' presionado correctamente. Esperando posible progreso...");
+
+        // // 4️⃣ Esperar aparición y finalización del progress (si existe)
+        // try {
+        //   const progress = await driver.wait(
+        //     until.elementLocated(By.xpath(progressXpath)),
+        //     10000
+        //   );
+        //   await driver.wait(until.elementIsVisible(progress), 10000);
+        //   console.log("⏳ Progreso detectado. Esperando a que finalice...");
+
+        //   await driver.wait(async () => {
+        //     try {
+        //       return !(await progress.isDisplayed());
+        //     } catch {
+        //       return true; // El progress ya desapareció del DOM
+        //     }
+        //   }, 60000);
+
+        //   console.log("✅ Progreso completado correctamente.");
+        // } catch {
+        //   console.log("⚠️ No se detectó progress visible, continuando...");
+        // }
+
+        // await driver.sleep(2000);
+
+      } catch (error) {
+        throw new Error(`❌ Paso 12: No se pudo presionar el botón 'Completar': ${error.message}`);
+      }
+
 
     } catch (error) {
       console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
