@@ -312,7 +312,6 @@ export default class GestorOrdenesPage {
 
   }
 
-
   // =====================================================
   // CP_GESORD_003 – RawData
   // x pasos
@@ -604,7 +603,6 @@ export default class GestorOrdenesPage {
 
     throw error;
   }
-
 
   // =====================================================
   // CP_GESORD_005 – Registro de la orden
@@ -2000,6 +1998,92 @@ export default class GestorOrdenesPage {
       throw error;
     }
   }
+
+  // =====================================================
+  // CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)
+  // x pasos
+  // =====================================================
+   
+  async ejecutarOrdenTerminacion(caseName = "CP_GESORD_00X", idDeal) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await this.seleccionarClientePorIdDeal(idDeal);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+
+      // Paso 3: Seleccionar opción "Ejecutar orden" ===
+
+      const opcionEjecutarXpath = '//*[@id="1094"]/div';
+
+      // Esperar a que la opción esté visible en el menú
+      const opcionEjecutar = await driver.wait(
+        until.elementLocated(By.xpath(opcionEjecutarXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(opcionEjecutar), 5000);
+
+      // Desplazar y hacer clic (con fallback a JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionEjecutar);
+      await driver.sleep(500);
+
+      try {
+        await opcionEjecutar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionEjecutar);
+      }
+
+      await driver.sleep(3000);
+      console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
+
+      // === Paso 4: Clic en el botón "ONT" ===
+      try {
+        const btnONT = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div')
+          ),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(btnONT), 8000);
+        await driver.wait(until.elementIsEnabled(btnONT), 8000);
+
+        // Scroll hasta el botón y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnONT);
+        await driver.sleep(300);
+
+        try {
+          await btnONT.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnONT);
+        }
+
+        console.log("✅ Paso 4: Botón 'ONT' presionado correctamente.");
+        await driver.sleep(3000); // pequeña espera por la carga del proceso ONT
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
+      }
+
+
+    } catch (error) {
+      console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+
+      throw error;
+    }
+  }
+
 
   // =====================================================
   // CP_GESORD_008 – Registro de materiales

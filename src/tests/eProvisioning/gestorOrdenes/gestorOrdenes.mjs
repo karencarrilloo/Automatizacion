@@ -88,13 +88,18 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
+  it('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoFisico();
     expect(true).to.be.true;
   });
 
   it('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoLogico(); //**PENDIENTE**
+    expect(true).to.be.true;
+  });
+
+  it.only('CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
+    await gestorOrdenesPage.ejecutarOrdenTerminacion(); 
     expect(true).to.be.true;
   });
 
