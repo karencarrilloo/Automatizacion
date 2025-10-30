@@ -94,7 +94,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
   });
 
   it('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
-    await gestorOrdenesPage.ejecutarOrdenMantenimientoLogico();
+    await gestorOrdenesPage.ejecutarOrdenMantenimientoLogico(); //**PENDIENTE**
     expect(true).to.be.true;
   });
 

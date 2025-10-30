@@ -1798,22 +1798,6 @@ export default class GestorOrdenesPage {
 
         console.log("✅ Paso 10: Botón 'Siguiente' presionado correctamente.");
 
-        // // 3️⃣ Esperar posible progress posterior
-        // try {
-        //   const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
-        //   const progress = await driver.wait(
-        //     until.elementLocated(By.xpath(progressXpath)),
-        //     5000
-        //   );
-        //   await driver.wait(until.elementIsVisible(progress), 10000);
-        //   console.log("⏳ Esperando a que finalice el proceso de mantenimiento...");
-        //   await driver.wait(until.stalenessOf(progress), 5000);
-        // } catch {
-        //   console.log("⚠️ No se detectó progress visible después de presionar 'Siguiente'.");
-        // }
-
-        // await driver.sleep(2000);
-        // console.log("✅ Paso 10: Proceso 'Siguiente' completado correctamente.");
 
       } catch (error) {
         throw new Error(`❌ Paso 10: No se pudo presionar el botón 'Siguiente' en el modal de mantenimiento: ${error.message}`);
@@ -1848,60 +1832,81 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 11: No se pudo seleccionar la opción 'FALLA EN EQUIPOS DEL CLIENTE': ${error.message}`);
       }
 
-      // === Paso 12: Clic en el botón "Completar" ===
+      // === Paso 12: Clic en el botón "Completar" dentro del modal ===
       try {
-        const btnCompletarXpath = '//*[@id="widget-button-complet-process"]/div';
-        const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
-
-        // 1️⃣ Esperar que el botón exista y sea visible
-        const btnCompletar = await driver.wait(
-          until.elementLocated(By.xpath(btnCompletarXpath)),
-          20000
+        // Aseguramos que el modal esté visible
+        const modalMantenimiento = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div')),
+          10000
         );
-        await driver.wait(until.elementIsVisible(btnCompletar), 10000);
-        await driver.wait(until.elementIsEnabled(btnCompletar), 10000);
+        await driver.wait(until.elementIsVisible(modalMantenimiento), 5000);
 
-        // 2️⃣ Scroll hasta el botón
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCompletar);
+        // Buscar el botón dentro del modal (no fuera de él)
+        const botonCompletar = await modalMantenimiento.findElement(
+          By.xpath('.//*[@id="widget-button-complet-process"]/div')
+        );
+
+        // Asegurar que es visible en pantalla y habilitado
+        await driver.wait(until.elementIsVisible(botonCompletar), 5000);
+        await driver.wait(until.elementIsEnabled(botonCompletar), 5000);
+
+        // Hacer scroll hasta el botón para asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonCompletar);
         await driver.sleep(500);
 
-        // 3️⃣ Clic directo con fallback JS
+        // Verificar que el botón no esté cubierto por otro elemento
+        const isDisplayed = await botonCompletar.isDisplayed();
+        if (!isDisplayed) throw new Error("El botón 'Completar' está oculto o tapado por otro elemento.");
+
+        // Ejecutar clic con fallback por JS (por si Selenium detecta overlay)
         try {
-          await btnCompletar.click();
-          await driver.sleep(5000);
+          await botonCompletar.click();
         } catch {
-          await driver.executeScript("arguments[0].click();", btnCompletar);
-          await driver.sleep(5000);
+          await driver.executeScript("arguments[0].click();", botonCompletar);
         }
 
-        console.log("✅ Paso 12: Botón 'Completar' presionado correctamente. Esperando posible progreso...");
-
-        // // 4️⃣ Esperar aparición y finalización del progress (si existe)
-        // try {
-        //   const progress = await driver.wait(
-        //     until.elementLocated(By.xpath(progressXpath)),
-        //     10000
-        //   );
-        //   await driver.wait(until.elementIsVisible(progress), 10000);
-        //   console.log("⏳ Progreso detectado. Esperando a que finalice...");
-
-        //   await driver.wait(async () => {
-        //     try {
-        //       return !(await progress.isDisplayed());
-        //     } catch {
-        //       return true; // El progress ya desapareció del DOM
-        //     }
-        //   }, 60000);
-
-        //   console.log("✅ Progreso completado correctamente.");
-        // } catch {
-        //   console.log("⚠️ No se detectó progress visible, continuando...");
-        // }
-
-        // await driver.sleep(2000);
-
+        console.log("✅ Paso 12: Botón 'Completar' presionado correctamente dentro del modal.");
+        await driver.sleep(3000);
       } catch (error) {
         throw new Error(`❌ Paso 12: No se pudo presionar el botón 'Completar': ${error.message}`);
+      }
+
+      // === Paso 13: Confirmar acción en el modal ("Sí") ===
+      try {
+        // Esperar a que el modal de confirmación aparezca
+        const modalConfirmacion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
+          15000
+        );
+
+        await driver.wait(until.elementIsVisible(modalConfirmacion), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", modalConfirmacion);
+        await driver.sleep(500);
+
+        // Antes de hacer clic, verificar si hay un overlay o progress activo
+        try {
+          const overlay = await driver.findElement(By.css('.ui-progress-overlay, .progress, .loading'));
+          const visible = await overlay.isDisplayed().catch(() => false);
+          if (visible) {
+            console.log("⏳ Esperando a que finalice el progreso antes de confirmar...");
+            await driver.wait(async () => !(await overlay.isDisplayed().catch(() => false)), 15000);
+          }
+        } catch {
+          // No hay overlay, continuar
+        }
+
+        // Intentar hacer clic normalmente
+        try {
+          await modalConfirmacion.click();
+        } catch {
+          // Si falla, forzar clic con JS
+          await driver.executeScript("arguments[0].click();", modalConfirmacion);
+        }
+
+        console.log("✅ Paso 13: Confirmación 'Sí' seleccionada correctamente.");
+        await driver.sleep(3000);
+      } catch (error) {
+        throw new Error(`❌ Paso 13: No se pudo confirmar con 'Sí': ${error.message}`);
       }
 
 
@@ -1913,7 +1918,7 @@ export default class GestorOrdenesPage {
   }
 
   // =====================================================
-  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica
+  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica **PENDIENTE**
   // x pasos
   // =====================================================
   async ejecutarOrdenMantenimientoLogico(caseName = "CP_GESORD_00X", idDeal) {
@@ -2384,8 +2389,6 @@ export default class GestorOrdenesPage {
     } catch (error) {
       throw new Error(`❌ Paso 9: No se pudo presionar el botón 'Cerrar': ${error.message}`);
     }
-
-
 
 
   } catch(error) {
