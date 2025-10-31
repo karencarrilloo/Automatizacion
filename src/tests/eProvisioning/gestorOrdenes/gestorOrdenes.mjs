@@ -58,7 +58,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-   it('CP_GESORD_003 :RawData', async () => {
+  it('CP_GESORD_003 :RawData', async () => {
     await gestorOrdenesPage.rawData();
     expect(true).to.be.true;
   });
@@ -78,8 +78,8 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
-    await gestorOrdenesPage.ejecutarOrdenVentaInstalacion(); //**AJUSTAR PASO CONF DE WIFI **//
+  it('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
+    await gestorOrdenesPage.ejecutarOrdenVentaInstalacion(); //**AJUSTAR PASO CONF DE WIFI CUANDO LA ONT NO ES DUAL BAND**//
     expect(true).to.be.true;
   });
 
@@ -94,11 +94,11 @@ describe('Pruebas de Gestor de Órdenes', function () {
   });
 
   it('CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
-    await gestorOrdenesPage.ejecutarOrdenTerminacion(); 
+    await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**PROBAR NUEVENTE EL PASO 6 BOTON SIGUIENTE DESPUES DEL AJUSTE*/
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Completar orden', async () => {
+  it.only('CP_GESORD_00X: Completar orden', async () => {
     await gestorOrdenesPage.completarOrden(); 
     expect(true).to.be.true;
   });

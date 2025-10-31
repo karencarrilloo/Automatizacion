@@ -12,7 +12,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572386', defaultSerialONT = '485754436EEF4CA5') {
+  constructor(driver, defaultIdOrden = '572390', defaultSerialONT = '485754436EEF4CA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
@@ -1496,32 +1496,61 @@ export default class GestorOrdenesPage {
       await driver.sleep(3000);
       console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
 
-      // === Paso 4: Clic en el botón "ONT" ===
+      // === Paso 4: Clic en el botón "Número de Serial" ===
       try {
-        const btnONT = await driver.wait(
-          until.elementLocated(
-            By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div')
-          ),
-          15000
+        const btnNumeroSerialXpath =
+          '//div[contains(@class,"device") and .//div[contains(@class,"serial-label") and normalize-space(text())="Número de serial"]]';
+        const progressXpath = '//*[contains(@id,"progress-progress-crudgestor") or contains(@id,"progress")]';
+
+        // Localizar el botón dinámicamente
+        const btnNumeroSerial = await driver.wait(
+          until.elementLocated(By.xpath(btnNumeroSerialXpath)),
+          20000
         );
-        await driver.wait(until.elementIsVisible(btnONT), 8000);
-        await driver.wait(until.elementIsEnabled(btnONT), 8000);
+        await driver.wait(until.elementIsVisible(btnNumeroSerial), 10000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNumeroSerial);
+        await driver.sleep(500);
 
-        // Scroll hasta el botón y clic
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnONT);
-        await driver.sleep(300);
-
+        // Intentar clic directo con fallback JS
         try {
-          await btnONT.click();
+          await btnNumeroSerial.click();
         } catch {
-          await driver.executeScript("arguments[0].click();", btnONT);
+          await driver.executeScript("arguments[0].click();", btnNumeroSerial);
         }
 
-        console.log("✅ Paso 4: Botón 'ONT' presionado correctamente.");
-        await driver.sleep(3000); // pequeña espera por la carga del proceso ONT
+        console.log("✅ Paso 4: Botón 'Número de Serial' presionado correctamente.");
+
+        // Esperar opcionalmente el progress (si aparece)
+        let progressVisible = false;
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(progress), 5000);
+          progressVisible = true;
+          console.log("⏳ Paso 4: Proceso de aprovisionamiento iniciado...");
+
+          // Esperar que desaparezca o que el modal cambie (máx 60s)
+          await driver.wait(async () => {
+            try {
+              return !(await progress.isDisplayed());
+            } catch {
+              // Si el elemento desaparece o el modal se cierra, lo consideramos finalizado
+              return true;
+            }
+          }, 60000);
+        } catch {
+          console.log("⚠️ Paso 4: No se detectó progress visible, continuando.");
+        }
+
+        await driver.sleep(2000); // pausa por estabilidad
+        console.log(progressVisible
+          ? "✅ Paso 4: Proceso completado correctamente (progress finalizado)."
+          : "✅ Paso 4: Proceso completado (sin progress visible).");
 
       } catch (error) {
-        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
+        throw new Error(`❌ Paso 4: Error en clic o espera del progress 'Número de Serial': ${error.message}`);
       }
 
       // === Paso 5: Clic en la opción "ADECUACIÓN FIBRA DROP" ===
@@ -1949,32 +1978,61 @@ export default class GestorOrdenesPage {
       await driver.sleep(3000);
       console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
 
-      // === Paso 4: Clic en el botón "ONT" ===
+      // === Paso 4: Clic en el botón "Número de Serial" ===
       try {
-        const btnONT = await driver.wait(
-          until.elementLocated(
-            By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div')
-          ),
-          15000
+        const btnNumeroSerialXpath =
+          '//div[contains(@class,"device") and .//div[contains(@class,"serial-label") and normalize-space(text())="Número de serial"]]';
+        const progressXpath = '//*[contains(@id,"progress-progress-crudgestor") or contains(@id,"progress")]';
+
+        // Localizar el botón dinámicamente
+        const btnNumeroSerial = await driver.wait(
+          until.elementLocated(By.xpath(btnNumeroSerialXpath)),
+          20000
         );
-        await driver.wait(until.elementIsVisible(btnONT), 8000);
-        await driver.wait(until.elementIsEnabled(btnONT), 8000);
+        await driver.wait(until.elementIsVisible(btnNumeroSerial), 10000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNumeroSerial);
+        await driver.sleep(500);
 
-        // Scroll hasta el botón y clic
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnONT);
-        await driver.sleep(300);
-
+        // Intentar clic directo con fallback JS
         try {
-          await btnONT.click();
+          await btnNumeroSerial.click();
         } catch {
-          await driver.executeScript("arguments[0].click();", btnONT);
+          await driver.executeScript("arguments[0].click();", btnNumeroSerial);
         }
 
-        console.log("✅ Paso 4: Botón 'ONT' presionado correctamente.");
-        await driver.sleep(3000); // pequeña espera por la carga del proceso ONT
+        console.log("✅ Paso 4: Botón 'Número de Serial' presionado correctamente.");
+
+        // Esperar opcionalmente el progress (si aparece)
+        let progressVisible = false;
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(progress), 5000);
+          progressVisible = true;
+          console.log("⏳ Paso 4: Proceso de aprovisionamiento iniciado...");
+
+          // Esperar que desaparezca o que el modal cambie (máx 60s)
+          await driver.wait(async () => {
+            try {
+              return !(await progress.isDisplayed());
+            } catch {
+              // Si el elemento desaparece o el modal se cierra, lo consideramos finalizado
+              return true;
+            }
+          }, 60000);
+        } catch {
+          console.log("⚠️ Paso 4: No se detectó progress visible, continuando.");
+        }
+
+        await driver.sleep(2000); // pausa por estabilidad
+        console.log(progressVisible
+          ? "✅ Paso 4: Proceso completado correctamente (progress finalizado)."
+          : "✅ Paso 4: Proceso completado (sin progress visible).");
 
       } catch (error) {
-        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
+        throw new Error(`❌ Paso 4: Error en clic o espera del progress 'Número de Serial': ${error.message}`);
       }
 
       // === Paso 5: Clic en el botón "Siguiente" dentro del modal de terminación ===
@@ -2019,28 +2077,28 @@ export default class GestorOrdenesPage {
 
         console.log("✅ Paso 6: Botón 'Siguiente' dentro del modal de escanear ONT presionado correctamente.");
 
-        // Esperar si aparece un progress/loading
-        try {
-          const progressXpath = '//*[contains(@class, "widget-progress") or contains(@class, "loading") or contains(@role, "progressbar")]';
-          await driver.wait(
-            until.elementLocated(By.xpath(progressXpath)),
-            5000
-          );
-          console.log("⏳ Progress detectado, esperando a que finalice...");
+        // // Esperar si aparece un progress/loading
+        // try {
+        //   const progressXpath = '//*[contains(@class, "widget-progress") or contains(@class, "loading") or contains(@role, "progressbar")]';
+        //   await driver.wait(
+        //     until.elementLocated(By.xpath(progressXpath)),
+        //     5000
+        //   );
+        //   console.log("⏳ Progress detectado, esperando a que finalice...");
 
-          // Esperar a que el progress desaparezca (hasta 60 segundos)
-          await driver.wait(
-            async () => {
-              const elements = await driver.findElements(By.xpath(progressXpath));
-              return elements.length === 0;
-            },
-            60000,
-            "El progress no desapareció después de 60s."
-          );
-          console.log("✅ Progress finalizado correctamente.");
-        } catch {
-          console.log("ℹ️ No se detectó progress, continuando con el flujo.");
-        }
+        //   // Esperar a que el progress desaparezca (hasta 60 segundos)
+        //   await driver.wait(
+        //     async () => {
+        //       const elements = await driver.findElements(By.xpath(progressXpath));
+        //       return elements.length === 0;
+        //     },
+        //     60000,
+        //     "El progress no desapareció después de 60s."
+        //   );
+        //   console.log("✅ Progress finalizado correctamente.");
+        // } catch {
+        //   console.log("ℹ️ No se detectó progress, continuando con el flujo.");
+        // }
 
         await driver.sleep(2000); // Pequeña espera adicional
       } catch (error) {
