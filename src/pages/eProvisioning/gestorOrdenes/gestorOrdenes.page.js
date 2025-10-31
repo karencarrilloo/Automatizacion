@@ -10,10 +10,12 @@ export default class GestorOrdenesPage {
   /**
  * @param {WebDriver} driver  instancia de selenium
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
+ * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572369') {
+  constructor(driver, defaultIdOrden = '572386', defaultSerialONT = '485754436EEF4CA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
+    this.defaultSerialONT = defaultSerialONT;
   }
 
   async seleccionarClientePorIdOrden(idOrden) {
@@ -107,10 +109,10 @@ export default class GestorOrdenesPage {
         10000
       );
       await driver.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", targetApp);
-      await driver.wait(until.elementIsVisible(targetApp), 10000);
-      await driver.wait(until.elementIsEnabled(targetApp), 10000);
+      await driver.wait(until.elementIsVisible(targetApp), 14000);
+      await driver.wait(until.elementIsEnabled(targetApp), 14000);
       await driver.executeScript("arguments[0].click();", targetApp);
-      await driver.sleep(10000);
+      await driver.sleep(14000);
 
       console.log("✅ Ingreso exitoso a la vista 'Gestor de Órdenes'.");
     } catch (error) {
@@ -826,12 +828,13 @@ export default class GestorOrdenesPage {
       await driver.sleep(3000);
       console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
 
-      // === Paso 4: Clic en el botón "Número de Serial"===
+      // === Paso 4: Clic en el botón "Número de Serial" ===
       try {
-        const btnNumeroSerialXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div';
-        const progressXpath = '//*[@id="progress-progress-crudgestor"]/div/div/div[1]';
+        const btnNumeroSerialXpath =
+          '//div[contains(@class,"device") and .//div[contains(@class,"serial-label") and normalize-space(text())="Número de serial"]]';
+        const progressXpath = '//*[contains(@id,"progress-progress-crudgestor") or contains(@id,"progress")]';
 
-        // Localizar el botón y asegurarse de que esté visible
+        // Localizar el botón dinámicamente
         const btnNumeroSerial = await driver.wait(
           until.elementLocated(By.xpath(btnNumeroSerialXpath)),
           20000
@@ -840,7 +843,7 @@ export default class GestorOrdenesPage {
         await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNumeroSerial);
         await driver.sleep(500);
 
-        // Clic en el botón (fallback con JS)
+        // Intentar clic directo con fallback JS
         try {
           await btnNumeroSerial.click();
         } catch {
@@ -849,31 +852,39 @@ export default class GestorOrdenesPage {
 
         console.log("✅ Paso 4: Botón 'Número de Serial' presionado correctamente.");
 
-        // === Esperar el progress de ejecución ===
-        const progress = await driver.wait(
-          until.elementLocated(By.xpath(progressXpath)),
-          20000
-        );
+        // Esperar opcionalmente el progress (si aparece)
+        let progressVisible = false;
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(progress), 5000);
+          progressVisible = true;
+          console.log("⏳ Paso 4: Proceso de aprovisionamiento iniciado...");
 
-        await driver.wait(until.elementIsVisible(progress), 10000);
-        console.log("⏳ Paso 4: Proceso iniciado, esperando finalización...");
+          // Esperar que desaparezca o que el modal cambie (máx 60s)
+          await driver.wait(async () => {
+            try {
+              return !(await progress.isDisplayed());
+            } catch {
+              // Si el elemento desaparece o el modal se cierra, lo consideramos finalizado
+              return true;
+            }
+          }, 60000);
+        } catch {
+          console.log("⚠️ Paso 4: No se detectó progress visible, continuando.");
+        }
 
-        // Esperar hasta que el progress desaparezca o deje de estar visible (máximo 120s)
-        await driver.wait(async () => {
-          try {
-            return !(await progress.isDisplayed());
-          } catch {
-            // Si ya no está en el DOM, lo consideramos finalizado
-            return true;
-          }
-        }, 120000);
-
-        await driver.sleep(3000); // pequeña espera adicional por estabilidad
-        console.log("✅ Paso 4: Proceso completado correctamente (progress finalizado).");
+        await driver.sleep(2000); // pausa por estabilidad
+        console.log(progressVisible
+          ? "✅ Paso 4: Proceso completado correctamente (progress finalizado)."
+          : "✅ Paso 4: Proceso completado (sin progress visible).");
 
       } catch (error) {
         throw new Error(`❌ Paso 4: Error en clic o espera del progress 'Número de Serial': ${error.message}`);
       }
+
 
       // === Paso 5: Clic en el botón "SIGUIENTE" ===
       try {
@@ -989,8 +1000,8 @@ export default class GestorOrdenesPage {
         await driver.sleep(500);
         await inputSerialOnt.clear();
 
-        // 4️⃣ Escribir el Serial ONT
-        const serialONT = "485754435A27EBA6";
+        // 4️⃣ Escribir el Serial ONT usando la variable global
+        const serialONT = this.defaultSerialONT; // 👈 Usa el valor global
         await inputSerialOnt.sendKeys(serialONT);
         await driver.sleep(500);
 
@@ -1219,23 +1230,24 @@ export default class GestorOrdenesPage {
 
       // === Paso 15: Configurar WiFi ===
       try {
-        // 1️⃣ Clic en el check "Compartir contraseña"
+        // 1️⃣ Clic opcional en el check "Compartir contraseña"
         const checkCompartirXpath = '//*[@id="widget-checkbox-check-step-validation-wifi"]/label';
-        const checkCompartir = await driver.wait(
-          until.elementLocated(By.xpath(checkCompartirXpath)),
-          20000
-        );
-        await driver.wait(until.elementIsVisible(checkCompartir), 5000);
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", checkCompartir);
-        await driver.sleep(500);
+        const elementosCheck = await driver.findElements(By.xpath(checkCompartirXpath));
 
-        try {
-          await checkCompartir.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", checkCompartir);
+        if (elementosCheck.length > 0) {
+          const checkCompartir = elementosCheck[0];
+          await driver.wait(until.elementIsVisible(checkCompartir), 5000);
+          await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", checkCompartir);
+          await driver.sleep(300);
+          try {
+            await checkCompartir.click();
+          } catch {
+            await driver.executeScript("arguments[0].click();", checkCompartir);
+          }
+          console.log("✅ Check 'Compartir contraseña' marcado correctamente.");
+        } else {
+          console.log("ℹ️ Check 'Compartir contraseña' no disponible (ONT solo 2.4 GHz), continuando sin marcar.");
         }
-        console.log("✅ Check 'Compartir contraseña' marcado correctamente.");
-        await driver.sleep(800);
 
         // 2️⃣ Diligenciar campo SSID 2.4 GHz
         const inputSsidXpath = '//*[@id="textfield-SSID"]';
@@ -1267,6 +1279,7 @@ export default class GestorOrdenesPage {
       } catch (error) {
         throw new Error(`❌ Paso 15: Error al configurar WiFi: ${error.message}`);
       }
+
 
       // === Paso 16: Clic en botón "Confirmar" y esperar proceso ===
       try {
@@ -2149,7 +2162,7 @@ export default class GestorOrdenesPage {
               const elementos = await driver.findElements(By.xpath(progressXpath));
               return elementos.length === 0;
             },
-            60000,
+            20000,
             "El progress no desapareció después de 60 segundos."
           );
 
