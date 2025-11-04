@@ -18,7 +18,7 @@ export default class GestionActivosPage {
   //  ====================================
 
 
-  async ingresarVistaGestionActivos(caseName = 'CP_GESTION_ACTIVOS_001') {
+  async ingresarVistaGestionActivos(caseName = 'CP_GESTACT_001') {
     const driver = this.driver;
 
     try {
@@ -57,7 +57,7 @@ export default class GestionActivosPage {
 
 
     } catch (error) {
-      console.error(`❌ CP_GESTION_ACTIVOS_001 Error: ${error.message}`);
+      console.error(`❌ CP_GESTACT_001 Error: ${error.message}`);
       throw error;
     }
     //  ====================================

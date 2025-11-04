@@ -11,7 +11,12 @@ export default class GestionCambioNapPuertoPage {
     this.driver = driver;
   }
 
-  async ejecutarCambioNapPuerto() {
+  //  ====================================
+  //  CP_GESCAMNAPPUER_001 – Acceso al la vista Gestión de Activos
+  //  pasos 3
+  //  ====================================
+
+  async ingresarVistaGestionCambioNapPuerto(caseName = 'CP_GESCAMNAPPUER_001') {
     const driver = this.driver;
 
     try {
@@ -46,63 +51,65 @@ export default class GestionCambioNapPuertoPage {
       await driver.executeScript("arguments[0].click();", cambioNapBtn);
       await driver.sleep(5000);
 
-      // === Paso 4: Clic en el botón picklist (Seleccionar NAP) ===
+    } catch (error) {
+      console.error(`❌ CP_GESCAMNAPPUER_001 Error: ${error.message}`);
+      throw error;
+    }
+  }
+
+  //  ==================================== 
+  //  CP_GESCAMNAPPUER_002 – Seleccionar NAP
+  //  pasos x
+  //  ====================================
+
+  //  Paso 1: Clic en el botón Picklist
+  async SeleccionarNap(caseName = 'CP_GESCAMNAPPUER_002') {
+    const driver = this.driver;
+
+    try {
+      const btnPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]/div[1]/span/button';
+      const opcionesPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]//ul[contains(@class,"ui-menu") or contains(@class,"dropdown-menu")]';
+
+      // 1️⃣ Esperar a que el botón esté presente
+      const btnPicklist = await driver.wait(
+        until.elementLocated(By.xpath(btnPicklistXpath)),
+        10000
+      );
+
+      // 2️⃣ Esperar visibilidad y que esté habilitado
+      await driver.wait(until.elementIsVisible(btnPicklist), 5000);
+      await driver.wait(until.elementIsEnabled(btnPicklist), 5000);
+
+      // 3️⃣ Hacer scroll hasta el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPicklist);
+      await driver.sleep(300);
+
+      // 4️⃣ Intentar clic normal y fallback con JS
       try {
-        const btnPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]/div[1]/span/button';
-        const opcionesPicklistXpath = '//*[@id="widget-picklist-picklist-nap"]//ul[contains(@class,"ui-menu") or contains(@class,"dropdown-menu")]';
-
-        // 1. Esperar a que el botón esté presente
-        const btnPicklist = await driver.wait(
-          until.elementLocated(By.xpath(btnPicklistXpath)),
-          10000
-        );
-
-        // 2. Asegurarnos que sea visible / enabled
-        await driver.wait(until.elementIsVisible(btnPicklist), 5000);
-        await driver.wait(until.elementIsEnabled(btnPicklist), 5000);
-
-        // 3. Scroll y pequeña pausa
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnPicklist);
-        await driver.sleep(300);
-
-        // 4. Intentar clic normal y fallback a JS si hay interceptación
-        try {
-          await btnPicklist.click();
-        } catch (e) {
-          // fallback: clic via JS (más fiable cuando hay overlays)
-          await driver.executeScript("arguments[0].click();", btnPicklist);
-        }
-
-        // 5. Espera corta para que el picklist se renderice
-        await driver.sleep(2000);
-
-        // 6. (Opcional / recomendado) esperar a que se desplieguen las opciones
-        try {
-          const opciones = await driver.wait(
-            until.elementLocated(By.xpath(opcionesPicklistXpath)),
-            8000
-          );
-          await driver.wait(until.elementIsVisible(opciones), 5000);
-          console.log("✅ Paso 4: Picklist abierto y opciones visibles.");
-        } catch {
-          console.log("⚠️ Paso 4: Click realizado pero no se detectó el contenedor de opciones (ajustar xpath de opciones si es necesario).");
-        }
-
-      } catch (error) {
-        throw new Error(`❌ Paso 4: No se pudo hacer clic en el picklist: ${error.message}`);
+        await btnPicklist.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnPicklist);
       }
 
+      console.log("✅ Paso 1: Botón 'Seleccionar NAP' presionado correctamente.");
+      await driver.sleep(2000);
 
-      // Aquí continuarías con pasos adicionales si aplican
+      // 5️⃣ Esperar que se renderice el menú desplegable del Picklist
+      try {
+        const opciones = await driver.wait(
+          until.elementLocated(By.xpath(opcionesPicklistXpath)),
+          8000
+        );
+        await driver.wait(until.elementIsVisible(opciones), 5000);
+        console.log("✅ Paso 1: Picklist abierto y opciones visibles.");
+      } catch {
+        console.log("⚠️ Paso 1: Click realizado pero no se detectó el contenedor de opciones (verificar Xpath).");
+      }
 
     } catch (error) {
-      console.error("❌ Error en gestión cambio de NAP y puerto:", error.message);
-      const screenshot = await driver.takeScreenshot();
-      const carpetaErrores = path.resolve(__dirname, '../errores');
-      if (!fs.existsSync(carpetaErrores)) fs.mkdirSync(carpetaErrores);
-      const filePath = path.join(carpetaErrores, `error_cambioNap_${Date.now()}.png`);
-      fs.writeFileSync(filePath, screenshot, 'base64');
-      throw error;
+      // Manejo de error con captura si existe método auxiliar
+      if (this._capturarError) await this._capturarError(error, caseName);
+      throw new Error(`❌ Paso 1: No se pudo hacer clic en el picklist de NAP: ${error.message}`);
     }
   }
 }
