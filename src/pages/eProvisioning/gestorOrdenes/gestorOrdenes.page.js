@@ -12,7 +12,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572390', defaultSerialONT = '485754436EEF4CA5') {
+  constructor(driver, defaultIdOrden = '572405', defaultSerialONT = '485754436EEF4CA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
@@ -112,7 +112,7 @@ export default class GestorOrdenesPage {
       await driver.wait(until.elementIsVisible(targetApp), 14000);
       await driver.wait(until.elementIsEnabled(targetApp), 14000);
       await driver.executeScript("arguments[0].click();", targetApp);
-      await driver.sleep(14000);
+      await driver.sleep(20000);
 
       console.log("✅ Ingreso exitoso a la vista 'Gestor de Órdenes'.");
     } catch (error) {
