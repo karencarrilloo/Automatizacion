@@ -2386,30 +2386,32 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Revisar sesiones': ${error.message}`);
     }
 
-    // === Paso 4: Clic en el botón "Refrescar" dentro del modal "Revisar sesiones" ===
+    // === Paso 4: Clic en el botón "Refrescar" dentro del modal 'Revisar sesiones' ===
     try {
-      // 1️⃣ Localizar el modal principal de "Revisar sesiones"
+      // 1️⃣ Localizar el modal de manera dinámica (ID cambia en cada ejecución)
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
       const modalRevisarSesiones = await driver.wait(
-        until.elementLocated(
-          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
-        ),
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
       await driver.wait(until.elementIsVisible(modalRevisarSesiones), 8000);
 
-      // 2️⃣ Buscar el botón de refrescar dentro del modal, con varios posibles niveles de jerarquía
+      // 2️⃣ Intentar localizar el botón "Refrescar" por varias rutas posibles
       const posiblesRutas = [
-        './/*[@id="crud-refresh-btn"]/i',
         './/*[@id="crud-refresh-btn"]',
-        './/*[@id="crud-sessions-order"]/div/div[1]/div/div[2]',
-        './/*[@id="crud-sessions-order"]/div/div[1]/div/div[2]/i'
+        './/*[@id="crud-refresh-btn"]/i',
+        './/*[@id="crud-sessions-order"]//div[@id="crud-refresh-btn"]',
+        './/*[@id="crud-sessions-order"]//i[contains(@class,"glyphicon-refresh")]'
       ];
 
       let btnRefrescar = null;
       for (const ruta of posiblesRutas) {
         try {
-          btnRefrescar = await modalRevisarSesiones.findElement(By.xpath(ruta));
-          if (btnRefrescar) break;
+          const elemento = await modalRevisarSesiones.findElement(By.xpath(ruta));
+          if (elemento) {
+            btnRefrescar = elemento;
+            break;
+          }
         } catch {
           continue;
         }
@@ -2418,8 +2420,9 @@ export default class GestorOrdenesPage {
       if (!btnRefrescar)
         throw new Error("No se encontró el botón 'Refrescar' dentro del modal 'Revisar sesiones'.");
 
-      // 3️⃣ Esperar visibilidad y hacer clic
+      // 3️⃣ Esperar visibilidad y clic
       await driver.wait(until.elementIsVisible(btnRefrescar), 6000);
+      await driver.wait(until.elementIsEnabled(btnRefrescar), 6000);
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescar);
       await driver.sleep(400);
 
@@ -2429,9 +2432,8 @@ export default class GestorOrdenesPage {
         await driver.executeScript("arguments[0].click();", btnRefrescar);
       }
 
-      // 4️⃣ Espera breve por recarga de datos
+      // 4️⃣ Espera breve para permitir refrescar los datos
       await driver.sleep(4000);
-
       console.log("✅ Paso 4: Botón 'Refrescar' dentro del modal 'Revisar sesiones' presionado correctamente.");
 
     } catch (error) {
@@ -2439,6 +2441,7 @@ export default class GestorOrdenesPage {
         `❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal 'Revisar sesiones': ${error.message}`
       );
     }
+
 
     // === Paso 5: Clic en el botón "Reiniciar orden" ===
     try {

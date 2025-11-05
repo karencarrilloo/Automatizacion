@@ -73,7 +73,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_006: Ver información técnica asociada', async () => {
+  it('CP_GESORD_006: Ver información técnica asociada', async () => {
     await gestorOrdenesPage.verInfomacionTecnicaAsociada();
     expect(true).to.be.true;
   });
@@ -108,7 +108,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_009: Revisar sesiones', async () => {
+  it.only('CP_GESORD_009: Revisar sesiones', async () => {
     await gestorOrdenesPage.revisarSesiones();
     expect(true).to.be.true;
   });
