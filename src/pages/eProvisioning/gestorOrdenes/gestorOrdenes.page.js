@@ -571,59 +571,57 @@ export default class GestorOrdenesPage {
 
     // === Paso 4: Clic en la pestaña "Bitácora" ===
     try {
-      const tabBitacoraXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/ul/li[2]';
+      // 1️⃣ Buscar el modal dinámico activo
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
+      const modal = await driver.wait(until.elementLocated(By.xpath(modalXpath)), 15000);
+      await driver.wait(until.elementIsVisible(modal), 8000);
 
-      // Esperar que la pestaña exista en el DOM
-      const tabBitacora = await driver.wait(
-        until.elementLocated(By.xpath(tabBitacoraXpath)),
-        15000
-      );
-
-      // Esperar que sea visible y habilitada
+      // 2️⃣ Buscar la pestaña "Bitácora" dentro del modal por su clase fija
+      const tabBitacora = await modal.findElement(By.css('li.nav-containerBinnacle'));
       await driver.wait(until.elementIsVisible(tabBitacora), 8000);
       await driver.wait(until.elementIsEnabled(tabBitacora), 8000);
 
-      // Hacer scroll al elemento
+      // 3️⃣ Hacer scroll al elemento
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", tabBitacora);
       await driver.sleep(400);
 
-      // Intentar clic normal, y si falla usar clic por JavaScript
+      // 4️⃣ Clic normal o fallback por JS
       try {
         await tabBitacora.click();
       } catch {
         await driver.executeScript("arguments[0].click();", tabBitacora);
       }
 
-      await driver.sleep(3000); // breve espera para que se cargue el contenido de la pestaña
+      await driver.sleep(3000);
       console.log("✅ Paso 4: Pestaña 'Bitácora' clickeada correctamente.");
 
     } catch (error) {
       throw new Error(`❌ Paso 4: No se pudo dar clic en la pestaña 'Bitácora': ${error.message}`);
     }
 
+
     // === Paso 5: Clic en el botón "Actualizar" dentro del modal 'Registro de la orden' ===
     try {
-      // 1️⃣ Localizar el modal principal de "Registro de la orden"
+      // 1️⃣ Localizar el modal de forma dinámica (sin depender del ID numérico)
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
       const modalRegistroOrden = await driver.wait(
-        until.elementLocated(
-          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
-        ),
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
       await driver.wait(until.elementIsVisible(modalRegistroOrden), 10000);
 
-      // 2️⃣ Localizar el contenedor del CRUD dentro del modal
+      // 2️⃣ Buscar el contenedor del CRUD dentro del modal
       const contenedorCrud = await modalRegistroOrden.findElement(
-        By.xpath('.//*[@id="crud-crud-binnacle"]/div/div[1]')
+        By.xpath('.//div[@id="crud-crud-binnacle"]')
       );
       await driver.wait(until.elementIsVisible(contenedorCrud), 5000);
 
-      // 3️⃣ Localizar el botón "Refrescar" dentro del contenedor
-      const btnActualizar = await contenedorCrud.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
+      // 3️⃣ Buscar el botón "Refrescar" (Actualizar) dentro del contenedor
+      const btnActualizar = await contenedorCrud.findElement(By.id('crud-refresh-btn'));
       await driver.wait(until.elementIsVisible(btnActualizar), 5000);
       await driver.wait(until.elementIsEnabled(btnActualizar), 5000);
 
-      // 4️⃣ Scroll hacia el botón y clic (con fallback a JS)
+      // 4️⃣ Scroll hacia el botón y clic (con fallback JS si falla el clic directo)
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnActualizar);
       await driver.sleep(400);
       try {
@@ -633,7 +631,7 @@ export default class GestorOrdenesPage {
       }
 
       console.log("✅ Paso 5: Botón 'Actualizar' dentro del modal 'Registro de la orden' presionado correctamente.");
-      await driver.sleep(4000); // Espera de cortesía mientras recarga la tabla
+      await driver.sleep(4000); // Espera mientras recarga la tabla
 
     } catch (error) {
       throw new Error(
@@ -643,44 +641,45 @@ export default class GestorOrdenesPage {
 
     // === Paso 6: Clic en el botón "Cerrar" dentro del modal "Registro de la orden" ===
     try {
-      // 1️⃣ Localizar el modal principal (Registro de la orden)
+      // 1️⃣ Localizar el modal de manera dinámica
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
       const modalRegistroOrden = await driver.wait(
-        until.elementLocated(
-          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
-        ),
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
       await driver.wait(until.elementIsVisible(modalRegistroOrden), 8000);
 
-      // 2️⃣ Localizar el botón "Cerrar"
+      // 2️⃣ Localizar el botón "Cerrar" dentro del modal
       const btnCerrar = await modalRegistroOrden.findElement(
-        By.xpath('.//*[@id="widget-button-cancel-confirm-selected"]/div')
+        By.xpath('.//div[@id="widget-button-cancel-confirm-selected"]/div')
       );
       await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+      await driver.wait(until.elementIsEnabled(btnCerrar), 5000);
 
       // 3️⃣ Scroll y clic (con fallback por seguridad)
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
       await driver.sleep(400);
       try {
         await btnCerrar.click();
-        await driver.sleep(2000);
       } catch {
         await driver.executeScript("arguments[0].click();", btnCerrar);
       }
 
-      // 4️⃣ Esperar a que el modal se oculte o cierre completamente
+      // 4️⃣ Esperar a que el modal se cierre completamente
       await driver.wait(async () => {
-        const visible = await modalRegistroOrden.isDisplayed().catch(() => false);
-        return !visible;
+        try {
+          return !(await modalRegistroOrden.isDisplayed());
+        } catch {
+          return true; // si el modal ya no existe en el DOM, se considera cerrado
+        }
       }, 10000);
 
       console.log("✅ Paso 6: Modal 'Registro de la orden' cerrado correctamente.");
 
     } catch (error) {
-      throw new Error(
-        `❌ Paso 6: No se pudo cerrar el modal 'Registro de la orden': ${error.message}`
-      );
+      throw new Error(`❌ Paso 6: No se pudo cerrar el modal 'Registro de la orden': ${error.message}`);
     }
+
 
 
   } catch(error) {
