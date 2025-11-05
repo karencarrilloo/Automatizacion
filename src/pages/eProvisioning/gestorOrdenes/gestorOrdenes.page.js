@@ -262,61 +262,73 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'RawData': ${error.message}`);
     }
 
-    // === Paso 4: Hacer scroll hacia abajo dentro del contenedor RawData ===
+    // === Paso 4: Hacer scroll hacia abajo dentro del contenedor RawData (xterm.js) ===
     try {
-      const contenedorScrollableXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[2]/div[1]';
-
-      // 1️⃣ Esperar a que el contenedor exista y sea visible
-      const contenedorScrollable = await driver.wait(
-        until.elementLocated(By.xpath(contenedorScrollableXpath)),
+      // 1️⃣ Buscar el modal dinámico del Gestor de Órdenes
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
+      const modal = await driver.wait(
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
-      await driver.wait(until.elementIsVisible(contenedorScrollable), 8000);
+      await driver.wait(until.elementIsVisible(modal), 8000);
 
-      // 2️⃣ Realizar scroll progresivo hacia abajo dentro del elemento
+      // 2️⃣ Buscar el contenedor visible de la terminal (xterm viewport)
+      const viewport = await driver.wait(
+        until.elementLocated(By.css('.xterm-viewport')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(viewport), 5000);
+
+      // 3️⃣ Hacer scroll real dentro del viewport de xterm
       await driver.executeScript(`
-    const element = arguments[0];
-    element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
-  `, contenedorScrollable);
+    const el = arguments[0];
+    el.scrollTop = el.scrollHeight;
+  `, viewport);
 
-      // 3️⃣ Pausa para asegurar que el scroll se complete
-      await driver.sleep(2000);
+      // 4️⃣ Pausa para permitir el redibujado del canvas
+      await driver.sleep(1500);
 
-      console.log("✅ Paso 4: Scroll hacia abajo ejecutado correctamente en el contenedor RawData.");
+      console.log("✅ Paso 4: Scroll hacia abajo ejecutado correctamente en el contenedor RawData (xterm).");
     } catch (error) {
-      throw new Error(`❌ Paso 4: No se pudo realizar scroll hacia abajo en el contenedor RawData: ${error.message}`);
+      throw new Error(`❌ Paso 4: No se pudo realizar scroll en RawData (xterm.js): ${error.message}`);
     }
+
 
     // === Paso 5: Clic en el botón "Copiar" ===
     try {
-      const btnCopiarXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[1]';
-      const spanCopiarXpath = '//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div[2]/div[1]/span';
-
-      // 1️⃣ Esperar a que el botón (div) esté presente y visible
-      const btnCopiar = await driver.wait(
-        until.elementLocated(By.xpath(btnCopiarXpath)),
+      // 1️⃣ Localizar el modal dinámicamente
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
+      const modal = await driver.wait(
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
-      await driver.wait(until.elementIsVisible(btnCopiar), 8000);
+      await driver.wait(until.elementIsVisible(modal), 8000);
 
-      // 2️⃣ Scroll al botón
-      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCopiar);
+      // 2️⃣ Buscar dentro del modal el contenedor del icono de copiar
+      const btnCopiar = await driver.wait(
+        until.elementLocated(By.css('.container-icon-duplicate')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnCopiar), 5000);
+
+      // 3️⃣ Scroll hasta el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnCopiar);
       await driver.sleep(500);
 
-      // 3️⃣ Intentar clic normal, con fallback a JS
+      // 4️⃣ Intentar clic directo o fallback JS
       try {
         await btnCopiar.click();
       } catch {
-        const spanCopiar = await driver.findElement(By.xpath(spanCopiarXpath));
-        await driver.executeScript("arguments[0].click();", spanCopiar);
+        const iconoCopiar = await btnCopiar.findElement(By.css('span.glyphicon-duplicate'));
+        await driver.executeScript("arguments[0].click();", iconoCopiar);
       }
 
       await driver.sleep(1500);
-
       console.log("✅ Paso 5: Botón 'Copiar' presionado correctamente.");
     } catch (error) {
       throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Copiar': ${error.message}`);
     }
+
 
     // === Paso 6: Clic en el botón "Cerrar" ===
     try {
