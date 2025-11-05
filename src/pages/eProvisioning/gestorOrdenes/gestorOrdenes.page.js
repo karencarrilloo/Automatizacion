@@ -439,18 +439,20 @@ export default class GestorOrdenesPage {
 
     // === Paso 4: Clic en el botón "Refrescar" dentro del modal Adjuntos ===
     try {
-      // Localizar el modal de Adjuntos
+      // 1️⃣ Localizar dinámicamente el modal activo de Adjuntos
+      const modalAdjuntosXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
       const modalAdjuntos = await driver.wait(
-        until.elementLocated(By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')),
+        until.elementLocated(By.xpath(modalAdjuntosXpath)),
         15000
       );
-      await driver.wait(until.elementIsVisible(modalAdjuntos), 10000);
+      await driver.wait(until.elementIsVisible(modalAdjuntos), 8000);
 
-      // Buscar el botón "Refrescar" dentro del modal
-      const btnRefrescarModal = await modalAdjuntos.findElement(By.xpath('.//*[@id="crud-refresh-btn"]'));
-      await driver.wait(until.elementIsVisible(btnRefrescarModal), 10000);
+      // 2️⃣ Buscar el botón de refrescar por su ID estable dentro del modal
+      const btnRefrescarModal = await modalAdjuntos.findElement(By.id('crud-refresh-btn'));
+      await driver.wait(until.elementIsVisible(btnRefrescarModal), 8000);
+      await driver.wait(until.elementIsEnabled(btnRefrescarModal), 8000);
 
-      // Hacer scroll hacia el botón y hacer clic
+      // 3️⃣ Scroll y clic
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnRefrescarModal);
       await driver.sleep(500);
 
@@ -466,6 +468,7 @@ export default class GestorOrdenesPage {
     } catch (error) {
       throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Refrescar' dentro del modal de Adjuntos: ${error.message}`);
     }
+
 
     // === Paso 5: Clic en el botón "Cerrar" dentro del modal Adjuntos ===
     try {

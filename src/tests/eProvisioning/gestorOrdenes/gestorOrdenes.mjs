@@ -58,12 +58,12 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_003 :RawData', async () => {
+  it('CP_GESORD_003 :RawData', async () => {
     await gestorOrdenesPage.rawData();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_004: Adjuntos', async () => {
+  it.only('CP_GESORD_004: Adjuntos', async () => {
     await gestorOrdenesPage.Adjuntos();
     expect(true).to.be.true;
   });
