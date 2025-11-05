@@ -68,12 +68,12 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_005: Registro de la orden', async () => {
+  it('CP_GESORD_005: Registro de la orden', async () => {
     await gestorOrdenesPage.registroOrden();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_006: Ver información técnica asociada', async () => {
+  it.only('CP_GESORD_006: Ver información técnica asociada', async () => {
     await gestorOrdenesPage.verInfomacionTecnicaAsociada();
     expect(true).to.be.true;
   });

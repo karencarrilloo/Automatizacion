@@ -748,22 +748,22 @@ export default class GestorOrdenesPage {
 
     // === Paso 4: Clic en el botón "Cerrar" dentro del modal "Ver información técnica asociada" ===
     try {
-      // 1️⃣ Localizar el modal activo de "Ver información técnica"
+      // 1️⃣ Localizar el modal de manera dinámica (sin depender del número en el ID)
+      const modalXpath = '//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]';
       const modalInfoTecnica = await driver.wait(
-        until.elementLocated(
-          By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div')
-        ),
+        until.elementLocated(By.xpath(modalXpath)),
         15000
       );
       await driver.wait(until.elementIsVisible(modalInfoTecnica), 8000);
 
       // 2️⃣ Localizar el botón "Cerrar" dentro del modal
       const btnCerrar = await modalInfoTecnica.findElement(
-        By.xpath('.//*[@id="widget-button-cancel-confirm-selected"]/div')
+        By.xpath('.//div[@id="widget-button-cancel-confirm-selected"]/div')
       );
       await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+      await driver.wait(until.elementIsEnabled(btnCerrar), 5000);
 
-      // 3️⃣ Hacer scroll y clic (con fallback JS)
+      // 3️⃣ Scroll y clic (con fallback JS si hay overlays)
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnCerrar);
       await driver.sleep(400);
       try {
@@ -772,19 +772,21 @@ export default class GestorOrdenesPage {
         await driver.executeScript("arguments[0].click();", btnCerrar);
       }
 
-      // 4️⃣ Esperar que el modal se oculte
+      // 4️⃣ Esperar que el modal se cierre completamente
       await driver.wait(async () => {
-        const visible = await modalInfoTecnica.isDisplayed().catch(() => false);
-        return !visible;
+        try {
+          return !(await modalInfoTecnica.isDisplayed());
+        } catch {
+          return true; // el modal ya no existe → cerrado
+        }
       }, 10000);
 
       console.log("✅ Paso 4: Modal 'Ver información técnica asociada' cerrado correctamente.");
 
     } catch (error) {
-      throw new Error(
-        `❌ Paso 4: No se pudo cerrar el modal 'Ver información técnica asociada': ${error.message}`
-      );
+      throw new Error(`❌ Paso 4: No se pudo cerrar el modal 'Ver información técnica asociada': ${error.message}`);
     }
+
 
 
   } catch(error) {
