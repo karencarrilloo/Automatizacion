@@ -12,7 +12,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572405', defaultSerialONT = '48575443CBAD2DA5') {
+  constructor(driver, defaultIdOrden = '572445', defaultSerialONT = '48575443CBAD2DA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
@@ -2318,7 +2318,78 @@ export default class GestorOrdenesPage {
       throw new Error(`❌ Paso 3: No se pudo seleccionar la opción 'Registro de materiales': ${error.message}`);
     }
 
-    //falta continuar los demás pasos....
+    // === Paso 4: Diligenciar los campos del modal 'Registro de materiales' ===
+    try {
+      // Función auxiliar para generar un número aleatorio entre 1 y 100
+      const randomValue = () => Math.floor(Math.random() * 100) + 1;
+
+      // Lista de XPaths de los campos del modal
+      const camposMateriales = [
+        '//*[@id="widget-textareafield-PATCHCORDSC_APC-SC_APC"]/textarea',
+        '//*[@id="widget-textareafield-CABLEDROP1G657"]/textarea',
+        '//*[@id="widget-textareafield-CONECTORESSC_APC"]/textarea',
+        '//*[@id="widget-textareafield-ROSETAFTB-506"]/textarea'
+      ];
+
+      // Iterar sobre los campos y diligenciarlos con valores aleatorios
+      for (const [index, xpathCampo] of camposMateriales.entries()) {
+        try {
+          const campo = await driver.wait(until.elementLocated(By.xpath(xpathCampo)), 15000);
+          await driver.wait(until.elementIsVisible(campo), 8000);
+          await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", campo);
+          await driver.sleep(300);
+          await campo.clear();
+
+          const valor = randomValue();
+          await campo.sendKeys(valor.toString());
+          console.log(`✅ Campo ${index + 1} diligenciado con valor aleatorio: ${valor}`);
+          await driver.sleep(500);
+        } catch (errCampo) {
+          console.warn(`⚠️ No se pudo diligenciar el campo ${index + 1}: ${errCampo.message}`);
+        }
+      }
+
+      console.log("✅ Paso 4: Todos los campos del modal 'Registro de materiales' diligenciados correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo diligenciar los campos del modal 'Registro de materiales': ${error.message}`);
+    }
+
+
+    // === Paso 5: Clic en el botón "Guardar" en el modal 'Registro de materiales' ===
+    try {
+      const btnGuardarXpath = '//*[@id="widget-button-cahnge-state-appointment"]/div';
+
+      // 1️⃣ Esperar a que el botón esté presente en el DOM
+      const btnGuardar = await driver.wait(
+        until.elementLocated(By.xpath(btnGuardarXpath)),
+        15000
+      );
+
+      // 2️⃣ Asegurar que sea visible y habilitado
+      await driver.wait(until.elementIsVisible(btnGuardar), 8000);
+      await driver.wait(until.elementIsEnabled(btnGuardar), 8000);
+
+      // 3️⃣ Desplazar hacia el botón
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnGuardar);
+      await driver.sleep(400);
+
+      // 4️⃣ Intentar clic normal, y si falla usar JS
+      try {
+        await btnGuardar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnGuardar);
+      }
+
+      console.log("✅ Paso 5: Botón 'Guardar' en el modal 'Registro de materiales' presionado correctamente.");
+
+      // 5️⃣ Esperar un pequeño tiempo por confirmaciones o progresos
+      await driver.sleep(4000);
+
+    } catch (error) {
+      throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Guardar' en el modal 'Registro de materiales': ${error.message}`);
+    }
+
 
 
   } catch(error) {

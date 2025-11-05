@@ -94,7 +94,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
   });
 
   it('CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
-    await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**PROBAR NUEVENTE EL PASO 6 BOTON SIGUIENTE DESPUES DEL AJUSTE*/
+    await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**PROBAR NUEVENTE EL PASO 6 BOTON SIGUIENTE DESPUES DEL AJUSTE**/
     expect(true).to.be.true;
   });
 
@@ -103,12 +103,12 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_008: Registro de materiales', async () => {
-    await gestorOrdenesPage.registroMateriales();
+  it.only('CP_GESORD_008: Registro de materiales', async () => {
+    await gestorOrdenesPage.registroMateriales(); //** SE PRUEBA CON UNA ORDEN DE MANTENIMIENTO**/
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_009: Revisar sesiones', async () => {
+  it('CP_GESORD_009: Revisar sesiones', async () => {
     await gestorOrdenesPage.revisarSesiones();
     expect(true).to.be.true;
   });
