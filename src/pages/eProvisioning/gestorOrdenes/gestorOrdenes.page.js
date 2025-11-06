@@ -2,6 +2,7 @@ import { By, until } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { testData } from "../../../config/testData.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,7 +13,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572425', defaultSerialONT = '48575443CBAD2DA5') {
+  constructor(driver,defaultIdOrden = testData.gestorOrdenes.defaultIdOrden,defaultSerialONT = testData.gestorOrdenes.defaultSerialONT)  {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
