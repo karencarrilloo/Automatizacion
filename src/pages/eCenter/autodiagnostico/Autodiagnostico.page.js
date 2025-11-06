@@ -3,24 +3,16 @@ import { By, until } from 'selenium-webdriver';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { testData } from "../../../config/testData.mjs";
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
 export default class AutodiagnosticoPage {
-  constructor(driver) {
+  constructor(driver, defaultIdDeal = testData.autodiagnostico.defaultIdDeal) {
     this.driver = driver;
-  }
-
-  // === Utilidad común para capturar pantallas de error ===
-  async screenshotError(prefix) {
-    const screenshot = await this.driver.takeScreenshot();
-    const folder = path.resolve(__dirname, '../../../../errors/eCenter/autodiagnostico');
-    fs.mkdirSync(folder, { recursive: true });
-    const file = path.join(folder, `${prefix}_${Date.now()}.png`);
-    fs.writeFileSync(file, screenshot, 'base64');
-    return file;
+    this.defaultIdDeal = defaultIdDeal;
   }
 
   // =======================
@@ -65,7 +57,7 @@ export default class AutodiagnosticoPage {
   // CP_AUTO_002: Consulta del cliente por ID DEAL
   // Pasos 3
   // =======================
-  async consultarClientePorID(idDeal = '28007172679') {
+  async consultarClientePorID(idDeal = testData.autodiagnostico.defaultIdDeal) {
     const d = this.driver;
     try {
       // Paso 1: clic en botón ID DEAL
