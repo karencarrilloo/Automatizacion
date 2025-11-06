@@ -65,7 +65,7 @@ export default class AutodiagnosticoPage {
   // CP_AUTO_002: Consulta del cliente por ID DEAL
   // Pasos 3
   // =======================
-  async consultarClientePorID(idDeal = '28006582524') {
+  async consultarClientePorID(idDeal = '28007172679') {
     const d = this.driver;
     try {
       // Paso 1: clic en botón ID DEAL

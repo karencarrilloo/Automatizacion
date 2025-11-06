@@ -27,13 +27,13 @@ describe('Pruebas de Autodiagnóstico', function () {
     await driver.quit();
   });
 
-  it('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
+  it.only('CP_AUTO_001: Ingreso a la vista Autodiagnóstico', async () => {
     await autodiagnosticoPage.ingresarVistaAutodiagnostico();
  expect(true).to.be.true;
   });
 
-  it('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
-    await autodiagnosticoPage.consultarClientePorID('28006582524');
+  it.only('CP_AUTO_002: Consulta de cliente por ID DEAL', async () => {
+    await autodiagnosticoPage.consultarClientePorID(); // ** CREAR VARIABLE GLOBAL COMO EN GESTOR DE ORDENES **//
  expect(true).to.be.true;
   });
 
@@ -48,7 +48,7 @@ describe('Pruebas de Autodiagnóstico', function () {
  expect(true).to.be.true;
   });
 
-  it("CP_AUTO_005: Creación de órdenes", async () => {
+  it.only("CP_AUTO_005: Creación de órdenes", async () => {
     await autodiagnosticoPage.crearOrdenes();
     expect(true).to.be.true; 
   });

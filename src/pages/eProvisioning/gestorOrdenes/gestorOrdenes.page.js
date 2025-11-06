@@ -12,7 +12,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572448', defaultSerialONT = '48575443CBAD2DA5') {
+  constructor(driver, defaultIdOrden = '572425', defaultSerialONT = '48575443CBAD2DA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
