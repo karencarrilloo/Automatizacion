@@ -12,7 +12,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver, defaultIdOrden = '572445', defaultSerialONT = '48575443CBAD2DA5') {
+  constructor(driver, defaultIdOrden = '572448', defaultSerialONT = '48575443CBAD2DA5') {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
@@ -2087,6 +2087,7 @@ export default class GestorOrdenesPage {
 
         try {
           await botonSiguienteOnt.click();
+          await driver.sleep(10000);
         } catch {
           await driver.executeScript("arguments[0].click();", botonSiguienteOnt);
         }

@@ -94,17 +94,17 @@ describe('Pruebas de Gestor de Órdenes', function () {
   });
 
   it('CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
-    await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**PROBAR NUEVENTE EL PASO 6 BOTON SIGUIENTE DESPUES DEL AJUSTE**/
+    await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**AJUSTAR EL PASO 6 AL DAR CLIC EN EL BOTON SIGUIENTE DAR UNA ESPERA EN EL PROGRESS Y NO SE CIERRE LA PRUEBA**//
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Completar orden', async () => {
+  it.only('CP_GESORD_00X: Completar orden', async () => {
     await gestorOrdenesPage.completarOrden(); 
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_008: Registro de materiales', async () => {
-    await gestorOrdenesPage.registroMateriales(); //** SE PRUEBA CON UNA ORDEN DE MANTENIMIENTO**/
+  it('CP_GESORD_008: Registro de materiales', async () => {
+    await gestorOrdenesPage.registroMateriales(); //** ESTE CASO DE PRUEBA SE DEBE EJECUTAR EN UNA ORDEN DE MANTENIMIENTO PARA QUE EL MODAL SE VISUALICE**//
     expect(true).to.be.true;
   });
 
