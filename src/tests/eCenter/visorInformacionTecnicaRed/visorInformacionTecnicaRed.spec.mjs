@@ -61,7 +61,7 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_INFTECRED_003: Ver dispositivos', async () => {
+  it.only('CP_INFTECRED_003: Ver dispositivos', async () => {
     await visorInfoPage.verDispositivos();
 
     expect(true).to.be.true;

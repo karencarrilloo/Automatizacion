@@ -2,13 +2,21 @@ import { By, until } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { testData } from '../../../config/testData.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
 export default class VisorInformacionTecnicaRedPage {
-  constructor(driver) {
+   /**
+  * @param {WebDriver} driver  instancia de selenium
+  * @param {string} defaultNapSerialCelsia  ID_DEAL global reutilizable
+  * @param {string} defaultSerialONT  Serial ONT global reutilizable
+  */
+  constructor(driver, defaultNapSerialCelsia = testData.visorInformacionTecnicaRed.defaultNapSerialCelsia, defaultSerialONT = testData.visorInformacionTecnicaRed.defaultSerialONT) {
     this.driver = driver;
+    this.defaultNapSerialCelsia = defaultNapSerialCelsia;
+    this.defaultSerialONT = defaultSerialONT;
   }
 
   /**
@@ -71,7 +79,7 @@ export default class VisorInformacionTecnicaRedPage {
 // CP_INFTECRED_002: Filtro de búsqueda
 // 11 pasos
 // =====================================================
-async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
+async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002', serialNap) {
   const driver = this.driver;
 
   try {
@@ -192,7 +200,8 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     await driver.sleep(1000);
     console.log("✅ Paso 9: 'NAP SERIAL CELSIA' seleccionado.");
 
-    // === Paso 10: Diligenciar campo “3241009” ===
+    // === Paso 10: Diligenciar campo “NAP SERIAL CELSIA” ===
+    const serialNap = this.defaultNapSerialCelsia
     const segundoFiltroBlock = await driver.wait(
       until.elementLocated(By.xpath('(//div[contains(@class,"rule-container")])[2]')),
       10000
@@ -200,9 +209,9 @@ async filtroBusquedaInformacionTecnica(caseName = 'CP_INFTECRED_002') {
     const textarea = await segundoFiltroBlock.findElement(By.css('textarea'));
     await driver.wait(until.elementIsVisible(textarea), 5000);
     await textarea.clear();
-    await textarea.sendKeys("3241009");
+    await textarea.sendKeys(serialNap);
     await driver.sleep(1000);
-    console.log("✅ Paso 10: Valor '3241009' diligenciado.");
+    console.log("✅ Paso 10: 'NAP SERIAL CELSIA' diligenciado.");
 
     // === Paso 11: Clic en “Aplicar filtro” nuevamente ===
     const botonAplicarFiltro2 = await driver.wait(
@@ -231,7 +240,7 @@ async verDispositivos(caseName = 'CP_INFTECRED_003') {
 
   try {
     // === Paso 1: Seleccionar registro ===
-    const serial = "48575443702166A5"; // se selecciona por ont
+    const serial = this.defaultSerialONT; // se selecciona por ont
 
     // Localizar la celda que contiene el serial
     const tdSerial = await driver.wait(

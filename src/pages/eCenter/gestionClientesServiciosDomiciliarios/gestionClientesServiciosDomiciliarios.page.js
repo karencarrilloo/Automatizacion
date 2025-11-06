@@ -2,6 +2,7 @@ import { By, until } from 'selenium-webdriver';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { testData } from "../../../config/testData.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,15 +12,10 @@ export default class GestionClientesServiciosPage {
   * @param {WebDriver} driver  instancia de selenium
   * @param {string} defaultIdDeal  ID_DEAL global reutilizable
   */
-  constructor(driver, defaultIdDeal = '28006757991') {
+  constructor(driver, defaultIdDeal = testData.gestionClientesServiciosDomiciliarios.defaultIdDeal) {
     this.driver = driver;
-    this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable
+    this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable 28006757991
   }
-
-  /**
-   * Selecciona un cliente por ID_DEAL.
-   * Si no se envía `idDeal`, se usa el `defaultIdDeal` del constructor.
-   */
   async seleccionarClientePorIdDeal(idDeal) {
     const driver = this.driver;
     const idBuscar = idDeal || this.defaultIdDeal; // 👈 Aquí se usa la propiedad global
