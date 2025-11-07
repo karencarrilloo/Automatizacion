@@ -21,7 +21,7 @@ export const testData = {
     //campos de modal {Agregar elemento a entidad elemento secundario}
     SERIALCELSIA : '',
     FACTORYSERIAL: '',
-    Categoria: '',
+    Categoria: 'ONT',
 
   }
 };

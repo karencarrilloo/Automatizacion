@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { testData } from "../../../config/testData.mjs";
+import { seleccionarClientePorIdOrden } from "../../../utils/helpers.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,72 +14,15 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver,defaultIdOrden = testData.gestorOrdenes.defaultIdOrden,defaultSerialONT = testData.gestorOrdenes.defaultSerialONT)  {
+  constructor(driver,defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, defaultSerialONT = testData.gestorOrdenes.defaultSerialONT)  {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
   }
 
-  async seleccionarClientePorIdOrden(idOrden) {
-    const driver = this.driver;
-    const idBuscar = idOrden || this.defaultIdOrden;
-
-    // === XPaths posibles (Clientes y Órdenes) ===
-    const posiblesGrids = [
-      // Gestión Clientes
-      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody',
-      // Gestor de Órdenes
-      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"orderViewerGestor")]//table/tbody',
-    ];
-
-    let cuerpoTabla = null;
-    for (const gridXpath of posiblesGrids) {
-      try {
-        cuerpoTabla = await driver.wait(until.elementLocated(By.xpath(gridXpath)), 5000);
-        if (cuerpoTabla) {
-          console.log(`📋 Grid encontrado: ${gridXpath}`);
-          break;
-        }
-      } catch {
-        continue;
-      }
-    }
-
-    if (!cuerpoTabla)
-      throw new Error("❌ No se encontró un grid compatible en la vista actual.");
-
-    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
-    const filas = await cuerpoTabla.findElements(By.xpath("./tr"));
-
-    if (filas.length === 0)
-      throw new Error("❌ No se encontraron filas en la tabla.");
-
-    let filaSeleccionada = null;
-
-    for (const fila of filas) {
-      const textoFila = (await fila.getText()).trim();
-      if (textoFila.includes(idBuscar)) { // 👈 coincidencia parcial en toda la fila
-        filaSeleccionada = fila;
-        break;
-      }
-    }
-
-    if (!filaSeleccionada)
-      throw new Error(`❌ No se encontró cliente con ID ORDEN "${idBuscar}"`);
-
-    // Scroll y clic
-    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
-    await driver.sleep(300);
-    try {
-      await filaSeleccionada.click();
-    } catch {
-      await driver.executeScript('arguments[0].click();', filaSeleccionada);
-    }
-
-    await driver.sleep(800);
-    console.log(`✅ Cliente con ID ORDEN "${idBuscar}" seleccionado correctamente.`);
+  async seleccionarCliente() {
+    await seleccionarClientePorIdOrden(this.driver, testData.gestorOrdenes.defaultIdOrden);
   }
-
 
   //  ==================================================
   // CP_GESORD_001 - Ingreso al Gestor de Órdenes ===

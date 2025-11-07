@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { testData } from "../../../config/testData.mjs";
+import { seleccionarClientePorIdOrden } from "../../../utils/helpers.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,55 +11,15 @@ const __dirname = path.dirname(__filename);
 export default class GestionClientesServiciosPage {
   /**
   * @param {WebDriver} driver  instancia de selenium
-  * @param {string} defaultIdDeal  ID_DEAL global reutilizable
+  * @param {string} defaultIdOrden ID ORDEN global reutilizable
   */
-  constructor(driver, defaultIdDeal = testData.gestionClientesServiciosDomiciliarios.defaultIdDeal) {
+  constructor(driver, defaultIdOrden = testData.gestionClientesServiciosDomiciliarios.defaultIdOrden) {
     this.driver = driver;
-    this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable 28006757991
+    this.defaultIdOrden = defaultIdOrden;
+    //this.defaultIdDeal = defaultIdDeal; // 👈 ID_DEAL global reutilizable 28006757991
   }
-  async seleccionarClientePorIdDeal(idDeal) {
-    const driver = this.driver;
-    const idBuscar = idDeal || this.defaultIdDeal; // 👈 Aquí se usa la propiedad global
-
-    const gridTbodyXpath =
-      '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody';
-
-    const cuerpoTabla = await driver.wait(
-      until.elementLocated(By.xpath(gridTbodyXpath)),
-      15000
-    );
-    await driver.wait(until.elementIsVisible(cuerpoTabla), 5000);
-
-    const filas = await cuerpoTabla.findElements(By.xpath('./tr'));
-    if (filas.length === 0) throw new Error('No se encontraron filas en la tabla.');
-
-    let filaSeleccionada = null;
-    for (const fila of filas) {
-      try {
-        const tdDeal = await fila.findElement(By.xpath('.//*[@id="cuentaCustomer"]'));
-        const texto = (await tdDeal.getText()).trim();
-        if (texto === idBuscar) {        // comparación exacta del ID_DEAL
-          filaSeleccionada = fila;
-          break;
-        }
-      } catch {
-        continue;
-      }
-    }
-
-    if (!filaSeleccionada) {
-      throw new Error(`No se encontró cliente con ID_DEAL "${idBuscar}"`);
-    }
-
-    await driver.executeScript('arguments[0].scrollIntoView({block:"center"});', filaSeleccionada);
-    await driver.sleep(300);
-    try {
-      await filaSeleccionada.click();
-    } catch {
-      await driver.executeScript('arguments[0].click();', filaSeleccionada);
-    }
-    await driver.sleep(800);
-    console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado.`);
+  async seleccionarCliente() {
+    await seleccionarClientePorIdOrden(this.driver, testData.gestionClientesServiciosDomiciliarios.defaultIdOrden);
   }
 
 
@@ -116,14 +77,14 @@ export default class GestionClientesServiciosPage {
 
   
   //  ==================================================
-  //  CP_GESCLSERDOM_002 – Filtro de búsqueda cliente por ID_DEAL
+  //  CP_GESCLSERDOM_002 – Filtro de búsqueda por ID ORDEN
   //  5 pasos
   //  ==================================================
 
-  async filtrarPorIdDeal(caseName = 'CP_GESCLSERDOM_002', idDeal) {
+  async filtrarPorIdOrden(caseName = 'CP_GESCLSERDOM_002', idOrden) {
     const driver = this.driver;
     // 👇 Usa el ID global si no se envía argumento
-    const idBuscar = idDeal || this.defaultIdDeal;
+    const idBuscar = idOrden || this.defaultIdOrden;
 
     try {
       // === Paso 1: Abrir modal de filtros ===
@@ -157,13 +118,13 @@ export default class GestionClientesServiciosPage {
       await driver.sleep(2000);
       //console.log("✅ Select de filtros desplegado.");
 
-      // === Paso 3: Seleccionar "ID_DEAL" ===
+      // === Paso 3: Seleccionar "ID_ORDEN" ===
       const selectCampo = await grupoFiltro.findElement(By.css('select'));
       await driver.wait(until.elementIsVisible(selectCampo), 5000);
       await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", selectCampo);
       await selectCampo.click();
       await driver.sleep(500);
-      await selectCampo.sendKeys("ID_DEAL");
+      await selectCampo.sendKeys(idOrden);
       await driver.sleep(2000);
 
       // === Paso 4: Diligenciar el campo de ID_DEAL ===
@@ -200,11 +161,11 @@ export default class GestionClientesServiciosPage {
   // CP_GESCLSERDOM_003: Ver información técnica asociada
   // 5 pasos
   // ==========================================
-  async verInformacionTecnicaAsociada(caseName = 'CP_GESCLSERDOM_003', idDeal) {
+  async verInformacionTecnicaAsociada(caseName = 'CP_GESCLSERDOM_003', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // Paso 2: abrir opciones
       const btnOpciones = await driver.wait(
@@ -260,11 +221,11 @@ export default class GestionClientesServiciosPage {
   // CP_GESCLSERDOM_004: Reconfiguración del cliente
   // 7 pasos
   // =====================================================
-  async reconfigurarCliente(caseName = 'CP_GESCLSERDOM_004', idDeal) {
+  async reconfigurarCliente(caseName = 'CP_GESCLSERDOM_004', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // === Paso 2: Botón Opciones ===
       const btnOpciones = await driver.wait(
@@ -423,11 +384,11 @@ export default class GestionClientesServiciosPage {
   // 4 pasos
   // =====================================================
   async verDispositivoCliente(
-    caseName = 'CP_GESCLSERDOM_005', idDeal) {
+    caseName = 'CP_GESCLSERDOM_005', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // === Paso 2: Botón Opciones ===
       const btnOpciones = await driver.wait(
@@ -484,7 +445,7 @@ export default class GestionClientesServiciosPage {
       }
 
       // Paso 5: deseleccionar cliente 
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       await driver.sleep(1500);
     } catch (error) {
@@ -499,11 +460,11 @@ export default class GestionClientesServiciosPage {
   // 6 pasos
   // =====================================================
   async verYEnviarDocumentos(
-    caseName = 'CP_GESCLSERDOM_007', idDeal) {
+    caseName = 'CP_GESCLSERDOM_007', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // === Paso 2: Botón Opciones ===
       const btnOpciones = await driver.wait(
@@ -618,11 +579,11 @@ export default class GestionClientesServiciosPage {
   // 5 pasos
   // =====================================================
   async verDetalleProceso(
-    caseName = 'CP_GESCLSERDOM_007', idDeal) {
+    caseName = 'CP_GESCLSERDOM_007', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
       // === Paso 2: Botón Opciones ===
       const btnOpciones = await driver.wait(
         until.elementLocated(By.xpath('//*[@id="btn-options"]')),
@@ -685,7 +646,7 @@ export default class GestionClientesServiciosPage {
       }
 
       // Paso 5: deseleccionar cliente 
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       await driver.sleep(1000);
     } catch (error) {
@@ -699,11 +660,11 @@ export default class GestionClientesServiciosPage {
   // 9 pasos
   // =====================================================
   async suspenderCliente(
-    caseName = 'CP_GESCLSERDOM_008', idDeal) {
+    caseName = 'CP_GESCLSERDOM_008', idOrden) {
     const driver = this.driver;
     try {
       // Paso 1: seleccionar cliente (global o parámetro)
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // === Paso 2: Clic en Opciones. ===
       const btnOpciones = await driver.wait(
@@ -869,11 +830,11 @@ export default class GestionClientesServiciosPage {
   // CP_GESCLSERDOM_009: Reconexión del cliente
   // 8 pasos
   // =====================================================
-  async reconectarCliente(caseName = 'CP_GESCLSERDOM_009', idDeal) {
+  async reconectarCliente(caseName = 'CP_GESCLSERDOM_009', idOrden) {
     const driver = this.driver;
     try {
       // === Paso 1: Seleccionar cliente por ID_DEAL ===
-      await this.seleccionarClientePorIdDeal(idDeal);
+      await this.seleccionarClientePorIdOrden(idOrden);
 
       // === Paso 2: Clic en Opciones. ===
       const btnOpciones = await driver.wait(

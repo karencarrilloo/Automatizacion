@@ -47,7 +47,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     if (driver) await driver.quit();
   });
 
-  it('CP_GESCLSERDOM_001: Ingreso a la vista Gestión Clientes y Servicios Domiciliarios', async () => {
+  it.only('CP_GESCLSERDOM_001: Ingreso a la vista Gestión Clientes y Servicios Domiciliarios', async () => {
     await gestionPage.ingresarVistaGestionClientes();
 
     // Verificación: contenedor principal visible
@@ -60,8 +60,8 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
 
-  it('CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL', async () => {
-    await gestionPage.filtrarPorIdDeal();
+  it.only('CP_GESCLSERDOM_002: Filtro de búsqueda por ID ORDEN', async () => {
+    await gestionPage.filtrarPorIdOrden();
     expect(true).to.be.true;
   });
 
@@ -70,7 +70,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-  it.skip('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     expect(true).to.be.true;
