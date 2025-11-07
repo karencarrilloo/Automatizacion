@@ -82,7 +82,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
   });
 
   it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
-    await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
+    await gestionPage.verYEnviarDocumentos(); // **CORREGIR CASO DE PRUEBA, HAY UNOS HELPERS CREADOS QUE HAY QUE MOVER AL ARCHIVO HELPERS**
     expect(true).to.be.true; 
   });
 
