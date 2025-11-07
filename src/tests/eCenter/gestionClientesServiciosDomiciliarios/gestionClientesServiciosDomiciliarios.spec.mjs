@@ -70,12 +70,12 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true; 
   });
 
-  it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
+  it.only('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
     await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
     expect(true).to.be.true; 
   });
 
-  it.only('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
+  it('CP_GESCLSERDOM_007: Ver detalle del proceso', async () => {
     await gestionPage.verDetalleProceso();
     expect(true).to.be.true; 
   });

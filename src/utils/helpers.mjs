@@ -1,9 +1,8 @@
-// src/utils/helpers.mjs
 import { By, until } from "selenium-webdriver";
 
-/**
- * Selecciona un cliente por ID ORDEN //gestorOrdenes
- */
+// ============================================================
+// Funcion Seleccionar cliente por ID ORDEN: gestorOrdenes.page.js
+// ============================================================
 export async function seleccionarClientePorIdOrden(driver, idBuscar) {
   const posiblesGrids = [
     '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody',
@@ -52,10 +51,9 @@ export async function seleccionarClientePorIdOrden(driver, idBuscar) {
   console.log(`✅ Cliente con ID ORDEN "${idBuscar}" seleccionado correctamente.`);
 }
 
-/**
- * Selecciona un cliente por ID_DEAL //gestionClietesServiciosDomiciliarios
- */
-
+// ============================================================
+// Funcion Seleccionar cliente por ID_DEAL: gestionClientesServiciosDomciliarios.page.js
+// ============================================================
 export async function seleccionarClientePorIdDeal(driver, idBuscar) {
   const posiblesGrids = [
     '//div[contains(@id,"grid-table-crud-grid") and contains(@id,"CustomerManager")]//table/tbody',
@@ -105,32 +103,57 @@ export async function seleccionarClientePorIdDeal(driver, idBuscar) {
 }
 
 // Otros helpers que se podrían reutilizar...
-/**
-//  * Espera un elemento de forma segura (visible y habilitado) 
-//  */
-// export async function esperarElemento(driver, locator, timeout = 15000) {
-//   const element = await driver.wait(until.elementLocated(locator), timeout);
-//   await driver.wait(until.elementIsVisible(element), timeout / 2);
-//   await driver.wait(until.elementIsEnabled(element), timeout / 2);
-//   return element;
-// }
 
-// /**
-//  * Realiza un clic seguro con fallback a JavaScript 
-//  */
-// export async function safeClick(driver, element) {
-//   try {
-//     await element.click();
-//   } catch {
-//     await driver.executeScript("arguments[0].click();", element);
-//   }
-// }
+// ============================================================
+// Clic genérico seguro por XPath
+// ============================================================
+export async function clickXpath(driver, xpath, descripcion, timeout = 20000) {
+  const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  await driver.wait(until.elementIsVisible(elem), 5000);
+  await scrollToElement(driver, elem);
+  await safeClick(driver, elem);
+  await driver.sleep(1000);
+  console.log(`✅ ${descripcion} ejecutado correctamente.`);
+}
 
-// /**
-//  * Realiza scroll al elemento centrado en pantalla 
-//  */
-// export async function scrollToElement(driver, element) {
-//   await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
-//   await driver.sleep(300);
-// }
+// ============================================================
+// Cerrar modal por XPath
+// ============================================================
+export async function cerrarModal(driver, xpath, descripcion, timeout = 15000) {
+  const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+  await scrollToElement(driver, btnCerrar);
+  await safeClick(driver, btnCerrar);
+
+  try {
+    await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
+  } catch {
+    console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
+  }
+
+  console.log(`✅ ${descripcion} completado.`);
+}
+
+// ============================================================
+// Utilidad para hacer scroll a un elemento
+// ============================================================
+export async function scrollToElement(driver, element) {
+  try {
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    await driver.sleep(300);
+  } catch (e) {
+    console.log("⚠️ No se pudo hacer scroll al elemento:", e.message);
+  }
+}
+
+// ============================================================
+// Clic seguro con fallback a JavaScript
+// ============================================================
+export async function safeClick(driver, element) {
+  try {
+    await element.click();
+  } catch {
+    await driver.executeScript("arguments[0].click();", element);
+  }
+}
 
