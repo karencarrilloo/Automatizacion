@@ -158,7 +158,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -332,7 +332,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -464,7 +464,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -641,7 +641,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -749,7 +749,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -1418,7 +1418,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -1815,7 +1815,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -1900,7 +1900,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2086,7 +2086,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2214,7 +2214,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2353,7 +2353,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
@@ -2683,7 +2683,7 @@ export default class GestorOrdenesPage {
 
     try {
       // Paso 1: Seleccionar cliente
-      await this.seleccionarClientePorIdOrden(idOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
