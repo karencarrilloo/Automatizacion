@@ -1,7 +1,10 @@
 import { By, until } from "selenium-webdriver";
 
 // ============================================================
-// Funcion Seleccionar cliente por ID ORDEN: gestorOrdenes.page.js
+// Función: seleccionarClientePorIdOrden
+// Descripción: Busca y selecciona un registro en el grid por ID de orden.
+// Vistas que la utilizan:
+// - Gestor de Órdenes
 // ============================================================
 export async function seleccionarClientePorIdOrden(driver, idBuscar) {
   const posiblesGrids = [
@@ -52,7 +55,10 @@ export async function seleccionarClientePorIdOrden(driver, idBuscar) {
 }
 
 // ============================================================
-// Funcion Seleccionar cliente por ID_DEAL: gestionClientesServiciosDomciliarios.page.js
+// Función: seleccionarClientePorIdOrden
+// Descripción: Busca y selecciona un registro en el grid por ID DEAL.
+// Vistas que la utilizan:
+// - Gestor de clientes Servicios Domiciliarios
 // ============================================================
 export async function seleccionarClientePorIdDeal(driver, idBuscar) {
   const posiblesGrids = [
@@ -102,58 +108,58 @@ export async function seleccionarClientePorIdDeal(driver, idBuscar) {
   console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado correctamente.`);
 }
 
-// Otros helpers que se podrían reutilizar...
+// Otros helpers genericos que se podrían reutilizar, pendientes por implementar...
 
-// ============================================================
-// Clic genérico seguro por XPath
-// ============================================================
-export async function clickXpath(driver, xpath, descripcion, timeout = 20000) {
-  const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
-  await driver.wait(until.elementIsVisible(elem), 5000);
-  await scrollToElement(driver, elem);
-  await safeClick(driver, elem);
-  await driver.sleep(1000);
-  console.log(`✅ ${descripcion} ejecutado correctamente.`);
-}
+// // ============================================================
+// // Funcion: Clic por XPath
+// // ============================================================
+// export async function clickXpath(driver, xpath, descripcion, timeout = 20000) {
+//   const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+//   await driver.wait(until.elementIsVisible(elem), 5000);
+//   await scrollToElement(driver, elem);
+//   await safeClick(driver, elem);
+//   await driver.sleep(1000);
+//   console.log(`✅ ${descripcion} ejecutado correctamente.`);
+// }
 
-// ============================================================
-// Cerrar modal por XPath
-// ============================================================
-export async function cerrarModal(driver, xpath, descripcion, timeout = 15000) {
-  const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
-  await driver.wait(until.elementIsVisible(btnCerrar), 5000);
-  await scrollToElement(driver, btnCerrar);
-  await safeClick(driver, btnCerrar);
+// // ============================================================
+// // Funcion: Cerrar modal por XPath
+// // ============================================================
+// export async function cerrarModal(driver, xpath, descripcion, timeout = 15000) {
+//   const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+//   await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+//   await scrollToElement(driver, btnCerrar);
+//   await safeClick(driver, btnCerrar);
 
-  try {
-    await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
-  } catch {
-    console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
-  }
+//   try {
+//     await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
+//   } catch {
+//     console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
+//   }
 
-  console.log(`✅ ${descripcion} completado.`);
-}
+//   console.log(`✅ ${descripcion} completado.`);
+// }
 
-// ============================================================
-// Utilidad para hacer scroll a un elemento
-// ============================================================
-export async function scrollToElement(driver, element) {
-  try {
-    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-    await driver.sleep(300);
-  } catch (e) {
-    console.log("⚠️ No se pudo hacer scroll al elemento:", e.message);
-  }
-}
+// // ============================================================
+// // Funcion: Utilidad para hacer scroll a un elemento
+// // ============================================================
+// export async function scrollToElement(driver, element) {
+//   try {
+//     await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+//     await driver.sleep(300);
+//   } catch (e) {
+//     console.log("⚠️ No se pudo hacer scroll al elemento:", e.message);
+//   }
+// }
 
-// ============================================================
-// Clic seguro con fallback a JavaScript
-// ============================================================
-export async function safeClick(driver, element) {
-  try {
-    await element.click();
-  } catch {
-    await driver.executeScript("arguments[0].click();", element);
-  }
-}
+// // ============================================================
+// // Funcion: Clic seguro con fallback a JavaScript
+// // ============================================================
+// export async function safeClick(driver, element) {
+//   try {
+//     await element.click();
+//   } catch {
+//     await driver.executeScript("arguments[0].click();", element);
+//   }
+// }
 
