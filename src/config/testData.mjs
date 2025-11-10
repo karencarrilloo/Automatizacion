@@ -17,11 +17,13 @@ export const testData = {
     defaultNapSerialCelsia: '3241009', // Filtra por Nap serial celsia
     defaultSerialONT: '48575443702166A5', // Filtra y selecciona el cliente por serial ont
   },
-  exploradorEntidades: {
-    //campos de modal {Agregar elemento a entidad elemento secundario}
-    SERIALCELSIA : '',
-    FACTORYSERIAL: '',
-    Categoria: 'ONT',
+  //**PENDIENTE POR AJUSTAR**/
 
-  }
+  // exploradorEntidades: {
+  //   //campos de modal {Agregar elemento a entidad elemento secundario}
+  //   SERIALCELSIA : '',
+  //   FACTORYSERIAL: '',
+  //   Categoria: 'ONT',
+
+  // }
 };
