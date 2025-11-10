@@ -153,12 +153,12 @@ export default class GestorOrdenesPage {
   // CP_GESORD_003 – RawData
   // x pasos
   // =====================================================
-  async rawData(caseName = "CP_GESORD_00X", idOrden) {
+  async rawData(caseName = "CP_GESORD_003", idOrden = this.defaultIdOrden) {
     const driver = this.driver;
 
     try {
       // Paso 1: Seleccionar cliente
-      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
+      await seleccionarClientePorIdOrden(driver, idOrden);
 
       // Paso 2: Abrir menú de opciones
       const btnOpciones = await driver.wait(
