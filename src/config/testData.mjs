@@ -17,6 +17,11 @@ export const testData = {
     defaultNapSerialCelsia: '3241009', // Filtra por Nap serial celsia
     defaultSerialONT: '48575443702166A5', // Filtra y selecciona el cliente por serial ont
   },
+  GestionCambioNapPuerto: {
+    //variable global
+    defaultNapSerialCelsia: '3240754',
+
+  },
   //**PENDIENTE POR AJUSTAR**/
 
   // exploradorEntidades: {

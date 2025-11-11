@@ -1,14 +1,21 @@
-import { By, until } from 'selenium-webdriver';
+import { By, until, Key } from 'selenium-webdriver';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { testData } from '../../../config/testData.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default class GestionCambioNapPuertoPage {
-  constructor(driver) {
+  /**
+  * @param {WebDriver} driver  instancia de selenium
+  * @param {string} defaultNapSerialCelsia  ID_DEAL global reutilizable
+  */
+  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia) {
     this.driver = driver;
+    this.testData = testData.GestionCambioNapPuerto
+    this.defaultNapSerialCelsia = defaultNapSerialCelsia;
   }
 
   //  ====================================
@@ -107,9 +114,87 @@ export default class GestionCambioNapPuertoPage {
       }
 
     } catch (error) {
-      // Manejo de error con captura si existe método auxiliar
-      if (this._capturarError) await this._capturarError(error, caseName);
-      throw new Error(`❌ Paso 1: No se pudo hacer clic en el picklist de NAP: ${error.message}`);
+      throw new Error(`❌ Paso 2: No se pudo hacer clic en el picklist de NAP: ${error.message}`);
     }
+
+    // === Paso 2: Diligenciar campo "Buscar" con la NAP ===
+    try {
+      const napBuscar = this.testData.defaultNapSerialCelsia;
+
+      const campoBuscar = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="crud-search-bar"]')),
+        15000
+      );
+
+      await driver.wait(until.elementIsVisible(campoBuscar), 8000);
+      await campoBuscar.clear();
+      await campoBuscar.sendKeys(napBuscar);
+      await driver.sleep(500);
+
+      // 👉 Presionar Enter para mostrar los resultados
+      await campoBuscar.sendKeys(Key.ENTER);
+      console.log(`✅ Paso 2: Campo 'Buscar' diligenciado con la NAP ${napBuscar} y búsqueda ejecutada.`);
+
+      await driver.sleep(2000); // Espera breve mientras se cargan los resultados
+    } catch (error) {
+      throw new Error(`❌ Paso 2: No se pudo diligenciar el campo "Buscar" con la NAP: ${error.message}`);
+    }
+
+
+    // === Paso 3: Seleccionar el registro de la NAP ===
+    try {
+      const tablaXpath = '//*[@id="grid-table-crud-grid-picklist-nap"]/div/div[2]/table/tbody';
+
+      // Esperar que la tabla esté presente y visible
+      const tabla = await driver.wait(
+        until.elementLocated(By.xpath(tablaXpath)),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(tabla), 5000);
+
+      // Tomar la primera fila (único registro esperado)
+      const fila = await tabla.findElement(By.xpath('./tr[1]'));
+      await driver.sleep(500);
+
+      // Clic directo (sin scroll)
+      try {
+        await fila.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", fila);
+      }
+
+      console.log("✅ Paso 3: Registro de NAP seleccionado correctamente.");
+      await driver.sleep(1000);
+    } catch (error) {
+      throw new Error(`❌ Paso 3: No se pudo seleccionar el registro de la NAP: ${error.message}`);
+    }
+
+    // === Paso 4: Clic en el botón "Seleccionar" del modal ===
+    try {
+      const btnSeleccionarXpath = '//*[@id="widget-button-btSelect-picklist-nap"]/div';
+
+      const btnSeleccionar = await driver.wait(
+        until.elementLocated(By.xpath(btnSeleccionarXpath)),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnSeleccionar), 5000);
+
+      await driver.executeScript("arguments[0].click();", btnSeleccionar);
+      await driver.sleep(12000);
+
+      console.log("✅ Paso 4: Botón 'Seleccionar' presionado correctamente.");
+    } catch (error) {
+      throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Seleccionar': ${error.message}`);
+    }
+
+
+  } catch(error) {
+    console.error(`❌ CP_GESCAMNAPPUER_002 Error: ${error.message}`);
+    throw error;
   }
+
+  //  ==================================== 
+  //  CP_GESCAMNAPPUER_003 – Seleccionar un puerto y realizar el cambio
+  //  pasos x
+  //  ====================================
 }

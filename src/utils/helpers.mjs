@@ -1,6 +1,59 @@
 import { By, until } from "selenium-webdriver";
 
 // ============================================================
+// Funcion: Clic por XPath
+// ============================================================
+export async function clickXpath(driver, xpath, descripcion, timeout = 20000) {
+  const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  await driver.wait(until.elementIsVisible(elem), 5000);
+  await scrollToElement(driver, elem);
+  await safeClick(driver, elem);
+  await driver.sleep(1000);
+  console.log(`✅ ${descripcion} ejecutado correctamente.`);
+}
+
+// ============================================================
+// Funcion: Cerrar modal por XPath
+// ============================================================
+export async function cerrarModal(driver, xpath, descripcion, timeout = 15000) {
+  const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
+  await driver.wait(until.elementIsVisible(btnCerrar), 5000);
+  await scrollToElement(driver, btnCerrar);
+  await safeClick(driver, btnCerrar);
+
+  try {
+    await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
+  } catch {
+    console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
+  }
+
+  console.log(`✅ ${descripcion} completado.`);
+}
+
+// ============================================================
+// Funcion: Utilidad para hacer scroll a un elemento
+// ============================================================
+export async function scrollToElement(driver, element) {
+  try {
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    await driver.sleep(300);
+  } catch (e) {
+    console.log("⚠️ No se pudo hacer scroll al elemento:", e.message);
+  }
+}
+
+// ============================================================
+// Funcion: Clic seguro con fallback a JavaScript
+// ============================================================
+export async function safeClick(driver, element) {
+  try {
+    await element.click();
+  } catch {
+    await driver.executeScript("arguments[0].click();", element);
+  }
+}
+
+// ============================================================
 // Función: seleccionarClientePorIdOrden
 // Descripción: Busca y selecciona un registro en el grid por ID de orden.
 // Vistas que la utilizan:
@@ -108,56 +161,5 @@ export async function seleccionarClientePorIdDeal(driver, idBuscar) {
   console.log(`✅ Cliente con ID_DEAL "${idBuscar}" seleccionado correctamente.`);
 }
 
-// ============================================================
-// Funcion: Clic por XPath
-// ============================================================
-export async function clickXpath(driver, xpath, descripcion, timeout = 20000) {
-  const elem = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
-  await driver.wait(until.elementIsVisible(elem), 5000);
-  await scrollToElement(driver, elem);
-  await safeClick(driver, elem);
-  await driver.sleep(1000);
-  console.log(`✅ ${descripcion} ejecutado correctamente.`);
-}
 
-// ============================================================
-// Funcion: Cerrar modal por XPath
-// ============================================================
-export async function cerrarModal(driver, xpath, descripcion, timeout = 15000) {
-  const btnCerrar = await driver.wait(until.elementLocated(By.xpath(xpath)), timeout);
-  await driver.wait(until.elementIsVisible(btnCerrar), 5000);
-  await scrollToElement(driver, btnCerrar);
-  await safeClick(driver, btnCerrar);
-
-  try {
-    await driver.wait(async () => !(await btnCerrar.isDisplayed().catch(() => false)), 8000);
-  } catch {
-    console.log(`⚠️ ${descripcion}: el modal puede no haberse ocultado completamente.`);
-  }
-
-  console.log(`✅ ${descripcion} completado.`);
-}
-
-// ============================================================
-// Funcion: Utilidad para hacer scroll a un elemento
-// ============================================================
-export async function scrollToElement(driver, element) {
-  try {
-    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-    await driver.sleep(300);
-  } catch (e) {
-    console.log("⚠️ No se pudo hacer scroll al elemento:", e.message);
-  }
-}
-
-// ============================================================
-// Funcion: Clic seguro con fallback a JavaScript
-// ============================================================
-export async function safeClick(driver, element) {
-  try {
-    await element.click();
-  } catch {
-    await driver.executeScript("arguments[0].click();", element);
-  }
-}
 
