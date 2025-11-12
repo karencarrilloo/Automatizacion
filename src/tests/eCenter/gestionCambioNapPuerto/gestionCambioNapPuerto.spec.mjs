@@ -53,4 +53,9 @@ describe('Pruebas de Gestión cambio de nap y puerto', function () {
     await gestionCambioNapPuertoPage.SeleccionarNap();
     expect(true).to.be.true; // Placeholder
   });
+
+  it(' CP_GESCAMNAPPUER_003: Seleccionar un puerto y realizar el cambio', async () => {
+    await gestionCambioNapPuertoPage.cambioDePuerto();
+    expect(true).to.be.true; // Placeholder
+  });
 });
