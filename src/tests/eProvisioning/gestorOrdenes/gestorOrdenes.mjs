@@ -58,7 +58,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_003 :RawData', async () => {
+  it('CP_GESORD_003 :RawData', async () => {
     await gestorOrdenesPage.rawData();
     expect(true).to.be.true;
   });
@@ -88,7 +88,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
+  it.only('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoLogico(); //**PENDIENTE**//
     expect(true).to.be.true;
   });

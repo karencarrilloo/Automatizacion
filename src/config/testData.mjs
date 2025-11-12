@@ -24,11 +24,23 @@ export const testData = {
   },
   //**PENDIENTE POR AJUSTAR**/
 
-  // exploradorEntidades: {
-  //   //campos de modal {Agregar elemento a entidad elemento secundario}
-  //   SERIALCELSIA : '',
-  //   FACTORYSERIAL: '',
-  //   Categoria: 'ONT',
+  exploradorEntidades: {
+  // Dilgenciar modal {Agregar elemento a entidad elemento secundario}
+  // SERIALCELSIA: '',
+  // FACTORYSERIAL: '',
+  // Categoria: 'ONT',
 
-  // }
+  },
+  contenidoClasesNegocio: {
+  // Diligenciar modal {Crear cls_model}
+  // Fabricante : '',
+  // Nombre: '',
+  // Cantidad de slots: '',
+  // Tipo: '',
+  // Descripción: '',
+  // Icono: '',
+  // Localidad '',
+  
+
+  },
 };

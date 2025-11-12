@@ -14,7 +14,7 @@ export default class GestorOrdenesPage {
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
  */
-  constructor(driver,defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, defaultSerialONT = testData.gestorOrdenes.defaultSerialONT)  {
+  constructor(driver, defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, defaultSerialONT = testData.gestorOrdenes.defaultSerialONT) {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
@@ -1856,31 +1856,56 @@ export default class GestorOrdenesPage {
 
       // === Paso 4: Clic en el botón "ONT" ===
       try {
-        const btnONT = await driver.wait(
+        // 1️⃣ Buscar el modal dinámico del Gestor de Órdenes
+        const modalGestor = await driver.wait(
           until.elementLocated(
-            By.xpath('//*[@id="widget-dialog-open-dialog-604576-5524-orderViewerGestor2"]/div/div/div[2]/div/div/div[1]/div[2]/div/div')
+            By.xpath('//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]')
           ),
           15000
         );
-        await driver.wait(until.elementIsVisible(btnONT), 8000);
-        await driver.wait(until.elementIsEnabled(btnONT), 8000);
+        await driver.wait(until.elementIsVisible(modalGestor), 8000);
 
-        // Scroll hasta el botón y clic
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnONT);
-        await driver.sleep(300);
+        // 2️⃣ Buscar el botón "ONT" dentro del modal (varias rutas posibles)
+        const posiblesRutas = [
+          './/div[contains(@title,"ONT")]', // si tiene tooltip
+          './/div[contains(text(),"ONT")]', // si tiene texto visible
+          './/div[contains(@class,"div")]/div/div/div[1]/div[2]/div/div', // ruta profunda original
+          './/div[contains(@id,"ONT")]', // si el id tiene referencia
+        ];
 
-        try {
-          await btnONT.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", btnONT);
+        let btnOnt = null;
+        for (const ruta of posiblesRutas) {
+          try {
+            btnOnt = await modalGestor.findElement(By.xpath(ruta));
+            if (btnOnt) break;
+          } catch {
+            continue;
+          }
         }
 
+        if (!btnOnt) {
+          throw new Error("No se encontró el botón 'ONT' dentro del modal del Gestor de Órdenes.");
+        }
+
+        // 3️⃣ Scroll y clic con fallback JS
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOnt);
+        await driver.sleep(400);
+        try {
+          await btnOnt.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnOnt);
+        }
+
+        // 4️⃣ Espera mientras carga (progress visible)
+        await driver.sleep(10000); // espera de cortesía para el progress
+
         console.log("✅ Paso 4: Botón 'ONT' presionado correctamente.");
-        await driver.sleep(3000); // pequeña espera por la carga del proceso ONT
 
       } catch (error) {
         throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
       }
+
+
 
 
     } catch (error) {
