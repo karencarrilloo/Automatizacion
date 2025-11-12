@@ -1905,6 +1905,94 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
       }
 
+      // === Paso 5: Clic en el botón "Siguiente" ===
+      try {
+        // 1️⃣ Buscar el modal del Gestor de Órdenes (con ID dinámico)
+        const modalGestor = await driver.wait(
+          until.elementLocated(
+            By.xpath('//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]')
+          ),
+          15000
+        );
+        await driver.wait(until.elementIsVisible(modalGestor), 8000);
+
+        // 2️⃣ Localizar el botón "Siguiente" dentro del modal
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath('.//*[@id="widget-button-complet-process"]/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(btnSiguiente), 5000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 5000);
+
+        // 3️⃣ Scroll y clic seguro
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(400);
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 5: Botón 'Siguiente' presionado correctamente.");
+
+        // // 4️⃣ Espera al progress (si aparece)
+        // try {
+        //   const progress = await driver.wait(
+        //     until.elementLocated(By.xpath('//div[contains(@id,"progress")]')),
+        //     5000
+        //   );
+        //   await driver.wait(until.stalenessOf(progress), 20000);
+        //   console.log("⏳ Espera completada: proceso finalizado después del clic en 'Siguiente'.");
+        // } catch {
+        //   console.log("⚠️ No se detectó progress, se continúa con el flujo normal.");
+        // }
+
+        await driver.sleep(2000);
+      } catch (error) {
+        throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Siguiente': ${error.message}`);
+      }
+
+      // === Paso 6: Hacer scroll y seleccionar la opción "RECONFIGURACIÓN ONT" === 
+      try {
+        // Scroll hacia el contenedor principal del modal
+        const contenedorOpciones = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]')
+          ),
+          20000
+        );
+
+        await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", contenedorOpciones);
+        await driver.sleep(1000); // breve pausa tras el scroll
+
+        // Localizar la opción "RECONFIGURACIÓN ONT"
+        const opcionReconfiguracionOnt = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]/div[3]/div[11]/div[1]')
+          ),
+          20000
+        );
+
+        await driver.wait(until.elementIsVisible(opcionReconfiguracionOnt), 10000);
+        await driver.wait(until.elementIsEnabled(opcionReconfiguracionOnt), 10000);
+
+        // Scroll y clic en la opción
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionReconfiguracionOnt);
+        await driver.sleep(500);
+
+        try {
+          await opcionReconfiguracionOnt.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", opcionReconfiguracionOnt);
+        }
+
+        console.log("✅ Paso 6: Opción 'RECONFIGURACIÓN ONT' seleccionada correctamente.");
+        await driver.sleep(3000); // Espera breve por la acción
+
+      } catch (error) {
+        throw new Error(`❌ Paso 6: No se pudo seleccionar la opción 'RECONFIGURACIÓN ONT': ${error.message}`);
+      }
+
 
 
 
