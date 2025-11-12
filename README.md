@@ -9,42 +9,46 @@ Este proyecto realiza automatización de pruebas sobre una aplicación web(emala
 ## 📁 Estructura del proyecto
 
 ```
-automatizacion-celsia/
-├── config/                      # Configuración general del proyecto
-├── data/                        # Archivos de datos para pruebas
-├── database/                    # Conexión y utilidades para base de datos
-├── diagrams/                    # Diagramas de flujo o documentación visual
-├── drivers/                     # Drivers necesarios para la automatización
-├── errors/                      # Capturas y manejo de errores
-├── node_modules/                # Dependencias del proyecto
-├── src/                         # Carpeta principal del código fuente
-│   ├── eCenter/                 # Módulo eCenter
-│   │   └── ...vistas.page.js    # Vistas del módulo eCenter
-│   ├── eContract/               # Módulo eContract
-│   │   └── ...vistas.page.js
-│   ├── eProvisioning/           # Módulo eProvisioning
-│   │   └── ...vistas.page.js
-│   ├── eWorkForce/              # Módulo eWorkForce
-│   │   └── ...vistas.page.js
-│   ├── login/                   # Módulo de autenticación/login
-│   │   └── login.page.js
-│   ├── autodiagnostico/         # Módulo de autodiagnóstico
-│   │   └── Autodiagnostico.page.js
-│   ├── visorInformacionTecnicaRed/
-│   │   └── ...vistas.page.js    # Caso de uso Visor de Información Técnica Red
-│   └── tests/                   # Pruebas automatizadas organizadas por módulo
-│       ├── eCenter/             # Pruebas del módulo eCenter
-│       ├── eContract/           # Pruebas del módulo eContract
-│       ├── eProvisioning/       # Pruebas del módulo eProvisioning
-│       ├── eWorkForce/          # Pruebas del módulo eWorkForce
-│       └── login/               # Pruebas del módulo de autenticación
-├── utils/                       # Utilidades y helpers
-├── .env                         # Variables de entorno
-├── .env.example                 # Ejemplo de configuración de variables
-├── .gitignore                   # Archivos ignorados por git
-├── package.json                 # Configuración del proyecto y scripts
-├── package-lock.json            # Control de versiones de dependencias
-└── README.md                    # Instrucciones de uso del proyecto
+Automatizacion/
+├── docs/                         # Documentación y diagramas del proyecto
+├── errors/                       # Capturas y logs de errores en ejecución
+├── node_modules/                 # Dependencias del proyecto (instaladas con npm)
+├── src/                          # Carpeta principal del código fuente
+│   ├── config/                   # Configuración y datos centralizados (testData, variables globales)
+│   ├── database/                 # Conexiones y utilidades de base de datos
+│   ├── pages/                    # Módulos y vistas del sistema
+│   │   ├── eCenter/              # Módulo eCenter
+│   │   │   ├── autodiagnostico/                  # Vista Autodiagnóstico
+│   │   │   │   └── Autodiagnostico.page.js
+│   │   │   ├── contenidoClasesNegocio/           # Vista Contenido clases de negocio
+│   │   │   ├── exploradorEntidades/              # Vista Explorador de entidades
+│   │   │   ├── gestionActivos/                   # Vista Gestión de activos
+│   │   │   ├── gestionCambioNapPuerto/           # Vista Gestión de cambio de NAP y puerto
+│   │   │   ├── gestionClientesServiciosDomiciliarios/ # Vista Gestión de clientes y servicios domiciliarios
+│   │   │   ├── motorReglas/                      # Vista Motor de reglas
+│   │   │   ├── ocupacionPuertos/                 # Vista Ocupación de puertos
+│   │   │   ├── programadorTareas/                # Vista Programador de tareas
+│   │   │   ├── tareasProgramadasAutodiagnostico/ # Vista Tareas programadas autodiagnóstico
+│   │   │   ├── visorInformacionTecnicaRed/       # Vista Visor de información técnica de red
+│   │   │   └── ...otras vistas relacionadas
+│   │   ├── eContract/             # Módulo eContract
+│   │   ├── eProvisioning/         # Módulo eProvisioning
+│   │   ├── eWorkForce/            # Módulo eWorkForce
+│   │   └── login/                 # Módulo de autenticación/login
+│   │       └── login.page.js
+│   ├── tests/                     # Pruebas automatizadas organizadas por módulo
+│   │   ├── eCenter/               # Pruebas del módulo eCenter
+│   │   ├── eContract/             # Pruebas del módulo eContract
+│   │   ├── eProvisioning/         # Pruebas del módulo eProvisioning
+│   │   ├── eWorkForce/            # Pruebas del módulo eWorkForce
+│   │   └── login/                 # Pruebas del módulo de autenticación
+│   └── utils/                     # Funciones auxiliares y helpers reutilizables
+├── .env                           # Variables de entorno locales
+├── .env.example                   # Ejemplo de archivo de entorno
+├── .gitignore                     # Archivos y carpetas ignoradas por git
+├── package.json                   # Configuración del proyecto, dependencias y scripts
+├── package-lock.json              # Control de versiones de dependencias instaladas
+└── README.md                      # Documentación del proyecto
 
 
 ```
@@ -101,32 +105,43 @@ DB_CONNECT_STRING=(DESCRIPTION=...)
 
 ## 🧪 Ejecutar pruebas
 
-### Ejecutar todas las pruebas (no recomendable, méjor ejecutar una prueba específica):
-Estar ubicado en la carpeta Automatización
+Los casos de prueba automatizados están organizados dentro de la carpeta src/tests
+donde cada subcarpeta corresponde a un módulo o vista del sistema (por ejemplo: eCenter, eProvisioning, login, etc.).
+Cada archivo con extensión .mjs contiene uno o varios casos de prueba asociados a esa vista.
+
+### Ejecutar una prueba específica
+
+Para ejecutar un archivo de prueba en particular, ubícate en la raíz del proyecto y utiliza el siguiente comando, ajustando la ruta según el archivo que desees correr:
 
 ```bash
-npm test
+npx mocha ".\src\tests\<modulo>\<nombreArchivo>.mjs" 
 ```
 
-### Ejecutar una prueba específica (ej. login):
+### Ejemplo login:
+
 ```bash
-npx mocha tests/login.mjs 
+npx mocha ".\src\tests\login\login.spec.mjs" 
 ```
 
-## 🧰 Scripts disponibles
+### Ejecutar solo un caso de prueba o saltar uno específico
 
-En `package.json` puedes encontrar:
+Para ejecutar únicamente un caso de prueba, agrega .only al bloque it dentro del archivo .mjs :
 
-```json
-"scripts": {
-  "test": "mocha tests/**/*.mjs --timeout 180000"
-}
+```bash
+it.only('CP_LOGIN_001: Inicio de sesión exitoso', async () => {
+  // ...
+});
 ```
-Puedes modificar este comando si quieres ejecutar únicamente algunos tests específicos o por carpeta.
+Para omitir temporalmente un caso de prueba, usa .skip:
 
----
+```bash
+it.skip('CP_LOGIN_002: Inicio de sesión fallido', async () => {
+  // ...
+});
+```
 
-## 📸 Captura de errores(realizar mejoras)
+
+## 📸 Captura de errores(en implementación)
 
 Si ocurre un error durante una prueba, se genera una captura de pantalla en la carpeta `errores/` con nombre: 
 
@@ -138,11 +153,10 @@ error_<nombre>_<timestamp>.png
 
 ## 💡 Consejos
 
-En caso de que al ejecutar un test aparezca un error relacionado con dependencias, configuraciones o ejecución, puedes consultar un asistente de IA (por ejemplo, ChatGPT) para obtener una guía más rápida hacia la solución.
-
+En caso de que al ejecutar un test aparezca un error relacionado con dependencias, configuraciones o ejecución, puedes consultar un asistente de IA (copiar y pegar el error) para obtener una guía más rápida hacia la solución.
 
 ---
 
 ## 📞 Soporte
 
-Para cualquier duda o mejora, contactar al equipo de QA.
+Para cualquier duda o mejora, contactar al equipo de Pruebas.

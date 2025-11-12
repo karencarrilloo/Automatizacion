@@ -38,10 +38,11 @@ describe('Pruebas de Login', function () {
   });
 
   it.only('CP_LOGIN_001: Inicio de sesión exitoso con credenciales válidas.', async () => {
-    await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL, process.env.LOGIN_PASSWORD, 'CP_LOGIN_001');
-    expect(await mainFrame.isDisplayed()).to.be.true; // Confirmar que realmente se ve en pantalla
-  });
+  await loginPage.ejecutarLogin(process.env.LOGIN_EMAIL, process.env.LOGIN_PASSWORD, 'CP_LOGIN_001');
 
+  const mainFrame = await driver.wait(until.elementLocated(By.id("container-mainframe")), 20000);
+  expect(await mainFrame.isDisplayed()).to.be.true;
+});
 
   //   it('CP_LOGIN_002: Error de autenticación con contraseña inválida', async () => {
   //   try {

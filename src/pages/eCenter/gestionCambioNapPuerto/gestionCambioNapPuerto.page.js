@@ -197,4 +197,38 @@ export default class GestionCambioNapPuertoPage {
   //  CP_GESCAMNAPPUER_003 – Seleccionar un puerto y realizar el cambio
   //  pasos x
   //  ====================================
+
+  async cambioDePuerto(caseName = 'CP_GESCAMNAPPUER_003') {
+    const driver = this.driver;
+    ///  Paso 1: Clic en el registro del puerto
+    try {
+      const puertoDisponibleXpath = '//*[@id="widget-list-list1"]/div/div[1]/ul/li[1]';
+
+      // 1️⃣ Esperar que el listado esté presente
+      const puertoElemento = await driver.wait(
+        until.elementLocated(By.xpath(puertoDisponibleXpath)),
+        15000
+      );
+
+      // 2️⃣ Esperar que sea visible
+      await driver.wait(until.elementIsVisible(puertoElemento), 8000);
+
+      // 3️⃣ Scroll y clic
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", puertoElemento);
+      await driver.sleep(500);
+
+      try {
+        await puertoElemento.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", puertoElemento);
+      }
+
+      await driver.sleep(3000);
+      console.log("✅ Paso 1: Puerto disponible seleccionado correctamente.");
+
+    } catch (error) {
+      throw new Error(`❌ Paso 1: No se pudo seleccionar el puerto disponible: ${error.message}`);
+    }
+
+  }
 }
