@@ -1807,7 +1807,7 @@ export default class GestorOrdenesPage {
   }
 
   // =====================================================
-  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica **PENDIENTE**
+  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica 
   // x pasos
   // =====================================================
   async ejecutarOrdenMantenimientoLogico(caseName = "CP_GESORD_00X", idOrden) {
@@ -1854,121 +1854,69 @@ export default class GestorOrdenesPage {
       await driver.sleep(3000);
       console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
 
-      // === Paso 4: Clic en el botón "ONT" ===
+      // === Paso 4: Clic en el botón "Número de Serial" ===
       try {
-        // 1️⃣ Buscar el modal dinámico del Gestor de Órdenes
-        const modalGestor = await driver.wait(
-          until.elementLocated(
-            By.xpath('//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]')
-          ),
-          15000
-        );
-        await driver.wait(until.elementIsVisible(modalGestor), 8000);
+        const btnNumeroSerialXpath =
+          '//div[contains(@class,"device") and .//div[contains(@class,"serial-label") and normalize-space(text())="Número de serial"]]';
+        const progressXpath = '//*[contains(@id,"progress-progress-crudgestor") or contains(@id,"progress")]';
 
-        // 2️⃣ Buscar el botón "ONT" dentro del modal (varias rutas posibles)
-        const posiblesRutas = [
-          './/div[contains(@title,"ONT")]', // si tiene tooltip
-          './/div[contains(text(),"ONT")]', // si tiene texto visible
-          './/div[contains(@class,"div")]/div/div/div[1]/div[2]/div/div', // ruta profunda original
-          './/div[contains(@id,"ONT")]', // si el id tiene referencia
-        ];
-
-        let btnOnt = null;
-        for (const ruta of posiblesRutas) {
-          try {
-            btnOnt = await modalGestor.findElement(By.xpath(ruta));
-            if (btnOnt) break;
-          } catch {
-            continue;
-          }
-        }
-
-        if (!btnOnt) {
-          throw new Error("No se encontró el botón 'ONT' dentro del modal del Gestor de Órdenes.");
-        }
-
-        // 3️⃣ Scroll y clic con fallback JS
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnOnt);
-        await driver.sleep(400);
-        try {
-          await btnOnt.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", btnOnt);
-        }
-
-        // 4️⃣ Espera mientras carga (progress visible)
-        await driver.sleep(10000); // espera de cortesía para el progress
-
-        console.log("✅ Paso 4: Botón 'ONT' presionado correctamente.");
-
-      } catch (error) {
-        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'ONT': ${error.message}`);
-      }
-
-      // === Paso 5: Clic en el botón "Siguiente" ===
-      try {
-        // 1️⃣ Buscar el modal del Gestor de Órdenes (con ID dinámico)
-        const modalGestor = await driver.wait(
-          until.elementLocated(
-            By.xpath('//div[starts-with(@id,"widget-dialog-open-dialog-") and contains(@id,"orderViewerGestor2")]')
-          ),
-          15000
-        );
-        await driver.wait(until.elementIsVisible(modalGestor), 8000);
-
-        // 2️⃣ Localizar el botón "Siguiente" dentro del modal
-        const btnSiguiente = await driver.wait(
-          until.elementLocated(By.xpath('.//*[@id="widget-button-complet-process"]/div')),
-          10000
-        );
-        await driver.wait(until.elementIsVisible(btnSiguiente), 5000);
-        await driver.wait(until.elementIsEnabled(btnSiguiente), 5000);
-
-        // 3️⃣ Scroll y clic seguro
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
-        await driver.sleep(400);
-        try {
-          await btnSiguiente.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", btnSiguiente);
-        }
-
-        console.log("✅ Paso 5: Botón 'Siguiente' presionado correctamente.");
-
-        // // 4️⃣ Espera al progress (si aparece)
-        // try {
-        //   const progress = await driver.wait(
-        //     until.elementLocated(By.xpath('//div[contains(@id,"progress")]')),
-        //     5000
-        //   );
-        //   await driver.wait(until.stalenessOf(progress), 20000);
-        //   console.log("⏳ Espera completada: proceso finalizado después del clic en 'Siguiente'.");
-        // } catch {
-        //   console.log("⚠️ No se detectó progress, se continúa con el flujo normal.");
-        // }
-
-        await driver.sleep(2000);
-      } catch (error) {
-        throw new Error(`❌ Paso 5: No se pudo presionar el botón 'Siguiente': ${error.message}`);
-      }
-
-      // === Paso 6: Hacer scroll y seleccionar la opción "RECONFIGURACIÓN ONT" === 
-      try {
-        // Scroll hacia el contenedor principal del modal
-        const contenedorOpciones = await driver.wait(
-          until.elementLocated(
-            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]')
-          ),
+        // Localizar el botón dinámicamente
+        const btnNumeroSerial = await driver.wait(
+          until.elementLocated(By.xpath(btnNumeroSerialXpath)),
           20000
         );
+        await driver.wait(until.elementIsVisible(btnNumeroSerial), 10000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnNumeroSerial);
+        await driver.sleep(500);
 
-        await driver.executeScript("arguments[0].scrollTop = arguments[0].scrollHeight;", contenedorOpciones);
-        await driver.sleep(1000); // breve pausa tras el scroll
+        // Intentar clic directo con fallback JS
+        try {
+          await btnNumeroSerial.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnNumeroSerial);
+        }
 
-        // Localizar la opción "RECONFIGURACIÓN ONT"
+        console.log("✅ Paso 4: Botón 'Número de Serial' presionado correctamente.");
+
+        // Esperar opcionalmente el progress (si aparece)
+        let progressVisible = false;
+        try {
+          const progress = await driver.wait(
+            until.elementLocated(By.xpath(progressXpath)),
+            10000
+          );
+          await driver.wait(until.elementIsVisible(progress), 5000);
+          progressVisible = true;
+          console.log("⏳ Paso 4: Proceso de aprovisionamiento iniciado...");
+
+          // Esperar que desaparezca o que el modal cambie (máx 60s)
+          await driver.wait(async () => {
+            try {
+              return !(await progress.isDisplayed());
+            } catch {
+              // Si el elemento desaparece o el modal se cierra, lo consideramos finalizado
+              return true;
+            }
+          }, 60000);
+        } catch {
+          console.log("⚠️ Paso 4: No se detectó progress visible, continuando.");
+        }
+
+        await driver.sleep(2000); // pausa por estabilidad
+        console.log(progressVisible
+          ? "✅ Paso 4: Proceso completado correctamente (progress finalizado)."
+          : "✅ Paso 4: Proceso completado (sin progress visible).");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: Error en clic o espera del progress 'Número de Serial': ${error.message}`);
+      }
+
+
+      // === Paso 5: Clic en la opción "RECONFIGURACIÓN ONT" === 
+      try {
         const opcionReconfiguracionOnt = await driver.wait(
           until.elementLocated(
-            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]/div[3]/div[11]/div[1]')
+            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]/div[3]/div[11]')
           ),
           20000
         );
@@ -1976,7 +1924,7 @@ export default class GestorOrdenesPage {
         await driver.wait(until.elementIsVisible(opcionReconfiguracionOnt), 10000);
         await driver.wait(until.elementIsEnabled(opcionReconfiguracionOnt), 10000);
 
-        // Scroll y clic en la opción
+        // Hacer scroll hasta la opción y clic
         await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionReconfiguracionOnt);
         await driver.sleep(500);
 
@@ -1993,7 +1941,63 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 6: No se pudo seleccionar la opción 'RECONFIGURACIÓN ONT': ${error.message}`);
       }
 
+      // === Paso 6: Clic en el subitem "RECONFIGURACIÓN ONT" desplegado ===
+      try {
+        const subItemFibraDrop = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div[2]/div[3]/div[11]')
+          ),
+          20000
+        );
 
+        await driver.wait(until.elementIsVisible(subItemFibraDrop), 10000);
+        await driver.wait(until.elementIsEnabled(subItemFibraDrop), 10000);
+
+        // Hacer scroll hasta el subitem y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", subItemFibraDrop);
+        await driver.sleep(500);
+
+        try {
+          await subItemFibraDrop.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", subItemFibraDrop);
+        }
+
+        console.log("✅ Paso 6: Subitem 'RECONFIGURACIÓN ONT' seleccionado correctamente.");
+        await driver.sleep(5000); // Espera breve por carga de la siguiente vista
+
+      } catch (error) {
+        throw new Error(`❌ Paso 6: No se pudo seleccionar el subitem 'RECONFIGURACIÓN ONT': ${error.message}`);
+      }
+
+      // === Paso 7: Clic en el botón "Siguiente" ===
+      try {
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-button-btn-next-step"]/div')
+          ),
+          20000
+        );
+
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // Scroll al centro y clic
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(500);
+
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 7: Botón 'Siguiente' presionado correctamente.");
+        await driver.sleep(20000); // Espera por carga del siguiente paso o modal
+
+      } catch (error) {
+        throw new Error(`❌ Paso 7: No se pudo presionar el botón 'Siguiente': ${error.message}`);
+      }
 
 
     } catch (error) {
