@@ -83,37 +83,42 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
+  it.only('CP_GESORD_008: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoFisico();
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
+  it('CP_GESORD_009: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad lógica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoLogico(); 
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
+  it('CP_GESORD_010: Completar orden mantenimiento (se ejecuta en caso de solo se quiera completar la orden sin realizar una actividad o sí se realizó previamente y la orden se encuetre abierta)', async () => {
+    await gestorOrdenesPage.completarOrdenMantenimiento(); 
+    expect(true).to.be.true;
+  });
+
+  it('CP_GESORD_011: Ejecutar orden terminacion (opción entrega de equipos en oficina)', async () => {
     await gestorOrdenesPage.ejecutarOrdenTerminacion(); //**AJUSTAR EL PASO 6 AL DAR CLIC EN EL BOTON SIGUIENTE DAR UNA ESPERA EN EL PROGRESS Y NO SE CIERRE LA PRUEBA**//
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_00X: Completar orden', async () => {
-    await gestorOrdenesPage.completarOrden(); 
+  it('CP_GESORD_012: Completar orden venta e instalacion', async () => {
+    await gestorOrdenesPage.completarOrdenVenta(); 
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_008: Registro de materiales', async () => {
+  it('CP_GESORD_013: Registro de materiales', async () => {
     await gestorOrdenesPage.registroMateriales(); //** ESTE CASO DE PRUEBA SE DEBE EJECUTAR EN UNA ORDEN DE MANTENIMIENTO PARA QUE EL MODAL SE VISUALICE**//
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_009: Revisar sesiones', async () => {
+  it('CP_GESORD_014: Revisar sesiones', async () => {
     await gestorOrdenesPage.revisarSesiones();
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_010: Reabrir orden', async () => {
+  it('CP_GESORD_015: Reabrir orden', async () => {
     await gestorOrdenesPage.reabrirOrden();
     expect(true).to.be.true;
   });

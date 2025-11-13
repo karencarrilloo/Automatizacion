@@ -1410,7 +1410,7 @@ export default class GestorOrdenesPage {
     }
   }
   // =====================================================
-  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad fisica
+  // CP_GESORD_008: Ejecutar orden mantenimiento (cliente simulado) Actividad fisica
   // x pasos
   // =====================================================
   async ejecutarOrdenMantenimientoFisico(caseName = "CP_GESORD_00X", idOrden) {
@@ -1663,7 +1663,6 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 9: No se pudo presionar el botón 'Guardar': ${error.message}`);
       }
 
-
       // === Paso 10: Clic en el botón "Siguiente" en el modal de mantenimiento ===
       try {
         const btnSiguienteXpath = '//*[@id="widget-button-complet-process"]/div';
@@ -1793,21 +1792,22 @@ export default class GestorOrdenesPage {
         }
 
         console.log("✅ Paso 13: Confirmación 'Sí' seleccionada correctamente.");
-        await driver.sleep(3000);
+        await driver.sleep(8000);
       } catch (error) {
         throw new Error(`❌ Paso 13: No se pudo confirmar con 'Sí': ${error.message}`);
       }
 
 
+
     } catch (error) {
-      console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+      console.error(`❌ Error en el caso de prueba CP_GESORD_008: ${error.message}`);
 
       throw error;
     }
   }
 
   // =====================================================
-  // CP_GESORD_00X: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica 
+  // CP_GESORD_009: Ejecutar orden mantenimiento (cliente simulado) Actividad lógica 
   // x pasos
   // =====================================================
   async ejecutarOrdenMantenimientoLogico(caseName = "CP_GESORD_00X", idOrden) {
@@ -2000,15 +2000,467 @@ export default class GestorOrdenesPage {
       }
 
 
+      // === Paso 8: Clic en el botón "Configurar WiFi" dentro del modal de reconfiguración ===
+      try {
+        // 1️⃣ Esperar a que el modal correcto esté visible
+        const modalReconfig = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-dialog-installation-process"]/div/div')
+          ),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(modalReconfig), 10000);
+        console.log("✅ Modal de 'Reconfiguración ONT' detectado correctamente.");
+
+        // 2️⃣ Buscar el botón 'Configurar WiFi' dentro de ese modal
+        const btnConfigurarWifi = await modalReconfig.findElement(
+          By.xpath('.//*[@id="widget-button-btn-next-step"]/div')
+        );
+
+        await driver.wait(until.elementIsVisible(btnConfigurarWifi), 5000);
+        await driver.wait(until.elementIsEnabled(btnConfigurarWifi), 5000);
+
+        // 3️⃣ Clic directo (con fallback JS)
+        try {
+          await btnConfigurarWifi.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnConfigurarWifi);
+        }
+
+        console.log("✅ Paso 8: Botón 'Configurar WiFi' presionado correctamente dentro del modal de reconfiguración.");
+        await driver.sleep(4000); // Breve espera por carga posterior
+
+      } catch (error) {
+        throw new Error(`❌ Paso 8: No se pudo presionar el botón 'Configurar WiFi': ${error.message}`);
+      }
+
+
+      // === Paso 9: Configurar WiFi ===
+      try {
+        // 1️⃣ Clic opcional en el check "Compartir contraseña"
+        const checkCompartirXpath = '//*[@id="widget-checkbox-check-step-validation-wifi"]/label';
+        const elementosCheck = await driver.findElements(By.xpath(checkCompartirXpath));
+
+        if (elementosCheck.length > 0) {
+          const checkCompartir = elementosCheck[0];
+          await driver.wait(until.elementIsVisible(checkCompartir), 5000);
+          await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", checkCompartir);
+          await driver.sleep(300);
+          try {
+            await checkCompartir.click();
+          } catch {
+            await driver.executeScript("arguments[0].click();", checkCompartir);
+          }
+          console.log("✅ Check 'Compartir contraseña' marcado correctamente.");
+        } else {
+          console.log("ℹ️ Check 'Compartir contraseña' no disponible (ONT solo 2.4 GHz), continuando sin marcar.");
+        }
+
+        // 2️⃣ Diligenciar campo SSID 2.4 GHz
+        const inputSsidXpath = '//*[@id="textfield-SSID"]';
+        const inputSsid = await driver.wait(
+          until.elementLocated(By.xpath(inputSsidXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(inputSsid), 5000);
+        await inputSsid.clear();
+        await driver.sleep(300);
+        await inputSsid.sendKeys("test wifi");
+        console.log("✅ Campo 'SSID 2.4 GHz' diligenciado correctamente.");
+        await driver.sleep(500);
+
+        // 3️⃣ Diligenciar campo Contraseña SSID 2.4 GHz
+        const inputPasswordXpath = '//*[@id="textfield-PasswordOneSSID"]';
+        const inputPassword = await driver.wait(
+          until.elementLocated(By.xpath(inputPasswordXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(inputPassword), 5000);
+        await inputPassword.clear();
+        await driver.sleep(300);
+        await inputPassword.sendKeys("wifiTest123");
+        console.log("✅ Campo 'Contraseña SSID 2.4 GHz' diligenciado correctamente.");
+        await driver.sleep(1000);
+
+        console.log("✅ Paso 9: Configuración WiFi completada con éxito.");
+      } catch (error) {
+        throw new Error(`❌ Paso 9: Error al configurar WiFi: ${error.message}`);
+      }
+
+
+
+      // === Paso 10: Clic en el botón "Confirmar" dentro del modal de reconfiguración ===
+      try {
+        // 1️⃣ Esperar el modal correcto (Reconfiguración ONT)
+        const modalReconfig = await driver.wait(
+          until.elementLocated(
+            By.xpath('//*[@id="widget-dialog-dialog-installation-process"]/div/div')
+          ),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(modalReconfig), 10000);
+        console.log("✅ Modal de 'Reconfiguración ONT' visible para confirmar configuración.");
+
+        // 2️⃣ Buscar el botón 'Confirmar' dentro de ese modal
+        const btnConfirmar = await modalReconfig.findElement(
+          By.xpath('.//*[@id="widget-button-btn-configure-wifi"]/div')
+        );
+
+        await driver.wait(until.elementIsVisible(btnConfirmar), 5000);
+        await driver.wait(until.elementIsEnabled(btnConfirmar), 5000);
+
+        // 3️⃣ Clic seguro (fallback JS)
+        try {
+          await btnConfirmar.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnConfirmar);
+        }
+
+        console.log("✅ Paso 10: Botón 'Confirmar' presionado correctamente dentro del modal de reconfiguración.");
+        await driver.sleep(5000); // Espera por la acción posterior
+
+      } catch (error) {
+        throw new Error(`❌ Paso 10: No se pudo presionar el botón 'Confirmar': ${error.message}`);
+      }
+
+      // === Paso 11: Clic en el botón "Siguiente" en el modal de mantenimiento ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-complet-process"]/div';
+
+        // 1️⃣ Esperar a que el botón exista y sea visible
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // 2️⃣ Scroll al botón y clic (fallback por si hay overlays)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(300);
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 11: Botón 'Siguiente' presionado correctamente.");
+
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Siguiente' en el modal de mantenimiento: ${error.message}`);
+      }
+
+      // === Paso 12: Seleccionar opción "FALLA EN EQUIPOS DEL CLIENTE" ===
+      try {
+        const opcionFallaXpath = '//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div/div/div/div[2]/div[8]';
+
+        // 1️⃣ Esperar que la opción exista en el DOM
+        const opcionFalla = await driver.wait(
+          until.elementLocated(By.xpath(opcionFallaXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(opcionFalla), 5000);
+
+        // 2️⃣ Hacer scroll para que el elemento esté centrado
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionFalla);
+        await driver.sleep(2000);
+
+        // 3️⃣ Intentar clic directo y con fallback JS
+        try {
+          await opcionFalla.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", opcionFalla);
+        }
+
+        await driver.sleep(1000);
+        console.log("✅ Paso 12: Opción 'FALLA EN EQUIPOS DEL CLIENTE' seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 12: No se pudo seleccionar la opción 'FALLA EN EQUIPOS DEL CLIENTE': ${error.message}`);
+      }
+
+      // === Paso 13: Clic en el botón "Completar" dentro del modal ===
+      try {
+        // Aseguramos que el modal esté visible
+        const modalMantenimiento = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalMantenimiento), 5000);
+
+        // Buscar el botón dentro del modal (no fuera de él)
+        const botonCompletar = await modalMantenimiento.findElement(
+          By.xpath('.//*[@id="widget-button-complet-process"]/div')
+        );
+
+        // Asegurar que es visible en pantalla y habilitado
+        await driver.wait(until.elementIsVisible(botonCompletar), 5000);
+        await driver.wait(until.elementIsEnabled(botonCompletar), 5000);
+
+        // Hacer scroll hasta el botón para asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonCompletar);
+        await driver.sleep(500);
+
+        // Verificar que el botón no esté cubierto por otro elemento
+        const isDisplayed = await botonCompletar.isDisplayed();
+        if (!isDisplayed) throw new Error("El botón 'Completar' está oculto o tapado por otro elemento.");
+
+        // Ejecutar clic con fallback por JS (por si Selenium detecta overlay)
+        try {
+          await botonCompletar.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", botonCompletar);
+        }
+
+        console.log("✅ Paso 13: Botón 'Completar' presionado correctamente dentro del modal.");
+        await driver.sleep(3000);
+      } catch (error) {
+        throw new Error(`❌ Paso 13: No se pudo presionar el botón 'Completar': ${error.message}`);
+      }
+
+      // === Paso 14: Confirmar acción en el modal ("Sí") ===
+      try {
+        // Esperar a que el modal de confirmación aparezca
+        const modalConfirmacion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
+          15000
+        );
+
+        await driver.wait(until.elementIsVisible(modalConfirmacion), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", modalConfirmacion);
+        await driver.sleep(500);
+
+        // Antes de hacer clic, verificar si hay un overlay o progress activo
+        try {
+          const overlay = await driver.findElement(By.css('.ui-progress-overlay, .progress, .loading'));
+          const visible = await overlay.isDisplayed().catch(() => false);
+          if (visible) {
+            console.log("⏳ Esperando a que finalice el progreso antes de confirmar...");
+            await driver.wait(async () => !(await overlay.isDisplayed().catch(() => false)), 15000);
+          }
+        } catch {
+          // No hay overlay, continuar
+        }
+
+        // Intentar hacer clic normalmente
+        try {
+          await modalConfirmacion.click();
+        } catch {
+          // Si falla, forzar clic con JS
+          await driver.executeScript("arguments[0].click();", modalConfirmacion);
+        }
+
+        console.log("✅ Paso 14: Confirmación 'Sí' seleccionada correctamente.");
+        await driver.sleep(8000);
+      } catch (error) {
+        throw new Error(`❌ Paso 14: No se pudo confirmar con 'Sí': ${error.message}`);
+      }
+
+
+
+
     } catch (error) {
-      console.error(`❌ Error en el caso de prueba CP_GESORD_00X: ${error.message}`);
+      console.error(`❌ Error en el caso de prueba CP_GESORD_009: ${error.message}`);
 
       throw error;
     }
   }
 
   // =====================================================
-  // CP_GESORD_00X: Ejecutar orden terminacion (opción entrega de equipos en oficina)
+  // CP_GESORD_010: Completar orden Mantenimiento
+  // x pasos
+  // =====================================================
+
+  async completarOrdenMantenimiento(caseName = "CP_GESORD_00X", idOrden) {
+    const driver = this.driver;
+
+    try {
+      // Paso 1: Seleccionar cliente
+      await seleccionarClientePorIdOrden(driver, idOrden || this.defaultIdOrden);
+
+      // Paso 2: Abrir menú de opciones
+      const btnOpciones = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="btn-options"]')),
+        10000
+      );
+      await driver.wait(until.elementIsVisible(btnOpciones), 5000);
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", btnOpciones);
+      await driver.sleep(300);
+      await driver.executeScript("arguments[0].click();", btnOpciones);
+      await driver.sleep(1000);
+
+      console.log("✅ Paso 2: Botón 'Opciones' presionado correctamente.");
+
+      // Paso 3: Seleccionar opción "Ejecutar orden" ===
+
+      const opcionEjecutarXpath = '//*[@id="1094"]/div';
+
+      // Esperar a que la opción esté visible en el menú
+      const opcionEjecutar = await driver.wait(
+        until.elementLocated(By.xpath(opcionEjecutarXpath)),
+        15000
+      );
+      await driver.wait(until.elementIsVisible(opcionEjecutar), 5000);
+
+      // Desplazar y hacer clic (con fallback a JS)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionEjecutar);
+      await driver.sleep(500);
+
+      try {
+        await opcionEjecutar.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", opcionEjecutar);
+      }
+
+      await driver.sleep(3000);
+      console.log("✅ Paso 3: Opción 'Ejecutar orden' seleccionada correctamente.");
+
+      // === Paso 4: Clic en el botón "Siguiente" en el modal de mantenimiento ===
+      try {
+        const btnSiguienteXpath = '//*[@id="widget-button-complet-process"]/div';
+
+        // 1️⃣ Esperar a que el botón exista y sea visible
+        const btnSiguiente = await driver.wait(
+          until.elementLocated(By.xpath(btnSiguienteXpath)),
+          20000
+        );
+        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+        // 2️⃣ Scroll al botón y clic (fallback por si hay overlays)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", btnSiguiente);
+        await driver.sleep(300);
+        try {
+          await btnSiguiente.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", btnSiguiente);
+        }
+
+        console.log("✅ Paso 4: Botón 'Siguiente' presionado correctamente.");
+
+
+      } catch (error) {
+        throw new Error(`❌ Paso 4: No se pudo presionar el botón 'Siguiente' en el modal de mantenimiento: ${error.message}`);
+      }
+
+      // === Paso 5: Seleccionar opción "FALLA EN EQUIPOS DEL CLIENTE" ===
+      try {
+        const opcionFallaXpath = '//*[@id="widget-dialog-view-process-child"]/div/div/div[2]/div/div/div/div/div/div/div[2]/div[8]';
+
+        // 1️⃣ Esperar que la opción exista en el DOM
+        const opcionFalla = await driver.wait(
+          until.elementLocated(By.xpath(opcionFallaXpath)),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(opcionFalla), 5000);
+
+        // 2️⃣ Hacer scroll para que el elemento esté centrado
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", opcionFalla);
+        await driver.sleep(2000);
+
+        // 3️⃣ Intentar clic directo y con fallback JS
+        try {
+          await opcionFalla.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", opcionFalla);
+        }
+
+        await driver.sleep(1000);
+        console.log("✅ Paso 5: Opción 'FALLA EN EQUIPOS DEL CLIENTE' seleccionada correctamente.");
+
+      } catch (error) {
+        throw new Error(`❌ Paso 5: No se pudo seleccionar la opción 'FALLA EN EQUIPOS DEL CLIENTE': ${error.message}`);
+      }
+
+      // === Paso 6: Clic en el botón "Completar" dentro del modal ===
+      try {
+        // Aseguramos que el modal esté visible
+        const modalMantenimiento = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-dialog-view-process-child"]/div/div')),
+          10000
+        );
+        await driver.wait(until.elementIsVisible(modalMantenimiento), 5000);
+
+        // Buscar el botón dentro del modal (no fuera de él)
+        const botonCompletar = await modalMantenimiento.findElement(
+          By.xpath('.//*[@id="widget-button-complet-process"]/div')
+        );
+
+        // Asegurar que es visible en pantalla y habilitado
+        await driver.wait(until.elementIsVisible(botonCompletar), 5000);
+        await driver.wait(until.elementIsEnabled(botonCompletar), 5000);
+
+        // Hacer scroll hasta el botón para asegurar visibilidad
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", botonCompletar);
+        await driver.sleep(500);
+
+        // Verificar que el botón no esté cubierto por otro elemento
+        const isDisplayed = await botonCompletar.isDisplayed();
+        if (!isDisplayed) throw new Error("El botón 'Completar' está oculto o tapado por otro elemento.");
+
+        // Ejecutar clic con fallback por JS (por si Selenium detecta overlay)
+        try {
+          await botonCompletar.click();
+        } catch {
+          await driver.executeScript("arguments[0].click();", botonCompletar);
+        }
+
+        console.log("✅ Paso 6: Botón 'Completar' presionado correctamente dentro del modal.");
+        await driver.sleep(3000);
+      } catch (error) {
+        throw new Error(`❌ Paso 6: No se pudo presionar el botón 'Completar': ${error.message}`);
+      }
+
+      // === Paso 7: Confirmar acción en el modal ("Sí") ===
+      try {
+        // Esperar a que el modal de confirmación aparezca
+        const modalConfirmacion = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="widget-button-btConfirmYes"]/div')),
+          15000
+        );
+
+        await driver.wait(until.elementIsVisible(modalConfirmacion), 5000);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", modalConfirmacion);
+        await driver.sleep(500);
+
+        // Antes de hacer clic, verificar si hay un overlay o progress activo
+        try {
+          const overlay = await driver.findElement(By.css('.ui-progress-overlay, .progress, .loading'));
+          const visible = await overlay.isDisplayed().catch(() => false);
+          if (visible) {
+            console.log("⏳ Esperando a que finalice el progreso antes de confirmar...");
+            await driver.wait(async () => !(await overlay.isDisplayed().catch(() => false)), 15000);
+          }
+        } catch {
+          // No hay overlay, continuar
+        }
+
+        // Intentar hacer clic normalmente
+        try {
+          await modalConfirmacion.click();
+        } catch {
+          // Si falla, forzar clic con JS
+          await driver.executeScript("arguments[0].click();", modalConfirmacion);
+        }
+
+        console.log("✅ Paso 7: Confirmación 'Sí' seleccionada correctamente.");
+        await driver.sleep(8000);
+      } catch (error) {
+        throw new Error(`❌ Paso 7: No se pudo confirmar con 'Sí': ${error.message}`);
+      }
+
+
+    } catch (error) {
+      console.error(`❌ Error en el caso de prueba CP_GESORD_010: ${error.message}`);
+
+      throw error;
+    }
+  }
+
+
+  // =====================================================
+  // CP_GESORD_011: Ejecutar orden terminacion (opción entrega de equipos en oficina)
   // x pasos
   // =====================================================
 
@@ -2181,7 +2633,7 @@ export default class GestorOrdenesPage {
 
         await driver.sleep(2000); // Pequeña espera adicional
       } catch (error) {
-        throw new Error(`❌ Paso 6: No se pudo presionar el botón 'Siguiente' dentro del modal de escanear ONT: ${error.message}`);
+        throw new Error(`❌ Paso 11: No se pudo presionar el botón 'Siguiente' dentro del modal de escanear ONT: ${error.message}`);
       }
 
 
@@ -2194,11 +2646,11 @@ export default class GestorOrdenesPage {
   }
 
   // =====================================================
-  // CP_GESORD_00X: Completar orden
+  // CP_GESORD_012: Completar orden Venta e instalacion
   // x pasos
   // =====================================================
 
-  async completarOrden(caseName = "CP_GESORD_00X", idOrden) {
+  async completarOrdenVenta(caseName = "CP_GESORD_00X", idOrden) {
     const driver = this.driver;
 
     try {
@@ -2323,7 +2775,7 @@ export default class GestorOrdenesPage {
 
 
   // =====================================================
-  // CP_GESORD_008 – Registro de materiales
+  // CP_GESORD_013 – Registro de materiales
   // x pasos
   // =====================================================
   async registroMateriales(caseName = "CP_GESORD_008", idOrden) {
@@ -2456,13 +2908,13 @@ export default class GestorOrdenesPage {
 
 
   } catch(error) {
-    console.error(`❌ Error en el caso de prueba CP_GESORD_008: ${error.message}`);
+    console.error(`❌ Error en el caso de prueba CP_GESORD_013: ${error.message}`);
 
     throw error;
   }
 
   // =====================================================
-  // CP_GESORD_009 – Revisar sesiones
+  // CP_GESORD_014 – Revisar sesiones
   // x pasos
   // =====================================================
   async revisarSesiones(caseName = "CP_GESORD_009", idOrden) {
@@ -2787,12 +3239,12 @@ export default class GestorOrdenesPage {
 
 
   } catch(error) {
-    console.error(`❌ Error en el caso de prueba CP_GESORD_009: ${error.message}`);
+    console.error(`❌ Error en el caso de prueba CP_GESORD_014: ${error.message}`);
 
     throw error;
   }
   // =====================================================
-  // CP_GESORD_010 – Reabrir orden
+  // CP_GESORD_015 – Reabrir orden
   // x pasos
   // =====================================================
   async reabrirOrden(caseName = "CP_GESORD_010", idOrden) {
@@ -2854,7 +3306,7 @@ export default class GestorOrdenesPage {
 
 
   } catch(error) {
-    console.error(`❌ Error en el caso de prueba CP_GESORD_010: ${error.message}`);
+    console.error(`❌ Error en el caso de prueba CP_GESORD_015: ${error.message}`);
 
     throw error;
   }
