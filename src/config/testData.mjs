@@ -14,13 +14,13 @@ export const testData = {
   },
   visorInformacionTecnicaRed: {
     //variable global
-    defaultNapSerialCelsia: '3241009', // Filtra por Nap serial celsia
-    defaultSerialONT: '48575443702166A5', // Filtra y selecciona el cliente por serial ont
+    defaultNapSerialCelsia: '3240754', // Filtra por Nap serial celsia
+    defaultSerialONT: '48575443CBAD2DA5', // Filtra y selecciona el cliente por serial ont
   },
   GestionCambioNapPuerto: {
     //variable global
     defaultNapSerialCelsia: '3240754',
-
+    defaultIdDeal: '28007172679'
   },
   //**PENDIENTE POR AJUSTAR**/
 

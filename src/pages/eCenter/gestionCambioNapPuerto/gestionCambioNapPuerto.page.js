@@ -11,11 +11,13 @@ export default class GestionCambioNapPuertoPage {
   /**
   * @param {WebDriver} driver  instancia de selenium
   * @param {string} defaultNapSerialCelsia  ID_DEAL global reutilizable
+  * * @param {string} defaultIdDeal  ID_DEAL global reutilizable
   */
-  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia) {
+  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia, defaultIdDeal = testData.GestionCambioNapPuerto.defaultIdDeal) {
     this.driver = driver;
     this.testData = testData.GestionCambioNapPuerto
     this.defaultNapSerialCelsia = defaultNapSerialCelsia;
+    this.defaultIdDeal = defaultIdDeal;
   }
 
   //  ====================================
@@ -225,6 +227,38 @@ export default class GestionCambioNapPuertoPage {
 
       await driver.sleep(3000);
       console.log("✅ Paso 1: Puerto disponible seleccionado correctamente.");
+
+
+      // === Paso 2: Diligenciar el campo "ID DEAL" ===
+      try {
+        const idDealValue = this.testData.defaultIdDeal;
+        if (!idDealValue) {
+          throw new Error("Valor defaultIdDeal no definido en testData.");
+        }
+
+        // 1️⃣ Localizar el campo ID DEAL
+        const campoIdDeal = await driver.wait(
+          until.elementLocated(By.xpath('//*[@id="textfield-inputIdAccount"]')),
+          15000
+        );
+
+        await driver.wait(until.elementIsVisible(campoIdDeal), 8000);
+
+        // 2️⃣ Scroll hacia el campo (por seguridad)
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", campoIdDeal);
+        await driver.sleep(300);
+
+        // 3️⃣ Limpiar y diligenciar el valor desde testData
+        await campoIdDeal.clear();
+        await campoIdDeal.sendKeys(idDealValue);
+        await driver.sleep(500);
+
+        console.log(`✅ Paso 2: Campo 'ID DEAL' diligenciado correctamente con: ${idDealValue}`);
+
+      } catch (error) {
+        throw new Error(`❌ Paso 2: No se pudo diligenciar el campo "ID DEAL": ${error.message}`);
+      }
+
 
     } catch (error) {
       throw new Error(`❌ Paso 1: No se pudo seleccionar el puerto disponible: ${error.message}`);
