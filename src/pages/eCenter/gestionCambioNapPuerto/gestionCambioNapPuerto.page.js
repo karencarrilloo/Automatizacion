@@ -12,14 +12,18 @@ export default class GestionCambioNapPuertoPage {
   * @param {WebDriver} driver  instancia de selenium
   * @param {string} defaultNapSerialCelsia  ID_DEAL global reutilizable
   * @param {string} defaultIdDeal  ID_DEAL global reutilizable
-  * * @param {string} puertoSeleccion  ID_DEAL global reutilizable
+  * @param {string} puertoSeleccion  puerto global reutilizable
+  * @param {string} defaultComentario  comentario global reutilizable
   */
-  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia, defaultIdDeal = testData.GestionCambioNapPuerto.defaultIdDeal, puertoSeleccion = testData.GestionCambioNapPuerto.puertoSeleccion) {
+  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia,
+    defaultIdDeal = testData.GestionCambioNapPuerto.defaultIdDeal, puertoSeleccion = testData.GestionCambioNapPuerto.puertoSeleccion,
+    defaultComentario = testData.GestionCambioNapPuerto.defaultComentario) {
     this.driver = driver;
     this.testData = testData.GestionCambioNapPuerto
     this.defaultNapSerialCelsia = defaultNapSerialCelsia;
     this.defaultIdDeal = defaultIdDeal;
     this.puertoSeleccion = puertoSeleccion;
+    this.defaultComentario = defaultComentario;
   }
 
   //  ====================================
@@ -199,7 +203,7 @@ export default class GestionCambioNapPuertoPage {
 
   //  ==================================== 
   //  CP_GESCAMNAPPUER_003 – Seleccionar un puerto y realizar el cambio
-  //  pasos x
+  //  pasos 4
   //  ====================================
 
   async cambioDePuerto(caseName = 'CP_GESCAMNAPPUER_003') {
@@ -247,43 +251,115 @@ export default class GestionCambioNapPuertoPage {
       console.log(`✅ Paso 1: Puerto seleccionado (modo: "${modoSeleccion}", índice: ${index}).`);
       await driver.sleep(2000);
 
-       } catch (error) {
+    } catch (error) {
       throw new Error(`❌ Paso 1: No se pudo seleccionar el puerto disponible: ${error.message}`);
     }
 
-  
 
-      // === Paso 2: Diligenciar el campo "ID DEAL" ===
-      try {
-        const idDealValue = this.testData.defaultIdDeal;
-        if (!idDealValue) {
-          throw new Error("Valor defaultIdDeal no definido en testData.");
-        }
 
-        // 1️⃣ Localizar el campo ID DEAL
-        const campoIdDeal = await driver.wait(
-          until.elementLocated(By.xpath('//*[@id="textfield-inputIdAccount"]')),
-          15000
-        );
-
-        await driver.wait(until.elementIsVisible(campoIdDeal), 8000);
-
-        // 2️⃣ Scroll hacia el campo (por seguridad)
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", campoIdDeal);
-        await driver.sleep(300);
-
-        // 3️⃣ Limpiar y diligenciar el valor desde testData
-        await campoIdDeal.clear();
-        await campoIdDeal.sendKeys(idDealValue);
-        await driver.sleep(500);
-
-        console.log(`✅ Paso 2: Campo 'ID DEAL' diligenciado correctamente con: ${idDealValue}`);
-
-      } catch (error) {
-        throw new Error(`❌ Paso 2: No se pudo diligenciar el campo "ID DEAL": ${error.message}`);
+    // === Paso 2: Diligenciar el campo "ID DEAL" ===
+    try {
+      const idDealValue = this.testData.defaultIdDeal;
+      if (!idDealValue) {
+        throw new Error("Valor defaultIdDeal no definido en testData.");
       }
 
+      // 1️⃣ Localizar el campo ID DEAL
+      const campoIdDeal = await driver.wait(
+        until.elementLocated(By.xpath('//*[@id="textfield-inputIdAccount"]')),
+        15000
+      );
 
-   
+      await driver.wait(until.elementIsVisible(campoIdDeal), 8000);
+
+      // 2️⃣ Scroll hacia el campo (por seguridad)
+      await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", campoIdDeal);
+      await driver.sleep(300);
+
+      // 3️⃣ Limpiar y diligenciar el valor desde testData
+      await campoIdDeal.clear();
+      await campoIdDeal.sendKeys(idDealValue);
+      await driver.sleep(500);
+
+      console.log(`✅ Paso 2: Campo 'ID DEAL' diligenciado correctamente con: ${idDealValue}`);
+
+    } catch (error) {
+      throw new Error(`❌ Paso 2: No se pudo diligenciar el campo "ID DEAL": ${error.message}`);
     }
+
+
+    // === Paso 3: Diligenciar el campo "Comentario" ===
+    try {
+      // 0️⃣ Obtener el comentario desde testData
+      const comentario = this.testData.defaultComentario;
+
+      if (!comentario) {
+        throw new Error("No se encontró defaultComentario en testData.GestionCambioNapPuerto.");
+      }
+
+      // 1️⃣ Localizar el campo comentario dentro del modal
+      const campoComentario = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-textareafield-inputComment"]/textarea')
+        ),
+        15000
+      );
+
+      await driver.wait(until.elementIsVisible(campoComentario), 8000);
+
+      // 2️⃣ Scroll hacia el campo (por seguridad)
+      await driver.executeScript(
+        "arguments[0].scrollIntoView({ block: 'center' });",
+        campoComentario
+      );
+      await driver.sleep(300);
+
+      // 3️⃣ Limpiar y diligenciar el comentario desde testData
+      await campoComentario.clear();
+      await campoComentario.sendKeys(comentario);
+      await driver.sleep(500);
+
+      console.log(`✅ Paso 3: Campo 'Comentario' diligenciado correctamente con: ${comentario}`);
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 3: No se pudo diligenciar el campo "Comentario": ${error.message}`
+      );
+    }
+
+    // === Paso 4: Clic en el botón "Guardar" ===
+    try {
+      // 1️⃣ Localizar el botón guardar
+      const btnGuardar = await driver.wait(
+        until.elementLocated(
+          By.xpath('//*[@id="widget-button-btn-guardar"]/div')
+        ),
+        15000
+      );
+
+      await driver.wait(until.elementIsVisible(btnGuardar), 8000);
+
+      // 2️⃣ Scroll hacia el botón (por seguridad)
+      await driver.executeScript(
+        "arguments[0].scrollIntoView({ block: 'center' });",
+        btnGuardar
+      );
+      await driver.sleep(300);
+
+      // 3️⃣ Clic en el botón "Guardar"
+      await btnGuardar.click();
+      console.log("🟦 Paso 4: Botón 'Guardar' clickeado correctamente.");
+
+      // 4️⃣ Espera de proceso / progress (hasta 30 segundos)
+      await driver.sleep(10000); // 30 segundos por operación de backend
+      console.log("⏳ Paso 4: Espera por procesamiento completada.");
+
+    } catch (error) {
+      throw new Error(
+        `❌ Paso 4: No se pudo hacer clic en el botón 'Guardar': ${error.message}`
+      );
+    }
+
+
   }
+}

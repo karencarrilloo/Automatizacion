@@ -21,7 +21,9 @@ export const testData = {
     //variable global
     puertoSeleccion: "first",   // "first" | "last" | "random" | número (índice)
     defaultNapSerialCelsia: '3240754',
-    defaultIdDeal: '28007172679'
+    defaultIdDeal: '28007172679',
+    defaultComentario: "test cambio puerto Nap"
+
   },
   //**PENDIENTE POR AJUSTAR**/
 
