@@ -11,13 +11,15 @@ export default class GestionCambioNapPuertoPage {
   /**
   * @param {WebDriver} driver  instancia de selenium
   * @param {string} defaultNapSerialCelsia  ID_DEAL global reutilizable
-  * * @param {string} defaultIdDeal  ID_DEAL global reutilizable
+  * @param {string} defaultIdDeal  ID_DEAL global reutilizable
+  * * @param {string} puertoSeleccion  ID_DEAL global reutilizable
   */
-  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia, defaultIdDeal = testData.GestionCambioNapPuerto.defaultIdDeal) {
+  constructor(driver, defaultNapSerialCelsia = testData.GestionCambioNapPuerto.defaultNapSerialCelsia, defaultIdDeal = testData.GestionCambioNapPuerto.defaultIdDeal, puertoSeleccion = testData.GestionCambioNapPuerto.puertoSeleccion) {
     this.driver = driver;
     this.testData = testData.GestionCambioNapPuerto
     this.defaultNapSerialCelsia = defaultNapSerialCelsia;
     this.defaultIdDeal = defaultIdDeal;
+    this.puertoSeleccion = puertoSeleccion;
   }
 
   //  ====================================
@@ -202,32 +204,54 @@ export default class GestionCambioNapPuertoPage {
 
   async cambioDePuerto(caseName = 'CP_GESCAMNAPPUER_003') {
     const driver = this.driver;
-    ///  Paso 1: Clic en el registro del puerto
+    // === Paso 1: Seleccionar puerto disponible ===
     try {
-      const puertoDisponibleXpath = '//*[@id="widget-list-list1"]/div/div[1]/ul/li[1]';
+      const configNap = (this.testData && this.testData.gestionCambioNapPuerto)
+        ? this.testData.gestionCambioNapPuerto
+        : {};
 
-      // 1️⃣ Esperar que el listado esté presente
-      const puertoElemento = await driver.wait(
-        until.elementLocated(By.xpath(puertoDisponibleXpath)),
-        15000
-      );
+      const modoSeleccion = configNap.puertoSeleccion || "first";
 
-      // 2️⃣ Esperar que sea visible
-      await driver.wait(until.elementIsVisible(puertoElemento), 8000);
+      const listaPuertosXpath = '//*[@id="widget-list-list1"]/div/div[1]/ul/li';
 
-      // 3️⃣ Scroll y clic
-      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", puertoElemento);
-      await driver.sleep(500);
+      // Esperar que aparezca el listado
+      await driver.wait(until.elementLocated(By.xpath(listaPuertosXpath)), 15000);
 
-      try {
-        await puertoElemento.click();
-      } catch {
-        await driver.executeScript("arguments[0].click();", puertoElemento);
+      const puertos = await driver.findElements(By.xpath(listaPuertosXpath));
+
+      if (puertos.length === 0) {
+        throw new Error("No se encontraron puertos disponibles.");
       }
 
-      await driver.sleep(3000);
-      console.log("✅ Paso 1: Puerto disponible seleccionado correctamente.");
+      let index = 0;
+      if (modoSeleccion === "last") {
+        index = puertos.length - 1;
+      } else if (modoSeleccion === "random") {
+        index = Math.floor(Math.random() * puertos.length);
+      } else if (!isNaN(modoSeleccion)) {
+        index = Number(modoSeleccion);
+      }
 
+      const puertoSeleccionado = puertos[index];
+
+      // Scroll + clic seguro
+      await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", puertoSeleccionado);
+      await driver.sleep(400);
+
+      try {
+        await puertoSeleccionado.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", puertoSeleccionado);
+      }
+
+      console.log(`✅ Paso 1: Puerto seleccionado (modo: "${modoSeleccion}", índice: ${index}).`);
+      await driver.sleep(2000);
+
+       } catch (error) {
+      throw new Error(`❌ Paso 1: No se pudo seleccionar el puerto disponible: ${error.message}`);
+    }
+
+  
 
       // === Paso 2: Diligenciar el campo "ID DEAL" ===
       try {
@@ -260,9 +284,6 @@ export default class GestionCambioNapPuertoPage {
       }
 
 
-    } catch (error) {
-      throw new Error(`❌ Paso 1: No se pudo seleccionar el puerto disponible: ${error.message}`);
+   
     }
-
   }
-}

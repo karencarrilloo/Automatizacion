@@ -19,6 +19,7 @@ export const testData = {
   },
   GestionCambioNapPuerto: {
     //variable global
+    puertoSeleccion: "first",   // "first" | "last" | "random" | número (índice)
     defaultNapSerialCelsia: '3240754',
     defaultIdDeal: '28007172679'
   },
