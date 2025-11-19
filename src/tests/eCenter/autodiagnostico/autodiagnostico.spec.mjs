@@ -1,6 +1,6 @@
 import { Builder } from 'selenium-webdriver';
 import { expect } from 'chai';
-import chrome from 'selenium-webdriver/chrome.js';   // ✅ agregado
+import chrome from 'selenium-webdriver/chrome.js';  
 import LoginPage from '../../../pages/login/login.page.js';
 import AutodiagnosticoPage from '../../../pages/eCenter/autodiagnostico/autodiagnostico.page.js';
 import chromedriver from 'chromedriver';

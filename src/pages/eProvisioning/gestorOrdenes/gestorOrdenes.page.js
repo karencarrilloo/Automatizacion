@@ -13,11 +13,23 @@ export default class GestorOrdenesPage {
  * @param {WebDriver} driver  instancia de selenium
  * @param {string} defaultIdOrden ID ORDEN global reutilizable
  * @param {string} defaultSerialONT  Serial ONT global reutilizable
+ * @param {string} defaultPotenciaNAP  Serial ONT global reutilizable
+ * @param {string} defaultVelocidadSubida  Velocidad de subida global reutilizable
+ * @param {string} defaultVelocidadBajada  Velocidad de bajada global reutilizable
  */
-  constructor(driver, defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, defaultSerialONT = testData.gestorOrdenes.defaultSerialONT) {
+  constructor(driver, defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, 
+    defaultSerialONT = testData.gestorOrdenes.defaultSerialONT,
+    defaultPotenciaNAP = testData.gestorOrdenes.defaultPotenciaNAP,
+    defaultVelocidadSubida = testData.gestorOrdenes.defaultVelocidadSubida,
+    defaultVelocidadBajada = testData.gestorOrdenes.defaultVelocidadBajada,
+
+  ) {
     this.driver = driver;
     this.defaultIdOrden = defaultIdOrden;
     this.defaultSerialONT = defaultSerialONT;
+    this.defaultPotenciaNAP = defaultPotenciaNAP;
+    this.defaultVelocidadSubida = defaultVelocidadSubida;
+    this.defaultVelocidadBajada = defaultVelocidadBajada;
   }
 
   async seleccionarCliente() {
@@ -880,35 +892,45 @@ export default class GestorOrdenesPage {
         throw new Error(`❌ Paso 5: Error al intentar presionar el botón 'SIGUIENTE': ${error.message}`);
       }
 
-      // === Paso 6: Diligenciar campo "Potencia NAP" con el valor "17" ===
+      // === Paso 6: Diligenciar campo "Potencia NAP" ===
       try {
         const inputPotenciaNapXpath = '//*[@id="textfield-PotenciaNAP"]';
 
-        // 1️⃣ Esperar a que el campo esté presente en el DOM
+        // 1️⃣ Localizar el campo en el DOM
         const inputPotenciaNap = await driver.wait(
           until.elementLocated(By.xpath(inputPotenciaNapXpath)),
           15000
         );
 
-        // 2️⃣ Esperar que sea visible y editable
+        // 2️⃣ Esperar que sea visible y habilitado
         await driver.wait(until.elementIsVisible(inputPotenciaNap), 8000);
         await driver.wait(until.elementIsEnabled(inputPotenciaNap), 8000);
 
-        // 3️⃣ Scroll hacia el campo
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputPotenciaNap);
+        // 3️⃣ Scroll y limpieza
+        await driver.executeScript(
+          "arguments[0].scrollIntoView({block: 'center'});",
+          inputPotenciaNap
+        );
         await driver.sleep(500);
-
-        // 4️⃣ Limpiar campo y diligenciar con el valor "17"
         await inputPotenciaNap.clear();
-        await driver.sleep(300);
-        await inputPotenciaNap.sendKeys("17");
+
+        // 4️⃣ Obtener el valor desde la variable global de la clase
+        const potenciaNAP = this.defaultPotenciaNAP;
+        if (!potenciaNAP) {
+          throw new Error("defaultPotenciaNAP no está definido en esta instancia");
+        }
+
+        await inputPotenciaNap.sendKeys(potenciaNAP);
         await driver.sleep(500);
 
-        console.log("✅ Paso 6: Campo 'Potencia NAP' diligenciado correctamente con el valor '17'.");
+        console.log(`✅ Paso 6: Campo 'Potencia NAP' diligenciado correctamente con: ${potenciaNAP}`);
 
       } catch (error) {
-        throw new Error(`❌ Paso 6: Error al diligenciar el campo 'Potencia NAP': ${error.message}`);
+        throw new Error(
+          `❌ Paso 6: Error al diligenciar el campo 'Potencia NAP': ${error.message}`
+        );
       }
+
 
       // === Paso 7: Clic en el botón "Siguiente" ===
       try {
@@ -1087,42 +1109,43 @@ export default class GestorOrdenesPage {
 
       // === Paso 12: Diligenciar velocidades de subida y bajada ===
       try {
-        // XPaths de los campos
         const inputVelocidadSubidaXpath = '//*[@id="textfield-VelocidadSubida"]';
         const inputVelocidadBajadaXpath = '//*[@id="textfield-VelocidadBajada"]';
 
-        // 1️⃣ Esperar y diligenciar campo "Velocidad Subida"
+        // Valores desde testData
+        const velocidadSubida = this.defaultVelocidadSubida;
+        const velocidadBajada = this.defaultVelocidadBajada;
+
+        // 🟢 Campo Velocidad Subida
         const inputVelocidadSubida = await driver.wait(
           until.elementLocated(By.xpath(inputVelocidadSubidaXpath)),
           20000
         );
         await driver.wait(until.elementIsVisible(inputVelocidadSubida), 5000);
         await driver.wait(until.elementIsEnabled(inputVelocidadSubida), 5000);
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", inputVelocidadSubida);
-        await driver.sleep(300);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputVelocidadSubida);
         await inputVelocidadSubida.clear();
-        await inputVelocidadSubida.sendKeys("800");
-        console.log("✅ Campo 'Velocidad Subida' diligenciado con 800.");
+        await inputVelocidadSubida.sendKeys(velocidadSubida);
+        console.log(`✅ Campo 'Velocidad Subida' diligenciado con: ${velocidadSubida}`);
 
-        // 2️⃣ Esperar y diligenciar campo "Velocidad Bajada"
+        // 🟢 Campo Velocidad Bajada
         const inputVelocidadBajada = await driver.wait(
           until.elementLocated(By.xpath(inputVelocidadBajadaXpath)),
           20000
         );
         await driver.wait(until.elementIsVisible(inputVelocidadBajada), 5000);
         await driver.wait(until.elementIsEnabled(inputVelocidadBajada), 5000);
-        await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", inputVelocidadBajada);
-        await driver.sleep(300);
+        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", inputVelocidadBajada);
         await inputVelocidadBajada.clear();
-        await inputVelocidadBajada.sendKeys("800");
-        console.log("✅ Campo 'Velocidad Bajada' diligenciado con 800.");
+        await inputVelocidadBajada.sendKeys(velocidadBajada);
+        console.log(`✅ Campo 'Velocidad Bajada' diligenciado con: ${velocidadBajada}`);
 
-        // 3️⃣ Pausa corta para asegurar render
-        await driver.sleep(1000);
+        await driver.sleep(500);
 
       } catch (error) {
         throw new Error(`❌ Paso 12: Error al diligenciar velocidades: ${error.message}`);
       }
+
 
 
       // === Paso 13: Clic en el botón "Siguiente" ===

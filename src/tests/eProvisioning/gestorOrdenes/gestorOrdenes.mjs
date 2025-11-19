@@ -78,12 +78,12 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
+  it.only('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion(); //**AJUSTAR PASO CONF DE WIFI CUANDO LA ONT NO ES DUAL BAND**//
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_008: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
+  it('CP_GESORD_008: Ejecutar orden mantenimiento (cliente simulado) 1 Actividad fisica', async () => {
     await gestorOrdenesPage.ejecutarOrdenMantenimientoFisico();
     expect(true).to.be.true;
   });
