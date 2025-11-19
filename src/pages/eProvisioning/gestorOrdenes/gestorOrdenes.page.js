@@ -16,12 +16,18 @@ export default class GestorOrdenesPage {
  * @param {string} defaultPotenciaNAP  Serial ONT global reutilizable
  * @param {string} defaultVelocidadSubida  Velocidad de subida global reutilizable
  * @param {string} defaultVelocidadBajada  Velocidad de bajada global reutilizable
+ * @param {string} defaultWifiSSID  
+ * @param {string} defaultWifiPassword  
+ * @param {boolean} marcarCompartirContrasena Define si se marca el check de compartir contraseña
  */
-  constructor(driver, defaultIdOrden = testData.gestorOrdenes.defaultIdOrden, 
+  constructor(driver, defaultIdOrden = testData.gestorOrdenes.defaultIdOrden,
     defaultSerialONT = testData.gestorOrdenes.defaultSerialONT,
     defaultPotenciaNAP = testData.gestorOrdenes.defaultPotenciaNAP,
     defaultVelocidadSubida = testData.gestorOrdenes.defaultVelocidadSubida,
     defaultVelocidadBajada = testData.gestorOrdenes.defaultVelocidadBajada,
+    defaultWifiSSID = testData.gestorOrdenes.defaultWifiSSID,
+    defaultWifiPassword = testData.gestorOrdenes.defaultWifiPassword,
+    marcarCompartirContrasena = testData.gestorOrdenes.marcarCompartirContrasena
 
   ) {
     this.driver = driver;
@@ -30,6 +36,9 @@ export default class GestorOrdenesPage {
     this.defaultPotenciaNAP = defaultPotenciaNAP;
     this.defaultVelocidadSubida = defaultVelocidadSubida;
     this.defaultVelocidadBajada = defaultVelocidadBajada;
+    this.defaultWifiSSID = defaultWifiSSID;
+    this.defaultWifiPassword = defaultWifiPassword;
+    this.marcarCompartirContrasena = marcarCompartirContrasena;
   }
 
   async seleccionarCliente() {
@@ -1214,52 +1223,56 @@ export default class GestorOrdenesPage {
 
       // === Paso 15: Configurar WiFi ===
       try {
-        // 1️⃣ Clic opcional en el check "Compartir contraseña"
+        const ssidValue = this.defaultWifiSSID;
+        const passwordValue = this.defaultWifiPassword;
+
+        // 1️⃣ Check opcional "Compartir contraseña"
         const checkCompartirXpath = '//*[@id="widget-checkbox-check-step-validation-wifi"]/label';
         const elementosCheck = await driver.findElements(By.xpath(checkCompartirXpath));
 
         if (elementosCheck.length > 0) {
           const checkCompartir = elementosCheck[0];
-          await driver.wait(until.elementIsVisible(checkCompartir), 5000);
+          await driver.wait(until.elementIsVisible(checkCompartir), 8000);
           await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", checkCompartir);
-          await driver.sleep(300);
+          await driver.sleep(200);
+
           try {
             await checkCompartir.click();
           } catch {
             await driver.executeScript("arguments[0].click();", checkCompartir);
           }
-          console.log("✅ Check 'Compartir contraseña' marcado correctamente.");
+
+          console.log("☑️ Check 'Compartir contraseña' marcado.");
         } else {
-          console.log("ℹ️ Check 'Compartir contraseña' no disponible (ONT solo 2.4 GHz), continuando sin marcar.");
+          console.log("ℹ️ Check 'Compartir contraseña' no visible. Continuando.");
         }
 
-        // 2️⃣ Diligenciar campo SSID 2.4 GHz
-        const inputSsidXpath = '//*[@id="textfield-SSID"]';
+        // 2️⃣ Campo SSID
         const inputSsid = await driver.wait(
-          until.elementLocated(By.xpath(inputSsidXpath)),
+          until.elementLocated(By.xpath('//*[@id="textfield-SSID"]')),
           20000
         );
-        await driver.wait(until.elementIsVisible(inputSsid), 5000);
+        await driver.wait(until.elementIsVisible(inputSsid), 8000);
         await inputSsid.clear();
-        await driver.sleep(300);
-        await inputSsid.sendKeys("test wifi");
-        console.log("✅ Campo 'SSID 2.4 GHz' diligenciado correctamente.");
-        await driver.sleep(500);
+        await driver.sleep(200);
+        await inputSsid.sendKeys(ssidValue);
+        console.log(`📡 SSID configurado: "${ssidValue}"`);
 
-        // 3️⃣ Diligenciar campo Contraseña SSID 2.4 GHz
-        const inputPasswordXpath = '//*[@id="textfield-PasswordOneSSID"]';
+        // 3️⃣ Campo Contraseña WiFi
         const inputPassword = await driver.wait(
-          until.elementLocated(By.xpath(inputPasswordXpath)),
+          until.elementLocated(By.xpath('//*[@id="textfield-PasswordOneSSID"]')),
           20000
         );
-        await driver.wait(until.elementIsVisible(inputPassword), 5000);
+        await driver.wait(until.elementIsVisible(inputPassword), 8000);
         await inputPassword.clear();
-        await driver.sleep(300);
-        await inputPassword.sendKeys("wifiTest123");
-        console.log("✅ Campo 'Contraseña SSID 2.4 GHz' diligenciado correctamente.");
-        await driver.sleep(1000);
+        await driver.sleep(200);
+        await inputPassword.sendKeys(passwordValue);
+        console.log(`🔐 Contraseña WiFi configurada: "${passwordValue}"`);
 
-        console.log("✅ Paso 15: Configuración WiFi completada con éxito.");
+        await driver.sleep(600);
+
+        console.log("✅ Paso 15: Configuración WiFi realizada correctamente.");
+
       } catch (error) {
         throw new Error(`❌ Paso 15: Error al configurar WiFi: ${error.message}`);
       }

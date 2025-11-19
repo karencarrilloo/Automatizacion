@@ -1,3 +1,5 @@
+// ARCHIVO DE DATOS DE PRUEBA PARA LAS VISTAS AUTOMATIZADAS//
+
 export const testData = {
 
   autodiagnostico: {
@@ -46,13 +48,18 @@ export const testData = {
 
   gestorOrdenes: {
     //CP_GESORD_002 – Primer Filtro de búsqueda por ID ORDEN
+    //Opcion más filtro
     defaultIdOrden: '572899', // Filtra y selecciona el cliente por id Orden 
 
     //caso de prueba CP_GESORD_007 Ejecutar orden venta e instalación (cliente simulado)
+    //Modal Ejecutar orden
     defaultPotenciaNAP: "17", //dilencia la potencia nap en validación física
     defaultSerialONT: '485754432CEDB4A6', // digita el serial ont a aprovisionar
     defaultVelocidadSubida: '800', // digita la velocidad de internet subida 
-    defaultVelocidadBajada: '800' // digita la velocidad de internet subida
+    defaultVelocidadBajada: '800', // digita la velocidad de internet subida
+    defaultWifiSSID: "test wifi", // digita el SSID
+    defaultWifiPassword: "wifiTest123", // digita la contraseña
+    marcarCompartirContrasena: true
   },
   
   
