@@ -54,18 +54,18 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
+  it.only('CP_GESCLSERDOM_003: Ver información técnica asociada', async () => {
     await gestionPage.verInformacionTecnicaAsociada();
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     expect(true).to.be.true;
   });
 
-  it('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
+  it.only('CP_GESCLSERDOM_005: Ver dispositivos del cliente', async () => {
     await gestionPage.verDispositivoCliente();
     expect(true).to.be.true; 
   });

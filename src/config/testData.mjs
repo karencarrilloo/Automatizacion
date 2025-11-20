@@ -31,21 +31,28 @@ export const testData = {
 
   GestionCambioNapPuerto: {
     
+    //CP_GESCAMNAPPUER_002: Seleccionar una nap
+    //Seleccione Nap
+    defaultNapSerialCelsia: '3240754', // Filtra por serial Nap
+
+    //CP_GESCAMNAPPUER_003: Seleccionar un puerto y realizar el cambio
+    //Puertos disponibles
+    defaultIdDeal: '28007172679', // Filtra por idDeal
     puertoSeleccion: "first",   // "first" | "last" | "random" | número (índice)
-    defaultNapSerialCelsia: '3240754',
-    defaultIdDeal: '28007172679',
-    defaultComentario: "test cambio puerto Nap"
+    defaultComentario: "test cambio puerto Nap" // comentario para cambio de puerto
   },
   
   gestionClientesServiciosDomiciliarios: {
     
-    defaultIdDeal: '28006757991', // Filtra y selecciona el cliente por id Deal
+    //CP_GESCLSERDOM_002: Filtro de búsqueda por ID_DEAL
+    //Opcion más filtro
+    defaultIdDeal: '28007421529', // Filtra y selecciona el cliente por id Deal
   },
 
   visorInformacionTecnicaRed: {
-    
-    defaultNapSerialCelsia: '3240754', // Filtra por Nap serial celsia
-    defaultSerialONT: '48575443CBAD2DA5', // Filtra y selecciona el cliente por serial ont
+    //CP_INFTECRED_002: Filtro de búsqueda
+    defaultNapSerialCelsia: '3271341', // Filtra por Nap serial celsia
+    defaultSerialONT: '485754435A3CE4A6', // Filtra y selecciona el cliente por serial ont
   },
 
   gestorOrdenes: {
