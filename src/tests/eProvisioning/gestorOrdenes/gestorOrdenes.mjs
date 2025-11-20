@@ -78,7 +78,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
+  it.only('CP_GESORD_007: Ejecutar orden venta e instalación (cliente simulado)', async () => {
     await gestorOrdenesPage.ejecutarOrdenVentaInstalacion(); //**AJUSTAR PASO CONF DE WIFI CUANDO LA ONT NO ES DUAL BAND**//
     expect(true).to.be.true;
   });
@@ -103,7 +103,7 @@ describe('Pruebas de Gestor de Órdenes', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESORD_012: Completar orden venta e instalacion', async () => {
+  it('CP_GESORD_012: Completar orden venta e instalacion', async () => {
     await gestorOrdenesPage.completarOrdenVenta(); 
     expect(true).to.be.true;
   });

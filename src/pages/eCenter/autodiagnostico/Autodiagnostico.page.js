@@ -10,9 +10,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
 export default class AutodiagnosticoPage {
-  constructor(driver, defaultIdDeal = testData.autodiagnostico.defaultIdDeal) {
+  constructor(driver, defaultIdDeal = testData.autodiagnostico.defaultIdDeal, defaultTipoOrden = testData.autodiagnostico.defaultTipoOrden) {
     this.driver = driver;
     this.defaultIdDeal = defaultIdDeal;
+    this.defaultTipoOrden = defaultTipoOrden;
   }
 
   // =======================
