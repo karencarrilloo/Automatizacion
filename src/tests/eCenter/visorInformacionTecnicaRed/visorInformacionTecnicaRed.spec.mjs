@@ -6,8 +6,7 @@ import { expect } from 'chai';
 
 // Page Objects
 import LoginPage from '../../../pages/login/login.page.js';
-import VisorInformacionTecnicaRedPage
-  from '../../../pages/eCenter/visorInformacionTecnicaRed/visorInformacionTecnicaRed.page.js';
+import VisorInformacionTecnicaRedPage from '../../../pages/eCenter/visorInformacionTecnicaRed/visorInformacionTecnicaRed.page.js';
 
 let driver;
 let loginPage;
