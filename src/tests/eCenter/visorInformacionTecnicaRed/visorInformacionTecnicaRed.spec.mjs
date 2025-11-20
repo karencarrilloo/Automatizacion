@@ -61,7 +61,13 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_INFTECRED_003: Ver dispositivos', async () => {
+  it.only('CP_INFTECRED_00X: Segundo filtro de búsqueda (opcional)', async () => {
+    await visorInfoPage.filtroBusquedaOpcional();
+
+    expect(true).to.be.true;
+  });
+
+  it('CP_INFTECRED_003: Ver dispositivos', async () => {
     await visorInfoPage.verDispositivos();
 
     expect(true).to.be.true;
@@ -74,7 +80,7 @@ describe('Pruebas del Visor de Información Técnica de Red', function () {
   });
 
   it('CP_INFTECRED_005: Editar cliente', async () => {
-    await visorInfoPage.editarCliente();
+    await visorInfoPage.editarCliente(); // **falta parametrizar en el testData los campos solo abre y cierra el modal ** //
 
     expect(true).to.be.true;
   });

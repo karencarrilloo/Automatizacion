@@ -51,8 +51,20 @@ export const testData = {
 
   visorInformacionTecnicaRed: {
     //CP_INFTECRED_002: Filtro de búsqueda
+    filtroBusqueda: "CENTRO POBLADO",
+    valorBusquedaTexto: "PALMIRA",
+    
+
+    //CP_INFTECRED_00X: Segundo filtro de búsqueda (opcional)
+    valorBusquedaTextoSegundo: "NAP SERIAL CELSIA",
     defaultNapSerialCelsia: '3271341', // Filtra por Nap serial celsia
+
+
+    //CP_INFTECRED_003: Ver dispositivos
     defaultSerialONT: '485754435A3CE4A6', // Filtra y selecciona el cliente por serial ont
+
+    //CP_INFTECRED_004: Editar estado
+    defaultEstadoTecnico: "ACTIVO"  // Valores posibles: ACTIVO | INACTIVO | SUSPENDIDO
   },
 
   gestorOrdenes: {
