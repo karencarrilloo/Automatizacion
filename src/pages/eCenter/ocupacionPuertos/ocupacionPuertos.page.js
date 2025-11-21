@@ -69,43 +69,45 @@ export default class OcupacionPuertosPage {
    */
 
     async consultarNap(caseName = 'CP_OCUPUERT_002') {
-    const driver = this.driver;
+  const driver = this.driver;
 
-    const contenedorVista = '//*[@id="container-mainframe"]/div[4]/div[2]/div/div/div[1]';
-    const xpathCheck = '//*[@id="container-mainframe"]/div[4]/div[2]/div/div/div[1]/div[1]/div[2]/div[2]';
+  try {
+    console.log("=== CP_OCUPUERT_002: Consultar Nap ===");
+
+    // === Paso 1: Seleccionar "SERIAL NAP" ===
+    const labelNap = await driver.wait(
+      until.elementLocated(By.xpath("//div[contains(text(),'SERIAL NAP')]")),
+      15000
+    );
+
+    await driver.executeScript("arguments[0].scrollIntoView({block:'center'});", labelNap);
+    await driver.wait(until.elementIsVisible(labelNap), 5000);
 
     try {
-        console.log(`=== ${caseName}: Consultar Nap ===`);
-
-        // Esperar que cargue el bloque de la vista
-        await driver.wait(
-            until.elementLocated(By.xpath(contenedorVista)),
-            25000
-        );
-
-        // Esperar un tiempo extra mientras la lista renderiza
-        await driver.sleep(3000);
-
-        const checkElemento = await driver.wait(
-            until.elementLocated(By.xpath(xpathCheck)),
-            15000
-        );
-
-        await driver.wait(until.elementIsVisible(checkElemento), 10000);
-        await driver.executeScript("arguments[0].scrollIntoView({block: 'center'});", checkElemento);
-
-        try {
-            await checkElemento.click();
-        } catch {
-            await driver.executeScript("arguments[0].click();", checkElemento);
-        }
-
-        console.log("✔ Check seleccionado correctamente");
-
-    } catch (error) {
-        console.error(`❌ Error en ${caseName}: `, error);
-        throw error;
+      await labelNap.click();
+    } catch {
+      await driver.executeScript("arguments[0].click();", labelNap);
     }
-}
 
+    await driver.sleep(900);
+    console.log("🎯 Paso 1: Clic en 'SERIAL NAP' realizado.");
+
+    // Validar cambio visual del estado (cuadro azul)
+    const cuadradoNap = await driver.findElement(By.css(".ser-nap-squar"));
+    const clase = await cuadradoNap.getAttribute("class");
+
+    if (!clase.includes("active")) {
+      throw new Error("El recuadro 'SERIAL NAP' no se marcó (falta clase 'active')");
+    }
+
+    console.log("🔵 Validación: Recuadro 'SERIAL NAP' activo correctamente.");
+
+    // Aquí continuarán los próximos pasos del caso 😊
+    console.log("🚀 CP_OCUPUERT_002: Paso inicial completado.");
+
+  } catch (error) {
+    if (this._capturarError) await this._capturarError(error, caseName);
+    throw new Error(`❌ Error en CP_OCUPUERT_002: ${error.message}`);
+  }
+}
 }
