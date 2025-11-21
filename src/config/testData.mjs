@@ -82,6 +82,11 @@ export const testData = {
     defaultWifiPassword: "wifiTest123", // digita la contraseña
     marcarCompartirContrasena: true
   },
+
+  ocupacionPuertos: {
+    defaultNapSerialCelsia: "3240754",
+    defaultCeo: "1008951"
+  }
   
   
   
