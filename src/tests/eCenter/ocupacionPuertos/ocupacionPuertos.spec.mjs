@@ -47,12 +47,12 @@ describe('Prueba de Ocupación de Puertos', function () {
     expect(true).to.be.true;
   });
 
-  it.skip('CP_OCUPUERT_002: Consultar Nap', async () => {
+  it('CP_OCUPUERT_002: Consultar Nap', async () => {
     await ocupacionPage.consultarNap();
     expect(true).to.be.true;
   });
 
-  it('CP_OCUPUERT_003: Consultar Ceo', async () => {
+  it.skip('CP_OCUPUERT_003: Consultar Ceo', async () => {
     await ocupacionPage.consultarCeo();
     expect(true).to.be.true;
   });
