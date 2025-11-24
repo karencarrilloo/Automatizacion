@@ -14,8 +14,8 @@ export const testData = {
   //CP_CONTCLANEG_003: Crear un modelo
   //Diligenciar modal {Crear cls_model}
   Fabricante : "1",
-  Nombre: '',
-  Cantidad_de_slots: '',
+  Nombre: 'TEST_CREAR',
+  cantidadSlots: 12,
   Tipo: '',
   Descripción: '',
   Icono: '',

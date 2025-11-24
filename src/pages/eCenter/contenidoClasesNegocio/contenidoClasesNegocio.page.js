@@ -11,11 +11,17 @@ export default class ContenidoClasesNegocioPage {
   /**
  *@param {WebDriver} driver  instancia de selenium
 * @param {string} Fabricante ID del fabricante a seleccionar para creación de modelo
+* @param {string} Nombre Nombre del modelo a crear
+* @param {number} cantidadSlots Cantidad de slots
  */
   constructor(driver,
-    Fabricante = testData.contenidoClasesNegocio.Fabricante) {
+    Fabricante = testData.contenidoClasesNegocio.Fabricante,
+    Nombre = testData.contenidoClasesNegocio.Nombre,
+    cantidadSlots = testData.contenidoClasesNegocio.cantidadSlots,) {
     this.driver = driver;
     this.Fabricante = Fabricante;
+    this.Nombre = Nombre;
+    this.cantidadSlots = cantidadSlots;
   }
 
 
@@ -267,7 +273,7 @@ export default class ContenidoClasesNegocioPage {
       throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 4 (clic en 'Seleccionar' fabricante): ${error.message}`);
     }
 
-    // Paso 5: Diligenciar campo "Nombre" con "TEST CREAR"
+    // Paso 5: Diligenciar campo "Nombre" según testData.nombreModelo
     try {
       const inputNombre = await driver.wait(
         until.elementLocated(By.id('textfield-name')),
@@ -277,33 +283,35 @@ export default class ContenidoClasesNegocioPage {
       await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputNombre);
       await driver.sleep(500);
       await inputNombre.clear();
-      await inputNombre.sendKeys('TEST CREAR');
+      await inputNombre.sendKeys(this.Nombre);  // <--- parametrizado
       await driver.sleep(3000);
 
-      console.log("✅ CP_CONTCLANEG_003 Paso 5: Campo 'Nombre' diligenciado.");
+      console.log(`✅ CP_CONTCLANEG_003 Paso 5: Campo 'Nombre' diligenciado con '${this.Nombre}'.`);
     } catch (error) {
       throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 5 (diligenciar Nombre): ${error.message}`);
     }
 
-    // Paso 6: Diligenciar "Cantidad de slots" con número aleatorio
-    try {
-      const cantidadAleatoria = Math.floor(Math.random() * 50) + 1;
 
+    // Paso 6: Diligenciar "Cantidad de slots" según testData
+    try {
       const inputSlots = await driver.wait(
         until.elementLocated(By.id('textfield-numberofslots')),
         10000
       );
+
       await driver.wait(until.elementIsVisible(inputSlots), 10000);
       await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", inputSlots);
       await driver.sleep(500);
+
       await inputSlots.clear();
-      await inputSlots.sendKeys(cantidadAleatoria.toString());
+      await inputSlots.sendKeys(this.cantidadSlots.toString()); // <--- parametrizado
       await driver.sleep(3000);
 
-      console.log(`✅ CP_CONTCLANEG_003 Paso 6: 'Cantidad de slots' diligenciado con ${cantidadAleatoria}.`);
+      console.log(`✅ CP_CONTCLANEG_003 Paso 6: 'Cantidad de slots' diligenciado con ${this.cantidadSlots}.`);
     } catch (error) {
       throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 6 (diligenciar slots): ${error.message}`);
     }
+
 
     // Paso 7: Clic en el botón del campo "Tipo"
     try {
