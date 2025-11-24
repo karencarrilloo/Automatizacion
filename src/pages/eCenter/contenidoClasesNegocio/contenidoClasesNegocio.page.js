@@ -8,8 +8,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default class ContenidoClasesNegocioPage {
-  constructor(driver) {
+  /**
+ *@param {WebDriver} driver  instancia de selenium
+* @param {string} Fabricante ID del fabricante a seleccionar para creación de modelo
+ */
+  constructor(driver,
+    Fabricante = testData.contenidoClasesNegocio.Fabricante) {
     this.driver = driver;
+    this.Fabricante = Fabricante;
   }
 
 
@@ -199,38 +205,42 @@ export default class ContenidoClasesNegocioPage {
       throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 2 (clic en btn Fabricante): ${error.message}`);
     }
 
-    // Paso 3: Seleccionar fila del fabricante con ID "1" (HUAWEI)
+    // Paso 3: Seleccionar fabricante según testData (ej. "1" = HUAWEI)
     try {
-      const contenedorModalFabricante = await driver.wait(
+      const contenedorModalFabricante = await this.driver.wait(
         until.elementLocated(By.xpath('//*[@id="widget-dialog-dialog-picklist-manufacturer"]/div/div')),
         10000
       );
 
-      const tablaBodyFabricante = await driver.wait(
+      const tablaBodyFabricante = await this.driver.wait(
         until.elementLocated(By.css('#grid-table-crud-grid-manufacturer tbody')),
         10000
       );
 
-      const filaHUAWEI = await tablaBodyFabricante.findElement(By.css('tr#row-1'));
-      const celdaIdHUAWEI = await filaHUAWEI.findElement(By.css('td#id'));
+      console.log(`🔍 Buscando fila del fabricante con ID: ${this.Fabricante}`);
 
-      // Scroll dentro del contenedor modal para acercar la fila
-      await driver.executeScript("arguments[0].scrollTop = arguments[1].offsetTop;", contenedorModalFabricante, filaHUAWEI);
-      await driver.sleep(500);
+      const filaFabricante = await tablaBodyFabricante.findElement(By.css(`tr#row-${this.Fabricante}`));
+      const celdaFabricante = await filaFabricante.findElement(By.css('td#id'));
 
-      await driver.executeScript("arguments[0].click();", celdaIdHUAWEI);
-      await driver.sleep(500);
+      // Scroll dentro del modal para asegurar visibilidad
+      await this.driver.executeScript("arguments[0].scrollTop = arguments[1].offsetTop;", contenedorModalFabricante, filaFabricante);
+      await this.driver.sleep(400);
 
-      const claseSeleccionada = await filaHUAWEI.getAttribute("class");
+      await this.driver.executeScript("arguments[0].click();", celdaFabricante);
+      await this.driver.sleep(500);
+
+      const claseSeleccionada = await filaFabricante.getAttribute("class");
       if (!claseSeleccionada || !claseSeleccionada.includes("active")) {
-        throw new Error("❌ La fila con ID '1' no fue marcada como activa.");
+        throw new Error("❌ La fila del fabricante no quedó activa.");
       }
 
-      console.log("✅ CP_CONTCLANEG_003 Paso 3: Fabricante 'HUAWEI' seleccionado.");
-      await driver.sleep(1500);
+      console.log(`✅ Paso 3 OK: Fabricante '${this.Fabricante}' seleccionado.`);
+      await this.driver.sleep(1000);
+
     } catch (error) {
-      throw new Error(`❌ CP_CONTCLANEG_003 Error en Paso 3 (seleccionar fabricante HUAWEI): ${error.message}`);
+      throw new Error(`❌ Error Paso 3 CP_CONTCLANEG_003 - seleccionar fabricante: ${error.message}`);
     }
+
 
     // Paso 4: Clic en el botón "Seleccionar" tras elegir fabricante
     try {

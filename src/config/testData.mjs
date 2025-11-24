@@ -11,14 +11,15 @@ export const testData = {
 
   //**PENDIENTE POR AJUSTAR**//
   contenidoClasesNegocio: {
-  // Diligenciar modal {Crear cls_model}
-  // Fabricante : '',
-  // Nombre: '',
-  // Cantidad de slots: '',
-  // Tipo: '',
-  // Descripción: '',
-  // Icono: '',
-  // Localidad '',
+  //CP_CONTCLANEG_003: Crear un modelo
+  //Diligenciar modal {Crear cls_model}
+  Fabricante : "1",
+  Nombre: '',
+  Cantidad_de_slots: '',
+  Tipo: '',
+  Descripción: '',
+  Icono: '',
+  Localidad: ''
   },
 
   //**PENDIENTE POR AJUSTAR**//

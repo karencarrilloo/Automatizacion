@@ -44,7 +44,7 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
     if (driver) await driver.quit();
   });
 
-  it('CP_CONTENIDO_001: Ingreso a la vista "Contenido Clases de Negocio"', async () => {
+  it.only('CP_CONTENIDO_001: Ingreso a la vista "Contenido Clases de Negocio"', async () => {
     await contenidoPage.ingresarVistaContenidoClases();
 
     // Verificación: contenedor principal visible
@@ -56,12 +56,12 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
     expect(await container.isDisplayed()).to.be.true;
   });
 
-  it("CP_CONTCLANEG_002: Seleccionar una entidad (Modelos)", async () => {
+  it.only("CP_CONTCLANEG_002: Seleccionar una entidad (Modelos)", async () => {
     await contenidoPage.seleccionarEntidadModelos();
     expect(true).to.be.true; 
   });
 
-  it("CP_CONTCLANEG_003: Crear un modelo", async () => {
+  it.only("CP_CONTCLANEG_003: Crear un modelo", async () => {
     await contenidoPage.crearModelo();
     expect(true).to.be.true; 
   });
