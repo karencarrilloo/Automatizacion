@@ -44,7 +44,7 @@ describe('Pruebas de Contenido Clases de Negocio', function () {
     if (driver) await driver.quit();
   });
 
-  it.only('CP_CONTENIDO_001: Ingreso a la vista "Contenido Clases de Negocio"', async () => {
+  it.only('CP_CONTCLANEG_001: Ingreso a la vista "Contenido Clases de Negocio"', async () => {
     await contenidoPage.ingresarVistaContenidoClases();
 
     // Verificación: contenedor principal visible

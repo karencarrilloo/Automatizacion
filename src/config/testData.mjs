@@ -22,6 +22,10 @@ export const testData = {
   Localidad: ''
   },
 
+  contenidoClasesNegocioSoporte: {
+  
+  },
+
   //**PENDIENTE POR AJUSTAR**//
   exploradorEntidades: {
   // Dilgenciar modal {Agregar elemento a entidad elemento secundario}
