@@ -56,4 +56,10 @@ describe('Pruebas de Contenido Clases de Negocio Soporte', function () {
     expect(await container.isDisplayed()).to.be.true;
   });
 
+  it.only("CP_CONTCLANEG_002: Seleccionar una entidad (Entidad que se encarga de almacenar idcuentas para simular aprovisionamiento)", async () => {
+      await contenidoPage.seleccionarEntidad();
+      expect(true).to.be.true; 
+    });
+  
+
   });

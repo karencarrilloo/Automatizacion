@@ -113,6 +113,8 @@ export default class ContenidoClasesNegocioPage {
       throw new Error(`❌ Error en Paso 1 (clic en botón picklist): ${error.message}`);
     }
 
+    
+
     // Paso 2: Seleccionar la entidad con ALIAS "Modelos"
     try {
       const tablaCuerpo = await driver.wait(
