@@ -59,7 +59,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true;
   });
 
-  it.only('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
+  it('CP_GESCLSERDOM_004: Reconfiguración del cliente', async () => {
     await gestionPage.reconfigurarCliente();
     expect(gestionPage.reconfiguracionExitosa).to.be.oneOf([true, false]);
     expect(true).to.be.true;
@@ -70,7 +70,7 @@ describe('Pruebas de Gestión Clientes y Servicios Domiciliarios', function () {
     expect(true).to.be.true; 
   });
 
-  it.only('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
+  it('CP_GESCLSERDOM_006: Ver y enviar documentos (Acta de instalación y Contrato)', async () => {
     await gestionPage.verYEnviarDocumentos(); // **CORREGIR**
     expect(true).to.be.true; 
   });
