@@ -169,7 +169,12 @@ export default class ContenidoClasesNegocioPage {
     await driver.executeScript("arguments[0].click();", botonSeleccionar);
     // console.log('✅ Se hizo clic en el botón "Seleccionar".');
     await driver.sleep(5000);
-  }
+  
+   console.log("✅ paso 3Clic en el botón Seleccionar correctamente (ALIAS 'Modelos').");
+      await driver.sleep(2000);
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 3: ${error.message}`);
+    }
 
   //  ==================================
   // CP_CONTCLANEG_003: Crear un modelo ===

@@ -136,6 +136,91 @@ export default class ContenidoClasesNegocioPageSoporte {
             throw new Error(`❌ Error en Paso 2 (buscar IDSIMULATION): ${error.message}`);
         }
 
+        // Paso 3: Seleccionar la entidad con nombre "IDSIMULATION"
+        try {
+            // 1️⃣ Ubicar el cuerpo de la tabla
+            const tablaBody = await driver.wait(
+                until.elementLocated(
+                    By.xpath('//*[@id="grid-table-crud-grid-listId"]/div/div[2]/table/tbody')
+                ),
+                10000
+            );
+
+            // 2️⃣ Obtener todas las filas
+            const filas = await tablaBody.findElements(By.css('tr'));
+
+            let filaObjetivo = null;
+
+            for (const fila of filas) {
+                const textoFila = (await fila.getText()).trim().toUpperCase();
+                if (textoFila.includes("IDSIMULATION")) {
+                    filaObjetivo = fila;
+                    break;
+                }
+            }
+
+            if (!filaObjetivo) {
+                throw new Error("No se encontró la fila con texto 'IDSIMULATION'.");
+            }
+
+            // 3️⃣ Seleccionar la celda ID de la fila encontrada
+            const celdaSeleccion = await filaObjetivo.findElement(By.css('td#id'));
+
+            await driver.executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                celdaSeleccion
+            );
+            await driver.sleep(500);
+            await driver.executeScript("arguments[0].click();", celdaSeleccion);
+
+            // 4️⃣ Validar que la fila quedó activa
+            const claseFila = await filaObjetivo.getAttribute("class");
+            if (!claseFila || !claseFila.includes("active")) {
+                throw new Error("❌ La fila 'IDSIMULATION' no fue marcada como activa.");
+            }
+
+            console.log("✅ Paso 3: Entidad 'IDSIMULATION' seleccionada correctamente.");
+            await driver.sleep(2000);
+
+        } catch (error) {
+            throw new Error(`❌ Error en Paso 3 (seleccionar entidad 'IDSIMULATION'): ${error.message}`);
+        }
+
+        // Paso 4: Clic en el botón "Seleccionar" ===
+
+        const botonSeleccionar = await driver.wait(
+            until.elementLocated(By.xpath("//div[contains(text(),'Seleccionar') and contains(@class, 'btn-primary')]")),
+            10000
+        );
+
+        // Esperar a que el botón sea visible
+        await driver.wait(until.elementIsVisible(botonSeleccionar), 10000);
+
+        // Esperar a que el botón esté habilitado (sin atributo 'disabled')
+        await driver.wait(async () => {
+            const disabledAttr = await botonSeleccionar.getAttribute('disabled');
+            const classAttr = await botonSeleccionar.getAttribute('class');
+            return !disabledAttr && !classAttr.includes('disabled');
+        }, 10000, '❌ El botón "Seleccionar" no se habilitó a tiempo.');
+
+        // Scroll para asegurarse de que es visible en viewport
+        await driver.executeScript("arguments[0].scrollIntoView({ block: 'center' });", botonSeleccionar);
+        await driver.sleep(500); // Pausa por animación o transición
+
+        // Clic en el botón
+        await driver.executeScript("arguments[0].click();", botonSeleccionar);
+        // console.log('✅ Se hizo clic en el botón "Seleccionar".');
+        await driver.sleep(5000);
+        console.log("✅ paso 4 Clic en el botón Seleccionar correctamente (ALIAS 'Modelos').");
+      await driver.sleep(2000);
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 4: ${error.message}`);
+    }
     }
 
-    }
+
+
+
+
+
+
