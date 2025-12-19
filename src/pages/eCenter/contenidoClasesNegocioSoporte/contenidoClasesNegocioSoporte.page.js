@@ -216,6 +216,41 @@ export default class ContenidoClasesNegocioPageSoporte {
     } catch (error) {
       throw new Error(`❌ Error en Paso 4: ${error.message}`);
     }
+
+    //  ==================================
+//  CP_CONTCLANEG_003 – Crear fr_idsimulation
+//  Paso 1
+//  ==================================
+
+async crearIdsimulation(caseName = 'CP_CONTCLANEG_004') {
+  const driver = this.driver;
+
+  try {
+    // Paso 1: Clic en botón "Nuevo"
+    const botonNuevo = await driver.wait(
+      until.elementLocated(By.xpath('//*[@id="crud-new-btn"]')),
+      10000
+    );
+
+    await driver.wait(until.elementIsVisible(botonNuevo), 5000);
+    await driver.wait(until.elementIsEnabled(botonNuevo), 5000);
+
+    await driver.executeScript(
+      "arguments[0].scrollIntoView({block:'center'});",
+      botonNuevo
+    );
+    await driver.sleep(500);
+
+    await driver.executeScript("arguments[0].click();", botonNuevo);
+    await driver.sleep(3000);
+
+    console.log("✅ CP_CONTCLANEG_004 Paso 1: Botón 'Nuevo' presionado correctamente.");
+
+  } catch (error) {
+    throw new Error(`❌ CP_CONTCLANEG_004 Error en Paso 1 (clic en botón Nuevo): ${error.message}`);
+  }
+}
+
     }
 
 
