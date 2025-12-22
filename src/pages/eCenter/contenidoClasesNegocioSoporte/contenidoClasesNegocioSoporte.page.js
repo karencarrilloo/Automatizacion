@@ -10,9 +10,11 @@ const __dirname = path.dirname(__filename);
 export default class ContenidoClasesNegocioPageSoporte {
     /**
    *@param {WebDriver} driver  instancia de selenium
+   *@param {string} defaultIdDeal ID_DEAL para fr_idsimulation
    */
-    constructor(driver) {
+    constructor(driver, defaultIdDeal = testData.contenidoClasesNegocioSoporte.defaultIdDeal ) {
         this.driver = driver;
+        this.defaultIdDeal = defaultIdDeal;
     }
 
 
@@ -212,46 +214,75 @@ export default class ContenidoClasesNegocioPageSoporte {
         // console.log('✅ Se hizo clic en el botón "Seleccionar".');
         await driver.sleep(5000);
         console.log("✅ paso 4 Clic en el botón Seleccionar correctamente (ALIAS 'Modelos').");
-      await driver.sleep(2000);
-    } catch (error) {
-      throw new Error(`❌ Error en Paso 4: ${error.message}`);
+        await driver.sleep(2000);
+    } catch(error) {
+        throw new Error(`❌ Error en Paso 4: ${error.message}`);
     }
 
     //  ==================================
-//  CP_CONTCLANEG_003 – Crear fr_idsimulation
-//  Paso 1
-//  ==================================
+    //  CP_CONTCLANEG_003 – Crear fr_idsimulation
+    //  Paso 1
+    //  ==================================
 
-async crearIdsimulation(caseName = 'CP_CONTCLANEG_004') {
-  const driver = this.driver;
+    async crearIdsimulation(caseName = 'CP_CONTCLANEG_004') {
+        const driver = this.driver;
 
-  try {
-    // Paso 1: Clic en botón "Nuevo"
-    const botonNuevo = await driver.wait(
-      until.elementLocated(By.xpath('//*[@id="crud-new-btn"]')),
-      10000
-    );
+        try {
+            // Paso 1: Clic en botón "Nuevo"
+            const botonNuevo = await driver.wait(
+                until.elementLocated(By.xpath('//*[@id="crud-new-btn"]')),
+                10000
+            );
 
-    await driver.wait(until.elementIsVisible(botonNuevo), 5000);
-    await driver.wait(until.elementIsEnabled(botonNuevo), 5000);
+            await driver.wait(until.elementIsVisible(botonNuevo), 5000);
+            await driver.wait(until.elementIsEnabled(botonNuevo), 5000);
 
-    await driver.executeScript(
-      "arguments[0].scrollIntoView({block:'center'});",
-      botonNuevo
-    );
-    await driver.sleep(500);
+            await driver.executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                botonNuevo
+            );
+            await driver.sleep(500);
 
-    await driver.executeScript("arguments[0].click();", botonNuevo);
-    await driver.sleep(3000);
+            await driver.executeScript("arguments[0].click();", botonNuevo);
+            await driver.sleep(3000);
 
-    console.log("✅ CP_CONTCLANEG_004 Paso 1: Botón 'Nuevo' presionado correctamente.");
+            console.log("✅ CP_CONTCLANEG_004 Paso 1: Botón 'Nuevo' presionado correctamente.");
 
-  } catch (error) {
-    throw new Error(`❌ CP_CONTCLANEG_004 Error en Paso 1 (clic en botón Nuevo): ${error.message}`);
-  }
-}
+        } catch (error) {
+            throw new Error(`❌ CP_CONTCLANEG_004 Error en Paso 1 (clic en botón Nuevo): ${error.message}`);
+        }
+
+        // === Paso 2: Diligenciar campo "ID_DEAL" ===
+        try {
+            const inputIdDeal = await driver.wait(
+                until.elementLocated(By.xpath('//*[@id="textfield-idcuenta"]')),
+                10000
+            );
+
+            await driver.wait(until.elementIsVisible(inputIdDeal), 5000);
+            await driver.wait(until.elementIsEnabled(inputIdDeal), 5000);
+
+            await driver.executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                inputIdDeal
+            );
+            await driver.sleep(500);
+
+            await inputIdDeal.clear();
+            await inputIdDeal.sendKeys(this.defaultIdDeal);
+            await driver.sleep(2000);
+
+            console.log(`✅ CP_CONTCLANEG_004 Paso 2: Campo 'ID_DEAL' diligenciado con ${this.defaultIdDeal}.`);
+
+        } catch (error) {
+            throw new Error(`❌ CP_CONTCLANEG_004 Error en Paso 2 (diligenciar ID_DEAL): ${error.message}`);
+        }
 
     }
+
+
+
+}
 
 
 

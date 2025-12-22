@@ -23,8 +23,9 @@ export const testData = {
   },
 
   contenidoClasesNegocioSoporte: {
-  
-  },
+  defaultIdDeal: '28007172679'
+},
+
 
   //**PENDIENTE POR AJUSTAR**//
   exploradorEntidades: {
