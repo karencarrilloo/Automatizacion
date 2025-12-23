@@ -16,123 +16,170 @@ export default class LoginPage {
 
 
   //  ===============================
-  //  CP_LOGIN_001 – Ingreso a vista
-  //  7 pasos
-  //  ===============================
+//  CP_LOGIN_001 – Ingreso a vista
+//  7 pasos
+//  ===============================
 
-  async ejecutarLogin(
-    usuario = process.env.LOGIN_EMAIL,
-    clave = process.env.LOGIN_PASSWORD,
-    caseName = 'default'           // ➜ nombre del caso de prueba
-  ) {
+async ejecutarLogin(
+  usuario = process.env.LOGIN_EMAIL,
+  clave = process.env.LOGIN_PASSWORD,
+  caseName = 'CP_LOGIN_001'
+) {
+  try {
+    const driver = this.driver;
+
+    // ===============================
+    // Paso 1: Abrir URL
+    // ===============================
     try {
-      const driver = this.driver;
-
-      // Paso 1: Abrir https://oss-dev.celsiainternet.com/
       await driver.get(this.url);
+      console.log('✅ Paso 1: URL abierta correctamente');
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 1 (abrir URL): ${error.message}`);
+    }
 
-      // Paso 2: Ingresar correo válido en el campo “Correo electrónico”.
+    // ===============================
+    // Paso 2: Ingresar correo
+    // ===============================
+    try {
       const inputCorreo = await driver.wait(
         until.elementLocated(By.css('#textfield-field-user')),
         25000
       );
+      await inputCorreo.clear();
       await inputCorreo.sendKeys(usuario);
+      console.log('✅ Paso 2: Correo ingresado correctamente');
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 2 (ingresar correo): ${error.message}`);
+    }
 
-      // === Paso 3: Clic en botón "Siguiente" ===
+    // ===============================
+    // Paso 3: Clic en Siguiente
+    // ===============================
+    try {
+      const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step-login"]/div';
+
+      const btnSiguiente = await driver.wait(
+        until.elementLocated(By.xpath(btnSiguienteXpath)),
+        25000
+      );
+
+      await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
+      await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
+
+      await driver.executeScript(
+        "arguments[0].scrollIntoView({block:'center'});",
+        btnSiguiente
+      );
+      await driver.sleep(500);
+
       try {
-        const btnSiguienteXpath = '//*[@id="widget-button-btn-next-step-login"]/div';
-
-        const btnSiguiente = await driver.wait(
-          until.elementLocated(By.xpath(btnSiguienteXpath)),
-          25000
-        );
-
-        await driver.wait(until.elementIsVisible(btnSiguiente), 10000);
-        await driver.wait(until.elementIsEnabled(btnSiguiente), 10000);
-
-        // Scroll por si está fuera de vista
-        await driver.executeScript(
-          "arguments[0].scrollIntoView({block:'center'});",
-          btnSiguiente
-        );
-        await driver.sleep(500);
-
-        // Click robusto (frontend nuevo suele necesitar JS)
-        try {
-          await btnSiguiente.click();
-        } catch {
-          await driver.executeScript("arguments[0].click();", btnSiguiente);
-        }
-
-        console.log("✅ Paso 3: Botón 'Siguiente' presionado correctamente.");
-        await driver.sleep(5000); // espera transición
-
-      } catch (error) {
-        throw new Error(`❌ Error en Paso 3 (clic en botón Siguiente): ${error.message}`);
+        await btnSiguiente.click();
+      } catch {
+        await driver.executeScript("arguments[0].click();", btnSiguiente);
       }
 
-      // Paso 4: Ingresar contraseña válida.
+      console.log("✅ Paso 3: Botón 'Siguiente' presionado");
+      await driver.sleep(5000);
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 3 (clic en Siguiente): ${error.message}`);
+    }
+
+    // ===============================
+    // Paso 4: Ingresar contraseña
+    // ===============================
+    try {
       const inputPassword = await driver.wait(
         until.elementLocated(By.css('#textfield-field-password')),
         25000
       );
+      await inputPassword.clear();
       await inputPassword.sendKeys(clave);
+      console.log('✅ Paso 4: Contraseña ingresada correctamente');
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 4 (ingresar contraseña): ${error.message}`);
+    }
 
-      // Paso 5: Clic en Iniciar sesión.
+    // ===============================
+    // Paso 5: Clic en Iniciar sesión
+    // ===============================
+    try {
       const btnLogin = await driver.wait(
         until.elementLocated(By.css('#widget-button-btn-common-login > div')),
         55000
       );
+
+      await driver.executeScript(
+        "arguments[0].scrollIntoView({block:'center'});",
+        btnLogin
+      );
       await driver.executeScript('arguments[0].click();', btnLogin);
 
-      // Paso 6: Seleccionar aplicación Himalaya.
+      console.log('✅ Paso 5: Botón Iniciar sesión presionado');
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 5 (clic en Iniciar sesión): ${error.message}`);
+    }
+
+    // ===============================
+    // Paso 6: Seleccionar aplicación Himalaya
+    // ===============================
+    try {
       const himalayaBtn = await driver.wait(
         until.elementLocated(
           By.css('#login-cloud-view-container .popular-apps > div')
         ),
         55000
       );
-      await driver.executeScript('arguments[0].click();', himalayaBtn);
-      await driver.sleep(5000); // espera modal de confirmación
 
-      // Paso 7: Confirmar en el modal con Sí.
+      await driver.executeScript('arguments[0].click();', himalayaBtn);
+      await driver.sleep(5000);
+
+      console.log('✅ Paso 6: Aplicación Himalaya seleccionada');
+    } catch (error) {
+      throw new Error(`❌ Error en Paso 6 (seleccionar Himalaya): ${error.message}`);
+    }
+
+    // ===============================
+    // Paso 7: Confirmar modal (Sí)
+    // ===============================
+    try {
       const btnConfirmar = await driver.wait(
         until.elementLocated(
           By.xpath("//div[contains(text(),'Sí') and contains(@class, 'btn-default')]")
         ),
         25000
       );
+
       await driver.executeScript('arguments[0].click();', btnConfirmar);
-      await driver.sleep(5000); // espera redirección o carga final
+      await driver.sleep(5000);
 
+      console.log('✅ Paso 7: Confirmación realizada');
     } catch (error) {
-      // === Captura de pantalla organizada por carpetas ===
-      const screenshot = await this.driver.takeScreenshot();
-
-      // 🟢 Carpeta raíz del proyecto: ../../.. desde src/pages
-      const rootErrors = path.resolve(__dirname, '../../../errors');
-
-      // 🟢 Carpeta del Page Object: "login"
-      const pageFolder = path.join(rootErrors, 'login');
-
-      // 🟢 Carpeta del caso de prueba, p. ej. "CP_LOGIN_00X"
-      const caseFolder = path.join(pageFolder, caseName);
-
-      // Crear carpetas si no existen
-      [rootErrors, pageFolder, caseFolder].forEach(folder => {
-        if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-      });
-
-      // Nombre de archivo con timestamp
-      const archivoSalida = path.join(
-        caseFolder,
-        `error_${Date.now()}.png`
-      );
-
-      fs.writeFileSync(archivoSalida, screenshot, 'base64');
-
-      throw error; // relanza para que la prueba falle
+      throw new Error(`❌ Error en Paso 7 (confirmar modal): ${error.message}`);
     }
-  }
 
+  } catch (error) {
+    // ===============================
+    // Screenshot y manejo de error
+    // ===============================
+    const screenshot = await this.driver.takeScreenshot();
+
+    const rootErrors = path.resolve(__dirname, '../../../errors');
+    const pageFolder = path.join(rootErrors, 'login');
+    const caseFolder = path.join(pageFolder, caseName);
+
+    [rootErrors, pageFolder, caseFolder].forEach(folder => {
+      if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+    });
+
+    const archivoSalida = path.join(
+      caseFolder,
+      `error_${Date.now()}.png`
+    );
+
+    fs.writeFileSync(archivoSalida, screenshot, 'base64');
+
+    throw error;
+  }
+}
 }

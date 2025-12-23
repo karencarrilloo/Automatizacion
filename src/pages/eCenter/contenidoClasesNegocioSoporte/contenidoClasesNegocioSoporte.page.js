@@ -12,7 +12,7 @@ export default class ContenidoClasesNegocioPageSoporte {
    *@param {WebDriver} driver  instancia de selenium
    *@param {string} defaultIdDeal ID_DEAL para fr_idsimulation
    */
-    constructor(driver, defaultIdDeal = testData.contenidoClasesNegocioSoporte.defaultIdDeal ) {
+    constructor(driver, defaultIdDeal = testData.contenidoClasesNegocioSoporte.defaultIdDeal) {
         this.driver = driver;
         this.defaultIdDeal = defaultIdDeal;
     }
@@ -220,7 +220,7 @@ export default class ContenidoClasesNegocioPageSoporte {
     }
 
     //  ==================================
-    //  CP_CONTCLANEG_003 – Crear fr_idsimulation
+    //  CP_CONTCLANEGSOP_003 – Crear fr_idsimulation
     //  Paso 1
     //  ==================================
 
@@ -277,6 +277,42 @@ export default class ContenidoClasesNegocioPageSoporte {
         } catch (error) {
             throw new Error(`❌ CP_CONTCLANEG_004 Error en Paso 2 (diligenciar ID_DEAL): ${error.message}`);
         }
+
+        
+        // === Paso 3: Clic en botón Guardar ===
+        
+        try {
+            const btnGuardarXpath = '//*[@id="widget-button-btAction-crud-154"]/div';
+
+            const btnGuardar = await driver.wait(
+                until.elementLocated(By.xpath(btnGuardarXpath)),
+                25000
+            );
+
+            await driver.wait(until.elementIsVisible(btnGuardar), 10000);
+            await driver.wait(until.elementIsEnabled(btnGuardar), 10000);
+
+            // Scroll por si el botón está fuera de vista
+            await driver.executeScript(
+                "arguments[0].scrollIntoView({ block: 'center' });",
+                btnGuardar
+            );
+            await driver.sleep(500);
+
+            // Click robusto (UI nueva)
+            try {
+                await btnGuardar.click();
+            } catch {
+                await driver.executeScript("arguments[0].click();", btnGuardar);
+            }
+
+            console.log('✅ Paso 3: Botón Guardar presionado correctamente.');
+            await driver.sleep(5000); // espera guardado / validaciones
+
+        } catch (error) {
+            throw new Error(`❌ Error en Paso 3 (clic en botón Guardar): ${error.message}`);
+        }
+
 
     }
 
